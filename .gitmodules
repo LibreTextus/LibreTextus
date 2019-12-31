@@ -1,0 +1,3 @@
+[submodule "data/BibleEditions"]
+	path = data/BibleEditions
+	url = http://hackernet.local:3000/LibreTextus/BibleEditions

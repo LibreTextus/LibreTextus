@@ -11,7 +11,7 @@ public:
 	virtual ~SignalHandler();
 
 	static void search_input() {
-		std::cout << "/* message */" << '\n';
+		std::cout << "-- SEARCH FUNCTION --" << '\n';
 	}
 };
 

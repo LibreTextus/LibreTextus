@@ -7,7 +7,6 @@
     <property name="title" translatable="yes">LibreTextus</property>
     <property name="default_width">1000</property>
     <property name="default_height">800</property>
-    <signal name="destroy" handler="on_destroy" swapped="no"/>
     <child>
       <placeholder/>
     </child>
@@ -45,7 +44,7 @@
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
                     <child>
-                      <object class="GtkListBox">
+                      <object class="GtkListBox" id="list_0">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
                       </object>
@@ -69,7 +68,7 @@
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
                     <child>
-                      <object class="GtkListBox">
+                      <object class="GtkListBox" id="list_1">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
                       </object>

@@ -1,6 +1,6 @@
 #include "window.hpp"
 
-int GuiHandler::init(int argc, char *argv[]) {
+int GuiHandler::init(int argc, char *argv[], std::string xml_path) {
 
 	// CREATE APP
 
@@ -13,7 +13,7 @@ int GuiHandler::init(int argc, char *argv[]) {
 	// LOAD GLADE FILE
 
 	try {
-		this->refBuilder->add_from_file("data/interface.glade");
+		this->refBuilder->add_from_file(xml_path);
 	}
 	catch(const Glib::FileError& ex) {
 		std::cerr << "FileError: " << ex.what() << std::endl;
@@ -30,22 +30,7 @@ int GuiHandler::init(int argc, char *argv[]) {
 
 	// LOAD WINDOW
 
-	this->refBuilder->get_widget("window", this->window);
-
-	// ADD SEARCHBAR FUNCTION
-
-	this->refBuilder->get_widget("search_bar", this->search_bar);
-	this->search_bar->signal_search_changed().connect(sigc::ptr_fun(SignalHandler::search_input));
-
-	// LOAD LISTS
-
-	this->refBuilder->get_widget("list_0", this->list_0);
-	this->refBuilder->get_widget("list_1", this->list_1);
-
-	// CREATE ROWS
-
-	this->list_0_rows = new Gtk::ListBoxRow();
-	this->list_1_rows = new Gtk::ListBoxRow();
+	this->refBuilder->get_widget("main_window", this->window);
 }
 
 void GuiHandler::run() {

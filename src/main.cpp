@@ -7,7 +7,7 @@ int main (int argc, char *argv[]) {
 
 	GuiHandler gui;
 
-	gui.init(argc, argv);
+	gui.init(argc, argv, "data/main_window.glade");
 
 	gui.run();
 

@@ -11,13 +11,15 @@ private:
 	Glib::RefPtr<Gtk::Builder> refBuilder;
 	Gtk::Window * window;
 	Glib::RefPtr<Gtk::Application> app;
-	Gtk::ListBoxRow * verses;
+	Gtk::SearchEntry * search_entry;
+	SignalHandler signal_handler;
+	// Gtk::ListBoxRow * verses;
 
 public:
 	GuiHandler() {}
 	virtual ~GuiHandler() {
 		delete window;
-		delete[] verses;
+		// delete[] verses;
 	}
 
 	int init(int argc, char *argv[], std::string xml_path) ;

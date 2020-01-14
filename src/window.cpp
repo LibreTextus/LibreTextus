@@ -31,6 +31,16 @@ int GuiHandler::init(int argc, char *argv[], std::string xml_path) {
 	// LOAD WINDOW
 
 	this->refBuilder->get_widget("main_window", this->window);
+
+	// CONNECT SIGNALS
+
+	// SEARCH_ENTRY
+
+	this->refBuilder->get_widget("search_entry", this->search_entry);
+	this->search_entry->signal_key_press_event().connect(sigc::mem_fun(this->signal_handler, &SignalHandler::search_request), false);
+	// INIT SIGNAL HANDLER BY PASSING search_entry
+
+	this->signal_handler.set_search_entry(this->search_entry);
 }
 
 void GuiHandler::run() {

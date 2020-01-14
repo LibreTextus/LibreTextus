@@ -16,114 +16,213 @@
         <property name="can_focus">False</property>
         <property name="orientation">vertical</property>
         <child>
-          <object class="GtkSearchEntry">
+          <object class="GtkSearchEntry" id="search_entry">
             <property name="visible">True</property>
             <property name="can_focus">True</property>
             <property name="has_frame">False</property>
+            <property name="progress_pulse_step">1</property>
             <property name="primary_icon_name">edit-find-symbolic</property>
             <property name="primary_icon_activatable">False</property>
             <property name="primary_icon_sensitive">False</property>
+            <signal name="search-changed" handler="search_request" swapped="no"/>
           </object>
           <packing>
             <property name="expand">False</property>
             <property name="fill">True</property>
-            <property name="position">-1</property>
+            <property name="position">0</property>
           </packing>
         </child>
         <child>
-          <object class="GtkPaned">
+          <object class="GtkScrolledWindow">
             <property name="visible">True</property>
             <property name="can_focus">True</property>
-            <property name="orientation">vertical</property>
-            <property name="position">401</property>
-            <property name="position_set">True</property>
-            <property name="wide_handle">True</property>
+            <property name="shadow_type">in</property>
             <child>
-              <object class="GtkBox">
+              <object class="GtkViewport">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <child>
-                  <object class="GtkListBox">
+                  <object class="GtkListBox" id="text_list">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
+                    <property name="selection_mode">none</property>
+                    <property name="activate_on_single_click">False</property>
                   </object>
-                  <packing>
-                    <property name="expand">False</property>
-                    <property name="fill">True</property>
-                    <property name="position">0</property>
-                  </packing>
                 </child>
               </object>
-              <packing>
-                <property name="resize">False</property>
-                <property name="shrink">True</property>
-              </packing>
-            </child>
-            <child>
-              <object class="GtkPaned">
-                <property name="visible">True</property>
-                <property name="can_focus">True</property>
-                <property name="orientation">vertical</property>
-                <property name="position">90</property>
-                <property name="position_set">True</property>
-                <property name="wide_handle">True</property>
-                <child>
-                  <object class="GtkPaned">
-                    <property name="visible">True</property>
-                    <property name="can_focus">True</property>
-                    <property name="position">141</property>
-                    <property name="position_set">True</property>
-                    <property name="wide_handle">True</property>
-                    <child>
-                      <object class="GtkTextView">
-                        <property name="visible">True</property>
-                        <property name="can_focus">True</property>
-                      </object>
-                      <packing>
-                        <property name="resize">False</property>
-                        <property name="shrink">True</property>
-                      </packing>
-                    </child>
-                    <child>
-                      <object class="GtkTextView">
-                        <property name="visible">True</property>
-                        <property name="can_focus">True</property>
-                      </object>
-                      <packing>
-                        <property name="resize">True</property>
-                        <property name="shrink">True</property>
-                      </packing>
-                    </child>
-                  </object>
-                  <packing>
-                    <property name="resize">True</property>
-                    <property name="shrink">True</property>
-                  </packing>
-                </child>
-                <child>
-                  <object class="GtkLabel">
-                    <property name="visible">True</property>
-                    <property name="can_focus">False</property>
-                    <property name="label" translatable="yes">label</property>
-                  </object>
-                  <packing>
-                    <property name="resize">True</property>
-                    <property name="shrink">True</property>
-                  </packing>
-                </child>
-              </object>
-              <packing>
-                <property name="resize">True</property>
-                <property name="shrink">True</property>
-              </packing>
             </child>
           </object>
           <packing>
             <property name="expand">True</property>
             <property name="fill">True</property>
-            <property name="pack_type">end</property>
             <property name="position">1</property>
           </packing>
+        </child>
+      </object>
+    </child>
+  </object>
+  <object class="GtkListBoxRow" id="verse_container">
+    <property name="visible">True</property>
+    <property name="can_focus">True</property>
+    <property name="activatable">False</property>
+    <property name="selectable">False</property>
+    <child>
+      <object class="GtkFlowBox">
+        <property name="visible">True</property>
+        <property name="can_focus">False</property>
+        <property name="halign">start</property>
+        <property name="valign">start</property>
+        <property name="homogeneous">True</property>
+        <property name="max_children_per_line">100</property>
+        <child>
+          <object class="GtkFlowBoxChild">
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <property name="halign">center</property>
+            <property name="valign">center</property>
+            <child>
+              <object class="GtkLabel">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="label" translatable="yes">label</property>
+              </object>
+            </child>
+          </object>
+        </child>
+        <child>
+          <object class="GtkFlowBoxChild">
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <property name="halign">center</property>
+            <property name="valign">center</property>
+            <child>
+              <object class="GtkLabel">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="label" translatable="yes">label</property>
+              </object>
+            </child>
+          </object>
+        </child>
+        <child>
+          <object class="GtkFlowBoxChild">
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <property name="halign">center</property>
+            <property name="valign">center</property>
+            <child>
+              <object class="GtkLabel">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="label" translatable="yes">label</property>
+              </object>
+            </child>
+          </object>
+        </child>
+        <child>
+          <object class="GtkFlowBoxChild">
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <property name="halign">center</property>
+            <property name="valign">center</property>
+            <child>
+              <object class="GtkLabel">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="label" translatable="yes">label</property>
+              </object>
+            </child>
+          </object>
+        </child>
+        <child>
+          <object class="GtkFlowBoxChild">
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <property name="halign">center</property>
+            <property name="valign">center</property>
+            <child>
+              <object class="GtkLabel">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="label" translatable="yes">label</property>
+              </object>
+            </child>
+          </object>
+        </child>
+        <child>
+          <object class="GtkFlowBoxChild">
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <property name="halign">center</property>
+            <property name="valign">center</property>
+            <child>
+              <object class="GtkLabel">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="label" translatable="yes">label</property>
+              </object>
+            </child>
+          </object>
+        </child>
+        <child>
+          <object class="GtkFlowBoxChild">
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <property name="halign">center</property>
+            <property name="valign">center</property>
+            <child>
+              <object class="GtkLabel">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="label" translatable="yes">label</property>
+              </object>
+            </child>
+          </object>
+        </child>
+        <child>
+          <object class="GtkFlowBoxChild">
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <property name="halign">center</property>
+            <property name="valign">center</property>
+            <child>
+              <object class="GtkLabel">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="label" translatable="yes">label</property>
+              </object>
+            </child>
+          </object>
+        </child>
+        <child>
+          <object class="GtkFlowBoxChild">
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <property name="halign">center</property>
+            <property name="valign">center</property>
+            <child>
+              <object class="GtkLabel">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="label" translatable="yes">label</property>
+              </object>
+            </child>
+          </object>
+        </child>
+        <child>
+          <object class="GtkFlowBoxChild">
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <property name="halign">center</property>
+            <property name="valign">center</property>
+            <child>
+              <object class="GtkLabel">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="label" translatable="yes">label</property>
+              </object>
+            </child>
+          </object>
         </child>
       </object>
     </child>

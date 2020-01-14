@@ -8,6 +8,8 @@ pkg_check_modules(GTKMM REQUIRED gtkmm-3.0)
 add_library(libre_textus SHARED
 	src/window.hpp
 	src/window.cpp
+	src/signal_handler.hpp
+	src/signal_handler.cpp
 )
 
 add_library(search_engine SHARED

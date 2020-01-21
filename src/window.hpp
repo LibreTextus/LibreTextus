@@ -1,31 +1,31 @@
 #ifndef WINDOW_HPP
-#define WINDOW_HPP value
+#define WINDOW_HPP
 
 #include <gtkmm.h>
 #include <iostream>
 
 #include "signal_handler.hpp"
+#include "widgets.hpp"
 
-class GuiHandler {
+class Framework {
 private:
 	Glib::RefPtr<Gtk::Builder> refBuilder;
 	Gtk::Window * window;
 	Glib::RefPtr<Gtk::Application> app;
-	Gtk::SearchEntry * search_entry;
 	SignalHandler signal_handler;
+	LibreWidgets widgets;
+
 	// Gtk::ListBoxRow * verses;
 
 public:
-	GuiHandler() {}
-	virtual ~GuiHandler() {
+	Framework() {}
+	virtual ~Framework() {
 		delete window;
 		// delete[] verses;
 	}
 
 	int init(int argc, char *argv[], std::string xml_path) ;
 	void run();
-
-
 };
 
 #endif

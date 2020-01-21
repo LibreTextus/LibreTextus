@@ -3,13 +3,13 @@
 
 #include "window.hpp"
 
-int main (int argc, char *argv[]) {
+int main(int argc, char *argv[]) {
 
-	GuiHandler gui;
+	Framework framework;
 
-	gui.init(argc, argv, "data/main_window.glade");
+	framework.init(argc, argv, "data/main_window.glade");
 
-	gui.run();
+	framework.run();
 
 	return 0;
 }

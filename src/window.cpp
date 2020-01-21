@@ -1,6 +1,10 @@
 #include "window.hpp"
 
-int GuiHandler::init(int argc, char *argv[], std::string xml_path) {
+int Framework::init(int argc, char *argv[], std::string xml_path) {
+
+	// PASS WIDGETS TO SIGNAL_HANDLER
+
+	this->signal_handler.set_widgets(&this->widgets);
 
 	// CREATE APP
 
@@ -36,14 +40,12 @@ int GuiHandler::init(int argc, char *argv[], std::string xml_path) {
 
 	// SEARCH_ENTRY
 
-	this->refBuilder->get_widget("search_entry", this->search_entry);
-	this->search_entry->signal_key_press_event().connect(sigc::mem_fun(this->signal_handler, &SignalHandler::search_request), false);
+	this->refBuilder->get_widget("search_entry", this->widgets.search_entry);
+	this->widgets.search_entry->signal_key_press_event().connect(sigc::mem_fun(this->signal_handler, &SignalHandler::search_request), false);
 	// INIT SIGNAL HANDLER BY PASSING search_entry
-
-	this->signal_handler.set_search_entry(this->search_entry);
 }
 
-void GuiHandler::run() {
+void Framework::run() {
 	if(window) {
 		app->run(*window);
 	}

@@ -34,8 +34,6 @@ YAML::Node SearchEngine::search_book(std::string arg) {
 		arg_copy = m.suffix().str();							// ARG_COPY TO STRING AFTER FOUND COMMA
 	}
 
-	std::cout << comma_count << '\n';
-
 	for (YAML::const_iterator i = this->names.begin(); i != this->names.end(); i++) {	// FOR ALL POSSIBLE BOOK NAMES
 		for (YAML::const_iterator x = i->second.begin(); x != i->second.end(); x++) {		// FOR ALL ALL POSSIBLE SPELLINGS
 			e = "\\b" + x->as<std::string>() + "\\b";																			// FIND SPELLING
@@ -56,8 +54,6 @@ YAML::Node SearchEngine::search_book(std::string arg) {
 			positions[i->first][0] = m.str();		// ADD POSITION
 			arg_copy = m.suffix().str();				// ARG_COPY TO STRING AFTER FOUND WORD
 		}
-
-		std::cout << positions << '\n';
 
 		e = "-";	// SEARCH ALL "-"
 
@@ -96,8 +92,6 @@ YAML::Node SearchEngine::search_book(std::string arg) {
 
 	// 1Mo, 1, 2 - 4
 
-	std::cout << positions << '\n';
-
 	if (!positions["book"].as<std::vector<std::string>>().size() ||			// IF THERE IS SOMETHING MISSING EXIT
 			!positions["chapter"].as<std::vector<std::string>>().size() ||	// TODO: ADD WHOLE CHAPTER IF VERSE MISSING
 			!positions["verse"].as<std::vector<std::string>>().size()) {
@@ -116,8 +110,6 @@ YAML::Node SearchEngine::search_book(std::string arg) {
 						verse->first.as<std::string>() == positions["verse"][0].as<std::string>()) {
 							begin = true;
 				}
-
-				std::cout << book->first << '\n';
 
 				if (begin) {
 					output[book->first][chapter->first][verse->first] = verse->second;
@@ -186,8 +178,6 @@ YAML::Node SearchEngine::search_word(std::string arg) {
 	arg = std::regex_replace(arg, e, "");									// 	DELETE THE QUOTE
 
 	e = arg;																							//	SET SEARCH STATEMENT TO EDITED ARGUMENT
-
-	std::cout << arg << '\n';
 
 	YAML::Node output;																		//	NODE WHICH WILL BE RETURNED
 

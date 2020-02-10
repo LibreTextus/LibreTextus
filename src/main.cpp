@@ -1,14 +1,11 @@
 #include <gtkmm.h>
 #include <iostream>
 
-#include "window.hpp"
+#include "framework.hpp"
 
 int main(int argc, char *argv[]) {
-
 	Framework framework;
-
-	framework.init(argc, argv, "data/main_window.glade");
-
+	framework.init(argc, argv);
 	framework.run();
 
 	return 0;

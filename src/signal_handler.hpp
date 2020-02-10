@@ -23,7 +23,7 @@ public:
 
 	gboolean search_request(GdkEventKey * event);
 
-	void set_text_content(YAML::Node text);
+	void update_text_content();
 
 	void set_widgets(LibreWidgets * w) {
 		widgets = w;

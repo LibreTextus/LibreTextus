@@ -6,8 +6,8 @@ find_package(PkgConfig REQUIRED)
 pkg_check_modules(GTKMM REQUIRED gtkmm-3.0)
 
 add_library(libre_textus SHARED
-	src/window.hpp
-	src/window.cpp
+	src/framework.hpp
+	src/framework.cpp
 	src/signal_handler.hpp
 	src/signal_handler.cpp
 )

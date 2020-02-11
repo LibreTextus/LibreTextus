@@ -128,6 +128,37 @@ YAML::Node SearchEngine::search_book(std::string arg) {
 
 YAML::Node SearchEngine::search_word(std::string arg) {
 
+	interpret_argument(arg);
+
+	std::regex e(arg);
+
+	YAML::Node output;																		//	NODE WHICH WILL BE RETURNED
+
+	// -- BOOK LOOP
+
+	for (YAML::const_iterator book = this->file.begin(); book != this->file.end(); book++) {
+
+		// -- CHAPTER LOOP
+
+		for (YAML::const_iterator chapter = book->second.begin(); chapter != book->second.end(); chapter++) {
+
+			// -- VERSE LOOP
+
+			for (YAML::const_iterator verse = chapter->second.begin(); verse != chapter->second.end(); verse++) {
+
+				if (std::regex_search(verse->second.as<std::string>(), e)) {	//	IF THERE IS THE EXPRESSION SEARCHED FOR
+					output[book->first.as<std::string>()][chapter->first.as<std::string>()]		//	INSERT VERSE UNDER [BOOK][CHAPTER][VERSE]
+								[verse->first.as<std::string>()] = verse->second.as<std::string>();	//	IN OUTPUT NODE
+				}
+			}
+		}
+	}
+
+	return output;	// RETURN NODE
+}
+
+void SearchEngine::interpret_argument(std::string & arg) {
+
 	// -- CHECK QUOTES
 
 	std::regex e("\".[^\"]*\"");	//	EVERYTHING WHICH HAS QUOTES AS BORDERS AND DOES NOT CONTAIN BORDERS
@@ -176,30 +207,13 @@ YAML::Node SearchEngine::search_word(std::string arg) {
 
 	e = "\"";																							//	SELECT EVERY QUOTE
 	arg = std::regex_replace(arg, e, "");									// 	DELETE THE QUOTE
+}
 
-	e = arg;																							//	SET SEARCH STATEMENT TO EDITED ARGUMENT
+std::string SearchEngine::mark_result(std::string text, std::string arg, std::string mark_start, std::string mark_end) {
+	interpret_argument(arg);
 
-	YAML::Node output;																		//	NODE WHICH WILL BE RETURNED
+	std::regex e(arg);
+	text = std::regex_replace(text, e, mark_start + "$&" + mark_end);
 
-	// -- BOOK LOOP
-
-	for (YAML::const_iterator book = this->file.begin(); book != this->file.end(); book++) {
-
-		// -- CHAPTER LOOP
-
-		for (YAML::const_iterator chapter = book->second.begin(); chapter != book->second.end(); chapter++) {
-
-			// -- VERSE LOOP
-
-			for (YAML::const_iterator verse = chapter->second.begin(); verse != chapter->second.end(); verse++) {
-
-				if (std::regex_search(verse->second.as<std::string>(), e)) {	//	IF THERE IS THE EXPRESSION SEARCHED FOR
-					output[book->first.as<std::string>()][chapter->first.as<std::string>()]		//	INSERT VERSE UNDER [BOOK][CHAPTER][VERSE]
-								[verse->first.as<std::string>()] = verse->second.as<std::string>();	//	IN OUTPUT NODE
-				}
-			}
-		}
-	}
-
-	return output;	// RETURN NODE
+	return text;
 }

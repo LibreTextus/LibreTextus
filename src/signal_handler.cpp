@@ -27,39 +27,28 @@ gboolean SignalHandler::search_request(GdkEventKey * event) {
 
 void SignalHandler::update_text_content() {
 
-	delete[] this->widgets->verse_containers;
-
-	int size = 0;
-
-	for (YAML::const_iterator book = this->widgets->verse_content.begin(); book != this->widgets->verse_content.end(); book++) {
-		for (YAML::const_iterator chapter = book->second.begin(); chapter != book->second.end(); chapter++) {
-			size += chapter->second.size();
-		}
-	}
-
-	std::cout << size << '\n';
-
-	this->widgets->verse_containers = new Gtk::ListBoxRow[size];
-
-	int i = 0;
+	this->widgets->search_result->set_text("");
 
 	for (YAML::const_iterator book = this->widgets->verse_content.begin(); book != this->widgets->verse_content.end(); book++) {
 		for (YAML::const_iterator chapter = book->second.begin(); chapter != book->second.end(); chapter++) {
 			for (YAML::const_iterator verse = chapter->second.begin(); verse != chapter->second.end(); verse++) {
-				Gtk::Label * text = new Gtk::Label;
-				text->set_markup(verse->second.as<std::string>());
-				text->set_halign(Gtk::ALIGN_START);
-				text->set_valign(Gtk::ALIGN_START);
-				text->set_selectable(true);
-				text->set_line_wrap(true);
 
-				this->widgets->verse_containers[i].add(*text);
+				this->widgets->search_result->insert_markup(
+					this->widgets->search_result->end(),
+					"<span font_weight=\"ultralight\">" +
+					book->first.as<std::string>() + ", " + chapter->first.as<std::string>() + ", " + verse->first.as<std::string>() +
+					"</span>"
+				);
 
-				this->widgets->verse_box->add(this->widgets->verse_containers[i]);
+				this->widgets->search_result->insert_markup(
+					this->widgets->search_result->end(),
+					"\n\n" +
+					search_engine->mark_result(verse->second.as<std::string>(),
+																							this->widgets->search_entry->get_text(),
+					 																		"<span background=\"#db3131\">", "</span>")
+					+ "\n\n"
+				);
 
-				this->widgets->verse_containers[i].show_all();
-
-				i++;
 			}
 		}
 	}

@@ -66,14 +66,19 @@
     <property name="name">VerseContainer</property>
     <property name="visible">True</property>
     <property name="can_focus">True</property>
+    <property name="halign">start</property>
+    <property name="valign">start</property>
     <property name="activatable">False</property>
     <property name="selectable">False</property>
     <child>
       <object class="GtkLabel">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
+        <property name="halign">start</property>
+        <property name="valign">start</property>
         <property name="label" translatable="yes">Ich bin ein kleiner Wichtelmann und gehe durch den Wald. Ich laufe und &lt;b&gt;singe&lt;\b&gt;, bin super drauf doch höre ein lautes Geräusch.</property>
         <property name="use_markup">True</property>
+        <property name="justify">fill</property>
         <property name="wrap">True</property>
         <property name="selectable">True</property>
       </object>

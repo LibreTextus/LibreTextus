@@ -32,6 +32,8 @@ int Framework::init(int argc, char *argv[]) {
 
 	scrolled_window->add(*this->widgets.text_views);
 
+	this->widgets.text_views->set_border_width(10);
+
 	h_box->show_all();
 
 

@@ -26,8 +26,10 @@ public:
 
 	gboolean search_request(GdkEventKey * event);
 
+	void source_changed();
+
 	void set_widgets(LibreWidgets * w) {
-		widgets = w;
+		this->widgets = w;
 	}
 };
 

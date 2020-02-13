@@ -14,12 +14,15 @@ int Framework::init(int argc, char *argv[]) {
 	this->widgets.window->set_default_size(1000, 800);	// SET WINDOW SIZE
 	this->widgets.window->set_title("LibreTextus");			// SET WINDOW TITLE
 
-	Gtk::VBox * h_box = new Gtk::VBox(false, 0);					// CREATE VBOX
-	this->widgets.window->add(*h_box);										// ADD VBOX TO WINDOW
+	Gtk::VBox * v_box = new Gtk::VBox(false, 0);					// CREATE VBOX
+	this->widgets.window->add(*v_box);										// ADD VBOX TO WINDOW
 
 	this->widgets.search_entry = new Gtk::SearchEntry;	// CREATE NEW SEARCHENTRY
+
+	Gtk::VBox * scrl_container = new Gtk::VBox(false, 0);
 	this->widgets.text_views = new Gtk::TextView;
 	Gtk::ScrolledWindow * scrolled_window = new Gtk::ScrolledWindow;
+	Gtk::HBox * header = new Gtk::HBox(false, 0);
 
 	this->widgets.search_result = Gtk::TextBuffer::create();
 	this->widgets.text_views->set_buffer(this->widgets.search_result);
@@ -27,20 +30,34 @@ int Framework::init(int argc, char *argv[]) {
 	this->widgets.text_views->set_cursor_visible(false);
 	this->widgets.text_views->set_wrap_mode(Gtk::WRAP_WORD);
 
-	h_box->pack_start(*this->widgets.search_entry, Gtk::PACK_SHRINK, 0);	// ADD SEARCH_ENTRY WITH SHRINKABLE FLAG
-	h_box->pack_end(*scrolled_window, Gtk::PACK_EXPAND_WIDGET, 0);				// ADD SCROLLED_WINDOW
+	v_box->pack_start(*this->widgets.search_entry, Gtk::PACK_SHRINK, 0);	// ADD SEARCH_ENTRY WITH SHRINKABLE FLAG
+	v_box->pack_end(*scrl_container, Gtk::PACK_EXPAND_WIDGET, 0);
+
+	scrl_container->pack_start(*header, Gtk::PACK_SHRINK, 0);
+	scrl_container->pack_end(*scrolled_window, Gtk::PACK_EXPAND_WIDGET, 0);
 
 	scrolled_window->add(*this->widgets.text_views);
-
 	this->widgets.text_views->set_border_width(10);
 
-	h_box->show_all();
+	this->widgets.combo_boxes = new Gtk::ComboBoxText;
+
+	this->widgets.append_sources(this->widgets.combo_boxes);
+
+	header->pack_end(*this->widgets.combo_boxes, Gtk::PACK_SHRINK, 0);
+	header->set_border_width(10);
+
+	v_box->show_all();
 
 
 	// CONNECT SIGNALS -----------------------------------------------------------
 
 	this->widgets.search_entry->signal_key_press_event().connect(	// SEARCH_ENTRY : WHEN KEY PRESSED
 		sigc::mem_fun(this->signal_handler, &SignalHandler::search_request),
+		false
+	);
+
+	this->widgets.combo_boxes->signal_changed().connect(	// SEARCH_ENTRY : WHEN KEY PRESSED
+		sigc::mem_fun(this->signal_handler, &SignalHandler::source_changed),
 		false
 	);
 

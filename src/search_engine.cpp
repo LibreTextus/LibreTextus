@@ -11,7 +11,9 @@ void SearchEngine::set_search_argument(std::string arg) {
 	this->search_argument = arg;
 	this->interpreted_argument = arg;
 	interpret_argument(&this->interpreted_argument);
+
 	delete [] this->last_result;
+	this->last_result = nullptr;
 }
 
 void SearchEngine::set_mark_argument(std::string arg) {
@@ -20,6 +22,13 @@ void SearchEngine::set_mark_argument(std::string arg) {
 
 void SearchEngine::set_header_argument(std::string arg) {
 	this->header_argument = arg;
+}
+
+void SearchEngine::set_source(std::string path) {
+	this->file = YAML::LoadFile(path);
+
+	delete [] this->last_result;
+	this->last_result = nullptr;
 }
 
 bool SearchEngine::search(std::string * text) {
@@ -156,7 +165,6 @@ bool SearchEngine::search_book(std::string * text) {
 				if (this->last_result[0]->first.as<std::string>() == positions["book"][1].as<std::string>() &&
 						this->last_result[1]->first.as<std::string>() == positions["chapter"][1].as<std::string>() &&
 						this->last_result[2]->first.as<std::string>() == positions["verse"][1].as<std::string>()) {
-							*text = this->last_result[2]->second.as<std::string>();
 							end = true;
 				}
 

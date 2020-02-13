@@ -10,14 +10,32 @@ gboolean SignalHandler::search_request(GdkEventKey * event) {
 
 		this->search_engine->set_search_argument(this->widgets->search_entry->get_text());
 
+		this->widgets->search_result->set_text("");
+
 		while (search_engine->search(&result)) {
 			this->widgets->search_result->insert_markup(this->widgets->search_result->end(), result + "\n\n");
 		}
 
 		this->widgets->search_result->insert_markup(this->widgets->search_result->end(), result + "\n\n");
-
-		std::cout << "SEARCH FINISHED" << '\n';
 	}
 
 	return false;
+}
+
+void SignalHandler::source_changed() {
+	this->search_engine->set_source(
+		"data/BibleEditions/" +
+		this->widgets->sources[std::string(this->widgets->combo_boxes->get_active_text())].as<std::string>()
+	);
+
+	std::string result;
+
+	this->widgets->search_result->set_text("");
+
+	while (search_engine->search(&result)) {
+		this->widgets->search_result->insert_markup(this->widgets->search_result->end(), result + "\n\n");
+	}
+
+	this->widgets->search_result->insert_markup(this->widgets->search_result->end(), result + "\n\n");
+
 }

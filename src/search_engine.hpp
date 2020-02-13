@@ -35,6 +35,7 @@ public:
 	void set_search_argument(std::string arg);
 	void set_mark_argument(std::string arg);
 	void set_header_argument(std::string arg);
+	void set_source(std::string path);
 };
 
 #endif

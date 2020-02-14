@@ -16,10 +16,17 @@ public:
 	Gtk::ComboBoxText * combo_boxes;
 	Glib::RefPtr<Gtk::TextBuffer> search_result;
 
+	Glib::Thread * process_thread;
+	Glib::Dispatcher set_text_dispatcher;
+	Glib::Dispatcher set_progress_bar_dispatcher;
+	std::string found_text;
+	bool progress_finished;
+	float search_progress;
+
 	YAML::Node sources;
 
 	LibreWidgets() {
-		sources = YAML::LoadFile("data/sources.yml");		
+		sources = YAML::LoadFile("data/sources.yml");
 	}
 
 	~LibreWidgets() {

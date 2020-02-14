@@ -38,6 +38,18 @@ std::string SearchEngine::get_verse(std::string book, std::string chapter, std::
 		return "~~~";
 }
 
+float SearchEngine::get_progress() {
+	int progress = 0;
+	for (YAML::const_iterator i = this->file.begin(); i != this->file.end(); i++) {
+		progress++;
+		if (i->first.as<std::string>() == this->last_search_results.back()[0]) {
+			return (progress / 66.0);
+		}
+	}
+
+	return 0;
+}
+
 bool SearchEngine::search(std::string * text) {
 	if (this->last_result == nullptr) {
 		this->last_result = new YAML::const_iterator[3];
@@ -233,7 +245,6 @@ bool SearchEngine::search_book(std::string * text) {
 			this->last_result[1] = this->last_result[0]->second.begin();
 			this->last_result[2] = this->last_result[1]->second.begin();
 		}
-
 	}
 
 	return false;
@@ -303,6 +314,7 @@ bool SearchEngine::search_word(std::string * text) {
 			this->last_result[1] = this->last_result[0]->second.begin();
 			this->last_result[2] = this->last_result[1]->second.begin();
 		}
+
 	}
 	return false;
 }

@@ -20,6 +20,7 @@ public:
 
 		this->search_engine->set_mark_argument("<span background=\"#db3131\">$&</span>");
 		this->search_engine->set_header_argument("<span font_weight=\"ultralight\">$&</span>");
+
 	}
 
 	virtual ~SignalHandler() {
@@ -27,6 +28,11 @@ public:
 	};
 
 	gboolean search_request(GdkEventKey * event);
+	void do_search();
+	void do_replacement();
+
+	void set_text();
+	void set_progress_bar();
 
 	void source_changed();
 

@@ -20,7 +20,6 @@ private:
 	std::string header_argument;
 	bool is_book;
 
-
 	bool search_word(std::string * text);
 	bool search_book(std::string * text);
 	void interpret_argument(std::string * text);
@@ -36,6 +35,8 @@ public:
 	void set_mark_argument(std::string arg);
 	void set_header_argument(std::string arg);
 	void set_source(std::string path);
+	float get_progress();
+	
 	std::vector<std::array<std::string, 3>> * get_last_search_results() {
 		return &this->last_search_results;
 	}

@@ -4,15 +4,15 @@
 #include <yaml-cpp/yaml.h>
 #include <string>
 #include <iostream>
-#include <algorithm>
 #include <regex>
-#include <map>
+#include <vector>
 
 class SearchEngine {
 private:
 	YAML::Node file;
 	YAML::Node names;
 	YAML::const_iterator * last_result;
+	std::vector<std::array<std::string, 3>> last_search_results;
 	std::string W;
 	std::string search_argument;
 	std::string interpreted_argument;
@@ -36,6 +36,11 @@ public:
 	void set_mark_argument(std::string arg);
 	void set_header_argument(std::string arg);
 	void set_source(std::string path);
+	std::vector<std::array<std::string, 3>> * get_last_search_results() {
+		return &this->last_search_results;
+	}
+
+	std::string get_verse(std::string book, std::string chapter, std::string verse);
 };
 
 #endif

@@ -22,7 +22,9 @@ public:
 		this->search_engine->set_header_argument("<span font_weight=\"ultralight\">$&</span>");
 	}
 
-	virtual ~SignalHandler() {};
+	virtual ~SignalHandler() {
+		delete search_engine;
+	};
 
 	gboolean search_request(GdkEventKey * event);
 

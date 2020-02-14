@@ -31,9 +31,18 @@ void SearchEngine::set_source(std::string path) {
 	this->last_result = nullptr;
 }
 
+std::string SearchEngine::get_verse(std::string book, std::string chapter, std::string verse) {
+	if (this->file[book][chapter][verse])
+		return this->file[book][chapter][verse].as<std::string>();
+	else
+		return "~~~";
+}
+
 bool SearchEngine::search(std::string * text) {
 	if (this->last_result == nullptr) {
 		this->last_result = new YAML::const_iterator[3];
+
+		this->last_search_results.clear();
 
 		this->last_result[0] = this->file.begin();
 		this->last_result[1] = this->last_result[0]->second.begin();
@@ -168,11 +177,17 @@ bool SearchEngine::search_book(std::string * text) {
 							end = true;
 				}
 
-				if (begin && !end) {
+				if (begin) {
 
 					this->add_header(text);
 
 					*text += this->last_result[2]->second.as<std::string>();
+
+					this->last_search_results.push_back({
+						this->last_result[0]->first.as<std::string>(),
+						this->last_result[1]->first.as<std::string>(),
+						this->last_result[2]->first.as<std::string>()
+					});
 
 					this->last_result[2]++;
 
@@ -196,6 +211,12 @@ bool SearchEngine::search_book(std::string * text) {
 						}
 					}
 
+					if (end) {
+						this->last_result[0] = this->file.end();
+						this->last_result[1] = this->last_result[0]->second.end();
+						this->last_result[2] = this->last_result[1]->second.end();
+					}
+
 					return true;
 				}
 			}
@@ -214,6 +235,7 @@ bool SearchEngine::search_book(std::string * text) {
 		}
 
 	}
+
 	return false;
 }
 
@@ -236,6 +258,12 @@ bool SearchEngine::search_word(std::string * text) {
 					add_header(text);
 					*text += this->last_result[2]->second.as<std::string>();
 					mark_result(text);
+
+					this->last_search_results.push_back({
+						this->last_result[0]->first.as<std::string>(),
+						this->last_result[1]->first.as<std::string>(),
+						this->last_result[2]->first.as<std::string>()
+					});
 
 					this->last_result[2]++;
 

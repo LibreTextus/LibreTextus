@@ -13,6 +13,7 @@ int Framework::init(int argc, char *argv[]) {
 	this->widgets.window = new Gtk::Window;						// CREATE NEW WINDOW
 	this->widgets.window->set_default_size(1000, 800);	// SET WINDOW SIZE
 	this->widgets.window->set_title("LibreTextus");			// SET WINDOW TITLE
+	this->widgets.window->set_icon_from_file("data/Icon.svg");
 
 	Gtk::VBox * v_box = new Gtk::VBox(false, 0);					// CREATE VBOX
 	this->widgets.window->add(*v_box);										// ADD VBOX TO WINDOW

@@ -63,8 +63,7 @@ int Framework::init(int argc, char *argv[]) {
 	);
 
 	this->widgets.set_text_dispatcher.connect(sigc::mem_fun(this->signal_handler, &SignalHandler::set_text));
-	this->widgets.set_progress_bar_dispatcher.connect(sigc::mem_fun(this->signal_handler, &SignalHandler::set_progress_bar));
-
+	
 	return 0;
 }
 

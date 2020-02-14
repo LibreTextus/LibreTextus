@@ -18,9 +18,8 @@ public:
 
 	Glib::Thread * process_thread;
 	Glib::Dispatcher set_text_dispatcher;
-	Glib::Dispatcher set_progress_bar_dispatcher;
 	std::string found_text;
-	bool progress_finished;
+	bool procress_finished;
 	float search_progress;
 
 	YAML::Node sources;

@@ -20,7 +20,6 @@ public:
 
 		this->search_engine->set_mark_argument("<span background=\"#db3131\">$&</span>");
 		this->search_engine->set_header_argument("<span font_weight=\"ultralight\">$&</span>");
-
 	}
 
 	virtual ~SignalHandler() {
@@ -32,8 +31,7 @@ public:
 	void do_replacement();
 
 	void set_text();
-	void set_progress_bar();
-
+	
 	void source_changed();
 
 	void set_widgets(LibreWidgets * w) {

@@ -49,6 +49,19 @@ int Framework::init(int argc, char *argv[]) {
 
 	v_box->show_all();
 
+	// ADD CSS -------------------------------------------------------------------
+
+  Glib::RefPtr<Gtk::CssProvider> css = Gtk::CssProvider::create();
+  if(!css->load_from_path("data/default.css")) {
+      std::cerr << "Failed to load css\n";
+			return 1;
+  }
+  auto screen = Gdk::Screen::get_default();
+  this->widgets.style = this->widgets.window->get_style_context();
+  this->widgets.style->add_provider_for_screen(screen, css, GTK_STYLE_PROVIDER_PRIORITY_APPLICATION);
+
+	this->signal_handler.init();
+
 
 	// CONNECT SIGNALS -----------------------------------------------------------
 
@@ -63,7 +76,8 @@ int Framework::init(int argc, char *argv[]) {
 	);
 
 	this->widgets.set_text_dispatcher.connect(sigc::mem_fun(this->signal_handler, &SignalHandler::set_text));
-	
+	this->widgets.delete_thread_dispatcher.connect(sigc::mem_fun(this->signal_handler, &SignalHandler::delete_thread));
+
 	return 0;
 }
 

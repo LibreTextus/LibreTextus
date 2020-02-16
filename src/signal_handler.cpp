@@ -6,6 +6,7 @@ gboolean SignalHandler::search_request(GdkEventKey * event) {
 
 	if (event->keyval == 65293) {	// IF ENTER IS PRESSED (KEYCODE: 65293)
 		this->widgets->combo_boxes->set_button_sensitivity(Gtk::SENSITIVITY_OFF);
+		this->widgets->search_entry->set_editable(false);
 		this->widgets->search_result->set_text("");
 		this->widgets->process_thread = Glib::Thread::create(sigc::mem_fun(*this, &SignalHandler::do_search), true);
 	}
@@ -14,6 +15,8 @@ gboolean SignalHandler::search_request(GdkEventKey * event) {
 }
 
 void SignalHandler::source_changed() {
+	this->widgets->combo_boxes->set_button_sensitivity(Gtk::SENSITIVITY_OFF);
+	this->widgets->search_entry->set_editable(false);
 	this->widgets->search_result->set_text("");
 	this->widgets->process_thread = Glib::Thread::create(sigc::mem_fun(*this, &SignalHandler::do_replacement), true);
 }
@@ -21,6 +24,14 @@ void SignalHandler::source_changed() {
 void SignalHandler::set_text() {
 	this->widgets->search_result->insert_markup(this->widgets->search_result->end(), this->widgets->found_text + "\n\n");
 	this->widgets->procress_finished = true;
+}
+
+void SignalHandler::delete_thread() {
+	if (this->widgets->process_thread) {
+		if (this->widgets->process_thread->joinable()) {
+			this->widgets->process_thread->join();
+		}
+	}
 }
 
 void SignalHandler::do_search() {
@@ -36,6 +47,9 @@ void SignalHandler::do_search() {
 
 	this->widgets->search_entry->set_progress_fraction(0.0);
 	this->widgets->combo_boxes->set_button_sensitivity(Gtk::SENSITIVITY_ON);
+	this->widgets->search_entry->set_editable(true);
+
+	this->widgets->delete_thread_dispatcher.emit();
 }
 
 void SignalHandler::do_replacement() {
@@ -53,4 +67,7 @@ void SignalHandler::do_replacement() {
 		this->widgets->set_text_dispatcher.emit();
 		while (!this->widgets->procress_finished) {}
 	}
+
+	this->widgets->combo_boxes->set_button_sensitivity(Gtk::SENSITIVITY_ON);
+	this->widgets->search_entry->set_editable(true);
 }

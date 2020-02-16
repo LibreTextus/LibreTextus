@@ -4,6 +4,8 @@ SearchEngine::SearchEngine(std::string file_path, std::string names_path) {
 	this->file = YAML::LoadFile(file_path);
 	this->names = YAML::LoadFile(names_path);
 
+	this->last_result = nullptr;
+
 	W = "[\\w\\u00C0-\\u024f]";
 }
 
@@ -12,7 +14,9 @@ void SearchEngine::set_search_argument(std::string arg) {
 	this->interpreted_argument = arg;
 	interpret_argument(&this->interpreted_argument);
 
-	delete [] this->last_result;
+	if (this->last_result != nullptr) {
+		delete [] this->last_result;
+	}
 	this->last_result = nullptr;
 }
 

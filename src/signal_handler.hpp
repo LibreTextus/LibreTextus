@@ -4,6 +4,7 @@
 #include <gtkmm.h>
 #include <iostream>
 #include <yaml-cpp/yaml.h>
+#include <iomanip>
 #include "search_engine.hpp"
 
 #include "widgets.hpp"
@@ -14,24 +15,47 @@ private:
 	LibreWidgets * widgets;
 
 public:
-	SignalHandler() {
-		this->search_engine = new SearchEngine("data/BibleEditions/deu/schlachter-1951.yml",
-																		 			 "data/BibleEditions/biblebooks.yml");
-
-		this->search_engine->set_mark_argument("<span background=\"#db3131\">$&</span>");
-		this->search_engine->set_header_argument("<span font_weight=\"ultralight\">$&</span>");
-	}
+	SignalHandler() {}
 
 	virtual ~SignalHandler() {
 		delete search_engine;
-	};
+	}
+
+	bool init() {
+		this->search_engine = new SearchEngine("data/BibleEditions/deu/schlachter-1951.yml",
+																		 			 "data/BibleEditions/biblebooks.yml");
+
+		Gdk::RGBA rgba;
+		this->widgets->style->lookup_color("theme_search_result_color", rgba);
+
+		std::string r, g, b;
+
+		std::stringstream stream;
+		stream << std::hex << static_cast<int>(rgba.get_red() * 255);
+		r = stream.str();
+		if (r.length() == 1) { r = "0" + r; }
+		stream.str("");
+
+		stream << std::hex << static_cast<int>(rgba.get_green() * 255);
+		g += stream.str();
+		if (g.length() == 1) { g = "0" + g; }
+		stream.str("");
+
+		stream << std::hex << static_cast<int>(rgba.get_blue() * 255);
+		b += stream.str();
+		if (b.length() == 1) { b = "0" + b; }
+
+		this->search_engine->set_mark_argument("<span background=\"#" + r + g + b + "\">$&</span>");
+		this->search_engine->set_header_argument("<span font_weight=\"ultralight\">$&</span>");
+	}
 
 	gboolean search_request(GdkEventKey * event);
 	void do_search();
 	void do_replacement();
 
 	void set_text();
-	
+	void delete_thread();
+
 	void source_changed();
 
 	void set_widgets(LibreWidgets * w) {

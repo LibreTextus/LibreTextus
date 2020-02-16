@@ -1,0 +1,31 @@
+entry.search {
+	border-radius: 0px;
+	padding: 10px;
+	color: @theme_text_color;
+}
+
+entry.search:focus {
+	
+}
+
+progress {
+	border-bottom-color: @theme_highlight_color;
+	border-bottom-width: 5px;
+	margin: -5px;
+
+}
+
+text, textview {
+	color: @theme_text_color;
+	background-color: @theme_background_color;
+}
+
+selection {
+	background-color: @theme_highlight_color;
+	color: #000;
+}
+
+@define-color theme_search_result_color #f00;
+@define-color theme_text_color #000;
+@define-color theme_highlight_color #7395b5;
+@define-color theme_background_color #fff;

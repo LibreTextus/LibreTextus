@@ -11,6 +11,7 @@ class LibreWidgets {
 public:
 	Gtk::Window * window;
 	Glib::RefPtr<Gtk::Application> app;
+	Glib::RefPtr<Gtk::StyleContext> style;
 	Gtk::SearchEntry * search_entry;
 	Gtk::TextView * text_views;
 	Gtk::ComboBoxText * combo_boxes;
@@ -18,6 +19,7 @@ public:
 
 	Glib::Thread * process_thread;
 	Glib::Dispatcher set_text_dispatcher;
+	Glib::Dispatcher delete_thread_dispatcher;
 	std::string found_text;
 	bool procress_finished;
 	float search_progress;

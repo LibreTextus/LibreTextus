@@ -18,10 +18,12 @@ private:
 	std::string interpreted_argument;
 	std::string mark_argument;
 	std::string header_argument;
+	std::string positions[3][2];
 	bool is_book;
 
 	bool search_word(std::string * text);
 	bool search_book(std::string * text);
+	bool search_position();
 	void interpret_argument(std::string * text);
 	void mark_result(std::string * text);
 	void add_header(std::string * text);
@@ -36,7 +38,7 @@ public:
 	void set_header_argument(std::string arg);
 	void set_source(std::string path);
 	float get_progress();
-	
+
 	std::vector<std::array<std::string, 3>> * get_last_search_results() {
 		return &this->last_search_results;
 	}

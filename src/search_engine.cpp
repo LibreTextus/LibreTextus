@@ -14,6 +14,8 @@ void SearchEngine::set_search_argument(std::string arg) {
 	this->interpreted_argument = arg;
 	interpret_argument(&this->interpreted_argument);
 
+	is_book = this->search_position();
+
 	if (this->last_result != nullptr) {
 		delete [] this->last_result;
 	}
@@ -91,85 +93,6 @@ bool SearchEngine::search(std::string * text) {
 
 bool SearchEngine::search_book(std::string * text) {
 
-	std::string positions[3][2] = {{"", ""}, {"", ""}, {"", ""}}; //	RESULT RANGE
-
-	std::regex e(",");	// REGEX ARGUMENT
-	std::smatch m;			// REGEX MATCH
-
-	int comma_count = 0;	// NUMBER OF COMMAS
-
-	std::string arg_copy = this->search_argument;	// COPY ARG FOR COUNT COMMAS
-
-	while (std::regex_search(arg_copy, m, e)) {	// WHILE COMMA FOUND
-		comma_count++;														// ADD ONE TO COMMA_COUNT
-		arg_copy = m.suffix().str();							// ARG_COPY TO STRING AFTER FOUND COMMA
-	}
-
-	for (YAML::const_iterator i = this->names.begin(); i != this->names.end(); i++) {	// FOR ALL POSSIBLE BOOK NAMES
-		for (YAML::const_iterator x = i->second.begin(); x != i->second.end(); x++) {		// FOR ALL ALL POSSIBLE SPELLINGS
-			e = "\\b" + x->as<std::string>() + "\\b";																			// FIND SPELLING
-			this->search_argument = std::regex_replace(this->search_argument, e, i->first.as<std::string>());									// REPLACE SPELLING WITH DEFAULT SPELLING : 1Mo -> GEN
-		}
-	}
-
-	e = " ";															// FIND ALL SPACES
-	this->search_argument = std::regex_replace(this->search_argument, e, "");	// AND REPLACE THEM WITH NOTHING (DELETE)
-
-	if (comma_count == 2) {	// IF THERE ARE TWO COMMAS; THE ARGUMENT LOOKS LIKE *GEN, 1, 1 - 2*
-		e = "[\\w-]+";	// ALL WORD-CHARACTERS [a-zA-z0-9]
-		arg_copy = this->search_argument;	// COPY ARGUMENT FOR FIND WORDS
-
-		for (int i = 0; i < 3; i++) {	// FOR EVERY ELEMENT OF POSITION-MAP
-			std::regex_search(arg_copy, m, e);	// SEARCH NEXT WORD
-
-			positions[i][0] = m.str();		// ADD POSITION
-			arg_copy = m.suffix().str();				// ARG_COPY TO STRING AFTER FOUND WORD
-		}
-
-		e = "-";	// SEARCH ALL "-"
-
-		std::string part;	// USED FOR REGEX_SEARCH
-
-		for (int i = 0; i < 3; i++) {
-			part = positions[i][0];				// PART FOR LOOKING IF THERE IS AN "-"
-			if (std::regex_search(part, m, e)) {					// IF THERE IS AN "-"
-				positions[i][0] = m.prefix().str();	// POSITION RANGE STARTS BEFORE THE "-"
-				positions[i][1] = m.suffix().str();	// POSITION RANGE STOPS AFTER THE "-"
-
-			} else {
-				positions[i][1] = positions[i][0];	// IF THERE ARE NO "-" END EQUALS STOP
-			}
-		}
-
-	} else if (comma_count == 4) {	// IF THERA ARE FOUR COMMAS; THE ARGUMENT LOOKS LIKE *GEN, 1, 1 - GEN, 1, 2*
-		e = "-";											// SEARCH ALL "-"
-		std::regex_search(this->search_argument, m, e);
-
-		std::string prefix = m.prefix().str();	// GET PART BEFORE "-"
-		std::string suffix = m.suffix().str();	// GET PART AFTER "-"
-
-		e = "\\w+";	// SEARCH EVERY WORD
-
-		for (int i = 0; i < 3; i++) {	// FOR EVERY POSITION
-			std::regex_search(prefix, m, e);				// FIND EVERY WORD
-			positions[i][0] = m.str();	// PUSH BACK TO BOOK / CHAPTER / VERSE
-			prefix = m.suffix().str();							// SET "PREFIX" TO STRING AFTER FOUND WORD
-
-			std::regex_search(suffix, m, e);				// JUST SAME AS THE BEFORE BUT AFTER THE "-"
-			positions[i][1] = m.str();
-			suffix = m.suffix().str();
-		}
-	}
-
-	// 1Mo, 1, 2 - 4
-
-	if (positions[0][1] == "" ||			// IF THERE IS SOMETHING MISSING EXIT
-			positions[1][1] == "" ||	// TODO: ADD WHOLE CHAPTER IF VERSE MISSING
-			positions[2][1] == "") {
-		return false;
-	}
-
-
 	bool begin = !(this->last_result[0] == this->file.begin() &&
 								 this->last_result[1] == this->last_result[0]->second.begin() &&
 							 	 this->last_result[2] == this->last_result[1]->second.begin());
@@ -181,16 +104,15 @@ bool SearchEngine::search_book(std::string * text) {
 		while (this->last_result[1] != this->last_result[0]->second.end() && !end){
 			for (; this->last_result[2] != this->last_result[1]->second.end() && !end; this->last_result[2]++){
 
-				if (this->last_result[0]->first.as<std::string>() == positions[0][0] &&
-						this->last_result[1]->first.as<std::string>() == positions[1][0] &&
-						this->last_result[2]->first.as<std::string>() == positions[2][0]) {
-							std::cout << "WHAT" << '\n';
+				if (this->last_result[0]->first.as<std::string>() == this->positions[0][0] &&
+						this->last_result[1]->first.as<std::string>() == this->positions[1][0] &&
+						this->last_result[2]->first.as<std::string>() == this->positions[2][0]) {
 							begin = true;
 				}
 
-				if (this->last_result[0]->first.as<std::string>() == positions[0][1] &&
-						this->last_result[1]->first.as<std::string>() == positions[1][1] &&
-						this->last_result[2]->first.as<std::string>() == positions[2][1]) {
+				if (this->last_result[0]->first.as<std::string>() == this->positions[0][1] &&
+						this->last_result[1]->first.as<std::string>() == this->positions[1][1] &&
+						this->last_result[2]->first.as<std::string>() == this->positions[2][1]) {
 							end = true;
 				}
 
@@ -257,7 +179,6 @@ bool SearchEngine::search_book(std::string * text) {
 
 bool SearchEngine::search_word(std::string * text) {
 
-
 	std::regex e(this->interpreted_argument);
 	// -- BOOK LOOP
 
@@ -322,6 +243,93 @@ bool SearchEngine::search_word(std::string * text) {
 		}
 
 	}
+	return false;
+}
+
+bool SearchEngine::search_position() {
+
+	for (int i = 0; i < 3; i++) {
+		for (int x = 0; x < 2; x++) {
+			this->positions[i][x] = "";
+		}
+	}
+
+	std::regex e(",");	// REGEX ARGUMENT
+	std::smatch m;			// REGEX MATCH
+
+	int comma_count = 0;	// NUMBER OF COMMAS
+
+	std::string arg_copy = this->search_argument;	// COPY ARG FOR COUNT COMMAS
+
+	while (std::regex_search(arg_copy, m, e)) {	// WHILE COMMA FOUND
+		comma_count++;														// ADD ONE TO COMMA_COUNT
+		arg_copy = m.suffix().str();							// ARG_COPY TO STRING AFTER FOUND COMMA
+	}
+
+	for (YAML::const_iterator i = this->names.begin(); i != this->names.end(); i++) {	// FOR ALL POSSIBLE BOOK NAMES
+		for (YAML::const_iterator x = i->second.begin(); x != i->second.end(); x++) {		// FOR ALL ALL POSSIBLE SPELLINGS
+			e = "\\b" + x->as<std::string>() + "\\b";																			// FIND SPELLING
+			this->search_argument = std::regex_replace(this->search_argument, e, i->first.as<std::string>());									// REPLACE SPELLING WITH DEFAULT SPELLING : 1Mo -> GEN
+		}
+	}
+
+	e = " ";															// FIND ALL SPACES
+	this->search_argument = std::regex_replace(this->search_argument, e, "");	// AND REPLACE THEM WITH NOTHING (DELETE)
+
+	if (comma_count == 2) {	// IF THERE ARE TWO COMMAS; THE ARGUMENT LOOKS LIKE *GEN, 1, 1 - 2*
+		e = "[\\w-]+";	// ALL WORD-CHARACTERS [a-zA-z0-9]
+		arg_copy = this->search_argument;	// COPY ARGUMENT FOR FIND WORDS
+
+		for (int i = 0; i < 3; i++) {	// FOR EVERY ELEMENT OF POSITION-MAP
+			std::regex_search(arg_copy, m, e);	// SEARCH NEXT WORD
+
+			this->positions[i][0] = m.str();		// ADD POSITION
+			arg_copy = m.suffix().str();				// ARG_COPY TO STRING AFTER FOUND WORD
+		}
+
+		e = "-";	// SEARCH ALL "-"
+
+		std::string part;	// USED FOR REGEX_SEARCH
+
+		for (int i = 0; i < 3; i++) {
+			part = positions[i][0];				// PART FOR LOOKING IF THERE IS AN "-"
+			if (std::regex_search(part, m, e)) {					// IF THERE IS AN "-"
+				this->positions[i][0] = m.prefix().str();	// POSITION RANGE STARTS BEFORE THE "-"
+				this->positions[i][1] = m.suffix().str();	// POSITION RANGE STOPS AFTER THE "-"
+
+			} else {
+				this->positions[i][1] = this->positions[i][0];	// IF THERE ARE NO "-" END EQUALS STOP
+			}
+		}
+
+	} else if (comma_count == 4) {	// IF THERA ARE FOUR COMMAS; THE ARGUMENT LOOKS LIKE *GEN, 1, 1 - GEN, 1, 2*
+		e = "-";											// SEARCH ALL "-"
+		std::regex_search(this->search_argument, m, e);
+
+		std::string prefix = m.prefix().str();	// GET PART BEFORE "-"
+		std::string suffix = m.suffix().str();	// GET PART AFTER "-"
+
+		e = "\\w+";	// SEARCH EVERY WORD
+
+		for (int i = 0; i < 3; i++) {	// FOR EVERY POSITION
+			std::regex_search(prefix, m, e);				// FIND EVERY WORD
+			this->positions[i][0] = m.str();	// PUSH BACK TO BOOK / CHAPTER / VERSE
+			prefix = m.suffix().str();							// SET "PREFIX" TO STRING AFTER FOUND WORD
+
+			std::regex_search(suffix, m, e);				// JUST SAME AS THE BEFORE BUT AFTER THE "-"
+			this->positions[i][1] = m.str();
+			suffix = m.suffix().str();
+		}
+	}
+
+	// 1Mo, 1, 2 - 4
+
+	if (this->positions[0][1] == "" ||			// IF THERE IS SOMETHING MISSING EXIT
+			this->positions[1][1] == "" ||	// TODO: ADD WHOLE CHAPTER IF VERSE MISSING
+			this->positions[2][1] == "") {
+		return false;
+	}
+
 	return false;
 }
 

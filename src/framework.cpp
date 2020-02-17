@@ -52,7 +52,7 @@ int Framework::init(int argc, char *argv[]) {
 	// ADD CSS -------------------------------------------------------------------
 
   Glib::RefPtr<Gtk::CssProvider> css = Gtk::CssProvider::create();
-  if(!css->load_from_path("data/default.css")) {
+  if(!css->load_from_path("data/light.css")) {
       std::cerr << "Failed to load css\n";
 			return 1;
   }

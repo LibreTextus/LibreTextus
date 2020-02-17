@@ -1,31 +1,31 @@
-entry.search {
+/* entry.search {
 	border-radius: 0px;
 	padding: 10px;
 	color: @theme_text_color;
-}
-
-entry.search:focus {
-	
+	background-color: @theme_text_background_color;
 }
 
 progress {
 	border-bottom-color: @theme_highlight_color;
 	border-bottom-width: 5px;
 	margin: -5px;
+}
 
+box, .combo, menu {
+	background-color: @theme_background_color;
+	color: @theme_text_color;
+}
+
+menuitem:hover {
+	background-color: @theme_highlight_color;
 }
 
 text, textview {
 	color: @theme_text_color;
-	background-color: @theme_background_color;
-}
+	background-color: @theme_text_background_color;
+} */
 
-selection {
-	background-color: @theme_highlight_color;
-	color: #000;
-}
-
-@define-color theme_search_result_color #f00;
 @define-color theme_text_color #000;
+@define-color theme_text_background_color #fff;
+@define-color theme_background_color #e6e6e6;
 @define-color theme_highlight_color #7395b5;
-@define-color theme_background_color #fff;

@@ -70,4 +70,6 @@ void SignalHandler::do_replacement() {
 
 	this->widgets->combo_boxes->set_button_sensitivity(Gtk::SENSITIVITY_ON);
 	this->widgets->search_entry->set_editable(true);
+
+	this->widgets->delete_thread_dispatcher.emit();
 }

@@ -91,7 +91,7 @@ bool SearchEngine::search(std::string * text) {
 
 bool SearchEngine::search_book(std::string * text) {
 
-	YAML::Node positions = YAML::Load("book: []\nchapter: []\nverse: []"); //	RESULT RANGE
+	std::string positions[3][2] = {{"", ""}, {"", ""}, {"", ""}}; //	RESULT RANGE
 
 	std::regex e(",");	// REGEX ARGUMENT
 	std::smatch m;			// REGEX MATCH
@@ -119,10 +119,10 @@ bool SearchEngine::search_book(std::string * text) {
 		e = "[\\w-]+";	// ALL WORD-CHARACTERS [a-zA-z0-9]
 		arg_copy = this->search_argument;	// COPY ARGUMENT FOR FIND WORDS
 
-		for (YAML::const_iterator i = positions.begin(); i != positions.end(); i++) {	// FOR EVERY ELEMENT OF POSITION-MAP
+		for (int i = 0; i < 3; i++) {	// FOR EVERY ELEMENT OF POSITION-MAP
 			std::regex_search(arg_copy, m, e);	// SEARCH NEXT WORD
 
-			positions[i->first][0] = m.str();		// ADD POSITION
+			positions[i][0] = m.str();		// ADD POSITION
 			arg_copy = m.suffix().str();				// ARG_COPY TO STRING AFTER FOUND WORD
 		}
 
@@ -130,14 +130,14 @@ bool SearchEngine::search_book(std::string * text) {
 
 		std::string part;	// USED FOR REGEX_SEARCH
 
-		for (YAML::const_iterator i = positions.begin(); i != positions.end(); i++) {
-			part = i->second[0].as<std::string>();				// PART FOR LOOKING IF THERE IS AN "-"
+		for (int i = 0; i < 3; i++) {
+			part = positions[i][0];				// PART FOR LOOKING IF THERE IS AN "-"
 			if (std::regex_search(part, m, e)) {					// IF THERE IS AN "-"
-				positions[i->first][0] = m.prefix().str();	// POSITION RANGE STARTS BEFORE THE "-"
-				positions[i->first][1] = m.suffix().str();	// POSITION RANGE STOPS AFTER THE "-"
+				positions[i][0] = m.prefix().str();	// POSITION RANGE STARTS BEFORE THE "-"
+				positions[i][1] = m.suffix().str();	// POSITION RANGE STOPS AFTER THE "-"
 
 			} else {
-				positions[i->first][1] = i->second[0].as<std::string>();	// IF THERE ARE NO "-" END EQUALS STOP
+				positions[i][1] = positions[i][0];	// IF THERE ARE NO "-" END EQUALS STOP
 			}
 		}
 
@@ -150,22 +150,22 @@ bool SearchEngine::search_book(std::string * text) {
 
 		e = "\\w+";	// SEARCH EVERY WORD
 
-		for (YAML::const_iterator i = positions.begin(); i != positions.end(); i++) {	// FOR EVERY POSITION
+		for (int i = 0; i < 3; i++) {	// FOR EVERY POSITION
 			std::regex_search(prefix, m, e);				// FIND EVERY WORD
-			positions[i->first].push_back(m.str());	// PUSH BACK TO BOOK / CHAPTER / VERSE
+			positions[i][0] = m.str();	// PUSH BACK TO BOOK / CHAPTER / VERSE
 			prefix = m.suffix().str();							// SET "PREFIX" TO STRING AFTER FOUND WORD
 
 			std::regex_search(suffix, m, e);				// JUST SAME AS THE BEFORE BUT AFTER THE "-"
-			positions[i->first].push_back(m.str());
+			positions[i][1] = m.str();
 			suffix = m.suffix().str();
 		}
 	}
 
 	// 1Mo, 1, 2 - 4
 
-	if (!positions["book"].as<std::vector<std::string>>().size() ||			// IF THERE IS SOMETHING MISSING EXIT
-			!positions["chapter"].as<std::vector<std::string>>().size() ||	// TODO: ADD WHOLE CHAPTER IF VERSE MISSING
-			!positions["verse"].as<std::vector<std::string>>().size()) {
+	if (positions[0][1] == "" ||			// IF THERE IS SOMETHING MISSING EXIT
+			positions[1][1] == "" ||	// TODO: ADD WHOLE CHAPTER IF VERSE MISSING
+			positions[2][1] == "") {
 		return false;
 	}
 
@@ -176,20 +176,21 @@ bool SearchEngine::search_book(std::string * text) {
 
 	bool end = false;
 
+
 	while (this->last_result[0] != this->file.end() && !end){
 		while (this->last_result[1] != this->last_result[0]->second.end() && !end){
 			for (; this->last_result[2] != this->last_result[1]->second.end() && !end; this->last_result[2]++){
 
-
-				if (this->last_result[0]->first.as<std::string>() == positions["book"][0].as<std::string>() &&
-						this->last_result[1]->first.as<std::string>() == positions["chapter"][0].as<std::string>() &&
-						this->last_result[2]->first.as<std::string>() == positions["verse"][0].as<std::string>()) {
+				if (this->last_result[0]->first.as<std::string>() == positions[0][0] &&
+						this->last_result[1]->first.as<std::string>() == positions[1][0] &&
+						this->last_result[2]->first.as<std::string>() == positions[2][0]) {
+							std::cout << "WHAT" << '\n';
 							begin = true;
 				}
 
-				if (this->last_result[0]->first.as<std::string>() == positions["book"][1].as<std::string>() &&
-						this->last_result[1]->first.as<std::string>() == positions["chapter"][1].as<std::string>() &&
-						this->last_result[2]->first.as<std::string>() == positions["verse"][1].as<std::string>()) {
+				if (this->last_result[0]->first.as<std::string>() == positions[0][1] &&
+						this->last_result[1]->first.as<std::string>() == positions[1][1] &&
+						this->last_result[2]->first.as<std::string>() == positions[2][1]) {
 							end = true;
 				}
 
@@ -255,6 +256,7 @@ bool SearchEngine::search_book(std::string * text) {
 }
 
 bool SearchEngine::search_word(std::string * text) {
+
 
 	std::regex e(this->interpreted_argument);
 	// -- BOOK LOOP

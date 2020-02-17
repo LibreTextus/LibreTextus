@@ -26,24 +26,24 @@ public:
 																		 			 "data/BibleEditions/biblebooks.yml");
 
 		Gdk::RGBA rgba;
-		this->widgets->style->lookup_color("theme_search_result_color", rgba);
+		this->widgets->style->lookup_color("theme_highlight_color", rgba);
 
 		std::string r, g, b;
 
 		std::stringstream stream;
 		stream << std::hex << static_cast<int>(rgba.get_red() * 255);
 		r = stream.str();
-		if (r.length() == 1) { r = "0" + r; }
+		if (r.length() < 2) { r = "0" + r; }
 		stream.str("");
 
 		stream << std::hex << static_cast<int>(rgba.get_green() * 255);
 		g += stream.str();
-		if (g.length() == 1) { g = "0" + g; }
+		if (g.length() < 2) { g = "0" + g; }
 		stream.str("");
 
 		stream << std::hex << static_cast<int>(rgba.get_blue() * 255);
 		b += stream.str();
-		if (b.length() == 1) { b = "0" + b; }
+		if (b.length() < 2) { b = "0" + b; }
 
 		this->search_engine->set_mark_argument("<span background=\"#" + r + g + b + "\">$&</span>");
 		this->search_engine->set_header_argument("<span font_weight=\"ultralight\">$&</span>");

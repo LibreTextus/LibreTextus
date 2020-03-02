@@ -9,6 +9,12 @@
 
 class LibreWidgets {
 public:
+
+	Glib::RefPtr<Gtk::UIManager> ui_manager;
+  Glib::RefPtr<Gtk::ActionGroup> action_group;
+
+	// USED BY GUI THREAD
+
 	Gtk::Window * window;
 	Glib::RefPtr<Gtk::Application> app;
 	Glib::RefPtr<Gtk::StyleContext> style;
@@ -16,6 +22,8 @@ public:
 	Gtk::TextView * text_views;
 	Gtk::ComboBoxText * combo_boxes;
 	Glib::RefPtr<Gtk::TextBuffer> search_result;
+
+	// USED BY SEARCH TRHEAD
 
 	Glib::Thread * process_thread;
 	Glib::Dispatcher set_text_dispatcher;
@@ -31,7 +39,6 @@ public:
 	}
 
 	~LibreWidgets() {
-		delete window;
 	}
 
 	void append_sources(Gtk::ComboBoxText * combo_box) {

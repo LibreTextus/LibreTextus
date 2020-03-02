@@ -46,6 +46,7 @@ std::string SearchEngine::get_verse(std::string book, std::string chapter, std::
 
 float SearchEngine::get_progress() {
 	int progress = 0;
+	
 	for (YAML::const_iterator i = this->file.begin(); i != this->file.end(); i++) {
 		progress++;
 		if (i->first.as<std::string>() == this->last_search_results.back()[0]) {

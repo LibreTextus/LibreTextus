@@ -73,3 +73,7 @@ void SignalHandler::do_replacement() {
 
 	this->widgets->delete_thread_dispatcher.emit();
 }
+
+void SignalHandler::quit() {
+	this->widgets->app->quit();
+}

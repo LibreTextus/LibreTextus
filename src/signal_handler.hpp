@@ -57,6 +57,7 @@ public:
 	void delete_thread();
 
 	void source_changed();
+	void quit();
 
 	void set_widgets(LibreWidgets * w) {
 		this->widgets = w;

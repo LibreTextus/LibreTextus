@@ -29,7 +29,7 @@ text, textview {
 	background-color: @theme_text_background_color;
 }
 
-@define-color theme_text_color #000;
-@define-color theme_text_background_color #fff;
-@define-color theme_background_color #e6e6e6;
-@define-color theme_highlight_color #457fb5;
+@define-color theme_text_color #d3dae3;
+@define-color theme_text_background_color #22242d;
+@define-color theme_background_color #2f343f;
+@define-color theme_highlight_color #2c5d94;

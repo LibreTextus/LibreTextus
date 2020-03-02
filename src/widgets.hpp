@@ -11,7 +11,7 @@ class LibreWidgets {
 public:
 
 	Glib::RefPtr<Gtk::UIManager> ui_manager;
-  Glib::RefPtr<Gtk::ActionGroup> action_group;
+	Glib::RefPtr<Gtk::ActionGroup> action_group;
 
 	// USED BY GUI THREAD
 

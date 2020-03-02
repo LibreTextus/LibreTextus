@@ -23,7 +23,7 @@ public:
 
 	bool init() {
 		this->search_engine = new SearchEngine("data/BibleEditions/deu/schlachter-1951.yml",
-																		 			 "data/BibleEditions/biblebooks.yml");
+																						"data/BibleEditions/biblebooks.yml");
 
 		Gdk::RGBA rgba;
 		this->widgets->style->lookup_color("theme_highlight_color", rgba);

@@ -23,19 +23,19 @@ int Framework::init(int argc, char *argv[]) {
 
 	this->widgets.action_group = Gtk::ActionGroup::create();	// CREATE ACTIONGROUP
 
-  // CREATE FILE MENU
-  this->widgets.action_group->add(Gtk::Action::create("FileMenu", Gtk::Stock::FILE));
+	// CREATE FILE MENU
+	this->widgets.action_group->add(Gtk::Action::create("FileMenu", Gtk::Stock::FILE));
 
-  // CREATE QUIT SUBMENU
+	// CREATE QUIT SUBMENU
 	this->widgets.action_group->add(Gtk::Action::create("FileNewTab", "New Tab"),
 			Gtk::AccelKey("<control>T"));
 	this->widgets.action_group->add(Gtk::Action::create("FileCloseTab", "Close Tab"),
 			Gtk::AccelKey("<control>W"));
-  this->widgets.action_group->add(Gtk::Action::create("FileQuit", Gtk::Stock::QUIT),
-          sigc::mem_fun(this->signal_handler, &SignalHandler::quit));
+	this->widgets.action_group->add(Gtk::Action::create("FileQuit", Gtk::Stock::QUIT),
+					sigc::mem_fun(this->signal_handler, &SignalHandler::quit));
 
-  // CREATE EDIT MENU
-  this->widgets.action_group->add(Gtk::Action::create("EditMenu", Gtk::Stock::EDIT));
+	// CREATE EDIT MENU
+	this->widgets.action_group->add(Gtk::Action::create("EditMenu", Gtk::Stock::EDIT));
 	this->widgets.action_group->add(Gtk::Action::create("EditCut", Gtk::Stock::CUT));
 	this->widgets.action_group->add(Gtk::Action::create("EditCopy", Gtk::Stock::COPY));
 	this->widgets.action_group->add(Gtk::Action::create("EditPaste", Gtk::Stock::PASTE));
@@ -77,21 +77,21 @@ int Framework::init(int argc, char *argv[]) {
 	this->widgets.action_group->add(Gtk::Action::create("HelpGetHelp", Gtk::Stock::HELP));
 	this->widgets.action_group->add(Gtk::Action::create("HelpAbout", Gtk::Stock::ABOUT));
 
-  this->widgets.ui_manager = Gtk::UIManager::create();
-  this->widgets.ui_manager->insert_action_group(this->widgets.action_group);
+	this->widgets.ui_manager = Gtk::UIManager::create();
+	this->widgets.ui_manager->insert_action_group(this->widgets.action_group);
 
 	this->widgets.window->add_accel_group(this->widgets.ui_manager->get_accel_group());
 
 	Glib::ustring ui_info =
-        "<ui>"
-        "	<menubar name='MenuBar'>"
-        "		<menu action='FileMenu'>"
+				"<ui>"
+				"	<menubar name='MenuBar'>"
+				"		<menu action='FileMenu'>"
 				"			<menuitem action='FileNewTab'/>"
 				"			<menuitem action='FileCloseTab'/>"
 				"			<separator/>"
-        "			<menuitem action='FileQuit'/>"
-        "		</menu>"
-        "		<menu action='EditMenu'>"
+				"			<menuitem action='FileQuit'/>"
+				"		</menu>"
+				"		<menu action='EditMenu'>"
 				"			<menuitem action='EditCut'/>"
 				"			<menuitem action='EditCopy'/>"
 				"			<menuitem action='EditPaste'/>"
@@ -99,7 +99,7 @@ int Framework::init(int argc, char *argv[]) {
 				"			<menuitem action='EditFind'/>"
 				"			<separator/>"
 				"			<menuitem action='EditPreferences'/>"
-        "		</menu>"
+				"		</menu>"
 				"		<menu action='ViewMenu'>"
 				"			<menuitem action='ViewAddSource'/>"
 				"			<menuitem action='ViewRemoveSource'/>"
@@ -123,19 +123,19 @@ int Framework::init(int argc, char *argv[]) {
 				"			<menuitem action='HelpAbout'/>"
 				"		</menu>"
 				"	</menubar>"
-        "</ui>";
+				"</ui>";
 
 	try {
-    this->widgets.ui_manager->add_ui_from_string(ui_info);
-  }
-  catch(const Glib::Error& ex) {
-    std::cerr << "building menus failed: " <<  ex.what();
-  }
+		this->widgets.ui_manager->add_ui_from_string(ui_info);
+	}
+	catch(const Glib::Error& ex) {
+		std::cerr << "building menus failed: " <<  ex.what();
+	}
 
-  //Get the menubar and toolbar widgets, and add them to a container widget:
-  Gtk::Widget * pMenubar = this->widgets.ui_manager->get_widget("/MenuBar");
-  if(pMenubar)
-    v_box->pack_start(*pMenubar, Gtk::PACK_SHRINK);
+	//Get the menubar and toolbar widgets, and add them to a container widget:
+	Gtk::Widget * pMenubar = this->widgets.ui_manager->get_widget("/MenuBar");
+	if(pMenubar)
+		v_box->pack_start(*pMenubar, Gtk::PACK_SHRINK);
 
 
 
@@ -174,14 +174,14 @@ int Framework::init(int argc, char *argv[]) {
 
 	// ADD CSS -------------------------------------------------------------------
 
-  Glib::RefPtr<Gtk::CssProvider> css = Gtk::CssProvider::create();
-  if(!css->load_from_path("data/dark.css")) {
-      std::cerr << "Failed to load css\n";
+	Glib::RefPtr<Gtk::CssProvider> css = Gtk::CssProvider::create();
+	if(!css->load_from_path("data/dark.css")) {
+			std::cerr << "Failed to load css\n";
 			return 1;
-  }
-  auto screen = Gdk::Screen::get_default();
-  this->widgets.style = this->widgets.window->get_style_context();
-  this->widgets.style->add_provider_for_screen(screen, css, GTK_STYLE_PROVIDER_PRIORITY_APPLICATION);
+	}
+	auto screen = Gdk::Screen::get_default();
+	this->widgets.style = this->widgets.window->get_style_context();
+	this->widgets.style->add_provider_for_screen(screen, css, GTK_STYLE_PROVIDER_PRIORITY_APPLICATION);
 
 	this->signal_handler.init();
 

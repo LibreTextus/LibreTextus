@@ -77,3 +77,12 @@ void SignalHandler::do_replacement() {
 void SignalHandler::quit() {
 	this->widgets->app->quit();
 }
+
+void SignalHandler::toggle_fullscreen() {
+	if (this->widgets->is_fullscreen)
+		this->widgets->window->unfullscreen();
+	else
+		this->widgets->window->fullscreen();
+
+	this->widgets->is_fullscreen = !this->widgets->is_fullscreen;
+}

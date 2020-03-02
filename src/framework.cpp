@@ -14,6 +14,7 @@ int Framework::init(int argc, char *argv[]) {
 	this->widgets.window->set_default_size(1000, 800);	// SET WINDOW SIZE
 	this->widgets.window->set_title("LibreTextus");			// SET WINDOW TITLE
 	this->widgets.window->set_icon_from_file("data/Icon.svg");
+	this->widgets.is_fullscreen = false;
 
 	Gtk::VBox * v_box = new Gtk::VBox(false, 0);					// CREATE VBOX
 	this->widgets.window->add(*v_box);										// ADD VBOX TO WINDOW
@@ -60,7 +61,7 @@ int Framework::init(int argc, char *argv[]) {
 	this->widgets.action_group->add(Gtk::Action::create("ViewMinimize", "Minimize"),
 			Gtk::AccelKey("<control>M"));
 	this->widgets.action_group->add(Gtk::Action::create("ViewToggleFullscreen", Gtk::Stock::FULLSCREEN),
-			Gtk::AccelKey("F11"));
+			Gtk::AccelKey("F11"), sigc::mem_fun(this->signal_handler, &SignalHandler::toggle_fullscreen));
 
 	// CREATE HISTORY MENU
 
@@ -174,7 +175,7 @@ int Framework::init(int argc, char *argv[]) {
 	// ADD CSS -------------------------------------------------------------------
 
   Glib::RefPtr<Gtk::CssProvider> css = Gtk::CssProvider::create();
-  if(!css->load_from_path("data/light.css")) {
+  if(!css->load_from_path("data/dark.css")) {
       std::cerr << "Failed to load css\n";
 			return 1;
   }

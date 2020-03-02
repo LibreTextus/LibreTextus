@@ -22,6 +22,7 @@ public:
 	Gtk::TextView * text_views;
 	Gtk::ComboBoxText * combo_boxes;
 	Glib::RefPtr<Gtk::TextBuffer> search_result;
+	bool is_fullscreen;
 
 	// USED BY SEARCH TRHEAD
 

@@ -1,0 +1,5 @@
+theme:
+  active: dark
+  themes:
+    - dark
+    - light

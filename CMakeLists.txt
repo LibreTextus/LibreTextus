@@ -12,6 +12,9 @@ add_library(libre_textus SHARED
 	src/signal_handler.cpp
 	src/search_engine.hpp
 	src/search_engine.cpp
+	src/settings.hpp
+	src/window.hpp
+	src/window.cpp
 )
 
 include_directories(include/)

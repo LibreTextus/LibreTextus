@@ -23,7 +23,8 @@ public:
 	Gtk::ComboBoxText * combo_boxes;
 	Glib::RefPtr<Gtk::TextBuffer> search_result;
 	bool is_fullscreen;
-
+	Gtk::Window * preferences_window;
+	Gtk::ComboBoxText * preferences_theme_combo;
 	// USED BY SEARCH TRHEAD
 
 	Glib::Thread * process_thread;
@@ -40,6 +41,8 @@ public:
 	}
 
 	~LibreWidgets() {
+		delete window;
+		delete preferences_window;
 	}
 
 	void append_sources(Gtk::ComboBoxText * combo_box) {

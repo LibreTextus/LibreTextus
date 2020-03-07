@@ -1,35 +1,7 @@
-entry.search {
-	border-radius: 0px;
-	padding: 10px;
-	color: @theme_text_color;
-	background-color: @theme_text_background_color;
-}
-
-progress {
-	border-bottom-color: @theme_highlight_color;
-	border-bottom-width: 5px;
-	margin: -5px;
-}
-
-box, .combo, menu, menubar {
-	background-color: @theme_background_color;
-	color: @theme_text_color;
-}
-
-menuitem:hover {
-	background-color: @theme_highlight_color;
-}
-
-scrollbar {
-	background-color: @theme_background_color;
-}
-
-text, textview {
-	color: @theme_text_color;
-	background-color: @theme_text_background_color;
-}
+@import "template.css";
 
 @define-color theme_text_color #000;
 @define-color theme_text_background_color #fff;
 @define-color theme_background_color #e6e6e6;
 @define-color theme_highlight_color #457fb5;
+@define-color theme_border_color #000;

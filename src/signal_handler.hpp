@@ -6,6 +6,7 @@
 #include <yaml-cpp/yaml.h>
 #include <iomanip>
 #include "search_engine.hpp"
+#include "settings.hpp"
 
 #include "widgets.hpp"
 
@@ -13,6 +14,7 @@ class SignalHandler {
 private:
 	SearchEngine * search_engine;
 	LibreWidgets * widgets;
+	Settings settings;
 
 public:
 	SignalHandler() {}
@@ -21,7 +23,7 @@ public:
 		delete search_engine;
 	}
 
-	bool init() {
+	void init() {
 		this->search_engine = new SearchEngine("data/BibleEditions/deu/schlachter-1951.yml",
 																						"data/BibleEditions/biblebooks.yml");
 
@@ -59,6 +61,11 @@ public:
 	void source_changed();
 	void quit();
 	void toggle_fullscreen();
+	void toggle_iconify();
+	void toggle_search();
+	void toggle_preferences();
+
+	void theme_changed();
 
 	void set_widgets(LibreWidgets * w) {
 		this->widgets = w;

@@ -1,0 +1,61 @@
+entry.search {
+	border-radius: 0px;
+	padding: 10px;
+	color: @theme_text_color;
+	background-color: @theme_text_background_color;
+}
+
+progress {
+	border-bottom-color: @theme_highlight_color;
+	border-bottom-width: 5px;
+	margin: -5px;
+}
+
+box, .combo, menu, menubar {
+	background-color: @theme_background_color;
+	color: @theme_text_color;
+}
+
+menuitem:hover {
+	background-color: @theme_highlight_color;
+}
+
+scrollbar {
+	background-color: @theme_background_color;
+}
+
+text, textview {
+	color: @theme_text_color;
+	background-color: @theme_text_background_color;
+}
+
+/* SETTINGS */
+
+tabs, tab, header {
+	background-color: @theme_text_background_color;
+	color: @theme_text_color;
+	border-width: 0px;
+}
+
+tab {
+	padding: 5px;
+}
+
+stack, tab:checked {
+	background-color: @theme_background_color;
+	border-width: 0px;
+	color: @theme_text_color;
+}
+
+stack {
+	margin: 10px;
+}
+
+tab:hover {
+	background-color: @theme_highlight_color;
+}
+
+notebook {
+	border-width: 0px;
+	background-color: @theme_background_color;
+}

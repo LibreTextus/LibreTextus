@@ -3,6 +3,7 @@
 
 #include <gtkmm.h>
 #include <vector>
+#include <yaml-cpp/yaml.h>
 #include "widgets.hpp"
 #include "signal_handler.hpp"
 #include "settings.hpp"

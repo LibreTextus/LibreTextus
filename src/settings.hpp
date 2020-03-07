@@ -26,6 +26,20 @@ public:
 		return output[arg].as<T>();
 	}
 
+	YAML::Node get(std::string arg) {
+		YAML::Node output = YAML::LoadFile("data/settings.yml");
+
+		std::regex e("-");
+		std::smatch m;
+
+		while (std::regex_search(arg, m, e)) {
+			output = output[m.prefix().str()];
+			arg = m.suffix().str();
+		}
+
+		return output[arg];
+	}
+
 	void set(std::string tag, std::string arg) {
 		YAML::Node node = YAML::LoadFile("data/settings.yml");
 

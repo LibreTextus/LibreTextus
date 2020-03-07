@@ -181,10 +181,10 @@ bool Window::Preferences::create(LibreWidgets * w, SignalHandler * s) {
 
 	Settings settings;
 
-	for (int i = 0; i < settings.get<YAML::Node>("theme-themes").size(); i++) {
-		w->preferences_theme_combo->append(settings.get<YAML::Node>("theme-themes")[i].as<std::string>());
+	for (int i = 0; i < settings.get("theme-themes").size(); i++) {
+		w->preferences_theme_combo->append(settings.get("theme-themes")[i].as<std::string>());
 
-		if (settings.get<YAML::Node>("theme-themes")[i].as<std::string>() == settings.get<YAML::Node>("theme-active").as<std::string>()) {
+		if (settings.get("theme-themes")[i].as<std::string>() == settings.get("theme-active").as<std::string>()) {
 			w->preferences_theme_combo->set_active(i);
 		}
 	}

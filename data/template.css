@@ -11,7 +11,7 @@ progress {
 	margin: -5px;
 }
 
-box, .combo, menu, menubar, entry, button {
+box, .combo, menu, menubar, entry, button, spinbutton {
 	background-color: @theme_background_color;
 	color: @theme_text_color;
 }

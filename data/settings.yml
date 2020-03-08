@@ -3,3 +3,5 @@ theme:
   themes:
     - dark
     - light
+
+font_size: 15

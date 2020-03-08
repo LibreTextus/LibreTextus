@@ -20,14 +20,20 @@ int Framework::init(int argc, char *argv[]) {
 
 	// ADD CSS -------------------------------------------------------------------
 
-	Glib::RefPtr<Gtk::CssProvider> css = Gtk::CssProvider::create();
-	if(!css->load_from_path("data/" + this->settings.get<std::string>("theme-active") + ".css")) {
+	this->widgets.css = Gtk::CssProvider::create();
+	if(!this->widgets.css->load_from_path("data/" + this->settings.get<std::string>("theme-active") + ".css")) {
 			std::cerr << "Failed to load css\n";
 			return 1;
 	}
+
+	this->widgets.font_size = this->settings.get<int>("font_size");
+	this->widgets.font_size_css = Gtk::CssProvider::create();
+	this->widgets.font_size_css->load_from_data("* { font-size: " + std::to_string(this->widgets.font_size) + "px; }");
+
 	Glib::RefPtr<Gdk::Screen> screen = Gdk::Screen::get_default();
 	this->widgets.style = this->widgets.window->get_style_context();
-	this->widgets.style->add_provider_for_screen(screen, css, GTK_STYLE_PROVIDER_PRIORITY_APPLICATION);
+	this->widgets.style->add_provider_for_screen(screen, this->widgets.css, GTK_STYLE_PROVIDER_PRIORITY_APPLICATION);
+	this->widgets.style->add_provider_for_screen(screen, this->widgets.font_size_css, GTK_STYLE_PROVIDER_PRIORITY_APPLICATION);
 
 	this->signal_handler.init();
 
@@ -46,6 +52,11 @@ int Framework::init(int argc, char *argv[]) {
 
 	this->widgets.preferences_theme_combo->signal_changed().connect(	// SEARCH_ENTRY : WHEN KEY PRESSED
 		sigc::mem_fun(this->signal_handler, &SignalHandler::theme_changed),
+		false
+	);
+
+	this->widgets.font_size_spinbutton->signal_value_changed().connect(	// SEARCH_ENTRY : WHEN KEY PRESSED
+		sigc::mem_fun(this->signal_handler, &SignalHandler::default_font_size_changed),
 		false
 	);
 

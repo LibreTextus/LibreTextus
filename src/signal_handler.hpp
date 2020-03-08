@@ -59,13 +59,18 @@ public:
 	void delete_thread();
 
 	void source_changed();
+
 	void quit();
 	void toggle_fullscreen();
 	void toggle_iconify();
 	void toggle_search();
 	void toggle_preferences();
+	void zoom_in();
+	void zoom_out();
+	void zoom_reset();
 
 	void theme_changed();
+	void default_font_size_changed();
 
 	void set_widgets(LibreWidgets * w) {
 		this->widgets = w;

@@ -18,6 +18,10 @@ public:
 	Gtk::Window * window;
 	Glib::RefPtr<Gtk::Application> app;
 	Glib::RefPtr<Gtk::StyleContext> style;
+	Glib::RefPtr<Gtk::CssProvider> css;
+	Glib::RefPtr<Gtk::CssProvider> font_size_css;
+	int font_size;
+	Gtk::SpinButton * font_size_spinbutton;
 	Gtk::SearchEntry * search_entry;
 	Gtk::TextView * text_views;
 	Gtk::ComboBoxText * combo_boxes;

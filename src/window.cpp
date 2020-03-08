@@ -45,11 +45,11 @@ bool Window::Main::create(LibreWidgets * w, SignalHandler * s) {
 	w->action_group->add(Gtk::Action::create("ViewToggleComments", "Toggle Comments"),
 			Gtk::AccelKey("<control><alt>C"));
 	w->action_group->add(Gtk::Action::create("ViewZoomIn", Gtk::Stock::ZOOM_IN),
-			Gtk::AccelKey('+', Gdk::ModifierType::CONTROL_MASK));
+			Gtk::AccelKey('+', Gdk::ModifierType::CONTROL_MASK), sigc::mem_fun(s, &SignalHandler::zoom_in));
 	w->action_group->add(Gtk::Action::create("ViewZoomOut", Gtk::Stock::ZOOM_OUT),
-			Gtk::AccelKey('-', Gdk::ModifierType::CONTROL_MASK));
+			Gtk::AccelKey('-', Gdk::ModifierType::CONTROL_MASK), sigc::mem_fun(s, &SignalHandler::zoom_out));
 	w->action_group->add(Gtk::Action::create("ViewZoomReset", Gtk::Stock::ZOOM_100),
-			Gtk::AccelKey('=', Gdk::ModifierType::CONTROL_MASK));
+			Gtk::AccelKey('=', Gdk::ModifierType::CONTROL_MASK), sigc::mem_fun(s, &SignalHandler::zoom_reset));
 	w->action_group->add(Gtk::Action::create("ViewMinimize", "Minimize"),
 			Gtk::AccelKey("<control>M"), sigc::mem_fun(s, &SignalHandler::toggle_iconify));
 	w->action_group->add(Gtk::Action::create("ViewToggleFullscreen", Gtk::Stock::FULLSCREEN),
@@ -174,7 +174,13 @@ bool Window::Preferences::create(LibreWidgets * w, SignalHandler * s) {
 	note_book->set_scrollable(true);
 	note_book->set_tab_pos(Gtk::POS_LEFT);
 
+	// PAGE ONE: USER INTERFACE
+
 	Gtk::VBox * user_interface_box = new Gtk::VBox;
+	user_interface_box->set_spacing(10);
+
+	// -- THEME SETTINGS
+
 	Gtk::HBox * theme_box = new Gtk::HBox;
 	Gtk::Label * theme_label = new Gtk::Label("Theme", Gtk::ALIGN_START);
 	w->preferences_theme_combo = new Gtk::ComboBoxText;
@@ -189,13 +195,28 @@ bool Window::Preferences::create(LibreWidgets * w, SignalHandler * s) {
 		}
 	}
 
-	theme_box->pack_end(*w->preferences_theme_combo);
 	theme_box->pack_start(*theme_label);
+	theme_box->pack_end(*w->preferences_theme_combo);
 
 	user_interface_box->pack_start(*theme_box, Gtk::PACK_SHRINK, 0);
 
+	// -- FONT SIZE SETTINGS
+
+	Gtk::HBox * font_size_box = new Gtk::HBox;
+	Gtk::Label * font_size_label = new Gtk::Label("Font size", Gtk::ALIGN_START);
+	Glib::RefPtr<Gtk::Adjustment> spinbutton_adjustment = Gtk::Adjustment::create(
+		settings.get<int>("font_size"), 1, 100
+	);
+
+	w->font_size_spinbutton = new Gtk::SpinButton(spinbutton_adjustment, 1, 0);
+
+	font_size_box->pack_start(*font_size_label);
+	font_size_box->pack_end(*w->font_size_spinbutton);
+
+	user_interface_box->pack_start(*font_size_box, Gtk::PACK_SHRINK, 0);
+
 	Gtk::Label * l2 = new Gtk::Label("Keybindings");
-	Gtk::Label * l3 = new Gtk::Label("Page 3");
+	Gtk::Label * l3 = new Gtk::Label("Books");
 
 	note_book->append_page(*user_interface_box, "User Interface");
 	note_book->append_page(*l2, "Keybindings");

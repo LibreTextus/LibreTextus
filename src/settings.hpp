@@ -47,6 +47,9 @@ public:
 
 		std::regex e("-");
 		std::smatch m;
+		std::regex_search(tag, m, e);
+
+		for (; i != node.end() && m.empty() && i->first.as<std::string>() != tag; i++) {}
 
 		while (std::regex_search(tag, m, e)) {
 			for (; i != node.end(); i++) {

@@ -11,7 +11,7 @@ progress {
 	margin: -5px;
 }
 
-box, .combo, menu, menubar {
+box, .combo, menu, menubar, entry, button {
 	background-color: @theme_background_color;
 	color: @theme_text_color;
 }
@@ -26,6 +26,10 @@ scrollbar {
 
 text, textview {
 	color: @theme_text_color;
+	background-color: @theme_text_background_color;
+}
+
+button:active {
 	background-color: @theme_text_background_color;
 }
 

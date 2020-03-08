@@ -4,7 +4,7 @@
 
 gboolean SignalHandler::search_request(GdkEventKey * event) {
 
-	if (event->keyval == 65293) {	// IF ENTER IS PRESSED (KEYCODE: 65293)
+	if (event->keyval == 65293 && this->widgets->search_entry->get_text() != "") {	// IF ENTER IS PRESSED (KEYCODE: 65293)
 		this->widgets->combo_boxes->set_button_sensitivity(Gtk::SENSITIVITY_OFF);
 		this->widgets->search_entry->set_editable(false);
 		this->widgets->search_result->set_text("");
@@ -106,14 +106,34 @@ void SignalHandler::toggle_preferences() {
 	this->widgets->preferences_window->raise();
 }
 
+void SignalHandler::zoom_in() {
+	this->widgets->font_size += 2;
+	this->widgets->font_size_css->load_from_data("* { font-size: " + std::to_string(this->widgets->font_size) + "px; }");
+}
+
+void SignalHandler::zoom_out() {
+	this->widgets->font_size -= 2;
+	if (this->widgets->font_size < 1) {
+		this->widgets->font_size = 1;
+	}
+	this->widgets->font_size_css->load_from_data("* { font-size: " + std::to_string(this->widgets->font_size) + "px; }");
+}
+
+void SignalHandler::zoom_reset() {
+	this->widgets->font_size = settings.get<int>("font_size");
+	this->widgets->font_size_css->load_from_data("* { font-size: " + std::to_string(this->widgets->font_size) + "px; }");
+}
+
 void SignalHandler::theme_changed() {
 	settings.set("theme-active", this->widgets->preferences_theme_combo->get_active_text());
 
-	Glib::RefPtr<Gtk::CssProvider> css = Gtk::CssProvider::create();
-	if(!css->load_from_path("data/" + this->widgets->preferences_theme_combo->get_active_text() + ".css")) {
+	if(!this->widgets->css->load_from_path("data/" + this->widgets->preferences_theme_combo->get_active_text() + ".css")) {
 			std::cerr << "Failed to load css\n";
 	}
-	Glib::RefPtr<Gdk::Screen> screen = Gdk::Screen::get_default();
-	this->widgets->style = this->widgets->window->get_style_context();
-	this->widgets->style->add_provider_for_screen(screen, css, GTK_STYLE_PROVIDER_PRIORITY_APPLICATION);
+}
+
+void SignalHandler::default_font_size_changed() {
+	this->widgets->font_size = this->widgets->font_size_spinbutton->get_value();
+	settings.set("font_size", std::to_string(this->widgets->font_size));
+	this->widgets->font_size_css->load_from_data("* { font-size: " + std::to_string(this->widgets->font_size) + "px; }");
 }

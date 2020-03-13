@@ -14,6 +14,7 @@ progress {
 box, .combo, menu, menubar, entry, button, spinbutton {
 	background-color: @theme_background_color;
 	color: @theme_text_color;
+	border-color: @theme_accent_color;
 }
 
 menuitem:hover {

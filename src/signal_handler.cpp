@@ -66,7 +66,6 @@ void SignalHandler::do_replacement() {
 		this->widgets->procress_finished = false;
 		this->widgets->found_text = "<span font_weight=\"ultralight\">" + (*i)[0] + ", " + (*i)[1] + ", " + (*i)[2] + "</span>\n\n";
 		this->widgets->found_text += this->search_engine->get_verse((*i)[0], (*i)[1], (*i)[2]);
-		std::cout << "/* message */" << '\n';
 		this->widgets->set_text_dispatcher.emit();
 		while (!this->widgets->procress_finished) {}
 		x++;

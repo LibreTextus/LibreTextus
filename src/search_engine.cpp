@@ -38,10 +38,13 @@ void SearchEngine::set_source(std::string path) {
 }
 
 std::string SearchEngine::get_verse(std::string book, std::string chapter, std::string verse) {
-	if (this->file[book][chapter][verse])
+	std::cout << this->file[book][chapter] << '\n';
+	if (this->file[book][chapter][verse]) {
 		return this->file[book][chapter][verse].as<std::string>();
-	else
+	}
+	else {
 		return "~~~";
+	}
 }
 
 float SearchEngine::get_progress() {

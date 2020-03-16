@@ -74,6 +74,7 @@ public:
 	void zoom_out();
 	void zoom_reset();
 	void add_source();
+	void remove_source();
 
 	void theme_changed();
 	void default_font_size_changed();

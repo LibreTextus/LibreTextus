@@ -10,6 +10,7 @@ gboolean SignalHandler::search_request(GdkEventKey * event) {
 		}
 
 		this->widgets->search_entry->set_editable(false);
+		this->widgets->action_group->set_sensitive(false);
 
 		for (int i = 0; i < this->widgets->search_results.size(); i++) {
 				this->widgets->search_results[i]->set_text("");
@@ -26,6 +27,7 @@ void SignalHandler::source_changed(int id) {
 	}
 
 	this->widgets->search_entry->set_editable(false);
+	this->widgets->action_group->set_sensitive(false);
 
 	for (int i = 0; i < this->widgets->search_results.size(); i++) {
 			this->widgets->search_results[i]->set_text("");
@@ -71,6 +73,7 @@ void SignalHandler::do_search() {
 		this->widgets->combo_boxes[i].set_button_sensitivity(Gtk::SENSITIVITY_ON);
 	}
 	this->widgets->search_entry->set_editable(true);
+	this->widgets->action_group->set_sensitive(true);
 
 	this->widgets->delete_thread_dispatcher.emit();
 }
@@ -103,6 +106,7 @@ void SignalHandler::do_replacement(int id) {
 		this->widgets->combo_boxes[i].set_button_sensitivity(Gtk::SENSITIVITY_ON);
 	}
 	this->widgets->search_entry->set_editable(true);
+	this->widgets->action_group->set_sensitive(true);
 
 	this->widgets->delete_thread_dispatcher.emit();
 }
@@ -166,6 +170,7 @@ void SignalHandler::default_font_size_changed() {
 }
 
 void SignalHandler::add_source() {
+
 	this->search_engine.push_back(SearchEngine("data/BibleEditions/deu/schlachter-1951.yml",
 																					"data/BibleEditions/biblebooks.yml"));
 
@@ -182,4 +187,19 @@ void SignalHandler::add_source() {
 	);
 
 	this->widgets->panels->show_all();
+
+	this->source_changed(this->widgets->combo_boxes.size() - 1);;
+}
+
+void SignalHandler::remove_source() {
+	if (this->search_engine.size() > 1) {
+		this->search_engine.pop_back();
+
+		this->widgets->panels->remove(*this->widgets->panels->get_children().back());
+
+		this->widgets->text_views.pop_back();
+		this->widgets->combo_boxes.pop_back();
+		this->widgets->search_results.pop_back();
+		this->widgets->found_text.pop_back();
+	}
 }

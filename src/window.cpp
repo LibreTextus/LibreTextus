@@ -39,8 +39,9 @@ bool LibreWindow::Main::create(LibreWidgets * w, SignalHandler * s) {
 
 	w->action_group->add(Gtk::Action::create("ViewMenu", "View"));
 	w->action_group->add(Gtk::Action::create("ViewAddSource", "Add Source"),
-			Gtk::AccelKey("<control><alt>A"), sigc::mem_fun(s, &SignalHandler::add_source));
-	w->action_group->add(Gtk::Action::create("ViewRemoveSource", "Remove Source"));
+			Gtk::AccelKey("<control>N"), sigc::mem_fun(s, &SignalHandler::add_source));
+	w->action_group->add(Gtk::Action::create("ViewRemoveSource", "Remove Source"),
+			Gtk::AccelKey("<control>D"), sigc::mem_fun(s, &SignalHandler::remove_source));
 	w->action_group->add(Gtk::Action::create("ViewToggleNotes", "Toggle Notes"),
 			Gtk::AccelKey("<control><alt>N"));
 	w->action_group->add(Gtk::Action::create("ViewToggleComments", "Toggle Comments"),

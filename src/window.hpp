@@ -8,7 +8,7 @@
 #include "signal_handler.hpp"
 #include "settings.hpp"
 
-namespace Window {
+namespace LibreWindow {
 	namespace Main {
 		bool create(LibreWidgets * w, SignalHandler * s);
 	}

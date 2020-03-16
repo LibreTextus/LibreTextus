@@ -1,6 +1,6 @@
 #include "window.hpp"
 
-bool Window::Main::create(LibreWidgets * w, SignalHandler * s) {
+bool LibreWindow::Main::create(LibreWidgets * w, SignalHandler * s) {
 	w->window = new Gtk::Window;							// CREATE NEW WINDOW
 	w->window->set_default_size(1000, 800);	// SET WINDOW SIZE
 	w->window->set_title("LibreTextus");			// SET WINDOW TITLE
@@ -38,7 +38,8 @@ bool Window::Main::create(LibreWidgets * w, SignalHandler * s) {
 	// CREATE VIEW MENU
 
 	w->action_group->add(Gtk::Action::create("ViewMenu", "View"));
-	w->action_group->add(Gtk::Action::create("ViewAddSource", "Add Source"));
+	w->action_group->add(Gtk::Action::create("ViewAddSource", "Add Source"),
+			Gtk::AccelKey("<control><alt>A"), sigc::mem_fun(s, &SignalHandler::add_source));
 	w->action_group->add(Gtk::Action::create("ViewRemoveSource", "Remove Source"));
 	w->action_group->add(Gtk::Action::create("ViewToggleNotes", "Toggle Notes"),
 			Gtk::AccelKey("<control><alt>N"));
@@ -135,37 +136,26 @@ bool Window::Main::create(LibreWidgets * w, SignalHandler * s) {
 
 	w->search_entry->set_placeholder_text("Search");
 
-	Gtk::VBox * scrl_container = new Gtk::VBox(false, 0);
-	w->text_views = new Gtk::TextView;
-	Gtk::ScrolledWindow * scrolled_window = new Gtk::ScrolledWindow;
-	Gtk::HBox * header = new Gtk::HBox(false, 0);
+	w->panels = new Gtk::HBox(false, 0);
+	w->panels->set_spacing(5);
+	w->add_panel();
+	v_box->pack_start(*w->search_entry, Gtk::PACK_SHRINK, 0);
+	v_box->pack_end(*w->panels, Gtk::PACK_EXPAND_WIDGET, 0);
 
-	w->search_result = Gtk::TextBuffer::create();
-	w->text_views->set_buffer(w->search_result);
-	w->text_views->set_editable(false);
-	w->text_views->set_cursor_visible(false);
-	w->text_views->set_wrap_mode(Gtk::WRAP_WORD);
-
-	v_box->pack_start(*w->search_entry, Gtk::PACK_SHRINK, 0);	// ADD SEARCH_ENTRY WITH SHRINKABLE FLAG
-	v_box->pack_end(*scrl_container, Gtk::PACK_EXPAND_WIDGET, 0);
-
-	scrl_container->pack_start(*header, Gtk::PACK_SHRINK, 0);
-	scrl_container->pack_end(*scrolled_window, Gtk::PACK_EXPAND_WIDGET, 0);
-
-	scrolled_window->add(*w->text_views);
-	w->text_views->set_border_width(10);
-
-	w->combo_boxes = new Gtk::ComboBoxText;
-
-	w->append_sources(w->combo_boxes);
-
-	header->pack_end(*w->combo_boxes, Gtk::PACK_SHRINK, 0);
-	header->set_border_width(10);
+	for (int i = 0; i < w->combo_boxes.size(); i++) {
+		w->combo_boxes[i].signal_changed().connect(	// SEARCH_ENTRY : WHEN KEY PRESSED
+			sigc::bind<int>(
+			sigc::mem_fun(s, &SignalHandler::source_changed),
+			w->combo_boxes.size() - 1),
+			false
+		);
+	}
 
 	return true;
 }
 
-bool Window::Preferences::create(LibreWidgets * w, SignalHandler * s) {
+bool LibreWindow::Preferences::create(LibreWidgets * w, SignalHandler * s) {
+
 	w->preferences_window = new Gtk::Window;
 	w->preferences_window->set_default_size(500, 400);
 	w->preferences_window->set_title("Preferences");

@@ -4,7 +4,8 @@
 #include <gtkmm.h>
 #include <iostream>
 #include <yaml-cpp/yaml.h>
-#include <iomanip>
+#include <thread>
+#include <mutex>
 #include "search_engine.hpp"
 #include "settings.hpp"
 
@@ -12,20 +13,21 @@
 
 class SignalHandler {
 private:
-	SearchEngine * search_engine;
+	std::vector<SearchEngine> search_engine;
 	LibreWidgets * widgets;
 	Settings settings;
+	std::string mark_argument;
+	std::string header_argument;
 
 public:
 	SignalHandler() {}
 
 	virtual ~SignalHandler() {
-		delete search_engine;
 	}
 
 	void init() {
-		this->search_engine = new SearchEngine("data/BibleEditions/deu/schlachter-1951.yml",
-																						"data/BibleEditions/biblebooks.yml");
+		this->search_engine.push_back(SearchEngine("data/BibleEditions/deu/schlachter-1951.yml",
+																						"data/BibleEditions/biblebooks.yml"));
 
 		Gdk::RGBA rgba;
 		this->widgets->style->lookup_color("theme_highlight_color", rgba);
@@ -47,18 +49,21 @@ public:
 		b += stream.str();
 		if (b.length() < 2) { b = "0" + b; }
 
-		this->search_engine->set_mark_argument("<span background=\"#" + r + g + b + "\">$&</span>");
-		this->search_engine->set_header_argument("<span font_weight=\"ultralight\">$&</span>");
+		this->mark_argument = "<span background=\"#" + r + g + b + "\">$&</span>";
+		this->header_argument = "<span font_weight=\"ultralight\">$&</span>";
+
+		this->search_engine[0].set_mark_argument(this->mark_argument);
+		this->search_engine[0].set_header_argument(this->header_argument);
 	}
 
 	gboolean search_request(GdkEventKey * event);
 	void do_search();
-	void do_replacement();
+	void do_replacement(int id);
 
 	void set_text();
 	void delete_thread();
 
-	void source_changed();
+	void source_changed(int id);
 
 	void quit();
 	void toggle_fullscreen();
@@ -68,6 +73,7 @@ public:
 	void zoom_in();
 	void zoom_out();
 	void zoom_reset();
+	void add_source();
 
 	void theme_changed();
 	void default_font_size_changed();

@@ -27,9 +27,12 @@ link_directories(${GTKMM_LIBRARY_DIRS})
 include(FindPkgConfig)
 pkg_search_module(YAMLCPP REQUIRED yaml-cpp)
 
+find_package(X11 REQUIRED)
+include_directories(${X11_INCLUDE_DIR})
+
 add_executable(LibreTextus src/main.cpp)
 
-target_link_libraries(libre_textus ${GTKMM_LIBRARIES} ${YAMLCPP_LIBRARIES})
-target_link_libraries(LibreTextus ${GTKMM_LIBRARIES} libre_textus)
+target_link_libraries(libre_textus ${GTKMM_LIBRARIES} ${YAMLCPP_LIBRARIES} ${X11_LIBRARIES})
+target_link_libraries(LibreTextus ${GTKMM_LIBRARIES} ${X11_LIBRARIES} libre_textus)
 
 file(COPY data/ DESTINATION data/)

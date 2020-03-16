@@ -12,10 +12,10 @@ int Framework::init(int argc, char *argv[]) {
 
 	// CREATING THE WINDOWS ------------------------------------------------------
 
-	Window::Main::create(&this->widgets, &this->signal_handler);
+	LibreWindow::Main::create(&this->widgets, &this->signal_handler);
 	this->widgets.window->show_all();
 
-	Window::Preferences::create(&this->widgets, &this->signal_handler);
+	LibreWindow::Preferences::create(&this->widgets, &this->signal_handler);
 
 
 	// ADD CSS -------------------------------------------------------------------
@@ -42,11 +42,6 @@ int Framework::init(int argc, char *argv[]) {
 
 	this->widgets.search_entry->signal_key_press_event().connect(	// SEARCH_ENTRY : WHEN KEY PRESSED
 		sigc::mem_fun(this->signal_handler, &SignalHandler::search_request),
-		false
-	);
-
-	this->widgets.combo_boxes->signal_changed().connect(	// SEARCH_ENTRY : WHEN KEY PRESSED
-		sigc::mem_fun(this->signal_handler, &SignalHandler::source_changed),
 		false
 	);
 

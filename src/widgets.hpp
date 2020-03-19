@@ -24,8 +24,11 @@ public:
 	Gtk::SpinButton * font_size_spinbutton;
 	Gtk::HBox * panels;
 	Gtk::SearchEntry * search_entry;
-	std::vector<Gtk::TextView> text_views;
-	std::vector<Gtk::ComboBoxText> combo_boxes;
+	Gtk::Button * add_button;
+	std::vector<Gtk::Button *> close_buttons;
+	std::vector<Gtk::HBox *> headers;
+	std::vector<Gtk::TextView *> text_views;
+	std::vector<Gtk::ComboBoxText *> combo_boxes;
 	std::vector<Glib::RefPtr<Gtk::TextBuffer>> search_results;
 	bool is_fullscreen;
 	Gtk::Window * preferences_window;
@@ -37,6 +40,7 @@ public:
 	Glib::Dispatcher delete_thread_dispatcher;
 	std::vector<std::string> found_text;
 	bool procress_finished;
+	int replace_id;
 
 	YAML::Node sources;
 
@@ -59,28 +63,42 @@ public:
 
 	void add_panel() {
 		Gtk::VBox * scrl_container = new Gtk::VBox(false, 0);
-		this->text_views.push_back(Gtk::TextView());
+		this->text_views.push_back(new Gtk::TextView);
 		Gtk::ScrolledWindow * scrolled_window = new Gtk::ScrolledWindow;
-		Gtk::HBox * header = new Gtk::HBox(false, 0);
+		this->headers.push_back(new Gtk::HBox(false, 0));
+		this->close_buttons.push_back(new Gtk::Button);
+		this->close_buttons.back()->set_image_from_icon_name("window-close", Gtk::ICON_SIZE_BUTTON);
+		this->close_buttons.back()->set_name("view_button");
 
 		this->search_results.push_back(Gtk::TextBuffer::create());
-		this->text_views.back().set_buffer(this->search_results.back());
-		this->text_views.back().set_editable(false);
-		this->text_views.back().set_cursor_visible(false);
-		this->text_views.back().set_wrap_mode(Gtk::WRAP_WORD);
+		this->text_views.back()->set_buffer(this->search_results.back());
+		this->text_views.back()->set_editable(false);
+		this->text_views.back()->set_cursor_visible(false);
+		this->text_views.back()->set_wrap_mode(Gtk::WRAP_WORD);
+		this->text_views.back()->set_border_width(10);
 
-		scrl_container->pack_start(*header, Gtk::PACK_SHRINK, 0);
+		scrl_container->pack_start(*this->headers.back(), Gtk::PACK_SHRINK, 0);
 		scrl_container->pack_end(*scrolled_window, Gtk::PACK_EXPAND_WIDGET, 0);
 
-		scrolled_window->add(this->text_views.back());
-		this->text_views.back().set_border_width(10);
+		scrolled_window->add(*this->text_views.back());
 
-		this->combo_boxes.push_back(Gtk::ComboBoxText());
+		this->combo_boxes.push_back(new Gtk::ComboBoxText);
 
-		this->append_sources(&this->combo_boxes.back());
+		this->append_sources(this->combo_boxes.back());
 
-		header->pack_end(this->combo_boxes.back(), Gtk::PACK_SHRINK, 0);
-		header->set_border_width(10);
+		if (this->add_button != nullptr) {
+			this->add_button->get_parent()->remove(*this->add_button);
+			delete this->add_button;
+		}
+
+		this->add_button = new Gtk::Button;
+		this->add_button->set_image_from_icon_name("list-add", Gtk::ICON_SIZE_BUTTON);
+		this->add_button->set_name("view_button");
+
+		this->headers.back()->pack_end(*this->add_button, Gtk::PACK_SHRINK, 0);
+		this->headers.back()->pack_end(*this->close_buttons.back(), Gtk::PACK_SHRINK, 0);
+		this->headers.back()->pack_end(*this->combo_boxes.back(), Gtk::PACK_SHRINK, 0);
+		this->headers.back()->set_border_width(10);
 
 		this->found_text.push_back("");
 

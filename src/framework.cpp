@@ -37,6 +37,21 @@ int Framework::init(int argc, char *argv[]) {
 
 	this->signal_handler.init();
 
+	// SET TEXT ON STARTUP -------------------------------------------------------
+
+	this->widgets.search_entry->set_text("GEN, 1, 1-10");
+	this->widgets.search_entry->set_position(-1);
+
+	for (int i = 0; i < this->widgets.combo_boxes.size(); i++) {
+		this->widgets.combo_boxes[i]->set_button_sensitivity(Gtk::SENSITIVITY_OFF);
+	}
+
+	this->widgets.search_entry->set_editable(false);
+	this->widgets.action_group->set_sensitive(false);
+	this->widgets.replace_id = -1;
+
+	this->widgets.process_thread = Glib::Thread::create(sigc::mem_fun(this->signal_handler, &SignalHandler::do_search), true);
+
 
 	// CONNECT SIGNALS -----------------------------------------------------------
 

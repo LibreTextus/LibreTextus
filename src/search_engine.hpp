@@ -7,11 +7,14 @@
 #include <regex>
 #include <vector>
 
+#include "source_handler.hpp"
+
 class SearchEngine {
 private:
 	YAML::Node file;
 	YAML::Node names;
 	YAML::const_iterator * last_result;
+	SourceHandler source_handler;
 	std::vector<std::array<std::string, 3>> last_search_results;
 	std::string W;
 	std::string search_argument;
@@ -41,6 +44,10 @@ public:
 
 	std::vector<std::array<std::string, 3>> * get_last_search_results() {
 		return &this->last_search_results;
+	}
+
+	void set_last_search_result(std::vector<std::array<std::string, 3>> & v) {
+		this->last_search_results = v;
 	}
 
 	std::string get_verse(std::string book, std::string chapter, std::string verse);

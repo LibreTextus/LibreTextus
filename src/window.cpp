@@ -39,8 +39,9 @@ bool LibreWindow::Main::create(LibreWidgets * w, SignalHandler * s) {
 
 	w->action_group->add(Gtk::Action::create("ViewMenu", "View"));
 	w->action_group->add(Gtk::Action::create("ViewAddSource", "Add Source"),
-			Gtk::AccelKey("<control><alt>A"), sigc::mem_fun(s, &SignalHandler::add_source));
-	w->action_group->add(Gtk::Action::create("ViewRemoveSource", "Remove Source"));
+			Gtk::AccelKey("<control>N"), sigc::mem_fun(s, &SignalHandler::add_source));
+	w->action_group->add(Gtk::Action::create("ViewRemoveSource", "Remove Source"),
+			Gtk::AccelKey("<control>D"), sigc::mem_fun(s, &SignalHandler::remove_source));
 	w->action_group->add(Gtk::Action::create("ViewToggleNotes", "Toggle Notes"),
 			Gtk::AccelKey("<control><alt>N"));
 	w->action_group->add(Gtk::Action::create("ViewToggleComments", "Toggle Comments"),
@@ -136,20 +137,33 @@ bool LibreWindow::Main::create(LibreWidgets * w, SignalHandler * s) {
 
 	w->search_entry->set_placeholder_text("Search");
 
+	w->add_button = nullptr;
+
 	w->panels = new Gtk::HBox(false, 0);
 	w->panels->set_spacing(5);
+	w->panels->set_border_width(5);
 	w->add_panel();
+
 	v_box->pack_start(*w->search_entry, Gtk::PACK_SHRINK, 0);
 	v_box->pack_end(*w->panels, Gtk::PACK_EXPAND_WIDGET, 0);
 
 	for (int i = 0; i < w->combo_boxes.size(); i++) {
-		w->combo_boxes[i].signal_changed().connect(	// SEARCH_ENTRY : WHEN KEY PRESSED
-			sigc::bind<int>(
+		w->combo_boxes[i]->signal_changed().connect(
+			sigc::bind<Gtk::ComboBoxText *>(
 			sigc::mem_fun(s, &SignalHandler::source_changed),
-			w->combo_boxes.size() - 1),
+			w->combo_boxes[i]),
+			false
+		);
+
+		w->close_buttons[i]->signal_clicked().connect(
+			sigc::bind<Gtk::Button *>(
+			sigc::mem_fun(s, &SignalHandler::remove_source_by_reference),
+			w->close_buttons[i]),
 			false
 		);
 	}
+
+	w->add_button->signal_clicked().connect(sigc::mem_fun(s, &SignalHandler::add_source), false);
 
 	return true;
 }

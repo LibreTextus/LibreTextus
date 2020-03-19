@@ -17,6 +17,8 @@ add_library(libre_textus SHARED
 	src/settings.hpp
 	src/window.hpp
 	src/window.cpp
+	src/source_handler.hpp
+	src/source_handler.cpp
 )
 
 include_directories(include/)

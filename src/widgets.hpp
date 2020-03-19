@@ -24,7 +24,9 @@ public:
 	Gtk::SpinButton * font_size_spinbutton;
 	Gtk::HBox * panels;
 	Gtk::SearchEntry * search_entry;
+	Gtk::Button * add_button;
 	std::vector<Gtk::Button *> close_buttons;
+	std::vector<Gtk::HBox *> headers;
 	std::vector<Gtk::TextView *> text_views;
 	std::vector<Gtk::ComboBoxText *> combo_boxes;
 	std::vector<Glib::RefPtr<Gtk::TextBuffer>> search_results;
@@ -63,10 +65,10 @@ public:
 		Gtk::VBox * scrl_container = new Gtk::VBox(false, 0);
 		this->text_views.push_back(new Gtk::TextView);
 		Gtk::ScrolledWindow * scrolled_window = new Gtk::ScrolledWindow;
-		Gtk::HBox * header = new Gtk::HBox(false, 0);
+		this->headers.push_back(new Gtk::HBox(false, 0));
 		this->close_buttons.push_back(new Gtk::Button);
 		this->close_buttons.back()->set_image_from_icon_name("window-close", Gtk::ICON_SIZE_BUTTON);
-		this->close_buttons.back()->set_name("close_button");
+		this->close_buttons.back()->set_name("view_button");
 
 		this->search_results.push_back(Gtk::TextBuffer::create());
 		this->text_views.back()->set_buffer(this->search_results.back());
@@ -75,7 +77,7 @@ public:
 		this->text_views.back()->set_wrap_mode(Gtk::WRAP_WORD);
 		this->text_views.back()->set_border_width(10);
 
-		scrl_container->pack_start(*header, Gtk::PACK_SHRINK, 0);
+		scrl_container->pack_start(*this->headers.back(), Gtk::PACK_SHRINK, 0);
 		scrl_container->pack_end(*scrolled_window, Gtk::PACK_EXPAND_WIDGET, 0);
 
 		scrolled_window->add(*this->text_views.back());
@@ -84,9 +86,19 @@ public:
 
 		this->append_sources(this->combo_boxes.back());
 
-		header->pack_end(*this->close_buttons.back(), Gtk::PACK_SHRINK, 0);
-		header->pack_end(*this->combo_boxes.back(), Gtk::PACK_SHRINK, 0);
-		header->set_border_width(10);
+		if (this->add_button != nullptr) {
+			this->add_button->get_parent()->remove(*this->add_button);
+			delete this->add_button;
+		}
+
+		this->add_button = new Gtk::Button;
+		this->add_button->set_image_from_icon_name("list-add", Gtk::ICON_SIZE_BUTTON);
+		this->add_button->set_name("view_button");
+
+		this->headers.back()->pack_end(*this->add_button, Gtk::PACK_SHRINK, 0);
+		this->headers.back()->pack_end(*this->close_buttons.back(), Gtk::PACK_SHRINK, 0);
+		this->headers.back()->pack_end(*this->combo_boxes.back(), Gtk::PACK_SHRINK, 0);
+		this->headers.back()->set_border_width(10);
 
 		this->found_text.push_back("");
 

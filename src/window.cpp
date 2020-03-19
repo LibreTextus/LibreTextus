@@ -137,6 +137,8 @@ bool LibreWindow::Main::create(LibreWidgets * w, SignalHandler * s) {
 
 	w->search_entry->set_placeholder_text("Search");
 
+	w->add_button = nullptr;
+
 	w->panels = new Gtk::HBox(false, 0);
 	w->panels->set_spacing(5);
 	w->panels->set_border_width(5);
@@ -160,6 +162,8 @@ bool LibreWindow::Main::create(LibreWidgets * w, SignalHandler * s) {
 			false
 		);
 	}
+
+	w->add_button->signal_clicked().connect(sigc::mem_fun(s, &SignalHandler::add_source), false);
 
 	return true;
 }

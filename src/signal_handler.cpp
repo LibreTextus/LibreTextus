@@ -184,7 +184,6 @@ void SignalHandler::default_font_size_changed() {
 }
 
 void SignalHandler::add_source() {
-
 	this->search_engine.push_back(SearchEngine("data/BibleEditions/deu/schlachter-1951.yml",
 																					"data/BibleEditions/biblebooks.yml"));
 
@@ -210,6 +209,7 @@ void SignalHandler::add_source() {
 	this->widgets->panels->show_all();
 	this->source_changed(this->widgets->combo_boxes.back());
 
+	this->widgets->add_button->signal_clicked().connect(sigc::mem_fun(this, &SignalHandler::add_source), false);
 }
 
 void SignalHandler::remove_source() {
@@ -218,10 +218,28 @@ void SignalHandler::remove_source() {
 
 		this->widgets->panels->remove(*this->widgets->panels->get_children().back());
 
+		Gtk::TextView * t = this->widgets->text_views.back();
+		Gtk::ComboBoxText * c = this->widgets->combo_boxes.back();
+		Gtk::HBox * h = this->widgets->headers.back();
 		this->widgets->text_views.pop_back();
 		this->widgets->combo_boxes.pop_back();
 		this->widgets->search_results.pop_back();
 		this->widgets->found_text.pop_back();
+		this->widgets->headers.pop_back();
+
+		delete h;
+		delete t;
+		delete c;
+
+		delete this->widgets->add_button;
+		this->widgets->add_button = new Gtk::Button;
+		this->widgets->add_button->set_image_from_icon_name("list-add", Gtk::ICON_SIZE_BUTTON);
+		this->widgets->add_button->set_name("view_button");
+
+		this->widgets->headers.back()->pack_end(*this->widgets->add_button, Gtk::PACK_SHRINK, 0);
+		this->widgets->headers.back()->reorder_child(*this->widgets->add_button, 0);
+		this->widgets->add_button->show();
+		this->widgets->add_button->signal_clicked().connect(sigc::mem_fun(this, &SignalHandler::add_source), false);
 	}
 }
 
@@ -245,15 +263,33 @@ void SignalHandler::remove_source_by_reference(Gtk::Button * b) {
 
 		Gtk::TextView * t = this->widgets->text_views[i];
 		Gtk::ComboBoxText * c = this->widgets->combo_boxes[i];
+		Gtk::HBox * h = this->widgets->headers[i];
 		this->widgets->text_views.erase(this->widgets->text_views.begin() + i);
 		this->widgets->combo_boxes.erase(this->widgets->combo_boxes.begin() + i);
+		this->widgets->headers.erase(this->widgets->headers.begin() + i);
 
+		delete h;
 		delete t;
 		delete c;
 
 		this->widgets->search_results.erase(this->widgets->search_results.begin() + i);
 		this->widgets->found_text.erase(this->widgets->found_text.begin() + i);
 
+		if (this->widgets->add_button != nullptr && i != this->widgets->close_buttons.size()) {
+			this->widgets->add_button->get_parent()->remove(*this->widgets->add_button);
+			delete this->widgets->add_button;
+		}
+
+		this->widgets->add_button = new Gtk::Button;
+		this->widgets->add_button->set_image_from_icon_name("list-add", Gtk::ICON_SIZE_BUTTON);
+		this->widgets->add_button->set_name("view_button");
+
+		this->widgets->headers.back()->pack_end(*this->widgets->add_button, Gtk::PACK_SHRINK, 0);
+		this->widgets->headers.back()->reorder_child(*this->widgets->add_button, 0);
+
+		this->widgets->add_button->show();
+
 		this->search_engine[0].set_last_search_result(last_search_results);
+		this->widgets->add_button->signal_clicked().connect(sigc::mem_fun(this, &SignalHandler::add_source), false);
 	}
 }

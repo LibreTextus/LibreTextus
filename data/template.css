@@ -34,7 +34,7 @@ button:active {
 	background-color: @theme_text_background_color;
 }
 
-#close_button {
+#view_button {
 	background-color: @theme_background_color;
 	border: none;
 	margin-left: 5px;
@@ -43,11 +43,11 @@ button:active {
 	opacity: 0.8;
 }
 
-#close_button:hover {
+#view_button:hover {
 	opacity: 1;
 }
 
-#close_button:active {
+#view_button:active {
 	background-color: @theme_background_color;
 }
 

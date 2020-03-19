@@ -6,6 +6,7 @@
 #include <yaml-cpp/yaml.h>
 #include <thread>
 #include <mutex>
+#include <algorithm>
 #include "search_engine.hpp"
 #include "settings.hpp"
 
@@ -58,12 +59,12 @@ public:
 
 	gboolean search_request(GdkEventKey * event);
 	void do_search();
-	void do_replacement(int id);
+	void do_replacement();
 
 	void set_text();
 	void delete_thread();
 
-	void source_changed(int id);
+	void source_changed(Gtk::ComboBoxText * b);
 
 	void quit();
 	void toggle_fullscreen();
@@ -75,6 +76,7 @@ public:
 	void zoom_reset();
 	void add_source();
 	void remove_source();
+	void remove_source_by_reference(Gtk::Button * b);
 
 	void theme_changed();
 	void default_font_size_changed();

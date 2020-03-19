@@ -34,6 +34,23 @@ button:active {
 	background-color: @theme_text_background_color;
 }
 
+#close_button {
+	background-color: @theme_background_color;
+	border: none;
+	margin-left: 5px;
+	margin-right: -5px;
+	padding: 0;
+	opacity: 0.8;
+}
+
+#close_button:hover {
+	opacity: 1;
+}
+
+#close_button:active {
+	background-color: @theme_background_color;
+}
+
 /* SETTINGS */
 
 tabs, tab, header {

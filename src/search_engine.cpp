@@ -1,8 +1,8 @@
 #include "search_engine.hpp"
 
 SearchEngine::SearchEngine(std::string file_path, std::string names_path) {
-	this->file = YAML::LoadFile(file_path);
-	this->names = YAML::LoadFile(names_path);
+	this->file = this->source_handler.get_source(file_path);
+	this->names = this->source_handler.get_source(names_path);
 
 	this->last_result = nullptr;
 
@@ -31,7 +31,7 @@ void SearchEngine::set_header_argument(std::string arg) {
 }
 
 void SearchEngine::set_source(std::string path) {
-	this->file = YAML::LoadFile(path);
+	this->file = this->source_handler.get_source(path);
 
 	delete [] this->last_result;
 	this->last_result = nullptr;

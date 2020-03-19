@@ -139,15 +139,24 @@ bool LibreWindow::Main::create(LibreWidgets * w, SignalHandler * s) {
 
 	w->panels = new Gtk::HBox(false, 0);
 	w->panels->set_spacing(5);
+	w->panels->set_border_width(5);
 	w->add_panel();
+
 	v_box->pack_start(*w->search_entry, Gtk::PACK_SHRINK, 0);
 	v_box->pack_end(*w->panels, Gtk::PACK_EXPAND_WIDGET, 0);
 
 	for (int i = 0; i < w->combo_boxes.size(); i++) {
-		w->combo_boxes[i].signal_changed().connect(	// SEARCH_ENTRY : WHEN KEY PRESSED
-			sigc::bind<int>(
+		w->combo_boxes[i]->signal_changed().connect(
+			sigc::bind<Gtk::ComboBoxText *>(
 			sigc::mem_fun(s, &SignalHandler::source_changed),
-			w->combo_boxes.size() - 1),
+			w->combo_boxes[i]),
+			false
+		);
+
+		w->close_buttons[i]->signal_clicked().connect(
+			sigc::bind<Gtk::Button *>(
+			sigc::mem_fun(s, &SignalHandler::remove_source_by_reference),
+			w->close_buttons[i]),
 			false
 		);
 	}

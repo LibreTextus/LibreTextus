@@ -6,39 +6,52 @@ gboolean SignalHandler::search_request(GdkEventKey * event) {
 
 	if (event->keyval == 65293 && this->widgets->search_entry->get_text() != "") {	// IF ENTER IS PRESSED (KEYCODE: 65293)
 		for (int i = 0; i < this->widgets->combo_boxes.size(); i++) {
-			this->widgets->combo_boxes[i].set_button_sensitivity(Gtk::SENSITIVITY_OFF);
+			this->widgets->combo_boxes[i]->set_button_sensitivity(Gtk::SENSITIVITY_OFF);
+			this->widgets->search_results[i]->set_text("");
 		}
 
 		this->widgets->search_entry->set_editable(false);
 		this->widgets->action_group->set_sensitive(false);
+		this->widgets->replace_id = -1;
 
-		for (int i = 0; i < this->widgets->search_results.size(); i++) {
-				this->widgets->search_results[i]->set_text("");
-		}
 		this->widgets->process_thread = Glib::Thread::create(sigc::mem_fun(*this, &SignalHandler::do_search), true);
 	}
 
 	return false;
 }
 
-void SignalHandler::source_changed(int id) {
+void SignalHandler::source_changed(Gtk::ComboBoxText * b) {
 	for (int i = 0; i < this->widgets->combo_boxes.size(); i++) {
-		this->widgets->combo_boxes[i].set_button_sensitivity(Gtk::SENSITIVITY_OFF);
+		this->widgets->combo_boxes[i]->set_button_sensitivity(Gtk::SENSITIVITY_OFF);
 	}
 
 	this->widgets->search_entry->set_editable(false);
 	this->widgets->action_group->set_sensitive(false);
+	this->widgets->replace_id = 0;
 
-	for (int i = 0; i < this->widgets->search_results.size(); i++) {
-			this->widgets->search_results[i]->set_text("");
+	for (;this->widgets->replace_id < this->widgets->combo_boxes.size(); this->widgets->replace_id++) {
+		if (b == this->widgets->combo_boxes[this->widgets->replace_id]) {
+			break;
+		}
 	}
-	this->widgets->process_thread = Glib::Thread::create(sigc::bind<int>(sigc::mem_fun(*this, &SignalHandler::do_replacement), id), true);
+
+	this->widgets->search_results[this->widgets->replace_id]->set_text("");
+
+	this->widgets->process_thread = Glib::Thread::create(sigc::mem_fun(*this, &SignalHandler::do_replacement), true);
 }
 
 void SignalHandler::set_text() {
-	for (int i = 0; i < this->widgets->search_results.size(); i++) {
-		this->widgets->search_results[i]->insert_markup(this->widgets->search_results[i]->end(), this->widgets->found_text[i] + "\n\n");
+	if (this->widgets->replace_id == -1) {
+		for (int i = 0; i < this->widgets->search_results.size(); i++) {
+			this->widgets->search_results[i]->insert_markup(this->widgets->search_results[i]->end(), this->widgets->found_text[i] + "\n\n");
+		}
+	} else {
+		this->widgets->search_results[this->widgets->replace_id]->insert_markup(
+			this->widgets->search_results[this->widgets->replace_id]->end(),
+			this->widgets->found_text[this->widgets->replace_id] + "\n\n"
+		);
 	}
+
 	this->widgets->procress_finished = true;
 }
 
@@ -54,7 +67,7 @@ void SignalHandler::do_search() {
 	this->search_engine[0].set_search_argument(this->widgets->search_entry->get_text());
 
 	while (this->search_engine[0].search(&this->widgets->found_text[0])) {
-		std::array<std::string, 3> verse = search_engine[0].get_last_search_results()->back();
+		std::array<std::string, 3> verse = this->search_engine[0].get_last_search_results()->back();
 
 		for (int i = 1; i < this->widgets->search_results.size(); i++) {
 			this->widgets->found_text[i] = "<span font_weight=\"ultralight\">" + verse[0] + ", " + verse[1] + ", " + verse[2] + "</span>\n\n";
@@ -69,8 +82,9 @@ void SignalHandler::do_search() {
 	}
 
 	this->widgets->search_entry->set_progress_fraction(0.0);
+
 	for (int i = 0; i < this->widgets->combo_boxes.size(); i++) {
-		this->widgets->combo_boxes[i].set_button_sensitivity(Gtk::SENSITIVITY_ON);
+		this->widgets->combo_boxes[i]->set_button_sensitivity(Gtk::SENSITIVITY_ON);
 	}
 	this->widgets->search_entry->set_editable(true);
 	this->widgets->action_group->set_sensitive(true);
@@ -78,18 +92,18 @@ void SignalHandler::do_search() {
 	this->widgets->delete_thread_dispatcher.emit();
 }
 
-void SignalHandler::do_replacement(int id) {
+void SignalHandler::do_replacement() {
 
-	this->search_engine[id].set_source(
+	this->search_engine[this->widgets->replace_id].set_source(
 		"data/BibleEditions/" +
-		this->widgets->sources[std::string(this->widgets->combo_boxes[id].get_active_text())].as<std::string>()
+		this->widgets->sources[std::string(this->widgets->combo_boxes[this->widgets->replace_id]->get_active_text())].as<std::string>()
 	);
 
 	std::vector<std::array<std::string, 3>> * v = this->search_engine[0].get_last_search_results();
 
 	int x = 0;
 
-	for (std::vector<std::array<std::string, 3>>::iterator i = v->begin(); i != v->end(); i++) {
+	for (std::vector<std::array<std::string, 3>>::iterator i = v->begin(); i != v->end() && v->size() != 0; i++) {
 		this->widgets->procress_finished = false;
 		for (int t = 0; t < this->widgets->found_text.size(); t++) {
 			this->widgets->found_text[t] = "<span font_weight=\"ultralight\">" + (*i)[0] + ", " + (*i)[1] + ", " + (*i)[2] + "</span>\n\n";
@@ -101,12 +115,12 @@ void SignalHandler::do_replacement(int id) {
 		this->widgets->search_entry->set_progress_fraction(x / static_cast<float>(v->size()));
 	}
 
-	this->widgets->search_entry->set_progress_fraction(0.0);
 	for (int i = 0; i < this->widgets->combo_boxes.size(); i++) {
-		this->widgets->combo_boxes[i].set_button_sensitivity(Gtk::SENSITIVITY_ON);
+		this->widgets->combo_boxes[i]->set_button_sensitivity(Gtk::SENSITIVITY_ON);
 	}
 	this->widgets->search_entry->set_editable(true);
 	this->widgets->action_group->set_sensitive(true);
+	this->widgets->search_entry->set_progress_fraction(0.0);
 
 	this->widgets->delete_thread_dispatcher.emit();
 }
@@ -179,16 +193,23 @@ void SignalHandler::add_source() {
 
 	this->widgets->add_panel();
 
-	this->widgets->combo_boxes.back().signal_changed().connect(	// SEARCH_ENTRY : WHEN KEY PRESSED
-		sigc::bind<int>(
+	this->widgets->combo_boxes.back()->signal_changed().connect(	// SEARCH_ENTRY : WHEN KEY PRESSED
+		sigc::bind<Gtk::ComboBoxText *>(
 		sigc::mem_fun(this, &SignalHandler::source_changed),
-		this->widgets->combo_boxes.size() - 1),
+		this->widgets->combo_boxes.back()),
+		false
+	);
+
+	this->widgets->close_buttons.back()->signal_clicked().connect(	// SEARCH_ENTRY : WHEN KEY PRESSED
+		sigc::bind<Gtk::Button *>(
+		sigc::mem_fun(this, &SignalHandler::remove_source_by_reference),
+		this->widgets->close_buttons.back()),
 		false
 	);
 
 	this->widgets->panels->show_all();
+	this->source_changed(this->widgets->combo_boxes.back());
 
-	this->source_changed(this->widgets->combo_boxes.size() - 1);;
 }
 
 void SignalHandler::remove_source() {
@@ -201,5 +222,38 @@ void SignalHandler::remove_source() {
 		this->widgets->combo_boxes.pop_back();
 		this->widgets->search_results.pop_back();
 		this->widgets->found_text.pop_back();
+	}
+}
+
+void SignalHandler::remove_source_by_reference(Gtk::Button * b) {
+	if (this->search_engine.size() > 1) {
+
+		std::vector<std::array<std::string, 3>> last_search_results = *this->search_engine[0].get_last_search_results();
+
+		int i = 0;
+		for (;i < this->widgets->close_buttons.size(); i++) {
+			if (b == this->widgets->close_buttons[i]) {
+				this->widgets->close_buttons.erase(this->widgets->close_buttons.begin() + i);
+				delete b;
+				break;
+			}
+		}
+
+		this->search_engine.erase(this->search_engine.begin());
+
+		this->widgets->panels->remove(*this->widgets->panels->get_children()[i]);
+
+		Gtk::TextView * t = this->widgets->text_views[i];
+		Gtk::ComboBoxText * c = this->widgets->combo_boxes[i];
+		this->widgets->text_views.erase(this->widgets->text_views.begin() + i);
+		this->widgets->combo_boxes.erase(this->widgets->combo_boxes.begin() + i);
+
+		delete t;
+		delete c;
+
+		this->widgets->search_results.erase(this->widgets->search_results.begin() + i);
+		this->widgets->found_text.erase(this->widgets->found_text.begin() + i);
+
+		this->search_engine[0].set_last_search_result(last_search_results);
 	}
 }

@@ -3,7 +3,7 @@
 SearchEngine::SearchEngine(std::string file_path, std::string names_path) {
 	this->file = this->source_handler.get_source(file_path);
 	this->names = this->source_handler.get_names(names_path);
-	this->last_result = "";
+	this->last_result = this->file.begin();
 
 	W = "[\\w\\u00C0-\\u024f]";
 }
@@ -15,7 +15,7 @@ void SearchEngine::set_search_argument(std::string arg) {
 
 	this->is_book = this->search_position();
 	this->last_search_results.clear();
-	this->last_result = this->file.begin()->first;
+	this->last_result = this->file.begin();
 }
 
 void SearchEngine::set_mark_argument(std::string arg) {
@@ -30,7 +30,7 @@ void SearchEngine::set_source(std::string path) {
 	this->file.clear();
 	this->file = this->source_handler.get_source(path);
 
-	this->last_result = "";
+	this->last_result = this->file.begin();
 }
 
 std::string SearchEngine::get_verse(std::string p) {
@@ -44,8 +44,7 @@ std::string SearchEngine::get_verse(std::string p) {
 
 float SearchEngine::get_progress() {
 	if (this->file.size()) {
-		Libre::BookMap::iterator i = this->file.find(this->last_result);
-		return static_cast<float>(std::distance(this->file.begin(), i)) / this->file.size();
+		return static_cast<float>(std::distance(this->file.begin(), this->last_result)) / this->file.size();
 	}
 
 	return 0;
@@ -62,42 +61,35 @@ bool SearchEngine::search(std::string * text) {
 
 bool SearchEngine::search_book(std::string * text) {
 
-	bool begin = this->last_result != this->file.begin()->first;
+	bool begin = this->last_result != this->file.begin();
 
 	bool end = false;
 
-	while (this->last_result != this->file.end()->first && !end){
-		if (this->last_result == this->positions[0]) {
-					begin = true;
+	while (this->last_result != this->file.end()){
+		if (this->last_result->first == this->positions[0]) {
+			begin = true;
 		}
 
-		if (this->last_result == this->positions[1]) {
-					end = true;
+		if (this->last_result->first == this->positions[1]) {
+			end = true;
 		}
 
 		if (begin) {
 
-			*text += this->file[this->last_result];
+			*text += this->last_result.value();
 
-			this->last_search_results.push_back(this->last_result);
+			this->last_result++;
 
-			Libre::BookMap::iterator i = this->file.find(this->last_result);
-			i++;
-			this->last_result = i->first;
+			this->last_search_results.push_back(this->last_result->first);
 
 			if (end) {
-				this->last_result = this->file.end()->first;
+				this->last_result = this->file.end();
 			}
 
 			return true;
 		}
-
-		Libre::BookMap::iterator i = this->file.find(this->last_result);
-		i++;
-		this->last_result = i->first;
+		this->last_result++;
 	}
-
-	return false;
 }
 
 bool SearchEngine::search_word(std::string * text) {
@@ -105,22 +97,18 @@ bool SearchEngine::search_word(std::string * text) {
 	std::regex e(this->interpreted_argument);
 	// -- BOOK LOOP
 
-	while (this->last_result != this->file.end()->first) {
-		if (std::regex_search(this->file[this->last_result], e)) {	//	IF THERE IS THE EXPRESSION SEARCHED FOR
-			*text += this->file[this->last_result];
+	while (this->last_result != this->file.end()) {
+		if (std::regex_search(this->last_result.value(), e)) {	//	IF THERE IS THE EXPRESSION SEARCHED FOR
+			*text += this->last_result.value();
 			mark_result(text);
 
-			this->last_search_results.push_back(this->last_result);
+			this->last_result++;
 
-			Libre::BookMap::iterator i = this->file.find(this->last_result);
-			i++;
-			this->last_result = i->first;
+			this->last_search_results.push_back(this->last_result->first);
 
 			return true;
 		}
-		Libre::BookMap::iterator i = this->file.find(this->last_result);
-		i++;
-		this->last_result = i->first;
+		this->last_result++;
 	}
 
 	return false;

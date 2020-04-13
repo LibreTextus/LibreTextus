@@ -15,7 +15,7 @@ class SearchEngine {
 private:
 	Libre::BookMap file;
 	Libre::NameMap names;
-	std::string last_result;
+	Libre::BookMap::iterator last_result;
 	SourceHandler source_handler;
 	std::vector<std::string> last_search_results;
 	std::string W;

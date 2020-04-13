@@ -33,12 +33,13 @@ public:
 	bool is_fullscreen;
 	Gtk::Window * preferences_window;
 	Gtk::ComboBoxText * preferences_theme_combo;
+	
 	// USED BY SEARCH TRHEAD
 
 	Glib::Thread * process_thread;
 	Glib::Dispatcher set_text_dispatcher;
 	Glib::Dispatcher delete_thread_dispatcher;
-	std::vector<std::string> found_text;
+	std::vector<std::array<std::string, 2>> found_text;
 	bool procress_finished;
 	int replace_id;
 
@@ -100,7 +101,7 @@ public:
 		this->headers.back()->pack_end(*this->combo_boxes.back(), Gtk::PACK_SHRINK, 0);
 		this->headers.back()->set_border_width(10);
 
-		this->found_text.push_back("");
+		this->found_text.push_back({"", ""});
 
 		this->panels->pack_start(*scrl_container, Gtk::PACK_EXPAND_WIDGET, 0);
 

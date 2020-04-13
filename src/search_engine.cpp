@@ -2,9 +2,8 @@
 
 SearchEngine::SearchEngine(std::string file_path, std::string names_path) {
 	this->file = this->source_handler.get_source(file_path);
-	this->names = this->source_handler.get_source(names_path);
-
-	this->last_result = nullptr;
+	this->names = this->source_handler.get_names(names_path);
+	this->last_result = "";
 
 	W = "[\\w\\u00C0-\\u024f]";
 }
@@ -14,12 +13,9 @@ void SearchEngine::set_search_argument(std::string arg) {
 	this->interpreted_argument = arg;
 	interpret_argument(&this->interpreted_argument);
 
-	is_book = this->search_position();
-
-	if (this->last_result != nullptr) {
-		delete [] this->last_result;
-	}
-	this->last_result = nullptr;
+	this->is_book = this->search_position();
+	this->last_search_results.clear();
+	this->last_result = this->file.begin()->first;
 }
 
 void SearchEngine::set_mark_argument(std::string arg) {
@@ -31,15 +27,15 @@ void SearchEngine::set_header_argument(std::string arg) {
 }
 
 void SearchEngine::set_source(std::string path) {
+	this->file.clear();
 	this->file = this->source_handler.get_source(path);
 
-	delete [] this->last_result;
-	this->last_result = nullptr;
+	this->last_result = "";
 }
 
-std::string SearchEngine::get_verse(std::string book, std::string chapter, std::string verse) {
-	if (this->file[book][chapter][verse]) {
-		return this->file[book][chapter][verse].as<std::string>();
+std::string SearchEngine::get_verse(std::string p) {
+	if (this->file.find(p) != this->file.end()) {
+		return this->file[p];
 	}
 	else {
 		return "~~~";
@@ -47,134 +43,58 @@ std::string SearchEngine::get_verse(std::string book, std::string chapter, std::
 }
 
 float SearchEngine::get_progress() {
-	int progress = 0;
-
-	for (YAML::const_iterator i = this->file.begin(); i != this->file.end(); i++) {
-		progress++;
-		if (i->first.as<std::string>() == this->last_search_results.back()[0]) {
-			return (progress / 66.0);
-		}
+	if (this->file.size()) {
+		Libre::BookMap::iterator i = this->file.find(this->last_result);
+		return static_cast<float>(std::distance(this->file.begin(), i)) / this->file.size();
 	}
 
 	return 0;
 }
 
 bool SearchEngine::search(std::string * text) {
-	if (this->last_result == nullptr) {
-		this->last_result = new YAML::const_iterator[3];
-
-		this->last_search_results.clear();
-
-		this->last_result[0] = this->file.begin();
-		this->last_result[1] = this->last_result[0]->second.begin();
-		this->last_result[2] = this->last_result[1]->second.begin();
-
-		if (search_book(text)) {
-			this->is_book = true;
-			return true;
-		} else {
-			this->is_book = false;
-
-			delete [] this->last_result;
-			this->last_result = new YAML::const_iterator[3];
-
-			this->last_result[0] = this->file.begin();
-			this->last_result[1] = this->last_result[0]->second.begin();
-			this->last_result[2] = this->last_result[1]->second.begin();
-
-			return search_word(text);
-		}
-	} else {
-		if (this->is_book) {
-			return search_book(text);
-		}
-		else {
-			return search_word(text);
-		}
+	if (this->is_book) {
+		return search_book(text);
+	}
+	else {
+		return search_word(text);
 	}
 }
 
 bool SearchEngine::search_book(std::string * text) {
 
-	bool begin = !(this->last_result[0] == this->file.begin() &&
-								 this->last_result[1] == this->last_result[0]->second.begin() &&
-									this->last_result[2] == this->last_result[1]->second.begin());
+	bool begin = this->last_result != this->file.begin()->first;
 
 	bool end = false;
 
-
-	while (this->last_result[0] != this->file.end() && !end){
-		while (this->last_result[1] != this->last_result[0]->second.end() && !end){
-			for (; this->last_result[2] != this->last_result[1]->second.end() && !end; this->last_result[2]++){
-
-				if (this->last_result[0]->first.as<std::string>() == this->positions[0][0] &&
-						this->last_result[1]->first.as<std::string>() == this->positions[1][0] &&
-						this->last_result[2]->first.as<std::string>() == this->positions[2][0]) {
-							begin = true;
-				}
-
-				if (this->last_result[0]->first.as<std::string>() == this->positions[0][1] &&
-						this->last_result[1]->first.as<std::string>() == this->positions[1][1] &&
-						this->last_result[2]->first.as<std::string>() == this->positions[2][1]) {
-							end = true;
-				}
-
-				if (begin) {
-
-					this->add_header(text);
-
-					*text += this->last_result[2]->second.as<std::string>();
-
-					this->last_search_results.push_back({
-						this->last_result[0]->first.as<std::string>(),
-						this->last_result[1]->first.as<std::string>(),
-						this->last_result[2]->first.as<std::string>()
-					});
-
-					this->last_result[2]++;
-
-					if (this->last_result[2] == this->last_result[1]->second.end()) {
-						this->last_result[1]++;
-
-						if (this->last_result[1] == this->last_result[0]->second.end()) {
-							this->last_result[0]++;
-
-							if (this->last_result[0] == this->file.end()) {
-								this->last_result[0] = this->file.end();
-								this->last_result[1] = this->last_result[0]->second.end();
-								this->last_result[2] = this->last_result[1]->second.end();
-							} else {
-								this->last_result[1] = this->last_result[0]->second.begin();
-								this->last_result[2] = this->last_result[1]->second.begin();
-							}
-
-						} else {
-							this->last_result[2] = this->last_result[1]->second.begin();
-						}
-					}
-
-					if (end) {
-						this->last_result[0] = this->file.end();
-						this->last_result[1] = this->last_result[0]->second.end();
-						this->last_result[2] = this->last_result[1]->second.end();
-					}
-
-					return true;
-				}
-			}
-			this->last_result[1]++;
-
-			if (this->last_result[1] != this->last_result[0]->second.end()) {
-				this->last_result[2] = this->last_result[1]->second.begin();
-			}
+	while (this->last_result != this->file.end()->first && !end){
+		if (this->last_result == this->positions[0]) {
+					begin = true;
 		}
 
-		this->last_result[0]++;
-
-		if (this->last_result[0] != this->file.end()) {
-			this->last_result[1] = this->last_result[0]->second.begin();
-			this->last_result[2] = this->last_result[1]->second.begin();
+		if (this->last_result == this->positions[1]) {
+					end = true;
 		}
+
+		if (begin) {
+
+			*text += this->file[this->last_result];
+
+			this->last_search_results.push_back(this->last_result);
+
+			Libre::BookMap::iterator i = this->file.find(this->last_result);
+			i++;
+			this->last_result = i->first;
+
+			if (end) {
+				this->last_result = this->file.end()->first;
+			}
+
+			return true;
+		}
+
+		Libre::BookMap::iterator i = this->file.find(this->last_result);
+		i++;
+		this->last_result = i->first;
 	}
 
 	return false;
@@ -185,75 +105,34 @@ bool SearchEngine::search_word(std::string * text) {
 	std::regex e(this->interpreted_argument);
 	// -- BOOK LOOP
 
-	while (this->last_result[0] != this->file.end()) {
+	while (this->last_result != this->file.end()->first) {
+		if (std::regex_search(this->file[this->last_result], e)) {	//	IF THERE IS THE EXPRESSION SEARCHED FOR
+			*text += this->file[this->last_result];
+			mark_result(text);
 
-		// -- CHAPTER LOOP
+			this->last_search_results.push_back(this->last_result);
 
-		while (this->last_result[1] != this->last_result[0]->second.end()) {
+			Libre::BookMap::iterator i = this->file.find(this->last_result);
+			i++;
+			this->last_result = i->first;
 
-			// -- VERSE LOOP
-
-			for (; this->last_result[2] != this->last_result[1]->second.end(); this->last_result[2]++) {
-
-				if (std::regex_search(this->last_result[2]->second.as<std::string>(), e)) {	//	IF THERE IS THE EXPRESSION SEARCHED FOR
-					add_header(text);
-					*text += this->last_result[2]->second.as<std::string>();
-					mark_result(text);
-
-					this->last_search_results.push_back({
-						this->last_result[0]->first.as<std::string>(),
-						this->last_result[1]->first.as<std::string>(),
-						this->last_result[2]->first.as<std::string>()
-					});
-
-					this->last_result[2]++;
-
-					if (this->last_result[2] == this->last_result[1]->second.end()) {
-						this->last_result[1]++;
-
-						if (this->last_result[1] == this->last_result[0]->second.end()) {
-							this->last_result[0]++;
-
-							if (this->last_result[0] == this->file.end()) {
-								this->last_result[0] = this->file.end();
-								this->last_result[1] = this->last_result[0]->second.end();
-								this->last_result[2] = this->last_result[1]->second.end();
-							} else {
-								this->last_result[1] = this->last_result[0]->second.begin();
-								this->last_result[2] = this->last_result[1]->second.begin();
-							}
-
-						} else {
-							this->last_result[2] = this->last_result[1]->second.begin();
-						}
-					}
-					return true;
-				}
-			}
-
-			this->last_result[1]++;
-
-			if (this->last_result[1] != this->last_result[0]->second.end()) {
-				this->last_result[2] = this->last_result[1]->second.begin();
-			}
+			return true;
 		}
-
-		this->last_result[0]++;
-
-		if (this->last_result[0] != this->file.end()) {
-			this->last_result[1] = this->last_result[0]->second.begin();
-			this->last_result[2] = this->last_result[1]->second.begin();
-		}
-
+		Libre::BookMap::iterator i = this->file.find(this->last_result);
+		i++;
+		this->last_result = i->first;
 	}
+
 	return false;
 }
 
 bool SearchEngine::search_position() {
 
+	std::string pos[3][2];
+
 	for (int i = 0; i < 3; i++) {
 		for (int x = 0; x < 2; x++) {
-			this->positions[i][x] = "";
+			pos[i][x] = "";
 		}
 	}
 
@@ -269,10 +148,10 @@ bool SearchEngine::search_position() {
 		arg_copy = m.suffix().str();							// ARG_COPY TO STRING AFTER FOUND COMMA
 	}
 
-	for (YAML::const_iterator i = this->names.begin(); i != this->names.end(); i++) {	// FOR ALL POSSIBLE BOOK NAMES
-		for (YAML::const_iterator x = i->second.begin(); x != i->second.end(); x++) {		// FOR ALL ALL POSSIBLE SPELLINGS
-			e = "\\b" + x->as<std::string>() + "\\b";																			// FIND SPELLING
-			this->search_argument = std::regex_replace(this->search_argument, e, i->first.as<std::string>());									// REPLACE SPELLING WITH DEFAULT SPELLING : 1Mo -> GEN
+	for (Libre::NameMap::iterator i = this->names.begin(); i != this->names.end(); i++) {	// FOR ALL POSSIBLE BOOK NAMES
+		for (std::vector<std::string>::iterator x = i.value().begin(); x != i.value().end(); x++) {		// FOR ALL ALL POSSIBLE SPELLINGS
+			e = "\\b" + *x + "\\b";																																			// FIND SPELLING
+			this->search_argument = std::regex_replace(this->search_argument, e, i->first);							// REPLACE SPELLING WITH DEFAULT SPELLING : 1Mo -> GEN
 		}
 	}
 
@@ -286,7 +165,7 @@ bool SearchEngine::search_position() {
 		for (int i = 0; i < 3; i++) {	// FOR EVERY ELEMENT OF POSITION-MAP
 			std::regex_search(arg_copy, m, e);	// SEARCH NEXT WORD
 
-			this->positions[i][0] = m.str();		// ADD POSITION
+			pos[i][0] = m.str();		// ADD POSITION
 			arg_copy = m.suffix().str();				// ARG_COPY TO STRING AFTER FOUND WORD
 		}
 
@@ -295,16 +174,15 @@ bool SearchEngine::search_position() {
 		std::string part;	// USED FOR REGEX_SEARCH
 
 		for (int i = 0; i < 3; i++) {
-			part = positions[i][0];				// PART FOR LOOKING IF THERE IS AN "-"
+			part = pos[i][0];				// PART FOR LOOKING IF THERE IS AN "-"
 			if (std::regex_search(part, m, e)) {					// IF THERE IS AN "-"
-				this->positions[i][0] = m.prefix().str();	// POSITION RANGE STARTS BEFORE THE "-"
-				this->positions[i][1] = m.suffix().str();	// POSITION RANGE STOPS AFTER THE "-"
+				pos[i][0] = m.prefix().str();	// POSITION RANGE STARTS BEFORE THE "-"
+				pos[i][1] = m.suffix().str();	// POSITION RANGE STOPS AFTER THE "-"
 
 			} else {
-				this->positions[i][1] = this->positions[i][0];	// IF THERE ARE NO "-" END EQUALS STOP
+				pos[i][1] = pos[i][0];	// IF THERE ARE NO "-" END EQUALS STOP
 			}
 		}
-
 	} else if (comma_count == 4) {	// IF THERA ARE FOUR COMMAS; THE ARGUMENT LOOKS LIKE *GEN, 1, 1 - GEN, 1, 2*
 		e = "-";											// SEARCH ALL "-"
 		std::regex_search(this->search_argument, m, e);
@@ -316,24 +194,24 @@ bool SearchEngine::search_position() {
 
 		for (int i = 0; i < 3; i++) {	// FOR EVERY POSITION
 			std::regex_search(prefix, m, e);				// FIND EVERY WORD
-			this->positions[i][0] = m.str();	// PUSH BACK TO BOOK / CHAPTER / VERSE
+			pos[i][0] = m.str();	// PUSH BACK TO BOOK / CHAPTER / VERSE
 			prefix = m.suffix().str();							// SET "PREFIX" TO STRING AFTER FOUND WORD
 
 			std::regex_search(suffix, m, e);				// JUST SAME AS THE BEFORE BUT AFTER THE "-"
-			this->positions[i][1] = m.str();
+			pos[i][1] = m.str();
 			suffix = m.suffix().str();
 		}
 	}
-
 	// 1Mo, 1, 2 - 4
 
-	if (this->positions[0][1] == "" ||			// IF THERE IS SOMETHING MISSING EXIT
-			this->positions[1][1] == "" ||	// TODO: ADD WHOLE CHAPTER IF VERSE MISSING
-			this->positions[2][1] == "") {
+	this->positions[0] = pos[0][0] + ", " + pos[1][0] + ", " + pos[2][0];
+	this->positions[1] = pos[0][1] + ", " + pos[1][1] + ", " + pos[2][1];
+
+	if (pos[0][1] == "" || pos[1][1] == "" || pos[2][1] == "") {
 		return false;
 	}
 
-	return false;
+	return true;
 }
 
 void SearchEngine::interpret_argument(std::string * arg) {
@@ -392,14 +270,4 @@ void SearchEngine::mark_result(std::string * text) {
 
 	std::regex e(this->interpreted_argument);
 	*text = std::regex_replace(*text, e, this->mark_argument);
-}
-
-void SearchEngine::add_header(std::string * text) {
-
-	std::regex e("\\$\\&");
-	*text = std::regex_replace(this->header_argument, e, this->last_result[0]->first.as<std::string>() + ", " +
-																												this->last_result[1]->first.as<std::string>() + ", " +
-																												this->last_result[2]->first.as<std::string>());
-
-	*text += "\n\n";
 }

@@ -1,6 +1,6 @@
 #include "window.hpp"
 
-bool LibreWindow::Main::create(LibreWidgets * w, SignalHandler * s) {
+bool Libre::MainWindow::create(LibreWidgets * w, SignalHandler * s) {
 	w->window = new Gtk::Window;							// CREATE NEW WINDOW
 	w->window->set_default_size(1000, 800);	// SET WINDOW SIZE
 	w->window->set_title("LibreTextus");			// SET WINDOW TITLE
@@ -168,7 +168,7 @@ bool LibreWindow::Main::create(LibreWidgets * w, SignalHandler * s) {
 	return true;
 }
 
-bool LibreWindow::Preferences::create(LibreWidgets * w, SignalHandler * s) {
+bool Libre::PreferencesWindow::create(LibreWidgets * w, SignalHandler * s) {
 
 	w->preferences_window = new Gtk::Window;
 	w->preferences_window->set_default_size(500, 400);
@@ -219,12 +219,20 @@ bool LibreWindow::Preferences::create(LibreWidgets * w, SignalHandler * s) {
 
 	user_interface_box->pack_start(*font_size_box, Gtk::PACK_SHRINK, 0);
 
-	Gtk::Label * l2 = new Gtk::Label("Keybindings");
-	Gtk::Label * l3 = new Gtk::Label("Books");
-
 	note_book->append_page(*user_interface_box, "User Interface");
+
+	// PAGE TWO: KEYBINDINGS
+
+	Gtk::Label * l2 = new Gtk::Label("Keybindings");
+
 	note_book->append_page(*l2, "Keybindings");
-	note_book->append_page(*l3, "Books");
+
+	// PAGE THREE: BOOKS
+
+	Gtk::VBox * books_box = new Gtk::VBox;
+
+
+	note_book->append_page(*books_box, "Books");
 
 	w->preferences_window->add(*note_book);
 

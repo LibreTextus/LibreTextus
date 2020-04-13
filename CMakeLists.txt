@@ -1,13 +1,13 @@
-project(LibreTextus)
+project(LibreTextus_0.1)
 
 cmake_minimum_required(VERSION 2.6)
 
-set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
 
 find_package(PkgConfig REQUIRED)
 pkg_check_modules(GTKMM REQUIRED gtkmm-3.0)
 
-add_library(libre_textus SHARED
+add_library(libre_textus STATIC
 	src/framework.hpp
 	src/framework.cpp
 	src/signal_handler.hpp
@@ -34,7 +34,7 @@ include_directories(${X11_INCLUDE_DIR})
 
 add_executable(LibreTextus src/main.cpp)
 
-target_link_libraries(libre_textus ${GTKMM_LIBRARIES} ${YAMLCPP_LIBRARIES} ${X11_LIBRARIES})
-target_link_libraries(LibreTextus ${GTKMM_LIBRARIES} ${X11_LIBRARIES} libre_textus)
+target_link_libraries(libre_textus ${GTKMM_LIBRARIES} yaml-cpp ${X11_LIBRARIES})
+target_link_libraries(LibreTextus ${GTKMM_LIBRARIES} ${X11_LIBRARIES} libre_textus yaml-cpp)
 
 file(COPY data/ DESTINATION data/)

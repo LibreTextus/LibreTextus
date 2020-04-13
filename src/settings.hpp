@@ -6,6 +6,10 @@
 #include <iostream>
 #include <fstream>
 
+// -----------------------------------------------------------------------------
+// THIS CLASS IS FOR READ AND WRITE THE SETTINGS STORED IN THE YAML FILE
+// -----------------------------------------------------------------------------
+
 class Settings {
 public:
 	Settings () = default;

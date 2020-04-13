@@ -1,3 +1,8 @@
+window {
+	box-shadow: 0 0 0 1px @theme_accent_color;
+	background-color: @theme_background_color;
+}
+
 entry.search {
 	border-radius: 0px;
 	padding: 10px;
@@ -49,6 +54,14 @@ button:active {
 
 #view_button:active {
 	background-color: @theme_background_color;
+}
+
+selection {
+	background-color: @theme_highlight_color;
+}
+
+separator {
+	background-color: @theme_accent_color;
 }
 
 /* SETTINGS */

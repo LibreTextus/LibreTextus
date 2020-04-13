@@ -8,12 +8,12 @@
 #include "signal_handler.hpp"
 #include "settings.hpp"
 
-namespace LibreWindow {
-	namespace Main {
+namespace Libre {
+	namespace MainWindow {
 		bool create(LibreWidgets * w, SignalHandler * s);
 	}
 
-	namespace Preferences {
+	namespace PreferencesWindow {
 		bool create(LibreWidgets * w, SignalHandler * s);
 	}
 }

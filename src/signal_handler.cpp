@@ -6,7 +6,7 @@
 // AND THE STYLE VERSION POSITION WHICH IS DISPLAYED ABOVE THE VERSE
 // -----------------------------------------------------------------------------
 
-void SignalHandler::init(LibreWidgets * w) {
+void SignalHandler::init(Libre::Widgets * w) {
 
 	// ------------------------------------------
 	// CREATE THE SEARCH ENGINE FOR THE
@@ -223,7 +223,7 @@ void SignalHandler::delete_thread() {
 // -----------------------------------------------------------------------------
 
 void SignalHandler::do_search() {
-	
+
 	// ------------------------------------------
 	// SET THE SEARCH ARGUMENT
 	// ------------------------------------------

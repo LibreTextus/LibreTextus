@@ -1,3 +1,5 @@
+root_dir: "~/.libre_textus/"
+
 theme:
   active: dark
   themes:

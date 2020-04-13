@@ -1,6 +1,6 @@
 #include "window.hpp"
 
-bool Libre::MainWindow::create(LibreWidgets * w, SignalHandler * s) {
+bool Libre::MainWindow::create(Libre::Widgets * w, SignalHandler * s) {
 	w->window = new Gtk::Window;							// CREATE NEW WINDOW
 	w->window->set_default_size(1000, 800);	// SET WINDOW SIZE
 	w->window->set_title("LibreTextus");			// SET WINDOW TITLE
@@ -168,7 +168,7 @@ bool Libre::MainWindow::create(LibreWidgets * w, SignalHandler * s) {
 	return true;
 }
 
-bool Libre::PreferencesWindow::create(LibreWidgets * w, SignalHandler * s) {
+bool Libre::PreferencesWindow::create(Libre::Widgets * w, SignalHandler * s) {
 
 	w->preferences_window = new Gtk::Window;
 	w->preferences_window->set_default_size(500, 400);

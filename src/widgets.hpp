@@ -7,105 +7,111 @@
 #include <iostream>
 #include <yaml-cpp/yaml.h>
 
-class LibreWidgets {
-public:
+#include "package_manager.hpp"
 
-	Glib::RefPtr<Gtk::UIManager> ui_manager;
-	Glib::RefPtr<Gtk::ActionGroup> action_group;
+namespace Libre {
+	class Widgets {
+	public:
 
-	// USED BY GUI THREAD
+		Glib::RefPtr<Gtk::UIManager> ui_manager;
+		Glib::RefPtr<Gtk::ActionGroup> action_group;
 
-	Gtk::Window * window;
-	Glib::RefPtr<Gtk::Application> app;
-	Glib::RefPtr<Gtk::StyleContext> style;
-	Glib::RefPtr<Gtk::CssProvider> css;
-	Glib::RefPtr<Gtk::CssProvider> font_size_css;
-	int font_size;
-	Gtk::SpinButton * font_size_spinbutton;
-	Gtk::HBox * panels;
-	Gtk::SearchEntry * search_entry;
-	Gtk::Button * add_button;
-	std::vector<Gtk::Button *> close_buttons;
-	std::vector<Gtk::HBox *> headers;
-	std::vector<Gtk::TextView *> text_views;
-	std::vector<Gtk::ComboBoxText *> combo_boxes;
-	std::vector<Glib::RefPtr<Gtk::TextBuffer>> search_results;
-	bool is_fullscreen;
-	Gtk::Window * preferences_window;
-	Gtk::ComboBoxText * preferences_theme_combo;
-	
-	// USED BY SEARCH TRHEAD
+		PackageManager package_manager;
 
-	Glib::Thread * process_thread;
-	Glib::Dispatcher set_text_dispatcher;
-	Glib::Dispatcher delete_thread_dispatcher;
-	std::vector<std::array<std::string, 2>> found_text;
-	bool procress_finished;
-	int replace_id;
+		// USED BY GUI THREAD
 
-	YAML::Node sources;
+		Gtk::Window * window;
+		Glib::RefPtr<Gtk::Application> app;
+		Glib::RefPtr<Gtk::StyleContext> style;
+		Glib::RefPtr<Gtk::CssProvider> css;
+		Glib::RefPtr<Gtk::CssProvider> font_size_css;
+		int font_size;
+		Gtk::SpinButton * font_size_spinbutton;
+		Gtk::HBox * panels;
+		Gtk::SearchEntry * search_entry;
+		Gtk::Button * add_button;
+		std::vector<Gtk::Button *> close_buttons;
+		std::vector<Gtk::HBox *> headers;
+		std::vector<Gtk::TextView *> text_views;
+		std::vector<Gtk::ComboBoxText *> combo_boxes;
+		std::vector<Glib::RefPtr<Gtk::TextBuffer>> search_results;
+		bool is_fullscreen;
+		Gtk::Window * preferences_window;
+		Gtk::ComboBoxText * preferences_theme_combo;
 
-	LibreWidgets() {
-		sources = YAML::LoadFile("data/sources.yml");
-	}
+		// USED BY SEARCH TRHEAD
 
-	~LibreWidgets() {
-		delete window;
-		delete preferences_window;
-	}
+		Glib::Thread * process_thread;
+		Glib::Dispatcher set_text_dispatcher;
+		Glib::Dispatcher delete_thread_dispatcher;
+		std::vector<std::array<std::string, 2>> found_text;
+		bool procress_finished;
+		int replace_id;
 
-	void append_sources(Gtk::ComboBoxText * combo_box) {
-		for (YAML::const_iterator i = this->sources.begin(); i != this->sources.end(); i++) {
-			combo_box->append(i->first.as<std::string>());
+		YAML::Node sources;
+
+		Widgets() {
+			sources = YAML::LoadFile("data/sources.yml");
 		}
 
-		combo_box->set_active(0);
-	}
-
-	void add_panel() {
-		Gtk::VBox * scrl_container = new Gtk::VBox(false, 0);
-		this->text_views.push_back(new Gtk::TextView);
-		Gtk::ScrolledWindow * scrolled_window = new Gtk::ScrolledWindow;
-		this->headers.push_back(new Gtk::HBox(false, 0));
-		this->close_buttons.push_back(new Gtk::Button);
-		this->close_buttons.back()->set_image_from_icon_name("window-close", Gtk::ICON_SIZE_BUTTON);
-		this->close_buttons.back()->set_name("view_button");
-
-		this->search_results.push_back(Gtk::TextBuffer::create());
-		this->text_views.back()->set_buffer(this->search_results.back());
-		this->text_views.back()->set_editable(false);
-		this->text_views.back()->set_cursor_visible(false);
-		this->text_views.back()->set_wrap_mode(Gtk::WRAP_WORD);
-		this->text_views.back()->set_border_width(10);
-
-		scrl_container->pack_start(*this->headers.back(), Gtk::PACK_SHRINK, 0);
-		scrl_container->pack_end(*scrolled_window, Gtk::PACK_EXPAND_WIDGET, 0);
-
-		scrolled_window->add(*this->text_views.back());
-
-		this->combo_boxes.push_back(new Gtk::ComboBoxText);
-
-		this->append_sources(this->combo_boxes.back());
-
-		if (this->add_button != nullptr) {
-			this->add_button->get_parent()->remove(*this->add_button);
-			delete this->add_button;
+		~Widgets() {
+			delete window;
+			delete preferences_window;
 		}
 
-		this->add_button = new Gtk::Button;
-		this->add_button->set_image_from_icon_name("list-add", Gtk::ICON_SIZE_BUTTON);
-		this->add_button->set_name("view_button");
+		void append_sources(Gtk::ComboBoxText * combo_box) {
+			for (YAML::const_iterator i = this->sources.begin(); i != this->sources.end(); i++) {
+				combo_box->append(i->first.as<std::string>());
+			}
 
-		this->headers.back()->pack_end(*this->add_button, Gtk::PACK_SHRINK, 0);
-		this->headers.back()->pack_end(*this->close_buttons.back(), Gtk::PACK_SHRINK, 0);
-		this->headers.back()->pack_end(*this->combo_boxes.back(), Gtk::PACK_SHRINK, 0);
-		this->headers.back()->set_border_width(10);
+			combo_box->set_active(0);
+		}
 
-		this->found_text.push_back({"", ""});
+		void add_panel() {
+			Gtk::VBox * scrl_container = new Gtk::VBox(false, 0);
+			this->text_views.push_back(new Gtk::TextView);
+			Gtk::ScrolledWindow * scrolled_window = new Gtk::ScrolledWindow;
+			this->headers.push_back(new Gtk::HBox(false, 0));
+			this->close_buttons.push_back(new Gtk::Button);
+			this->close_buttons.back()->set_image_from_icon_name("window-close", Gtk::ICON_SIZE_BUTTON);
+			this->close_buttons.back()->set_name("view_button");
 
-		this->panels->pack_start(*scrl_container, Gtk::PACK_EXPAND_WIDGET, 0);
+			this->search_results.push_back(Gtk::TextBuffer::create());
+			this->text_views.back()->set_buffer(this->search_results.back());
+			this->text_views.back()->set_editable(false);
+			this->text_views.back()->set_cursor_visible(false);
+			this->text_views.back()->set_wrap_mode(Gtk::WRAP_WORD);
+			this->text_views.back()->set_border_width(10);
 
-	}
-};
+			scrl_container->pack_start(*this->headers.back(), Gtk::PACK_SHRINK, 0);
+			scrl_container->pack_end(*scrolled_window, Gtk::PACK_EXPAND_WIDGET, 0);
+
+			scrolled_window->add(*this->text_views.back());
+
+			this->combo_boxes.push_back(new Gtk::ComboBoxText);
+
+			this->append_sources(this->combo_boxes.back());
+
+			if (this->add_button != nullptr) {
+				this->add_button->get_parent()->remove(*this->add_button);
+				delete this->add_button;
+			}
+
+			this->add_button = new Gtk::Button;
+			this->add_button->set_image_from_icon_name("list-add", Gtk::ICON_SIZE_BUTTON);
+			this->add_button->set_name("view_button");
+
+			this->headers.back()->pack_end(*this->add_button, Gtk::PACK_SHRINK, 0);
+			this->headers.back()->pack_end(*this->close_buttons.back(), Gtk::PACK_SHRINK, 0);
+			this->headers.back()->pack_end(*this->combo_boxes.back(), Gtk::PACK_SHRINK, 0);
+			this->headers.back()->set_border_width(10);
+
+			this->found_text.push_back({"", ""});
+
+			this->panels->pack_start(*scrl_container, Gtk::PACK_EXPAND_WIDGET, 0);
+
+		}
+	};
+}
 
 #endif

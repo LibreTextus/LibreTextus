@@ -2,9 +2,14 @@
 
 int Framework::init(int argc, char *argv[]) {
 
+
 	// CREATE BUILDER AND APP ----------------------------------------------------
 
 	this->widgets.app = Gtk::Application::create(argc, argv);
+
+	// CHECK FOR UPDATES ---------------------------------------------------------
+
+	this->widgets.package_manager.init();
 
 	// CREATING THE WINDOWS ------------------------------------------------------
 

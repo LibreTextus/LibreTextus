@@ -10,11 +10,11 @@
 
 namespace Libre {
 	namespace MainWindow {
-		bool create(LibreWidgets * w, SignalHandler * s);
+		bool create(Libre::Widgets * w, SignalHandler * s);
 	}
 
 	namespace PreferencesWindow {
-		bool create(LibreWidgets * w, SignalHandler * s);
+		bool create(Libre::Widgets * w, SignalHandler * s);
 	}
 }
 

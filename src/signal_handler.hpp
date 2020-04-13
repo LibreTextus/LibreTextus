@@ -15,7 +15,7 @@
 class SignalHandler {
 private:
 	std::vector<SearchEngine> search_engine;
-	LibreWidgets * widgets;
+	Libre::Widgets * widgets;
 	Settings settings;
 	std::string mark_argument;
 	std::string header_argument;
@@ -26,7 +26,7 @@ public:
 	virtual ~SignalHandler() {
 	}
 
-	void init(LibreWidgets * w);
+	void init(Libre::Widgets * w);
 
 	gboolean search_request(GdkEventKey * event);
 	void do_search();

@@ -12,7 +12,7 @@
 class Framework {
 private:
 	SignalHandler signal_handler;
-	LibreWidgets widgets;
+	Libre::Widgets widgets;
 	Settings settings;
 
 public:

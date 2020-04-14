@@ -2,14 +2,9 @@
 
 int Framework::init(int argc, char *argv[]) {
 
-
 	// CREATE BUILDER AND APP ----------------------------------------------------
 
 	this->widgets.app = Gtk::Application::create(argc, argv);
-
-	// CHECK FOR UPDATES ---------------------------------------------------------
-
-	this->widgets.package_manager.init();
 
 	// CREATING THE WINDOWS ------------------------------------------------------
 
@@ -37,6 +32,10 @@ int Framework::init(int argc, char *argv[]) {
 	this->widgets.style = this->widgets.window->get_style_context();	// GET STYLE CONTEXT FOR ADDING CSS
 	this->widgets.style->add_provider_for_screen(screen, this->widgets.css, GTK_STYLE_PROVIDER_PRIORITY_APPLICATION);
 	this->widgets.style->add_provider_for_screen(screen, this->widgets.font_size_css, GTK_STYLE_PROVIDER_PRIORITY_APPLICATION);
+
+	// CHECK FOR UPDATES ---------------------------------------------------------
+
+	this->widgets.package_manager.init();
 
 	// INIT SIGNALHANDLER --------------------------------------------------------
 
@@ -75,7 +74,6 @@ int Framework::init(int argc, char *argv[]) {
 	// ------------------------------------------
 
 	this->widgets.process_thread = Glib::Thread::create(sigc::mem_fun(this->signal_handler, &SignalHandler::do_search), true);
-
 
 	// CONNECT SIGNALS -----------------------------------------------------------
 

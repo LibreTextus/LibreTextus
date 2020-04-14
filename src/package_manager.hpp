@@ -2,7 +2,8 @@
 #define PACKAGE_MANAGER
 
 #include <string>
-#include <gtkmm.h>
+#include <stdlib.h>
+#include <experimental/filesystem>
 #include "settings.hpp"
 
 namespace Libre {
@@ -15,11 +16,16 @@ namespace Libre {
     PackageManager() = default;
     virtual ~PackageManager() = default;
 
+		void check_updates();
     void init();
     void remove();
     void install();
     void disable();
     void enable();
+
+		std::string get_root_path() {
+			return this->root_path;
+		}
   };
 }
 

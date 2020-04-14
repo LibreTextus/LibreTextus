@@ -1,4 +1,6 @@
 root_dir: "~/.libre_textus/"
+startup_file: "BibleEditions/deu/schlachter-1951.yml"
+names_file: "biblebooks.yml"
 
 theme:
   active: dark

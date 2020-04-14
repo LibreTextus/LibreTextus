@@ -36,7 +36,7 @@ include_directories(${X11_INCLUDE_DIR})
 
 add_executable(LibreTextus src/main.cpp)
 
-target_link_libraries(libre_textus ${GTKMM_LIBRARIES} yaml-cpp ${X11_LIBRARIES})
-target_link_libraries(LibreTextus ${GTKMM_LIBRARIES} ${X11_LIBRARIES} libre_textus yaml-cpp)
+target_link_libraries(libre_textus ${GTKMM_LIBRARIES} yaml-cpp ${X11_LIBRARIES} stdc++fs)
+target_link_libraries(LibreTextus ${GTKMM_LIBRARIES} ${X11_LIBRARIES} libre_textus yaml-cpp stdc++fs)
 
 file(COPY data/ DESTINATION data/)

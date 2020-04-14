@@ -14,14 +14,14 @@ void SignalHandler::init(Libre::Widgets * w) {
 	// TODO: GET STARTUP SOURCE FROM SETTINGS
 	// ------------------------------------------
 
+	this->widgets = w;	// SET WIDGETS
+
 	this->search_engine.push_back(
 		SearchEngine(
-			"data/BibleEditions/deu/schlachter-1951.yml",
-			"data/BibleEditions/biblebooks.yml"
+			this->widgets->package_manager.get_root_path() + this->settings.get<std::string>("startup_file"),
+			this->widgets->package_manager.get_root_path() + this->settings.get<std::string>("names_file")
 		)
 	);
-
-	this->widgets = w;	// SET WIDGETS
 
 	// ------------------------------------------
 	// GET HIGHLIGHT COLOR FROM THE CSS FILE

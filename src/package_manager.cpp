@@ -7,6 +7,11 @@
 
 void Libre::PackageManager::init() {
 
+	// ------------------------------------------
+	// GET ROOT DIR AND REPLACE THE *~* WTIH THE
+	// HOME DIRECTORY PATH
+	// ------------------------------------------
+
   this->root_path = this->settings.get<std::string>("root_dir");
 
 	if (this->root_path.find("~") == 0) {
@@ -14,10 +19,18 @@ void Libre::PackageManager::init() {
 		this->root_path = getenv("HOME") + this->root_path;
 	}
 
+	// ------------------------------------------
+	// CHECK IF THE ROOT DIRECTORY EXISTS
+	// ------------------------------------------
+
 	if (!std::experimental::filesystem::exists(this->root_path)) {
 		std::cout << "Create directory at: " << this->root_path << '\n';
 		std::experimental::filesystem::create_directory(this->root_path);
 	}
+
+	// ------------------------------------------
+	// CHECK IF THE ROOT DIRECTORY IS EMPTY
+	// ------------------------------------------
 
 	if (std::experimental::filesystem::is_empty(this->root_path)) {
 		system(("git clone http://hackernet.local:3000/LibreTextus/BibleEditions " + this->root_path + "BibleEditions/").c_str());
@@ -27,17 +40,34 @@ void Libre::PackageManager::init() {
 
 }
 
+// LIBRE::PACKAGEMANAGER::INSTALL ----------------------------------------------
+// THIS FUNCTION INSTALLES A NEW SOURCE PACKAGES OVER GIT
+// -----------------------------------------------------------------------------
+
 void Libre::PackageManager::install() {
 
 }
+
+// LIBRE::PACKAGEMANAGER::REMOVE -----------------------------------------------
+// THIS FUNCTION REMOVES A SOURCE FROM THE ROOT DIRECTORY AND THE SOURCES LIST
+// -----------------------------------------------------------------------------
 
 void Libre::PackageManager::remove() {
 
 }
 
+// LIBRE::PACKAGEMANAGER::DISABLE ----------------------------------------------
+// THIS FUNCTION DOES NOT REMOVE THE SOURCE IT JUST MAKES THAT THE SOURCE IS NOT
+// LISTED ON THE COMBOBOXTEXT
+// -----------------------------------------------------------------------------
+
 void Libre::PackageManager::disable() {
 
 }
+
+// LIBRE::PACKAGEMANAGER::ENABLE -----------------------------------------------
+// THIS FUNCTION ADDS THE SOURCE TO THE COMBOBOXTEXT SO YOU CAN SELECT IT
+// -----------------------------------------------------------------------------
 
 void Libre::PackageManager::enable() {
 

@@ -15,6 +15,11 @@ public:
 	Settings () = default;
 	virtual ~Settings () = default;
 
+	// SETTINGS::GET<T> ----------------------------------------------------------
+	// THIS FUNCTION RETURNS THE VALUE STORED IN THE SETTINGS FILE IN THE DEMANDED
+	// TYPE
+	// ---------------------------------------------------------------------------
+
 	template <typename T>
 	T get(std::string arg) {
 		YAML::Node output = YAML::LoadFile("data/settings.yml");
@@ -30,6 +35,10 @@ public:
 		return output[arg].as<T>();
 	}
 
+	// SETTINGS::GET -------------------------------------------------------------
+	// THIS FUNCTION RETURNS THE VALUE STORED IN THE SETTINGS AS YAML::NODE
+	// ---------------------------------------------------------------------------
+
 	YAML::Node get(std::string arg) {
 		YAML::Node output = YAML::LoadFile("data/settings.yml");
 
@@ -43,6 +52,10 @@ public:
 
 		return output[arg];
 	}
+
+	// SETTINGS::SET -------------------------------------------------------------
+	// THIS FUNCTION SAVES THE SETTNGS IN THE SETTINGS FILE
+	// ---------------------------------------------------------------------------
 
 	void set(std::string tag, std::string arg) {
 		YAML::Node node = YAML::LoadFile("data/settings.yml");

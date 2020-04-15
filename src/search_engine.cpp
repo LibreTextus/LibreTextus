@@ -1,5 +1,9 @@
 #include "search_engine.hpp"
 
+// SEARCHENGINE::SEARCHENGINE --------------------------------------------------
+// THIS IS THE CONSTRUCTOR OF THE SEARCHENGINE. IT LOADS THE SOURCE + NAMESFILE
+// -----------------------------------------------------------------------------
+
 SearchEngine::SearchEngine(std::string file_path, std::string names_path) {
 	this->file = this->source_handler.get_source(file_path);
 	this->names = this->source_handler.get_names(names_path);
@@ -7,6 +11,10 @@ SearchEngine::SearchEngine(std::string file_path, std::string names_path) {
 
 	W = "[\\w\\u00C0-\\u024f]";
 }
+
+// SEARCHENGINE::SET_SEARCH_ARGUMENT -------------------------------------------
+// FUNCTION TO SET THE SEARCH ARGUMENT. IT WILL RESET THE LAST SEARCH RESULT
+// -----------------------------------------------------------------------------
 
 void SearchEngine::set_search_argument(std::string arg) {
 	this->search_argument = arg;
@@ -18,13 +26,17 @@ void SearchEngine::set_search_argument(std::string arg) {
 	this->last_result = this->file.begin();
 }
 
+// SEARCHENGINE::SET_MARK_ARGUMENT ---------------------------------------------
+// THIS FUNCTION SETS THE MARK STRING TO HIGHLIGHT THE RESULTS
+// -----------------------------------------------------------------------------
+
 void SearchEngine::set_mark_argument(std::string arg) {
 	this->mark_argument = arg;
 }
 
-void SearchEngine::set_header_argument(std::string arg) {
-	this->header_argument = arg;
-}
+// SEARCHENGINE::SET_SOURCE ----------------------------------------------------
+// THIS FUNCTION SET A NEW SOURCE VIA PATH
+// -----------------------------------------------------------------------------
 
 void SearchEngine::set_source(std::string path) {
 	this->file.clear();
@@ -32,6 +44,10 @@ void SearchEngine::set_source(std::string path) {
 
 	this->last_result = this->file.begin();
 }
+
+// SEARCHENGINE::GET_VERSE -----------------------------------------------------
+// RETURNS VERSE THE ARGUMENT HAS TO BE IN THES FORM: *BOOK, CHAPTER, VERSE*
+// -----------------------------------------------------------------------------
 
 std::string SearchEngine::get_verse(std::string p) {
 	if (this->file.find(p) != this->file.end()) {
@@ -42,6 +58,10 @@ std::string SearchEngine::get_verse(std::string p) {
 	}
 }
 
+// SEARCHENGINE::GET_PROGRESS --------------------------------------------------
+// GET THE SEARCH PROGRESS
+// -----------------------------------------------------------------------------
+
 float SearchEngine::get_progress() {
 	if (this->file.size()) {
 		return static_cast<float>(std::distance(this->file.begin(), this->last_result)) / this->file.size();
@@ -49,6 +69,10 @@ float SearchEngine::get_progress() {
 
 	return 0;
 }
+
+// SEARCHENGINE::SEARCH ------------------------------------------------------­­­--
+// THIS FUNCTION WILL CALL THE SEARCH_BOOK OR THE SEARCH_WORD FUNCTION
+// -----------------------------------------------------------------------------
 
 bool SearchEngine::search(std::string * text) {
 	if (this->is_book) {
@@ -58,6 +82,10 @@ bool SearchEngine::search(std::string * text) {
 		return search_word(text);
 	}
 }
+
+// SEARCHENGINE::SEARCH_BOOK ---------------------------------------------------
+// THIS FUNCTION RETURNS EVERY VERSE LOCATED IN THE ASKED POSITION
+// -----------------------------------------------------------------------------
 
 bool SearchEngine::search_book(std::string * text) {
 
@@ -92,6 +120,10 @@ bool SearchEngine::search_book(std::string * text) {
 	}
 }
 
+// SEARCHENGINE::SEARCH_WORD ---------------------------------------------------
+// THIS FUNCTION ITERATES THRUE THE BOOMAP AT RETURNS THE REGEX MACHES
+// -----------------------------------------------------------------------------
+
 bool SearchEngine::search_word(std::string * text) {
 
 	std::regex e(this->interpreted_argument);
@@ -114,7 +146,22 @@ bool SearchEngine::search_word(std::string * text) {
 	return false;
 }
 
+// SEARCHENGINE::SEARCH_POSITION -----------------------------------------------
+// THIS FUNCTION CHECKES IF THE SEARCH ARGUMENT IS A BOOK POSITION OR A NORMAL
+// SEARCH ARGUMENT. IF IT IS A BOOK POSITION SET THE POSITION AND RETURNS TRUE
+// -----------------------------------------------------------------------------
+
 bool SearchEngine::search_position() {
+
+	std::string arg_backup = this->search_argument;
+
+	// ------------------------------------------
+	// CREATE A TEMPORARY POSITION ARRAY
+	// THIS ARRAY HAS THE FOLLOWING CONTENTS:
+	// 	* { BOOK START, BOOK END }
+	// 	* { CHAPTER START, CHAPTER END }
+	// 	* { VERSE START, VERSE END }
+	// ------------------------------------------
 
 	std::string pos[3][2];
 
@@ -124,138 +171,206 @@ bool SearchEngine::search_position() {
 		}
 	}
 
-	std::regex e(",");	// REGEX ARGUMENT
-	std::smatch m;			// REGEX MATCH
+	// ------------------------------------------
+	// COUNT THE NUMBER OF COMMAS TO KNOW IF THE
+	// ARGUMENT HAS THIS FORM:
+	//	*B, C, V - V*
+	// OR THIR FORM:
+	//	*B, C, V - B, C, V*
+	// ------------------------------------------
 
-	int comma_count = 0;	// NUMBER OF COMMAS
+	std::regex e(",");
+	std::smatch m;
 
-	std::string arg_copy = this->search_argument;	// COPY ARG FOR COUNT COMMAS
+	int comma_count = 0;
 
-	while (std::regex_search(arg_copy, m, e)) {	// WHILE COMMA FOUND
-		comma_count++;														// ADD ONE TO COMMA_COUNT
-		arg_copy = m.suffix().str();							// ARG_COPY TO STRING AFTER FOUND COMMA
+	std::string arg_copy = this->search_argument;
+
+	while (std::regex_search(arg_copy, m, e)) {
+		comma_count++;
+		arg_copy = m.suffix().str();
 	}
 
-	for (Libre::NameMap::iterator i = this->names.begin(); i != this->names.end(); i++) {	// FOR ALL POSSIBLE BOOK NAMES
-		for (std::vector<std::string>::iterator x = i.value().begin(); x != i.value().end(); x++) {		// FOR ALL ALL POSSIBLE SPELLINGS
-			e = "\\b" + *x + "\\b";																																			// FIND SPELLING
-			this->search_argument = std::regex_replace(this->search_argument, e, i->first);							// REPLACE SPELLING WITH DEFAULT SPELLING : 1Mo -> GEN
+	// -----------------------------------------
+	// CHANGE THE POSSIBLE BOOK SHORTCUT TO THE
+	// STANDART SHORTCUT. E.G. 1Mo -> GEN
+	// -----------------------------------------
+
+	for (Libre::NameMap::iterator i = this->names.begin(); i != this->names.end(); i++) {
+		for (std::vector<std::string>::iterator x = i.value().begin(); x != i.value().end(); x++) {
+			e = "\\b" + *x + "\\b";
+			this->search_argument = std::regex_replace(this->search_argument, e, i->first);
 		}
 	}
 
-	e = " ";															// FIND ALL SPACES
-	this->search_argument = std::regex_replace(this->search_argument, e, "");	// AND REPLACE THEM WITH NOTHING (DELETE)
+	// ------------------------------------------
+	// REMOVE ALL SPACES
+	// ------------------------------------------
 
-	if (comma_count == 2) {	// IF THERE ARE TWO COMMAS; THE ARGUMENT LOOKS LIKE *GEN, 1, 1 - 2*
-		e = "[\\w-]+";	// ALL WORD-CHARACTERS [a-zA-z0-9]
-		arg_copy = this->search_argument;	// COPY ARGUMENT FOR FIND WORDS
+	e = " ";
+	this->search_argument = std::regex_replace(this->search_argument, e, "");
 
-		for (int i = 0; i < 3; i++) {	// FOR EVERY ELEMENT OF POSITION-MAP
-			std::regex_search(arg_copy, m, e);	// SEARCH NEXT WORD
+	// ------------------------------------------
+	// DIFFER BETWEEN TWO COMMAS AND FOUR COMMAS
+	// ------------------------------------------
 
-			pos[i][0] = m.str();		// ADD POSITION
-			arg_copy = m.suffix().str();				// ARG_COPY TO STRING AFTER FOUND WORD
-		}
+	if (comma_count == 2) {
 
-		e = "-";	// SEARCH ALL "-"
+		// ------------------------------------------
+		// SPLIT THE ARGUMENT IN BOOK, CHAPTER, VERSE
+		// BUT ALWAY TO THE 0 OF THE ARRAYS
+		// ------------------------------------------
 
-		std::string part;	// USED FOR REGEX_SEARCH
+		e = "[\\w-]+";
+		arg_copy = this->search_argument;
 
 		for (int i = 0; i < 3; i++) {
-			part = pos[i][0];				// PART FOR LOOKING IF THERE IS AN "-"
-			if (std::regex_search(part, m, e)) {					// IF THERE IS AN "-"
-				pos[i][0] = m.prefix().str();	// POSITION RANGE STARTS BEFORE THE "-"
-				pos[i][1] = m.suffix().str();	// POSITION RANGE STOPS AFTER THE "-"
+			std::regex_search(arg_copy, m, e);
+
+			pos[i][0] = m.str();
+			arg_copy = m.suffix().str();
+		}
+
+		// ------------------------------------------
+		// IF THERE IS A *-* SPLIT IT UP IN START END
+		// IF THER IS NO *-* TAKE IT FOR START & END
+		// ------------------------------------------
+
+		e = "-";
+
+		std::string part;
+
+		for (int i = 0; i < 3; i++) {
+			part = pos[i][0];
+			if (std::regex_search(part, m, e)) {
+				pos[i][0] = m.prefix().str();
+				pos[i][1] = m.suffix().str();
 
 			} else {
-				pos[i][1] = pos[i][0];	// IF THERE ARE NO "-" END EQUALS STOP
+				pos[i][1] = pos[i][0];
 			}
 		}
-	} else if (comma_count == 4) {	// IF THERA ARE FOUR COMMAS; THE ARGUMENT LOOKS LIKE *GEN, 1, 1 - GEN, 1, 2*
-		e = "-";											// SEARCH ALL "-"
+	} else if (comma_count == 4) {
+
+		// ------------------------------------------
+		// SEARCH THE *-* FOR SPLITTING IT UP
+		// ------------------------------------------
+
+		e = "-";
 		std::regex_search(this->search_argument, m, e);
 
-		std::string prefix = m.prefix().str();	// GET PART BEFORE "-"
-		std::string suffix = m.suffix().str();	// GET PART AFTER "-"
+		std::string prefix = m.prefix().str();
+		std::string suffix = m.suffix().str();
 
-		e = "\\w+";	// SEARCH EVERY WORD
+		// ------------------------------------------
+		// SET VARIABLE *PREFIX* AS START POSITION
+		// SET VARIABLE *SUFFIX* AS END POSITION
+		// ------------------------------------------
 
-		for (int i = 0; i < 3; i++) {	// FOR EVERY POSITION
-			std::regex_search(prefix, m, e);				// FIND EVERY WORD
-			pos[i][0] = m.str();	// PUSH BACK TO BOOK / CHAPTER / VERSE
-			prefix = m.suffix().str();							// SET "PREFIX" TO STRING AFTER FOUND WORD
+		e = "\\w+";
 
-			std::regex_search(suffix, m, e);				// JUST SAME AS THE BEFORE BUT AFTER THE "-"
+		for (int i = 0; i < 3; i++) {
+			std::regex_search(prefix, m, e);
+			pos[i][0] = m.str();
+			prefix = m.suffix().str();
+
+			std::regex_search(suffix, m, e);
 			pos[i][1] = m.str();
 			suffix = m.suffix().str();
 		}
 	}
-	// 1Mo, 1, 2 - 4
+
+	// ------------------------------------------
+	// SET THE POSITION AND IF EVERY POSITION IS
+	// KNOWN RETURN TRUE ELSE RESET SEARCH
+	// ARGUMENT AND RETURN FALSE
+	// ------------------------------------------
 
 	this->positions[0] = pos[0][0] + ", " + pos[1][0] + ", " + pos[2][0];
 	this->positions[1] = pos[0][1] + ", " + pos[1][1] + ", " + pos[2][1];
 
 	if (pos[0][1] == "" || pos[1][1] == "" || pos[2][1] == "") {
+		this->search_argument = arg_backup;
 		return false;
 	}
 
 	return true;
 }
 
+// SEARCHENGINE::INTERPRET_ARGUMENT --------------------------------------------
+// THIS FUNCTION TURNS THE SEARCH ARGUMENT INTO A REGEX ARGUMENT
+// -----------------------------------------------------------------------------
+
 void SearchEngine::interpret_argument(std::string * arg) {
 
-	// -- CHECK QUOTES
+	// ------------------------------------------
+	// IF THERE ARE QUOTED WORDS REPLACE IT WITH
+	// *&ç&€* AND AFTER EVERY MANIPULATION
+	// INSERT THE QUOTED WORDS IN ITS PLACE
+	// THE REPLACE STRING HAS TO BE NON-WORD
+	// CHARACTERS THAT THEY WONT BE SELECTED
+	// IN THE FOLLOWING PROCESS
+	// ------------------------------------------
 
-	std::regex e("\".[^\"]*\"");	//	EVERYTHING WHICH HAS QUOTES AS BORDERS AND DOES NOT CONTAIN BORDERS
+	std::regex e("\".[^\"]*\"");
 	std::smatch m;
-	std::vector<std::string> static_expressions;	//	EVERY EXPRESSION WITH QUOTES BELONGS INTO THIS VECTOR
+	std::vector<std::string> static_expressions;
 
-	std::string arg_copy = *arg;										//	COPY ARGUMENTS FOR SEARCHING THE QUOTES
+	std::string arg_copy = *arg;
 
-	while (std::regex_search(arg_copy, m, e)) {		//	WHILE REGEX_SEARCH FINDS SOMETHING
-		static_expressions.push_back(m.str());			//	ADD QUOTED STRINGS TO THIS VECTOR
-		arg_copy = m.suffix().str();								//	USE STRING AFTER FOUND PART FOR NEXT SEARCH STATEMENT
+	while (std::regex_search(arg_copy, m, e)) {
+		static_expressions.push_back(m.str());
+		arg_copy = m.suffix().str();
 	}
 
-	*arg = regex_replace(*arg, e, "&ç&€");		//	REPLACE EVERY QUOTED PART WITH "&ç&€"
+	*arg = regex_replace(*arg, e, "&ç&€");
 
-	// -- WORD SUBDIVISION
+	// ------------------------------------------
+	// SELECT EVERY WORD AND LIST THEM IN
+	// PARANTHESES WITH *OR* OPERATORS
+	// ------------------------------------------
 
-	e = "[\\w\\*]+";	//	SELECT EVERY WORD (WITH FOLLOWING "*") EXCEPT "&ç&€"
-	*arg = std::regex_replace(*arg, e, "\\b$&\\b");		//	ADD "\b" AT THE END AND BEGINNING
+	e = "[\\w\\*]+";
+	*arg = std::regex_replace(*arg, e, "\\b$&\\b");
 
-	e = "\\*";																		//	SELECT EVERY "*"
-	*arg = std::regex_replace(*arg, e, "\\w*");		//	REPLACE IT WHITH [:WORD_CONTAINING_UMLAUTS:]*
+	e = "\\*";
+	*arg = std::regex_replace(*arg, e, "\\w*");
 
-	e = " ";																			//	SELECT EVERY [:SPACE:]
+	e = " ";
 
-	if (std::regex_search(*arg, e)) {							//	IF THERE ARE SPACES
-		*arg = "(" + *arg + ")";											//	PUT STRING IN PARANTHESES
-		*arg = std::regex_replace(*arg, e, "|");			//	PUT A "OR"-SIGN BETWEEN EVERY WORD
+	if (std::regex_search(*arg, e)) {
+		*arg = "(" + *arg + ")";
+		*arg = std::regex_replace(*arg, e, "|");
 	}
 
-	// -- FOR EVERY ELEMENT IN VECTOR INSERT IN THE OLD PLACE
+	// ------------------------------------------
+	// INSERT THE QUOTED WORDS ON THEIR POSITION
+	// AND DELETE THE QUOTES
+	// ------------------------------------------
 
 	for (std::vector<std::string>::iterator i = static_expressions.begin(); i != static_expressions.end(); i++) {
-		e = "\\b" + W + "+\\b";															//	SELECT EVERY WORD
-		*i = regex_replace(*i, e, "\\b$&\\b");							//	PUT "\b" AT THE END AND BEGINNING
+		e = "\\b" + W + "+\\b";
+		*i = regex_replace(*i, e, "\\b$&\\b");
 
-		e = "\\*";																					//	SEARCH FOR EVERY "*"
-		*i = regex_replace(*i, e, "\\*");										//	REPLACE WITH "\*"
+		e = "\\*";
+		*i = regex_replace(*i, e, "\\*");
 
-		e = "&ç&€";																	//	SELECT EVERY "&ç&€"
+		e = "&ç&€";
 
-		if (std::regex_search(*arg, m, e))	{									//	IF THERE ARE ANY "&ç&€"
-			*arg = m.prefix().str() + *i + m.suffix().str();		//	REPLACE IT WITH THE QUOTED STATEMENT
+		if (std::regex_search(*arg, m, e))	{
+			*arg = m.prefix().str() + *i + m.suffix().str();
 		}
 	}
 
-	e = "\"";																							//	SELECT EVERY QUOTE
-	*arg = std::regex_replace(*arg, e, "");									// 	DELETE THE QUOTE
+	e = "\"";
+	*arg = std::regex_replace(*arg, e, "");
 }
 
-void SearchEngine::mark_result(std::string * text) {
+// SEARCHENGINE::MARK_RESULT ---------------------------------------------------
+// THIS FUNCTION REPLACES THE RESULT WITH THE RESULT WITH MARKS
+// -----------------------------------------------------------------------------
 
+void SearchEngine::mark_result(std::string * text) {
 	std::regex e(this->interpreted_argument);
 	*text = std::regex_replace(*text, e, this->mark_argument);
 }

@@ -31,15 +31,15 @@ void SignalHandler::init(Libre::Widgets * w) {
 	// ------------------------------------------
 
 	Gdk::RGBA rgba;
-	this->widgets->style->lookup_color("theme_highlight_color", rgba); // GET HIGHLIGHT COLOR AS FLOAT
+	this->widgets->style->lookup_color("theme_highlight_color", rgba);
 
-	std::string r, g, b;	// CREATE A STRING FOR RED, GREEN AND BLUE
+	std::string r, g, b;
 
 	std::stringstream stream;
-	stream << std::hex << static_cast<int>(rgba.get_red() * 255); // MULIPLY WITH 255 AND CONVERT TO HEX
-	r = stream.str();																							// SET RED
-	if (r.length() < 2) { r = "0" + r; }													// IF HAS ONLY LENGHT 1 PREPEND A 0
-	stream.str("");																								// CLEAR STREAM
+	stream << std::hex << static_cast<int>(rgba.get_red() * 255);
+	r = stream.str();
+	if (r.length() < 2) { r = "0" + r; }
+	stream.str("");
 
 	// ------------------------------------------
 	// DO THE SAME THING WITH GREEN AS WITH RED
@@ -70,7 +70,6 @@ void SignalHandler::init(Libre::Widgets * w) {
 	// ------------------------------------------
 
 	this->search_engine[0].set_mark_argument(this->mark_argument);
-	this->search_engine[0].set_header_argument(this->header_argument);
 }
 
 // SIGNAL_HANDLER::SEARCH_REQUEST ----------------------------------------------
@@ -93,7 +92,7 @@ gboolean SignalHandler::search_request(GdkEventKey * event) {
 		for (int i = 0; i < this->widgets->combo_boxes.size(); i++) {
 			this->widgets->combo_boxes[i]->set_button_sensitivity(Gtk::SENSITIVITY_OFF);
 			this->widgets->close_buttons[i]->set_sensitive(false);
-			this->widgets->search_results[i]->set_text("");	// CLEAR EVERY TEXT_BUFFER
+			this->widgets->search_results[i]->set_text("");
 		}
 
 		this->widgets->add_button->set_sensitive(false);
@@ -101,7 +100,7 @@ gboolean SignalHandler::search_request(GdkEventKey * event) {
 		this->widgets->search_entry->set_editable(false);
 		this->widgets->action_group->set_sensitive(false);
 
-		this->widgets->replace_id = -1;	// SET REPLACE_ID TO -1
+		this->widgets->replace_id = -1;
 
 		// ------------------------------------------
 		// CREATE A NEW PROCESS_THREAD
@@ -157,7 +156,7 @@ void SignalHandler::source_changed(Gtk::ComboBoxText * b) {
 		}
 	}
 
-	this->widgets->search_results[this->widgets->replace_id]->set_text("");	// CLEAR THE TEXT_BUFFER
+	this->widgets->search_results[this->widgets->replace_id]->set_text("");
 
 	// ------------------------------------------
 	// CREATE A PROCESS_THREAD WHICH CALLES THE
@@ -240,7 +239,7 @@ void SignalHandler::do_search() {
 
 	while (this->search_engine[0].search(&this->widgets->found_text[0][1])) {
 
-		this->widgets->found_text[0][0] = this->search_engine[0].get_last_search_results()->back();	// GET LAST RESULT
+		this->widgets->found_text[0][0] = this->search_engine[0].get_last_search_results()->back();
 
 		this->widgets->found_text[0][1] = "<span font_weight=\"ultralight\">" + this->widgets->found_text[0][0] + "</span>\n\n" + this->widgets->found_text[0][1];
 
@@ -254,16 +253,16 @@ void SignalHandler::do_search() {
 			this->widgets->found_text[i][0] = this->widgets->found_text[0][0];
 		}
 
-		this->widgets->set_text_dispatcher.emit();	// DISPLAY TEXT
+		this->widgets->set_text_dispatcher.emit();
 
 		this->widgets->procress_finished = false;
-		while (!this->widgets->procress_finished) {}	// WAIT UNTIL PROCESS_THREAD IS TRUE
+		while (!this->widgets->procress_finished) {}
 		this->widgets->search_entry->set_progress_fraction(this->search_engine[0].get_progress());
 
 		this->widgets->found_text[0][1] = "";
 	}
 
-	this->widgets->search_entry->set_progress_fraction(0.0);	// SET PROGRESSBAR TO ZERO
+	this->widgets->search_entry->set_progress_fraction(0.0);
 
 	// ------------------------------------------
 	// ENABLE EVERY WIDGETS WHICH WERE DISABLED
@@ -279,7 +278,7 @@ void SignalHandler::do_search() {
 	this->widgets->search_entry->set_editable(true);
 	this->widgets->action_group->set_sensitive(true);
 
-	this->widgets->delete_thread_dispatcher.emit();	// DELETE THIS THREAD
+	this->widgets->delete_thread_dispatcher.emit();
 }
 
 // SIGNALHANDLER::DO_REPLACEMENT -----------------------------------------------
@@ -289,14 +288,14 @@ void SignalHandler::do_search() {
 
 void SignalHandler::do_replacement() {
 
-	this->search_engine[this->widgets->replace_id].set_source(	// CHANGE TO NEW SOURCE
-		"data/" +
+	this->search_engine[this->widgets->replace_id].set_source(
+		this->widgets->package_manager.get_root_path() +
 		this->widgets->sources[std::string(this->widgets->combo_boxes[this->widgets->replace_id]->get_active_text())].as<std::string>()
 	);
 
-	std::vector<std::string> * v = this->search_engine[0].get_last_search_results(); // GET LAST SEARCH RESULTS
+	std::vector<std::string> * v = this->search_engine[0].get_last_search_results();
 
-	int x = 0;	// THE NUMBER OF DISPLAYED VERSES, TO SET THE PROGRESSBAR
+	int x = 0;
 
 	// ------------------------------------------
 	// REPLACE BUFFER WITH NEW SOURCE CONTENT
@@ -308,8 +307,8 @@ void SignalHandler::do_replacement() {
 		this->widgets->found_text[this->widgets->replace_id][1] += this->search_engine[this->widgets->replace_id].get_verse(*i);
 		this->widgets->found_text[this->widgets->replace_id][0] = *i;
 
-		this->widgets->set_text_dispatcher.emit();		// SET TEXT
-		while (!this->widgets->procress_finished) {}	// WAIT UNTIL TEXT SET
+		this->widgets->set_text_dispatcher.emit();
+		while (!this->widgets->procress_finished) {}
 		x++;
 		this->widgets->search_entry->set_progress_fraction(x / static_cast<float>(v->size()));
 	}
@@ -327,9 +326,9 @@ void SignalHandler::do_replacement() {
 
 	this->widgets->search_entry->set_editable(true);
 	this->widgets->action_group->set_sensitive(true);
-	this->widgets->search_entry->set_progress_fraction(0.0);	// RESET PROGRESSBAR
+	this->widgets->search_entry->set_progress_fraction(0.0);
 
-	this->widgets->delete_thread_dispatcher.emit(); 					// DELETE THREAD
+	this->widgets->delete_thread_dispatcher.emit();
 }
 
 // SIGNALHANDLER::QUIT ---------------------------------------------------------
@@ -443,11 +442,14 @@ void SignalHandler::add_source() {
 	// ADD A NEW SEARCH ENGINE AND SET ITS ARGS
 	// ------------------------------------------
 
-	this->search_engine.push_back(SearchEngine("data/BibleEditions/deu/schlachter-1951.yml",
-																					"data/BibleEditions/biblebooks.yml"));
+	this->search_engine.push_back(
+		SearchEngine(
+			this->widgets->package_manager.get_root_path() + this->settings.get<std::string>("startup_file"),
+			this->widgets->package_manager.get_root_path() + this->settings.get<std::string>("names_file")
+		)
+	);
 
 	this->search_engine.back().set_mark_argument(this->mark_argument);
-	this->search_engine.back().set_header_argument(this->header_argument);
 
 	// ------------------------------------------
 	// ADD PANEL AND CONNECT THE BUTTONS

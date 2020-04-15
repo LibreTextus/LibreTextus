@@ -1,4 +1,4 @@
-"Schlachter 1951": "~/.libre_textus/BibleEditions/deu/schlachter-1951.yml"
-"Zürcher 1931": "~/.libre_textus/BibleEditions/deu/zürcher-1931.yml"
-"Luther 1912": "~/.libre_textus/BibleEditions/deu/luther-1912.yml"
-"Textus Receptus": "~/.libre_textus/BibleEditions/grc/tr.yml"
+"Schlachter 1951": "BibleEditions/deu/schlachter-1951.yml"
+"Zürcher 1931": "BibleEditions/deu/zürcher-1931.yml"
+"Luther 1912": "BibleEditions/deu/luther-1912.yml"
+"Textus Receptus": "BibleEditions/grc/tr.yml"

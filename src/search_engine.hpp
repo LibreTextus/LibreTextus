@@ -22,7 +22,6 @@ private:
 	std::string search_argument;
 	std::string interpreted_argument;
 	std::string mark_argument;
-	std::string header_argument;
 	std::string positions[2];
 	bool is_book;
 
@@ -39,7 +38,6 @@ public:
 	bool search(std::string * arg); // SEARCH FUNCTION FOR PUBLIC USE
 	void set_search_argument(std::string arg);
 	void set_mark_argument(std::string arg);
-	void set_header_argument(std::string arg);
 	void set_source(std::string path);
 	float get_progress();
 

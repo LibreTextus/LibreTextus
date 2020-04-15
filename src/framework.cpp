@@ -2,49 +2,61 @@
 
 int Framework::init(int argc, char *argv[]) {
 
-	// CREATE BUILDER AND APP ----------------------------------------------------
+	// ------------------------------------------
+	// CREATE BUILDER AND APPLICATION
+	// ------------------------------------------
 
 	this->widgets.app = Gtk::Application::create(argc, argv);
 
-	// CREATING THE WINDOWS ------------------------------------------------------
+	// ------------------------------------------
+	// CREATING THE WINDOWS
+	// ------------------------------------------
 
-	Libre::MainWindow::create(&this->widgets, &this->signal_handler);	// CREATE MAIN WINDOW
-	this->widgets.window->show_all();																	// SHOW WINDOW
+	Libre::MainWindow::create(&this->widgets, &this->signal_handler);
+	this->widgets.window->show_all();
 
-	Libre::PreferencesWindow::create(&this->widgets, &this->signal_handler); // CREATE PREFERENCES WINDOW
+	Libre::PreferencesWindow::create(&this->widgets, &this->signal_handler);
 
 
-	// ADD CSS -------------------------------------------------------------------
+	// ------------------------------------------
+	// ADD CSS FILE AND LOAD IT
+	// ------------------------------------------
 
-	this->widgets.css = Gtk::CssProvider::create();	// CREATE CSSPROVIDER
+	this->widgets.css = Gtk::CssProvider::create();
 	if(!this->widgets.css->load_from_path("data/" + this->settings.get<std::string>("theme-active") + ".css")) {
-			std::cerr << "Failed to load css\n";				// LOAD CSS FILE AND IF LOADING FAILD RETURN ERROR
+			std::cerr << "Failed to load css\n";
 			return 1;
 	}
 
-	this->widgets.font_size = this->settings.get<int>("font_size");	// GET FONT SIZE FOR BEING ABLE TO CHANGE IT WHILE RUNTIME
-	this->widgets.font_size_css = Gtk::CssProvider::create();				// CREATE FONT_SIZE_CSS PROVIDER
-	this->widgets.font_size_css->load_from_data(										// LOAD CSS FROM STRING FOR FONT SIZE
+	this->widgets.font_size = this->settings.get<int>("font_size");
+	this->widgets.font_size_css = Gtk::CssProvider::create();
+	this->widgets.font_size_css->load_from_data(
 		"* { font-size: " + std::to_string(this->widgets.font_size) + "px; }"
 	);
 
-	Glib::RefPtr<Gdk::Screen> screen = Gdk::Screen::get_default();		// GET SCREEN FOR ADDING CSS
-	this->widgets.style = this->widgets.window->get_style_context();	// GET STYLE CONTEXT FOR ADDING CSS
+	Glib::RefPtr<Gdk::Screen> screen = Gdk::Screen::get_default();
+	this->widgets.style = this->widgets.window->get_style_context();
 	this->widgets.style->add_provider_for_screen(screen, this->widgets.css, GTK_STYLE_PROVIDER_PRIORITY_APPLICATION);
 	this->widgets.style->add_provider_for_screen(screen, this->widgets.font_size_css, GTK_STYLE_PROVIDER_PRIORITY_APPLICATION);
 
-	// CHECK FOR UPDATES ---------------------------------------------------------
+	// ------------------------------------------
+	// CHECK FOR UPDATES
+	// ------------------------------------------
 
 	this->widgets.package_manager.init();
 
-	// INIT SIGNALHANDLER --------------------------------------------------------
+	// ------------------------------------------
+	// INITIALIZE SIGNALHANDLER
+	// ------------------------------------------
 
 	this->signal_handler.init(&this->widgets);
 
-	// SET TEXT ON STARTUP -------------------------------------------------------
+	// ------------------------------------------
+	// SET TEXT ON STARTUP
+	// ------------------------------------------
 
-	this->widgets.search_entry->set_text("GEN, 1, 1-20");	// SET SEARCH TEXT
-	this->widgets.search_entry->set_position(-1);					// SET CURSOR POSITION TO THE END
+	this->widgets.search_entry->set_text("GEN, 1, 1-20");
+	this->widgets.search_entry->set_position(-1);
 
 	// ------------------------------------------
 	// DISABLE EVERYTHING WHICH COULD INTERRUPT
@@ -74,8 +86,6 @@ int Framework::init(int argc, char *argv[]) {
 	// ------------------------------------------
 
 	this->widgets.process_thread = Glib::Thread::create(sigc::mem_fun(this->signal_handler, &SignalHandler::do_search), true);
-
-	// CONNECT SIGNALS -----------------------------------------------------------
 
 	// ------------------------------------------
 	// CONNECT FOLLOWING SIGNALS:

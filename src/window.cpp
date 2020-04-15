@@ -1,23 +1,44 @@
 #include "window.hpp"
 
+// LIBRE::MAINWINDOW::CREATE ---------------------------------------------------
+// THIS FUNCTION CREATES THE MAIN WINDOW
+// -----------------------------------------------------------------------------
+
 bool Libre::MainWindow::create(Libre::Widgets * w, SignalHandler * s) {
-	w->window = new Gtk::Window;							// CREATE NEW WINDOW
-	w->window->set_default_size(1000, 800);	// SET WINDOW SIZE
-	w->window->set_title("LibreTextus");			// SET WINDOW TITLE
+
+	// ------------------------------------------
+	// CREATE A NEW WINDOW AND ITS PROPERTIES
+	// ------------------------------------------
+
+	w->window = new Gtk::Window;
+	w->window->set_default_size(1000, 800);
+	w->window->set_title("LibreTextus");
 	w->window->set_icon_from_file("data/Icon.svg");
 	w->is_fullscreen = false;
 
-	Gtk::VBox * v_box = new Gtk::VBox(false, 0);					// CREATE VBOX
-	w->window->add(*v_box);										// ADD VBOX TO WINDOW
+	// ------------------------------------------
+	// ADD THE ROOT VBOX TO THE WINDOW
+	// ------------------------------------------
 
-	// ADD MENU ------------------------------------------------------------------
+	Gtk::VBox * v_box = new Gtk::VBox(false, 0);
+	w->window->add(*v_box);
 
-	w->action_group = Gtk::ActionGroup::create();	// CREATE ACTIONGROUP
+	// ------------------------------------------
+	// CREATE THE MENUBAR FOR THE WINDOW
+	// ------------------------------------------
 
+	w->action_group = Gtk::ActionGroup::create();
+
+	// ------------------------------------------
 	// CREATE FILE MENU
+	// ------------------------------------------
+
 	w->action_group->add(Gtk::Action::create("FileMenu", Gtk::Stock::FILE));
 
-	// CREATE QUIT SUBMENU
+	// ------------------------------------------
+	// CREATE QUIT MENU
+	// ------------------------------------------
+
 	w->action_group->add(Gtk::Action::create("FileNewTab", "New Tab"),
 			Gtk::AccelKey("<control>T"));
 	w->action_group->add(Gtk::Action::create("FileCloseTab", "Close Tab"),
@@ -25,7 +46,10 @@ bool Libre::MainWindow::create(Libre::Widgets * w, SignalHandler * s) {
 	w->action_group->add(Gtk::Action::create("FileQuit", Gtk::Stock::QUIT),
 					sigc::mem_fun(s, &SignalHandler::quit));
 
+	// ------------------------------------------
 	// CREATE EDIT MENU
+	// ------------------------------------------
+
 	w->action_group->add(Gtk::Action::create("EditMenu", Gtk::Stock::EDIT));
 	w->action_group->add(Gtk::Action::create("EditCut", Gtk::Stock::CUT));
 	w->action_group->add(Gtk::Action::create("EditCopy", Gtk::Stock::COPY));
@@ -35,7 +59,9 @@ bool Libre::MainWindow::create(Libre::Widgets * w, SignalHandler * s) {
 	w->action_group->add(Gtk::Action::create("EditPreferences", Gtk::Stock::PREFERENCES),
 			Gtk::AccelKey(',', Gdk::ModifierType::CONTROL_MASK), sigc::mem_fun(s, &SignalHandler::toggle_preferences));
 
+	// ------------------------------------------
 	// CREATE VIEW MENU
+	// ------------------------------------------
 
 	w->action_group->add(Gtk::Action::create("ViewMenu", "View"));
 	w->action_group->add(Gtk::Action::create("ViewAddSource", "Add Source"),
@@ -57,7 +83,9 @@ bool Libre::MainWindow::create(Libre::Widgets * w, SignalHandler * s) {
 	w->action_group->add(Gtk::Action::create("ViewToggleFullscreen", Gtk::Stock::FULLSCREEN),
 			Gtk::AccelKey("F11"), sigc::mem_fun(s, &SignalHandler::toggle_fullscreen));
 
+	// ------------------------------------------
 	// CREATE HISTORY MENU
+	// ------------------------------------------
 
 	w->action_group->add(Gtk::Action::create("HistoryMenu", "History"));
 	w->action_group->add(Gtk::Action::create("HistoryBack", Gtk::Stock::GO_BACK),
@@ -65,11 +93,17 @@ bool Libre::MainWindow::create(Libre::Widgets * w, SignalHandler * s) {
 	w->action_group->add(Gtk::Action::create("HistoryForward", Gtk::Stock::GO_FORWARD),
 			Gtk::AccelKey("<control><shift>Z"));
 
+	// ------------------------------------------
 	// CREATE HELP MENU
+	// ------------------------------------------
 
 	w->action_group->add(Gtk::Action::create("HelpMenu", Gtk::Stock::HELP));
 	w->action_group->add(Gtk::Action::create("HelpGetHelp", Gtk::Stock::HELP));
 	w->action_group->add(Gtk::Action::create("HelpAbout", Gtk::Stock::ABOUT));
+
+	// ------------------------------------------
+	// ADD UIMANAGER ACCEL GROUP TO THE WINDOW
+	// ------------------------------------------
 
 	w->ui_manager = Gtk::UIManager::create();
 	w->ui_manager->insert_action_group(w->action_group);
@@ -126,26 +160,47 @@ bool Libre::MainWindow::create(Libre::Widgets * w, SignalHandler * s) {
 		std::cerr << "building menus failed: " <<  ex.what();
 	}
 
-	//Get the menubar and toolbar widgets, and add them to a container widget:
+	// ------------------------------------------
+	// ADD MENUBAR TO THE WINDOW
+	// ------------------------------------------
+
 	Gtk::Widget * pMenubar = w->ui_manager->get_widget("/MenuBar");
-	if(pMenubar)
+	if(pMenubar) {
 		v_box->pack_start(*pMenubar, Gtk::PACK_SHRINK);
+	}
 
-	// ADD SEARCHENTRY AND TEXTVIEW
 
-	w->search_entry = new Gtk::SearchEntry;	// CREATE NEW SEARCHENTRY
+	// ------------------------------------------
+	// CREATE SEARCHENTRY AND SET ITS PROPERTIES
+	// ------------------------------------------
+
+	w->search_entry = new Gtk::SearchEntry;
 
 	w->search_entry->set_placeholder_text("Search");
 
 	w->add_button = nullptr;
+
+	// ------------------------------------------
+	// ADD THE STARTUP PANEL TO THE WINDOW
+	// ------------------------------------------
 
 	w->panels = new Gtk::HBox(false, 0);
 	w->panels->set_spacing(5);
 	w->panels->set_border_width(5);
 	w->add_panel();
 
+
+	// ------------------------------------------
+	// DISPLAY THE PANEL AND SEARCHENTRY
+	// ------------------------------------------
+
 	v_box->pack_start(*w->search_entry, Gtk::PACK_SHRINK, 0);
 	v_box->pack_end(*w->panels, Gtk::PACK_EXPAND_WIDGET, 0);
+
+	// ------------------------------------------
+	// CONNECT THE FUNCTIONS TO THE COMBOBOXES
+	// AND TO THE CLOSEBUTTONS
+	// ------------------------------------------
 
 	for (int i = 0; i < w->combo_boxes.size(); i++) {
 		w->combo_boxes[i]->signal_changed().connect(
@@ -163,31 +218,58 @@ bool Libre::MainWindow::create(Libre::Widgets * w, SignalHandler * s) {
 		);
 	}
 
+	// ------------------------------------------
+	// CONNECT FUNCTION TO THE ADD BUTTON
+	// ------------------------------------------
+
 	w->add_button->signal_clicked().connect(sigc::mem_fun(s, &SignalHandler::add_source), false);
 
 	return true;
 }
 
+// LIBRE::MAINWINDOW::CREATE ---------------------------------------------------
+// THIS FUNCTION CREATES THE PREFERENCES WINDOW
+// -----------------------------------------------------------------------------
+
 bool Libre::PreferencesWindow::create(Libre::Widgets * w, SignalHandler * s) {
+
+	// ------------------------------------------
+	// CREATE A NEW WINDOW AND SET ITS PROPERTIES
+	// ------------------------------------------
 
 	w->preferences_window = new Gtk::Window;
 	w->preferences_window->set_default_size(500, 400);
 	w->preferences_window->set_title("Preferences");
 
+	// ------------------------------------------
+	// CREATE A NEW NOTEBOOK AND SET THE TAB
+	// POSITION TO THE LEFT SIDE AND SCROLLABLE
+	// ------------------------------------------
+
 	Gtk::Notebook * note_book = new Gtk::Notebook;
 	note_book->set_scrollable(true);
 	note_book->set_tab_pos(Gtk::POS_LEFT);
 
-	// PAGE ONE: USER INTERFACE
+	// ------------------------------------------
+	// CREATE THE FIRST TAB FOR THE UI SETTINGS
+	// ------------------------------------------
 
 	Gtk::VBox * user_interface_box = new Gtk::VBox;
 	user_interface_box->set_spacing(10);
 
-	// -- THEME SETTINGS
+	// ------------------------------------------
+	// CREATE A CONTAINER, A LABEL, AND A
+	// COMBOBOX FOR SETTING THE THEME
+	// ------------------------------------------
 
 	Gtk::HBox * theme_box = new Gtk::HBox;
 	Gtk::Label * theme_label = new Gtk::Label("Theme", Gtk::ALIGN_START);
 	w->preferences_theme_combo = new Gtk::ComboBoxText;
+
+	// ------------------------------------------
+	// GET THE SETTINGS AND SET THE CHOSEN THEME
+	// TO THE COMBOBOX AS TEXT
+	// ------------------------------------------
 
 	Settings settings;
 
@@ -199,12 +281,19 @@ bool Libre::PreferencesWindow::create(Libre::Widgets * w, SignalHandler * s) {
 		}
 	}
 
+	// ------------------------------------------
+	// DISPLAY THE LABEL AND COMBOBOX
+	// ------------------------------------------
+
 	theme_box->pack_start(*theme_label);
 	theme_box->pack_end(*w->preferences_theme_combo);
 
 	user_interface_box->pack_start(*theme_box, Gtk::PACK_SHRINK, 0);
 
-	// -- FONT SIZE SETTINGS
+	// ------------------------------------------
+	// CREATE A CONTAINER, LABEL AND SPINBUTTON
+	// FOR SETTING THE APPLICATION FONT SIZE
+	// ------------------------------------------
 
 	Gtk::HBox * font_size_box = new Gtk::HBox;
 	Gtk::Label * font_size_label = new Gtk::Label("Font size", Gtk::ALIGN_START);
@@ -214,6 +303,10 @@ bool Libre::PreferencesWindow::create(Libre::Widgets * w, SignalHandler * s) {
 
 	w->font_size_spinbutton = new Gtk::SpinButton(spinbutton_adjustment, 1, 0);
 
+	// ------------------------------------------
+	// DISPLAY THE LABEL AND THE SPINBUTTON
+	// ------------------------------------------
+
 	font_size_box->pack_start(*font_size_label);
 	font_size_box->pack_end(*w->font_size_spinbutton);
 
@@ -221,16 +314,19 @@ bool Libre::PreferencesWindow::create(Libre::Widgets * w, SignalHandler * s) {
 
 	note_book->append_page(*user_interface_box, "User Interface");
 
-	// PAGE TWO: KEYBINDINGS
+	// ------------------------------------------
+	// CREATE THE KEYBINDINGS SETTINGS TAB
+	// ------------------------------------------
 
 	Gtk::Label * l2 = new Gtk::Label("Keybindings");
 
 	note_book->append_page(*l2, "Keybindings");
 
-	// PAGE THREE: BOOKS
+	// ------------------------------------------
+	// CREATE THE BOOKS MANAGER TAB
+	// ------------------------------------------
 
 	Gtk::VBox * books_box = new Gtk::VBox;
-
 
 	note_book->append_page(*books_box, "Books");
 

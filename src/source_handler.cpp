@@ -4,6 +4,10 @@ std::map<std::string, Libre::BookMap> SourceHandler::sources;
 Libre::NameMap SourceHandler::names;
 std::vector<std::string> SourceHandler::compare_v;
 
+// SOURCEHANDLER::GET_SOURCE ---------------------------------------------------
+// THIS FUNCTION RETURNS THE SOURCE. THE SOURCE MAP HAS THE FOLLOWING CONTENTS:
+// 		* "BOOK, CHAPTER, VERSE" -> VERSE CONTENT
+// -----------------------------------------------------------------------------
 
 
 Libre::BookMap SourceHandler::get_source(std::string s) {
@@ -15,6 +19,10 @@ Libre::BookMap SourceHandler::get_source(std::string s) {
 
 	return this->sources[s];
 }
+
+// SOURCEHANDLER::TO_MAP -------------------------------------------------------
+// THIS FUNCTION TURNS A SOURCE NODE INTO A LIBRE::BOOKMAP
+// -----------------------------------------------------------------------------
 
 Libre::BookMap SourceHandler::to_map(YAML::Node n) {
 	Libre::BookMap output;
@@ -30,6 +38,10 @@ Libre::BookMap SourceHandler::to_map(YAML::Node n) {
 	return output;
 }
 
+// SOURCEHANDLER::GET_NAMES ----------------------------------------------------
+// THIS FUNCTION RETURNS THE DEMANDED NAMES FILE
+// -----------------------------------------------------------------------------
+
 Libre::NameMap SourceHandler::get_names(std::string s) {
 
 	if (this->sources.find(s) == this->sources.end()) {
@@ -39,6 +51,10 @@ Libre::NameMap SourceHandler::get_names(std::string s) {
 
 	return this->names;
 }
+
+// SOURCEHANDLER::TO_NAMES -----------------------------------------------------
+// THIS FUNCTION TURNS A NAMES NODE TO A LIBRE::NAMEMAP
+// -----------------------------------------------------------------------------
 
 Libre::NameMap SourceHandler::to_names(YAML::Node n) {
 	Libre::NameMap output;

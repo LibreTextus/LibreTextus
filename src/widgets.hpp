@@ -13,12 +13,11 @@ namespace Libre {
 	class Widgets {
 	public:
 
-		Glib::RefPtr<Gtk::UIManager> ui_manager;
-		Glib::RefPtr<Gtk::ActionGroup> action_group;
-
 		PackageManager package_manager;
 
-		// USED BY GUI THREAD
+		// -------------------------------------------------------------------------
+		// DECLINE VARIABLES USED BY THE GUI THREAD
+		// -------------------------------------------------------------------------
 
 		Gtk::Window * window;
 		Glib::RefPtr<Gtk::Application> app;
@@ -38,8 +37,12 @@ namespace Libre {
 		bool is_fullscreen;
 		Gtk::Window * preferences_window;
 		Gtk::ComboBoxText * preferences_theme_combo;
+		Glib::RefPtr<Gtk::UIManager> ui_manager;
+		Glib::RefPtr<Gtk::ActionGroup> action_group;
 
-		// USED BY SEARCH TRHEAD
+		// -------------------------------------------------------------------------
+		// DECLINE VARIABLES USED BY THE PROCESS THREAD
+		// -------------------------------------------------------------------------
 
 		Glib::Thread * process_thread;
 		Glib::Dispatcher set_text_dispatcher;
@@ -59,6 +62,10 @@ namespace Libre {
 			delete preferences_window;
 		}
 
+		// LIBRE::WIDGETS::APPENDS_SOURCES -----------------------------------------
+		// THIS FUNCTION APPENDS ALL ENABLED SOURCES TO AN COMBOBOXTEXT
+		// -------------------------------------------------------------------------
+
 		void append_sources(Gtk::ComboBoxText * combo_box) {
 			for (YAML::const_iterator i = this->sources.begin(); i != this->sources.end(); i++) {
 				combo_box->append(i->first.as<std::string>());
@@ -67,7 +74,16 @@ namespace Libre {
 			combo_box->set_active(0);
 		}
 
+		// LIBRE::WIDGETS::ADD_PANEL -----------------------------------------------
+		// THIS FUNCTION ADDS A NEW PANEL TO THE WINDOW
+		// -------------------------------------------------------------------------
+
 		void add_panel() {
+
+			// ------------------------------------------
+			// ADD HEADER AND TEXT_VIEW TO CONTAINER
+			// ------------------------------------------
+
 			Gtk::VBox * scrl_container = new Gtk::VBox(false, 0);
 			this->text_views.push_back(new Gtk::TextView);
 			Gtk::ScrolledWindow * scrolled_window = new Gtk::ScrolledWindow;
@@ -76,6 +92,10 @@ namespace Libre {
 			this->close_buttons.back()->set_image_from_icon_name("window-close", Gtk::ICON_SIZE_BUTTON);
 			this->close_buttons.back()->set_name("view_button");
 
+			// ------------------------------------------
+			// SET PROPERTIES OF TEXT_VIEW
+			// ------------------------------------------
+
 			this->search_results.push_back(Gtk::TextBuffer::create());
 			this->text_views.back()->set_buffer(this->search_results.back());
 			this->text_views.back()->set_editable(false);
@@ -83,14 +103,27 @@ namespace Libre {
 			this->text_views.back()->set_wrap_mode(Gtk::WRAP_WORD);
 			this->text_views.back()->set_border_width(10);
 
+			// ------------------------------------------
+			// DISPLAY HEADER AND SCROLLED_WINDOW
+			// ------------------------------------------
+
 			scrl_container->pack_start(*this->headers.back(), Gtk::PACK_SHRINK, 0);
 			scrl_container->pack_end(*scrolled_window, Gtk::PACK_EXPAND_WIDGET, 0);
 
 			scrolled_window->add(*this->text_views.back());
 
+			// ------------------------------------------
+			// ADD COMBOBOX TO HEADER AND APPEND SOURCES
+			// ------------------------------------------
+
 			this->combo_boxes.push_back(new Gtk::ComboBoxText);
 
 			this->append_sources(this->combo_boxes.back());
+
+			// ------------------------------------------
+			// REMOVE THE ADD BUTTON FROM THE LAST HEADER
+			// AND ADD IT TO THIS HEADER
+			// ------------------------------------------
 
 			if (this->add_button != nullptr) {
 				this->add_button->get_parent()->remove(*this->add_button);

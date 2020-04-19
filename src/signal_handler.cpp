@@ -609,7 +609,17 @@ void SignalHandler::remove_source_by_reference(Gtk::Button * b) {
 	}
 }
 
+// SIGNALHANDLER::ADD_SOURCE_DIR -----------------------------------------------
+// THIS FUNCTION CREATES A NEW DIALOG_WINDOW, ASKS FOR THE URL AND INSTALLES THE
+// NEW SOURCES FROM THE GIVEN GIT REPOSITORY
+// -----------------------------------------------------------------------------
+
 void SignalHandler::add_source_dir() {
+	// ------------------------------------------
+	// CHECK IF THE DIALOG WINDOW IS EXISTING
+	// IF TRUE DELETE IT AND CREATE AN NEW ONE
+	// ------------------------------------------
+
 	if (this->widgets->dialog_window != nullptr) {
 		delete this->widgets->dialog_window;
 	}
@@ -619,9 +629,17 @@ void SignalHandler::add_source_dir() {
 	this->widgets->dialog_window->set_keep_above(true);
 	this->widgets->dialog_window->set_resizable(false);
 
+	// ------------------------------------------
+	// CREATE THE ROOT BOX FOR THE DIALOG WINDOW
+	// ------------------------------------------
+
 	Gtk::VBox * box = new Gtk::VBox;
 	box->set_border_width(10);
 	box->set_spacing(10);
+
+	// ------------------------------------------
+	// CREATE THE WIDGETS FOR THE DIALOG WINDOW
+	// ------------------------------------------
 
 	Gtk::Label * url_label = new Gtk::Label("Enter the url of your git source repository: ");
 
@@ -645,6 +663,10 @@ void SignalHandler::add_source_dir() {
 
 	this->widgets->dialog_window->show_all();
 
+	// ------------------------------------------
+	// CONNECT SIGNALS
+	// ------------------------------------------
+
 	ok_button->signal_clicked().connect([url_entry, this]() {
 		this->widgets->package_manager.install(url_entry->get_text());
 		this->widgets->dialog_window->close();
@@ -662,5 +684,9 @@ void SignalHandler::add_source_dir() {
 }
 
 void SignalHandler::remove_source_dir() {
-	std::cout << "REMOVE_SOURCE_DIR FUNCTION CALLED" << '\n';
+	std::vector<std::string> packages = this->widgets->package_manager.get_packages();
+
+	for (int i = 0; i < packages.size(); i++) {
+		std::cout << packages[i] << '\n';
+	}
 }

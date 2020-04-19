@@ -5,7 +5,6 @@
 #include <iostream>
 #include <yaml-cpp/yaml.h>
 #include <thread>
-#include <mutex>
 #include <algorithm>
 #include "search_engine.hpp"
 #include "settings.hpp"
@@ -48,6 +47,9 @@ public:
 	void add_source();
 	void remove_source();
 	void remove_source_by_reference(Gtk::Button * b);
+
+	void add_source_dir();
+	void remove_source_dir();
 
 	void theme_changed();
 	void default_font_size_changed();

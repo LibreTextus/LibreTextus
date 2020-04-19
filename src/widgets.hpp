@@ -39,6 +39,7 @@ namespace Libre {
 		Gtk::ComboBoxText * preferences_theme_combo;
 		Glib::RefPtr<Gtk::UIManager> ui_manager;
 		Glib::RefPtr<Gtk::ActionGroup> action_group;
+		Gtk::Window * dialog_window;
 
 		// -------------------------------------------------------------------------
 		// DECLINE VARIABLES USED BY THE PROCESS THREAD

@@ -44,15 +44,15 @@ void Libre::PackageManager::init() {
 // THIS FUNCTION INSTALLES A NEW SOURCE PACKAGES OVER GIT
 // -----------------------------------------------------------------------------
 
-void Libre::PackageManager::install() {
-
+void Libre::PackageManager::install(std::string url) {
+	std::cout << "Installing:" << url << '\n';
 }
 
 // LIBRE::PACKAGEMANAGER::REMOVE -----------------------------------------------
 // THIS FUNCTION REMOVES A SOURCE FROM THE ROOT DIRECTORY AND THE SOURCES LIST
 // -----------------------------------------------------------------------------
 
-void Libre::PackageManager::remove() {
+void Libre::PackageManager::remove(std::string) {
 
 }
 
@@ -61,7 +61,7 @@ void Libre::PackageManager::remove() {
 // LISTED ON THE COMBOBOXTEXT
 // -----------------------------------------------------------------------------
 
-void Libre::PackageManager::disable() {
+void Libre::PackageManager::disable(std::string) {
 
 }
 
@@ -69,6 +69,6 @@ void Libre::PackageManager::disable() {
 // THIS FUNCTION ADDS THE SOURCE TO THE COMBOBOXTEXT SO YOU CAN SELECT IT
 // -----------------------------------------------------------------------------
 
-void Libre::PackageManager::enable() {
+void Libre::PackageManager::enable(std::string) {
 
 }

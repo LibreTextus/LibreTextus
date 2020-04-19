@@ -5,6 +5,7 @@
 #include <stdlib.h>
 #include <experimental/filesystem>
 #include "settings.hpp"
+#include <iostream>
 
 namespace Libre {
   class PackageManager {
@@ -16,12 +17,11 @@ namespace Libre {
     PackageManager() = default;
     virtual ~PackageManager() = default;
 
-		void check_updates();
     void init();
-    void remove();
-    void install();
-    void disable();
-    void enable();
+    void remove(std::string);
+    void install(std::string);
+    void disable(std::string);
+    void enable(std::string);
 
 		std::string get_root_path() {
 			return this->root_path;

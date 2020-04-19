@@ -17,6 +17,8 @@ int Framework::init(int argc, char *argv[]) {
 
 	Libre::PreferencesWindow::create(&this->widgets, &this->signal_handler);
 
+	this->widgets.dialog_window = nullptr;
+
 
 	// ------------------------------------------
 	// ADD CSS FILE AND LOAD IT

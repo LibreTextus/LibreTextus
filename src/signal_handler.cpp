@@ -608,3 +608,59 @@ void SignalHandler::remove_source_by_reference(Gtk::Button * b) {
 
 	}
 }
+
+void SignalHandler::add_source_dir() {
+	if (this->widgets->dialog_window != nullptr) {
+		delete this->widgets->dialog_window;
+	}
+	this->widgets->dialog_window = new Gtk::Window;
+	this->widgets->dialog_window->set_title("Add source directory");
+	this->widgets->dialog_window->set_default_size(500, 100);
+	this->widgets->dialog_window->set_keep_above(true);
+	this->widgets->dialog_window->set_resizable(false);
+
+	Gtk::VBox * box = new Gtk::VBox;
+	box->set_border_width(10);
+	box->set_spacing(10);
+
+	Gtk::Label * url_label = new Gtk::Label("Enter the url of your git source repository: ");
+
+	Gtk::Entry * url_entry = new Gtk::Entry;
+	url_entry->set_placeholder_text("url: example.org/your/source.git");
+
+	Gtk::HBox * button_container = new Gtk::HBox;
+	button_container->set_spacing(10);
+
+	Gtk::Button * ok_button = new Gtk::Button("OK");
+	Gtk::Button * cancel_button = new Gtk::Button("Cancel");
+
+	button_container->pack_end(*ok_button, Gtk::PACK_SHRINK, 0);
+	button_container->pack_end(*cancel_button, Gtk::PACK_SHRINK, 0);
+
+	box->pack_start(*url_label, Gtk::PACK_SHRINK, 0);
+	box->pack_start(*url_entry, Gtk::PACK_SHRINK, 0);
+	box->pack_start(*button_container, Gtk::PACK_SHRINK, 0);
+
+	this->widgets->dialog_window->add(*box);
+
+	this->widgets->dialog_window->show_all();
+
+	ok_button->signal_clicked().connect([url_entry, this]() {
+		this->widgets->package_manager.install(url_entry->get_text());
+		this->widgets->dialog_window->close();
+	}, false);
+
+	url_entry->signal_key_press_event().connect([ok_button](GdkEventKey * event) -> gboolean {
+		if (event->keyval == 65293) {
+			ok_button->clicked();
+		}
+		return false;
+	}, false);
+
+	cancel_button->signal_clicked().connect([this]() { this->widgets->dialog_window->close(); });
+
+}
+
+void SignalHandler::remove_source_dir() {
+	std::cout << "REMOVE_SOURCE_DIR FUNCTION CALLED" << '\n';
+}

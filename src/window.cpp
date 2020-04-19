@@ -328,7 +328,83 @@ bool Libre::PreferencesWindow::create(Libre::Widgets * w, SignalHandler * s) {
 
 	Gtk::VBox * books_box = new Gtk::VBox;
 
-	note_book->append_page(*books_box, "Books");
+	Gtk::Label * books_page_title = new Gtk::Label("Book Manager");
+
+	Gtk::ScrolledWindow * manager_container = new Gtk::ScrolledWindow;
+	manager_container->set_border_width(20);
+
+	books_box->pack_start(*books_page_title, Gtk::PACK_SHRINK, 0);
+
+	Gtk::VBox * manager = new Gtk::VBox;
+	manager->set_spacing(5);
+
+	Gtk::Label * book_title = new Gtk::Label("Source");
+	Gtk::HBox * book_container = new Gtk::HBox;
+	book_container->set_border_width(20);
+	Gtk::CheckButton * enable_checkbutton;
+
+	book_container->pack_start(*book_title, Gtk::PACK_SHRINK, 0);
+	book_title = new Gtk::Label("Enable");
+	book_container->pack_end(*book_title, Gtk::PACK_SHRINK, 0);
+	books_box->pack_start(*book_container, Gtk::PACK_SHRINK, 0);
+
+	Gtk::Separator * sep = new Gtk::Separator;
+
+	books_box->pack_start(*sep, Gtk::PACK_SHRINK, 0);
+
+	books_box->pack_start(*manager_container, Gtk::PACK_EXPAND_WIDGET, 0);
+
+	for (YAML::const_iterator i = w->sources.begin(); i != w->sources.end(); i++) {
+		book_container = new Gtk::HBox;
+		book_title = new Gtk::Label(i->first.as<std::string>(), Gtk::ALIGN_START);
+		enable_checkbutton = new Gtk::CheckButton;
+		enable_checkbutton->set_active(true);
+
+		book_container->pack_start(*book_title, Gtk::PACK_SHRINK, 0);
+		book_container->pack_end(*enable_checkbutton, Gtk::PACK_SHRINK, 0);
+		manager->pack_start(*book_container, Gtk::PACK_SHRINK, 0);
+	}
+
+	manager_container->add(*manager);
+
+	Gtk::HBox * manage_panel = new Gtk::HBox;
+	manage_panel->set_border_width(20);
+	Gtk::Button * add = new Gtk::Button;
+	add->set_image_from_icon_name("list-add", Gtk::ICON_SIZE_BUTTON);
+	add->set_name("view_button");
+	Gtk::Button * remove = new Gtk::Button;
+	remove->set_image_from_icon_name("list-remove", Gtk::ICON_SIZE_BUTTON);
+	remove->set_name("view_button");
+
+	manage_panel->pack_end(*add, Gtk::PACK_SHRINK, 0);
+	manage_panel->pack_end(*remove, Gtk::PACK_SHRINK, 0);
+
+	books_box->pack_end(*manage_panel, Gtk::PACK_SHRINK, 0);
+
+	sep = new Gtk::Separator;
+	books_box->pack_end(*sep, Gtk::PACK_SHRINK, 0);
+
+	note_book->append_page(*books_box, "Book Manager");
+
+	// ------------------------------------------
+	// CONNECT BUTTONS TO FUNCTIONS
+	// ------------------------------------------
+
+	add->signal_clicked().connect(
+		sigc::mem_fun(s, &SignalHandler::add_source_dir),
+		false
+	);
+
+	remove->signal_clicked().connect(
+		sigc::mem_fun(s, &SignalHandler::remove_source_dir),
+		false
+	);
+
+
+
+	// ------------------------------------------
+	// ADD NOTEBOOK TO THE PREFERENCES WINDOW
+	// ------------------------------------------
 
 	w->preferences_window->add(*note_book);
 

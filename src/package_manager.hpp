@@ -22,6 +22,7 @@ namespace Libre {
     void install(std::string);
     void disable(std::string);
     void enable(std::string);
+		std::vector<std::string> get_packages();
 
 		std::string get_root_path() {
 			return this->root_path;

@@ -33,7 +33,7 @@ void Libre::PackageManager::init() {
 	// ------------------------------------------
 
 	if (std::experimental::filesystem::is_empty(this->root_path)) {
-		system(("git clone http://hackernet.local:3000/LibreTextus/BibleEditions " + this->root_path + "BibleEditions/").c_str());
+		this->install("http://hackernet.local:3000/LibreTextus/BibleEditions");
 		std::experimental::filesystem::rename(this->root_path + "BibleEditions/biblebooks.yml",
 																					this->root_path + "biblebooks.yml");
 	}
@@ -45,15 +45,19 @@ void Libre::PackageManager::init() {
 // -----------------------------------------------------------------------------
 
 void Libre::PackageManager::install(std::string url) {
-	std::cout << "Installing:" << url << '\n';
+	std::string name;
+
+	name = url.substr(url.find_last_of("/") + 1);
+
+	system(("git clone " + url + " " + this->root_path + name).c_str());
 }
 
 // LIBRE::PACKAGEMANAGER::REMOVE -----------------------------------------------
 // THIS FUNCTION REMOVES A SOURCE FROM THE ROOT DIRECTORY AND THE SOURCES LIST
 // -----------------------------------------------------------------------------
 
-void Libre::PackageManager::remove(std::string) {
-
+void Libre::PackageManager::remove(std::string path) {
+	std::experimental::filesystem::remove_all(this->root_path + path);
 }
 
 // LIBRE::PACKAGEMANAGER::DISABLE ----------------------------------------------
@@ -71,4 +75,16 @@ void Libre::PackageManager::disable(std::string) {
 
 void Libre::PackageManager::enable(std::string) {
 
+}
+
+std::vector<std::string> Libre::PackageManager::get_packages() {
+	std::vector<std::string> output;
+
+	for (auto & i : std::experimental::filesystem::directory_iterator(this->root_path)) {
+		if (std::experimental::filesystem::is_directory(i.path())) {
+			output.push_back(i.path().filename().string());
+		}
+	}
+
+	return output;
 }

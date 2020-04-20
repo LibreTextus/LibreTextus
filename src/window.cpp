@@ -344,7 +344,7 @@ bool Libre::PreferencesWindow::create(Libre::Widgets * w, SignalHandler * s) {
 	Gtk::CheckButton * enable_checkbutton;
 
 	book_container->pack_start(*book_title, Gtk::PACK_SHRINK, 0);
-	book_title = new Gtk::Label("Enable");
+	book_title = new Gtk::Label("Enabled");
 	book_container->pack_end(*book_title, Gtk::PACK_SHRINK, 0);
 	books_box->pack_start(*book_container, Gtk::PACK_SHRINK, 0);
 

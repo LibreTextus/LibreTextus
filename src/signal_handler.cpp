@@ -641,7 +641,7 @@ void SignalHandler::add_source_dir() {
 	// CREATE THE WIDGETS FOR THE DIALOG WINDOW
 	// ------------------------------------------
 
-	Gtk::Label * url_label = new Gtk::Label("Enter the url of your git source repository: ");
+	Gtk::Label * url_label = new Gtk::Label("Enter the url of your git source repository:");
 
 	Gtk::Entry * url_entry = new Gtk::Entry;
 	url_entry->set_placeholder_text("url: example.org/your/source.git");
@@ -668,8 +668,8 @@ void SignalHandler::add_source_dir() {
 	// ------------------------------------------
 
 	ok_button->signal_clicked().connect([url_entry, this]() {
-		this->widgets->package_manager.install(url_entry->get_text());
 		this->widgets->dialog_window->close();
+		this->widgets->package_manager.install(url_entry->get_text());
 	}, false);
 
 	url_entry->signal_key_press_event().connect([ok_button](GdkEventKey * event) -> gboolean {
@@ -684,9 +684,52 @@ void SignalHandler::add_source_dir() {
 }
 
 void SignalHandler::remove_source_dir() {
+	if (this->widgets->dialog_window != nullptr) {
+		delete this->widgets->dialog_window;
+	}
+	this->widgets->dialog_window = new Gtk::Window;
+	this->widgets->dialog_window->set_title("Add source directory");
+	this->widgets->dialog_window->set_default_size(300, 100);
+	this->widgets->dialog_window->set_keep_above(true);
+	this->widgets->dialog_window->set_resizable(false);
+
+	Gtk::VBox * box = new Gtk::VBox;
+	box->set_border_width(10);
+	box->set_spacing(10);
+
+	Gtk::Label * path_label = new Gtk::Label("Chose the repository you want to be removed:");
+	Gtk::ComboBoxText * combo = new Gtk::ComboBoxText;
+
+	Gtk::HBox * button_container = new Gtk::HBox;
+	button_container->set_spacing(10);
+
+	Gtk::Button * ok_button = new Gtk::Button("OK");
+	Gtk::Button * cancel_button = new Gtk::Button("Cancel");
+
+	button_container->pack_end(*ok_button, Gtk::PACK_SHRINK, 0);
+	button_container->pack_end(*cancel_button, Gtk::PACK_SHRINK, 0);
+
+	box->pack_start(*path_label, Gtk::PACK_SHRINK, 0);
+	box->pack_start(*combo, Gtk::PACK_SHRINK, 0);
+	box->pack_start(*button_container, Gtk::PACK_SHRINK, 0);
+
 	std::vector<std::string> packages = this->widgets->package_manager.get_packages();
 
 	for (int i = 0; i < packages.size(); i++) {
-		std::cout << packages[i] << '\n';
+		combo->append(packages[i]);
 	}
+
+	combo->set_active(0);
+
+	this->widgets->dialog_window->add(*box);
+	this->widgets->dialog_window->show_all();
+
+	ok_button->signal_clicked().connect([combo, this]() {
+		this->widgets->dialog_window->close();
+		this->widgets->package_manager.remove(combo->get_active_text());
+	});
+
+	cancel_button->signal_clicked().connect([this]() {
+		this->widgets->dialog_window->close();
+	});
 }

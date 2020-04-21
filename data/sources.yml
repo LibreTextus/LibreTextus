@@ -1,4 +1,19 @@
-"Schlachter 1951": "BibleEditions/deu/schlachter-1951.yml"
-"Zürcher 1931": "BibleEditions/deu/zürcher-1931.yml"
-"Luther 1912": "BibleEditions/deu/luther-1912.yml"
-"Textus Receptus": "BibleEditions/grc/tr.yml"
+"Schlachter 1951":
+  package: BibleEditions
+  path: "BibleEditions/deu/schlachter-1951.yml"
+  enabled: true
+
+"Zürcher 1931":
+  package: BibleEditions
+  path: "BibleEditions/deu/zürcher-1931.yml"
+  enabled: true
+
+"Luther 1912":
+  package: BibleEditions
+  path: "BibleEditions/deu/luther-1912.yml"
+  enabled: true
+
+"Textus Receptus":
+  package: BibleEditions
+  path: "BibleEditions/grc/tr.yml"
+  enabled: true

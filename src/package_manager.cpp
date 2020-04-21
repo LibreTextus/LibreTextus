@@ -5,7 +5,9 @@
 // INSTALLED IN THE PACKAGE_DIRECTORY IT WILL INSTALL THE DEFAULT
 // -----------------------------------------------------------------------------
 
-void Libre::PackageManager::init() {
+void Libre::PackageManager::init(YAML::Node s) {
+
+	this->sources = s;
 
 	// ------------------------------------------
 	// GET ROOT DIR AND REPLACE THE *~* WTIH THE
@@ -56,8 +58,8 @@ void Libre::PackageManager::install(std::string url) {
 // THIS FUNCTION REMOVES A SOURCE FROM THE ROOT DIRECTORY AND THE SOURCES LIST
 // -----------------------------------------------------------------------------
 
-void Libre::PackageManager::remove(std::string path) {
-	std::experimental::filesystem::remove_all(this->root_path + path);
+void Libre::PackageManager::remove(std::string package) {
+	std::experimental::filesystem::remove_all(this->root_path + package);
 }
 
 // LIBRE::PACKAGEMANAGER::DISABLE ----------------------------------------------
@@ -65,16 +67,34 @@ void Libre::PackageManager::remove(std::string path) {
 // LISTED ON THE COMBOBOXTEXT
 // -----------------------------------------------------------------------------
 
-void Libre::PackageManager::disable(std::string) {
+void Libre::PackageManager::disable(std::string package) {
+	this->sources[package]["enabled"] = false;
 
+	YAML::Emitter emitter;
+	emitter << this->sources;
+
+	std::ofstream fout("data/sources.yml");
+	if (fout.is_open()) {
+		fout << emitter.c_str();
+		fout.close();
+	}
 }
 
 // LIBRE::PACKAGEMANAGER::ENABLE -----------------------------------------------
 // THIS FUNCTION ADDS THE SOURCE TO THE COMBOBOXTEXT SO YOU CAN SELECT IT
 // -----------------------------------------------------------------------------
 
-void Libre::PackageManager::enable(std::string) {
+void Libre::PackageManager::enable(std::string package) {
+	this->sources[package]["enabled"] = true;
 
+	YAML::Emitter emitter;
+	emitter << this->sources;
+
+	std::ofstream fout("data/sources.yml");
+	if (fout.is_open()) {
+		fout << emitter.c_str();
+		fout.close();
+	}
 }
 
 std::vector<std::string> Libre::PackageManager::get_packages() {

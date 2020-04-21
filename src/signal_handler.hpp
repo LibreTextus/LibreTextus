@@ -51,6 +51,8 @@ public:
 	void add_source_dir();
 	void remove_source_dir();
 
+	void sync_enabled_sources();
+
 	void theme_changed();
 	void default_font_size_changed();
 };

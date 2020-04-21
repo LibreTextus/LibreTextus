@@ -19,7 +19,6 @@ int Framework::init(int argc, char *argv[]) {
 
 	this->widgets.dialog_window = nullptr;
 
-
 	// ------------------------------------------
 	// ADD CSS FILE AND LOAD IT
 	// ------------------------------------------
@@ -45,7 +44,7 @@ int Framework::init(int argc, char *argv[]) {
 	// CHECK FOR UPDATES
 	// ------------------------------------------
 
-	this->widgets.package_manager.init();
+	this->widgets.package_manager.init(this->widgets.sources);
 
 	// ------------------------------------------
 	// INITIALIZE SIGNALHANDLER
@@ -108,6 +107,11 @@ int Framework::init(int argc, char *argv[]) {
 
 	this->widgets.font_size_spinbutton->signal_value_changed().connect(
 		sigc::mem_fun(this->signal_handler, &SignalHandler::default_font_size_changed),
+		false
+	);
+
+	this->widgets.app->signal_startup().connect(
+		sigc::mem_fun(this->signal_handler, &SignalHandler::sync_enabled_sources),
 		false
 	);
 

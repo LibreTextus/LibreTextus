@@ -357,12 +357,17 @@ bool Libre::PreferencesWindow::create(Libre::Widgets * w, SignalHandler * s) {
 	for (YAML::const_iterator i = w->sources.begin(); i != w->sources.end(); i++) {
 		book_container = new Gtk::HBox;
 		book_title = new Gtk::Label(i->first.as<std::string>(), Gtk::ALIGN_START);
-		enable_checkbutton = new Gtk::CheckButton;
-		enable_checkbutton->set_active(true);
+		w->preferences_sources_check[i->first.as<std::string>()] = new Gtk::CheckButton;
 
 		book_container->pack_start(*book_title, Gtk::PACK_SHRINK, 0);
-		book_container->pack_end(*enable_checkbutton, Gtk::PACK_SHRINK, 0);
+		book_container->pack_end(*w->preferences_sources_check[i->first.as<std::string>()], Gtk::PACK_SHRINK, 0);
 		manager->pack_start(*book_container, Gtk::PACK_SHRINK, 0);
+
+		w->preferences_sources_check[i->first.as<std::string>()]->signal_clicked().connect([s, w, i]() {
+			(w->preferences_sources_check[i->first.as<std::string>()]->get_active() ?
+				w->package_manager.enable(i->first.as<std::string>()) : w->package_manager.disable(i->first.as<std::string>()));
+				s->sync_enabled_sources();
+		});
 	}
 
 	manager_container->add(*manager);

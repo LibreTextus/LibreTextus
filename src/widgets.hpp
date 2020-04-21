@@ -6,6 +6,7 @@
 #include <gtkmm.h>
 #include <iostream>
 #include <yaml-cpp/yaml.h>
+#include <tsl/ordered_map.h>
 
 #include "package_manager.hpp"
 
@@ -25,7 +26,6 @@ namespace Libre {
 		Glib::RefPtr<Gtk::CssProvider> css;
 		Glib::RefPtr<Gtk::CssProvider> font_size_css;
 		int font_size;
-		Gtk::SpinButton * font_size_spinbutton;
 		Gtk::HBox * panels;
 		Gtk::SearchEntry * search_entry;
 		Gtk::Button * add_button;
@@ -35,8 +35,12 @@ namespace Libre {
 		std::vector<Gtk::ComboBoxText *> combo_boxes;
 		std::vector<Glib::RefPtr<Gtk::TextBuffer>> search_results;
 		bool is_fullscreen;
+
 		Gtk::Window * preferences_window;
+		Gtk::SpinButton * font_size_spinbutton;
 		Gtk::ComboBoxText * preferences_theme_combo;
+		tsl::ordered_map<std::string, Gtk::CheckButton *> preferences_sources_check;
+
 		Glib::RefPtr<Gtk::UIManager> ui_manager;
 		Glib::RefPtr<Gtk::ActionGroup> action_group;
 		Gtk::Window * dialog_window;
@@ -55,7 +59,7 @@ namespace Libre {
 		YAML::Node sources;
 
 		Widgets() {
-			sources = YAML::LoadFile("data/sources.yml");
+			this->sources = YAML::LoadFile("data/sources.yml");
 		}
 
 		~Widgets() {
@@ -69,9 +73,10 @@ namespace Libre {
 
 		void append_sources(Gtk::ComboBoxText * combo_box) {
 			for (YAML::const_iterator i = this->sources.begin(); i != this->sources.end(); i++) {
-				combo_box->append(i->first.as<std::string>());
+				if (i->second["enabled"].as<std::string>() == "true") {
+					combo_box->append(i->first.as<std::string>());
+				}
 			}
-
 			combo_box->set_active(0);
 		}
 

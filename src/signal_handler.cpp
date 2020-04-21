@@ -290,7 +290,7 @@ void SignalHandler::do_replacement() {
 
 	this->search_engine[this->widgets->replace_id].set_source(
 		this->widgets->package_manager.get_root_path() +
-		this->widgets->sources[std::string(this->widgets->combo_boxes[this->widgets->replace_id]->get_active_text())].as<std::string>()
+		this->widgets->sources[std::string(this->widgets->combo_boxes[this->widgets->replace_id]->get_active_text())]["path"].as<std::string>()
 	);
 
 	std::vector<std::string> * v = this->search_engine[0].get_last_search_results();
@@ -732,4 +732,35 @@ void SignalHandler::remove_source_dir() {
 	cancel_button->signal_clicked().connect([this]() {
 		this->widgets->dialog_window->close();
 	});
+}
+
+void SignalHandler::sync_enabled_sources() {
+	for (int i = 0; i < this->widgets->combo_boxes.size(); i++) {
+		Gtk::HBox * parent = this->widgets->headers[i];
+		std::vector<Gtk::Widget *> v = parent->get_children();
+
+		int pos = std::distance(v.end(), std::find(v.begin(), v.end(), this->widgets->combo_boxes[i]));
+
+		delete this->widgets->combo_boxes[i];
+		this->widgets->combo_boxes[i] = new Gtk::ComboBoxText;
+
+		parent->pack_end(*this->widgets->combo_boxes[i], Gtk::PACK_SHRINK, 0);
+		parent->reorder_child(*this->widgets->combo_boxes[i], pos);
+
+		this->widgets->combo_boxes[i]->show();
+
+		this->widgets->append_sources(this->widgets->combo_boxes[i]);
+
+		this->widgets->combo_boxes[i]->signal_changed().connect(
+			sigc::bind<Gtk::ComboBoxText *>(
+			sigc::mem_fun(this, &SignalHandler::source_changed),
+			this->widgets->combo_boxes[i]),
+			false
+		);
+	}
+
+
+	for (YAML::const_iterator i = this->widgets->sources.begin(); i != this->widgets->sources.end(); i++) {
+		this->widgets->preferences_sources_check[i->first.as<std::string>()]->set_active(i->second["enabled"].as<std::string>() == "true");
+	}
 }

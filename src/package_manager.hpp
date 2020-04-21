@@ -3,6 +3,7 @@
 
 #include <string>
 #include <stdlib.h>
+#include <yaml-cpp/yaml.h>
 #include <experimental/filesystem>
 #include "settings.hpp"
 #include <iostream>
@@ -12,12 +13,13 @@ namespace Libre {
   private:
     std::string root_path;
     Settings settings;
+		YAML::Node sources;
 
   public:
     PackageManager() = default;
     virtual ~PackageManager() = default;
 
-    void init();
+    void init(YAML::Node sources);
     void remove(std::string);
     void install(std::string);
     void disable(std::string);

@@ -42,6 +42,7 @@ namespace Libre {
 		Gtk::Window * preferences_window;
 		Gtk::SpinButton * font_size_spinbutton;
 		Gtk::ComboBoxText * preferences_theme_combo;
+		Gtk::VBox * book_manager_box;
 		tsl::ordered_map<std::string, Gtk::CheckButton *> preferences_sources_check;
 
 		Glib::RefPtr<Gtk::UIManager> ui_manager;
@@ -59,8 +60,6 @@ namespace Libre {
 		bool procress_finished;
 		int replace_id;
 
-		YAML::Node sources;
-
 		Widgets() = default;
 
 		~Widgets() {
@@ -74,7 +73,7 @@ namespace Libre {
 
 		void append_sources(Gtk::ComboBoxText * combo_box) {
 			for (YAML::const_iterator i = this->package_manager.get_sources().begin(); i != this->package_manager.get_sources().end(); i++) {
-				if (i->second["enabled"].as<std::string>() == "true") {
+				if (this->package_manager.is_enabled(i->first.as<std::string>())) {
 					combo_box->append(i->first.as<std::string>());
 				}
 			}

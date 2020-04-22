@@ -335,8 +335,8 @@ bool Libre::PreferencesWindow::create(Libre::Widgets * w, SignalHandler * s) {
 
 	books_box->pack_start(*books_page_title, Gtk::PACK_SHRINK, 0);
 
-	Gtk::VBox * manager = new Gtk::VBox;
-	manager->set_spacing(5);
+	w->book_manager_box = new Gtk::VBox;
+	w->book_manager_box->set_spacing(5);
 
 	Gtk::Label * book_title = new Gtk::Label("Source");
 	Gtk::HBox * book_container = new Gtk::HBox;
@@ -354,14 +354,14 @@ bool Libre::PreferencesWindow::create(Libre::Widgets * w, SignalHandler * s) {
 
 	books_box->pack_start(*manager_container, Gtk::PACK_EXPAND_WIDGET, 0);
 
-	for (YAML::const_iterator i = w->sources.begin(); i != w->sources.end(); i++) {
+	for (YAML::const_iterator i = w->package_manager.get_sources().begin(); i != w->package_manager.get_sources().end(); i++) {
 		book_container = new Gtk::HBox;
 		book_title = new Gtk::Label(i->first.as<std::string>(), Gtk::ALIGN_START);
 		w->preferences_sources_check[i->first.as<std::string>()] = new Gtk::CheckButton;
 
 		book_container->pack_start(*book_title, Gtk::PACK_SHRINK, 0);
 		book_container->pack_end(*w->preferences_sources_check[i->first.as<std::string>()], Gtk::PACK_SHRINK, 0);
-		manager->pack_start(*book_container, Gtk::PACK_SHRINK, 0);
+		w->book_manager_box->pack_start(*book_container, Gtk::PACK_SHRINK, 0);
 
 		w->preferences_sources_check[i->first.as<std::string>()]->signal_clicked().connect([s, w, i]() {
 			(w->preferences_sources_check[i->first.as<std::string>()]->get_active() ?
@@ -370,7 +370,7 @@ bool Libre::PreferencesWindow::create(Libre::Widgets * w, SignalHandler * s) {
 		});
 	}
 
-	manager_container->add(*manager);
+	manager_container->add(*w->book_manager_box);
 
 	Gtk::HBox * manage_panel = new Gtk::HBox;
 	manage_panel->set_border_width(20);

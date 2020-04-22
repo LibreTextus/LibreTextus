@@ -5,7 +5,7 @@
 // INSTALLED IN THE PACKAGE_DIRECTORY IT WILL INSTALL THE DEFAULT
 // -----------------------------------------------------------------------------
 
-void Libre::PackageManager::init(YAML::Node s) {
+void Libre::PackageManager::init() {
 
 	this->dummy_path = "data/dummy.yml";
 	this->sources = YAML::LoadFile("data/sources.yml");

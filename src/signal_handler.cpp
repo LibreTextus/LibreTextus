@@ -668,6 +668,7 @@ void SignalHandler::add_source_dir() {
 	ok_button->signal_clicked().connect([url_entry, this]() {
 		this->widgets->dialog_window->close();
 		this->widgets->package_manager.install(url_entry->get_text());
+		this->sync_enabled_sources();
 	}, false);
 
 	url_entry->signal_key_press_event().connect([ok_button](GdkEventKey * event) -> gboolean {
@@ -678,8 +679,6 @@ void SignalHandler::add_source_dir() {
 	}, false);
 
 	cancel_button->signal_clicked().connect([this]() { this->widgets->dialog_window->close(); });
-
-	this->sync_enabled_sources();
 }
 
 // SIGNALHANDLER::REMOVE_SOURCE_DIR --------------------------------------------
@@ -748,13 +747,12 @@ void SignalHandler::remove_source_dir() {
 	ok_button->signal_clicked().connect([combo, this]() {
 		this->widgets->dialog_window->close();
 		this->widgets->package_manager.remove(combo->get_active_text());
+		this->sync_enabled_sources();
 	});
 
 	cancel_button->signal_clicked().connect([this]() {
 		this->widgets->dialog_window->close();
 	});
-
-	this->sync_enabled_sources();
 }
 
 // SIGNALHANDLER::SYNC_ENABLED_SOURCES -----------------------------------------
@@ -796,7 +794,36 @@ void SignalHandler::sync_enabled_sources() {
 	// SYNC THE CHECKBUTTONS IN THE BOOK MANAGER
 	// ------------------------------------------
 
-	for (YAML::const_iterator i = this->widgets->sources.begin(); i != this->widgets->sources.end(); i++) {
-		this->widgets->preferences_sources_check[i->first.as<std::string>()]->set_active(i->second["enabled"].as<std::string>() == "true");
+	for (YAML::const_iterator i = this->widgets->package_manager.get_sources().begin(); i != this->widgets->package_manager.get_sources().end(); i++) {
+		delete this->widgets->preferences_sources_check[i->first.as<std::string>()];
 	}
+
+	this->widgets->preferences_sources_check.clear();
+
+	std::vector<Gtk::Widget *> v = this->widgets->book_manager_box->get_children();
+
+	for (std::vector<Gtk::Widget *>::iterator i = v.begin(); i != v.end(); i++) {
+		this->widgets->book_manager_box->remove(*(*i));
+	}
+
+	for (YAML::const_iterator i = this->widgets->package_manager.get_sources().begin(); i != this->widgets->package_manager.get_sources().end(); i++) {
+		Gtk::HBox * book_container = new Gtk::HBox;
+		Gtk::Label * book_title = new Gtk::Label(i->first.as<std::string>(), Gtk::ALIGN_START);
+		this->widgets->preferences_sources_check[i->first.as<std::string>()] = new Gtk::CheckButton;
+
+		this->widgets->preferences_sources_check[i->first.as<std::string>()]->set_active(this->widgets->package_manager.is_enabled(i->first.as<std::string>()));
+
+		book_container->pack_start(*book_title, Gtk::PACK_SHRINK, 0);
+		book_container->pack_end(*this->widgets->preferences_sources_check[i->first.as<std::string>()], Gtk::PACK_SHRINK, 0);
+		this->widgets->book_manager_box->pack_start(*book_container, Gtk::PACK_SHRINK, 0);
+
+		this->widgets->book_manager_box->show_all();
+
+		this->widgets->preferences_sources_check[i->first.as<std::string>()]->signal_clicked().connect([this, i]() {
+			(this->widgets->preferences_sources_check[i->first.as<std::string>()]->get_active() ?
+				this->widgets->package_manager.enable(i->first.as<std::string>()) : this->widgets->package_manager.disable(i->first.as<std::string>()));
+				this->sync_enabled_sources();
+		});
+	}
+
 }

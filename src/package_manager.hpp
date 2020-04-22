@@ -21,7 +21,7 @@ namespace Libre {
     PackageManager() = default;
     virtual ~PackageManager() = default;
 
-    void init(YAML::Node sources);
+    void init();
     void remove(std::string);
     void install(std::string);
     void disable(std::string);
@@ -44,6 +44,10 @@ namespace Libre {
 			}
 
 			return this->dummy_path;
+		}
+
+		bool is_enabled(std::string name) {
+			return (this->sources[name]["enabled"].as<std::string>() == "true");
 		}
   };
 }

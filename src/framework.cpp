@@ -44,7 +44,7 @@ int Framework::init(int argc, char *argv[]) {
 	// CHECK FOR UPDATES
 	// ------------------------------------------
 
-	this->widgets.package_manager.init(this->widgets.sources);
+	this->widgets.package_manager.init();
 
 	// ------------------------------------------
 	// INITIALIZE SIGNALHANDLER

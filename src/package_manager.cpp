@@ -7,7 +7,8 @@
 
 void Libre::PackageManager::init(YAML::Node s) {
 
-	this->sources = s;
+	this->dummy_path = "data/dummy.yml";
+	this->sources = YAML::LoadFile("data/sources.yml");
 
 	// ------------------------------------------
 	// GET ROOT DIR AND REPLACE THE *~* WTIH THE
@@ -39,7 +40,6 @@ void Libre::PackageManager::init(YAML::Node s) {
 		std::experimental::filesystem::rename(this->root_path + "BibleEditions/biblebooks.yml",
 																					this->root_path + "biblebooks.yml");
 	}
-
 }
 
 // LIBRE::PACKAGEMANAGER::INSTALL ----------------------------------------------
@@ -52,6 +52,33 @@ void Libre::PackageManager::install(std::string url) {
 	name = url.substr(url.find_last_of("/") + 1);
 
 	system(("git clone " + url + " " + this->root_path + name).c_str());
+
+	for (auto & i : std::experimental::filesystem::directory_iterator(this->root_path + name)) {
+		if (std::experimental::filesystem::is_directory(i.path())) {
+			for (auto & f : std::experimental::filesystem::directory_iterator(i.path().string())) {
+				if (f.path().extension() == ".yml" || f.path().extension() == ".yaml") {
+					std::regex e("[_-]");
+					std::string file = std::regex_replace(f.path().stem().string(), e, " ");
+					YAML::Node f_info;
+					f_info["path"] = f.path().string();
+					f_info["package"] = name;
+					f_info["enabled"] = true;
+
+					this->sources[file] = f_info;
+				}
+			}
+		}
+	}
+
+	YAML::Emitter emitter;
+	emitter << this->sources;
+
+	std::ofstream fout("data/sources.yml");
+	if (fout.is_open()) {
+		fout << emitter.c_str();
+		fout.close();
+	}
+
 }
 
 // LIBRE::PACKAGEMANAGER::REMOVE -----------------------------------------------
@@ -60,6 +87,23 @@ void Libre::PackageManager::install(std::string url) {
 
 void Libre::PackageManager::remove(std::string package) {
 	std::experimental::filesystem::remove_all(this->root_path + package);
+
+	for (YAML::const_iterator i = this->sources.begin(); i != this->sources.end();) {
+		if (i->second["package"].as<std::string>() == package) {
+			this->sources.remove(i->first);
+			continue;
+		}
+		i++;
+	}
+
+	YAML::Emitter emitter;
+	emitter << this->sources;
+
+	std::ofstream fout("data/sources.yml");
+	if (fout.is_open()) {
+		fout << emitter.c_str();
+		fout.close();
+	}
 }
 
 // LIBRE::PACKAGEMANAGER::DISABLE ----------------------------------------------

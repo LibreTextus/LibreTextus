@@ -9,6 +9,7 @@
 #include <tsl/ordered_map.h>
 
 #include "package_manager.hpp"
+#include "settings.hpp"
 
 namespace Libre {
 	class Widgets {
@@ -19,6 +20,8 @@ namespace Libre {
 		// -------------------------------------------------------------------------
 		// DECLINE VARIABLES USED BY THE GUI THREAD
 		// -------------------------------------------------------------------------
+
+		Settings settings;
 
 		Gtk::Window * window;
 		Glib::RefPtr<Gtk::Application> app;
@@ -58,9 +61,7 @@ namespace Libre {
 
 		YAML::Node sources;
 
-		Widgets() {
-			this->sources = YAML::LoadFile("data/sources.yml");
-		}
+		Widgets() = default;
 
 		~Widgets() {
 			delete window;
@@ -72,12 +73,12 @@ namespace Libre {
 		// -------------------------------------------------------------------------
 
 		void append_sources(Gtk::ComboBoxText * combo_box) {
-			for (YAML::const_iterator i = this->sources.begin(); i != this->sources.end(); i++) {
+			for (YAML::const_iterator i = this->package_manager.get_sources().begin(); i != this->package_manager.get_sources().end(); i++) {
 				if (i->second["enabled"].as<std::string>() == "true") {
 					combo_box->append(i->first.as<std::string>());
 				}
 			}
-			combo_box->set_active(0);
+			combo_box->set_active_text(this->settings.get<std::string>("startup_file"));
 		}
 
 		// LIBRE::WIDGETS::ADD_PANEL -----------------------------------------------

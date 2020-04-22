@@ -5,6 +5,7 @@
 #include <stdlib.h>
 #include <yaml-cpp/yaml.h>
 #include <experimental/filesystem>
+#include <regex>
 #include "settings.hpp"
 #include <iostream>
 
@@ -14,6 +15,7 @@ namespace Libre {
     std::string root_path;
     Settings settings;
 		YAML::Node sources;
+		std::string dummy_path;
 
   public:
     PackageManager() = default;
@@ -28,6 +30,20 @@ namespace Libre {
 
 		std::string get_root_path() {
 			return this->root_path;
+		}
+
+		YAML::Node get_sources() {
+			return this->sources;
+		}
+
+		std::string get_source_path(std::string name) {
+			for (YAML::const_iterator i = this->sources.begin(); i != this->sources.end(); i++) {
+				if (i->first.as<std::string>() == name) {
+					return i->second["path"].as<std::string>();
+				}
+			}
+
+			return this->dummy_path;
 		}
   };
 }

@@ -18,11 +18,10 @@ void SignalHandler::init(Libre::Widgets * w) {
 
 	this->search_engine.push_back(
 		SearchEngine(
-			this->widgets->package_manager.get_root_path() + this->settings.get<std::string>("startup_file"),
+			this->widgets->package_manager.get_source_path(this->settings.get<std::string>("startup_file")),
 			this->widgets->package_manager.get_root_path() + this->settings.get<std::string>("names_file")
 		)
 	);
-
 	// ------------------------------------------
 	// GET HIGHLIGHT COLOR FROM THE CSS FILE
 	// HAVE TO CONVERT RGB FLOATING POINT
@@ -289,8 +288,7 @@ void SignalHandler::do_search() {
 void SignalHandler::do_replacement() {
 
 	this->search_engine[this->widgets->replace_id].set_source(
-		this->widgets->package_manager.get_root_path() +
-		this->widgets->sources[std::string(this->widgets->combo_boxes[this->widgets->replace_id]->get_active_text())]["path"].as<std::string>()
+		this->widgets->package_manager.get_source_path(std::string(this->widgets->combo_boxes[this->widgets->replace_id]->get_active_text()))
 	);
 
 	std::vector<std::string> * v = this->search_engine[0].get_last_search_results();
@@ -444,7 +442,7 @@ void SignalHandler::add_source() {
 
 	this->search_engine.push_back(
 		SearchEngine(
-			this->widgets->package_manager.get_root_path() + this->settings.get<std::string>("startup_file"),
+			this->widgets->package_manager.get_source_path(this->settings.get<std::string>("startup_file")),
 			this->widgets->package_manager.get_root_path() + this->settings.get<std::string>("names_file")
 		)
 	);
@@ -681,17 +679,32 @@ void SignalHandler::add_source_dir() {
 
 	cancel_button->signal_clicked().connect([this]() { this->widgets->dialog_window->close(); });
 
+	this->sync_enabled_sources();
 }
 
+// SIGNALHANDLER::REMOVE_SOURCE_DIR --------------------------------------------
+// THIS FUNCTION IS CALLED WHEN THE REMOVE BUTTON IN THE BOOK MANAGER IS PUSHED
+// -----------------------------------------------------------------------------
+
 void SignalHandler::remove_source_dir() {
+
+	// ------------------------------------------
+	// DELETE THE OLD WINDOW AND CREATE A NEW ONE
+	// ------------------------------------------
+
 	if (this->widgets->dialog_window != nullptr) {
 		delete this->widgets->dialog_window;
 	}
+
 	this->widgets->dialog_window = new Gtk::Window;
 	this->widgets->dialog_window->set_title("Add source directory");
 	this->widgets->dialog_window->set_default_size(300, 100);
 	this->widgets->dialog_window->set_keep_above(true);
 	this->widgets->dialog_window->set_resizable(false);
+
+	// ------------------------------------------
+	// CREATE ALL WIDGETS AND THEIR PROPERTIES
+	// ------------------------------------------
 
 	Gtk::VBox * box = new Gtk::VBox;
 	box->set_border_width(10);
@@ -705,6 +718,10 @@ void SignalHandler::remove_source_dir() {
 
 	Gtk::Button * ok_button = new Gtk::Button("OK");
 	Gtk::Button * cancel_button = new Gtk::Button("Cancel");
+
+	// ------------------------------------------
+	// PACK WIDGETS TO THE DIALOG WINDOW
+	// ------------------------------------------
 
 	button_container->pack_end(*ok_button, Gtk::PACK_SHRINK, 0);
 	button_container->pack_end(*cancel_button, Gtk::PACK_SHRINK, 0);
@@ -724,6 +741,10 @@ void SignalHandler::remove_source_dir() {
 	this->widgets->dialog_window->add(*box);
 	this->widgets->dialog_window->show_all();
 
+	// ------------------------------------------
+	// CONNECT FUNCTIONS TO BUTTONS
+	// ------------------------------------------
+
 	ok_button->signal_clicked().connect([combo, this]() {
 		this->widgets->dialog_window->close();
 		this->widgets->package_manager.remove(combo->get_active_text());
@@ -732,9 +753,21 @@ void SignalHandler::remove_source_dir() {
 	cancel_button->signal_clicked().connect([this]() {
 		this->widgets->dialog_window->close();
 	});
+
+	this->sync_enabled_sources();
 }
 
+// SIGNALHANDLER::SYNC_ENABLED_SOURCES -----------------------------------------
+// THIS FUNCTION SYNCS THE SOURCES AND REMOVES THE DISABLED SOURCES
+// FROM THE COMBOBOXES
+// -----------------------------------------------------------------------------
+
 void SignalHandler::sync_enabled_sources() {
+
+	// ------------------------------------------
+	// SYNC THE COMBO BOXES
+	// ------------------------------------------
+
 	for (int i = 0; i < this->widgets->combo_boxes.size(); i++) {
 		Gtk::HBox * parent = this->widgets->headers[i];
 		std::vector<Gtk::Widget *> v = parent->get_children();
@@ -759,6 +792,9 @@ void SignalHandler::sync_enabled_sources() {
 		);
 	}
 
+	// ------------------------------------------
+	// SYNC THE CHECKBUTTONS IN THE BOOK MANAGER
+	// ------------------------------------------
 
 	for (YAML::const_iterator i = this->widgets->sources.begin(); i != this->widgets->sources.end(); i++) {
 		this->widgets->preferences_sources_check[i->first.as<std::string>()]->set_active(i->second["enabled"].as<std::string>() == "true");

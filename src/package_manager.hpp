@@ -6,6 +6,7 @@
 #include <yaml-cpp/yaml.h>
 #include <experimental/filesystem>
 #include <regex>
+#include <gtkmm.h>
 #include "settings.hpp"
 #include <iostream>
 

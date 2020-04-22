@@ -3,6 +3,12 @@
 int Framework::init(int argc, char *argv[]) {
 
 	// ------------------------------------------
+	// CHECK FOR UPDATES
+	// ------------------------------------------
+
+	this->widgets.package_manager.init();
+
+	// ------------------------------------------
 	// CREATE BUILDER AND APPLICATION
 	// ------------------------------------------
 
@@ -39,12 +45,6 @@ int Framework::init(int argc, char *argv[]) {
 	this->widgets.style = this->widgets.window->get_style_context();
 	this->widgets.style->add_provider_for_screen(screen, this->widgets.css, GTK_STYLE_PROVIDER_PRIORITY_APPLICATION);
 	this->widgets.style->add_provider_for_screen(screen, this->widgets.font_size_css, GTK_STYLE_PROVIDER_PRIORITY_APPLICATION);
-
-	// ------------------------------------------
-	// CHECK FOR UPDATES
-	// ------------------------------------------
-
-	this->widgets.package_manager.init();
 
 	// ------------------------------------------
 	// INITIALIZE SIGNALHANDLER

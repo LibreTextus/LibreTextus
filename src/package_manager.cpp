@@ -6,7 +6,6 @@
 // -----------------------------------------------------------------------------
 
 void Libre::PackageManager::init() {
-
 	this->dummy_path = "data/dummy.yml";
 	this->sources = YAML::LoadFile("data/sources.yml");
 
@@ -15,7 +14,7 @@ void Libre::PackageManager::init() {
 	// HOME DIRECTORY PATH
 	// ------------------------------------------
 
-  this->root_path = this->settings.get<std::string>("root_dir");
+	this->root_path = this->settings.get<std::string>("root_dir");
 
 	if (this->root_path.find("~") == 0) {
 		this->root_path.erase(0, 1);
@@ -47,6 +46,7 @@ void Libre::PackageManager::init() {
 // -----------------------------------------------------------------------------
 
 void Libre::PackageManager::install(std::string url) {
+
 	std::string name;
 
 	name = url.substr(url.find_last_of("/") + 1);

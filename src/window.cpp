@@ -14,6 +14,7 @@ bool Libre::MainWindow::create(Libre::Widgets * w, SignalHandler * s) {
 	w->window->set_default_size(1000, 800);
 	w->window->set_title("LibreTextus");
 	w->window->set_icon_from_file("data/Icon.svg");
+	w->window->set_position(Gtk::WIN_POS_CENTER);
 	w->is_fullscreen = false;
 
 	// ------------------------------------------
@@ -240,6 +241,7 @@ bool Libre::PreferencesWindow::create(Libre::Widgets * w, SignalHandler * s) {
 	w->preferences_window = new Gtk::Window;
 	w->preferences_window->set_default_size(500, 400);
 	w->preferences_window->set_title("Preferences");
+	w->preferences_window->set_position(Gtk::WIN_POS_CENTER);
 
 	// ------------------------------------------
 	// CREATE A NEW NOTEBOOK AND SET THE TAB

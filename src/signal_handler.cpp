@@ -626,6 +626,7 @@ void SignalHandler::add_source_dir() {
 	this->widgets->dialog_window->set_default_size(500, 100);
 	this->widgets->dialog_window->set_keep_above(true);
 	this->widgets->dialog_window->set_resizable(false);
+	this->widgets->dialog_window->set_position(Gtk::WIN_POS_CENTER);
 
 	// ------------------------------------------
 	// CREATE THE ROOT BOX FOR THE DIALOG WINDOW
@@ -700,6 +701,7 @@ void SignalHandler::remove_source_dir() {
 	this->widgets->dialog_window->set_default_size(300, 100);
 	this->widgets->dialog_window->set_keep_above(true);
 	this->widgets->dialog_window->set_resizable(false);
+	this->widgets->dialog_window->set_position(Gtk::WIN_POS_CENTER);
 
 	// ------------------------------------------
 	// CREATE ALL WIDGETS AND THEIR PROPERTIES

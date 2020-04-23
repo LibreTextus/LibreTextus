@@ -106,9 +106,9 @@ bool SearchEngine::search_book(std::string * text) {
 
 			*text += this->last_result.value();
 
-			this->last_result++;
-
 			this->last_search_results.push_back(this->last_result->first);
+
+			this->last_result++;
 
 			if (end) {
 				this->last_result = this->file.end();
@@ -134,9 +134,9 @@ bool SearchEngine::search_word(std::string * text) {
 			*text += this->last_result.value();
 			mark_result(text);
 
-			this->last_result++;
-
 			this->last_search_results.push_back(this->last_result->first);
+			
+			this->last_result++;
 
 			return true;
 		}

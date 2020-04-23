@@ -3,7 +3,7 @@ startup_file: "schlachter 1951"
 names_file: "biblebooks.yml"
 
 theme:
-  active: dark
+  active: light
   themes:
     - dark
     - light

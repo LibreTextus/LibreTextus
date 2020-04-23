@@ -47,7 +47,10 @@ int Framework::init(int argc, char *argv[]) {
 	this->widgets.package_manager.window = new Gtk::Window;
 	this->widgets.package_manager.window->set_title("Info");
 	this->widgets.package_manager.window->set_default_size(250, 80);
+
 	Gtk::VBox * box = new Gtk::VBox;
+	box->set_border_width(10);
+
 	this->widgets.package_manager.main_info = new Gtk::Label("Test");
 	this->widgets.package_manager.subtitle = new Gtk::Label("Test");
 	this->widgets.package_manager.spinner = new Gtk::Spinner;

@@ -47,19 +47,45 @@ void Libre::PackageManager::init() {
 
 void Libre::PackageManager::install(std::string url) {
 
+	// ------------------------------------------
+	// GET THE NAME OF THE PACKAGE
+	// ------------------------------------------
+
 	std::string name;
 	name = url.substr(url.find_last_of("/") + 1);
+
+	// ------------------------------------------
+	// DISPLAY FOLLOWING INFORMATION:
+	// 			Install ${name}
+	//	This could take a while...
+	// ------------------------------------------
 
 	this->info_string = "Install " + name;
 	this->subtitle_string = "This could take a while...";
 	this->open_window.emit();
 	this->update_text.emit();
 
+	// ------------------------------------------
+	// CLONE SOURCE-REPOSITORY
+	// ------------------------------------------
+
 	system(("git clone " + url + " " + this->root_path + name).c_str());
+
+	// ------------------------------------------
+	// DISPLAY FOLLOWING INFORMATION:
+	// 		Looking for sources...
+	//		Found ${source name}
+	// ------------------------------------------
 
 	this->info_string = "Looking for sources...";
 	this->subtitle_string = "";
 	this->update_text.emit();
+
+	// ------------------------------------------
+	// GO THROUGH EVERY DIRECTORY IN THE PACKAGE
+	// ROOT DIRECTORY AND LOOK IF THERE ARE
+	// SOURCE YAML FILES
+	// ------------------------------------------
 
 	for (auto & i : std::experimental::filesystem::directory_iterator(this->root_path + name)) {
 		if (std::experimental::filesystem::is_directory(i.path())) {
@@ -81,9 +107,18 @@ void Libre::PackageManager::install(std::string url) {
 		}
 	}
 
+	// ------------------------------------------
+	// DISPLAY FOLLOWING INFORMATION:
+	// 		Update sources.yml
+	// ------------------------------------------
+
 	this->info_string = "Update sources.yml";
 	this->subtitle_string = "";
 	this->update_text.emit();
+
+	// ------------------------------------------
+	// WRITE EVERYTHING TO THE SOURCES FILE
+	// ------------------------------------------
 
 	YAML::Emitter emitter;
 	emitter << this->sources;
@@ -102,16 +137,34 @@ void Libre::PackageManager::install(std::string url) {
 // -----------------------------------------------------------------------------
 
 void Libre::PackageManager::remove(std::string package) {
+
+	// ------------------------------------------
+	// OPEN WINDOW AND DISPLAY INFORMATION
+	// ------------------------------------------
+
 	this->info_string = "Removing directory...";
 	this->subtitle_string = "";
 	this->open_window.emit();
 	this->update_text.emit();
 
+	// ------------------------------------------
+	// REMOVE PACKAGE DIRECTORY
+	// ------------------------------------------
+
 	std::experimental::filesystem::remove_all(this->root_path + package);
+
+	// ------------------------------------------
+	// SET INFORMATION
+	// ------------------------------------------
 
 	this->info_string = "Update sources.yml";
 	this->subtitle_string = "";
 	this->update_text.emit();
+
+	// ------------------------------------------
+	// REMOVE EVERY SOURCE OF THE PACKAGE FROM
+	// YAML NODE
+	// ------------------------------------------
 
 	for (YAML::const_iterator i = this->sources.begin(); i != this->sources.end();) {
 		if (i->second["package"].as<std::string>() == package) {
@@ -122,6 +175,10 @@ void Libre::PackageManager::remove(std::string package) {
 		}
 		i++;
 	}
+
+	// ------------------------------------------
+	// WRITE THE NEW SOURCES LIST
+	// ------------------------------------------
 
 	this->subtitle_string = "";
 	this->update_text.emit();
@@ -172,6 +229,10 @@ void Libre::PackageManager::enable(std::string package) {
 		fout.close();
 	}
 }
+
+// LIBRE::PACKAGEMANAGER::GET_PACKAGES -----------------------------------------
+// RETURN NAMES OF THE INSTALLED PACKAGES
+// -----------------------------------------------------------------------------
 
 std::vector<std::string> Libre::PackageManager::get_packages() {
 	std::vector<std::string> output;

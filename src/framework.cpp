@@ -58,6 +58,10 @@ int Framework::init(int argc, char *argv[]) {
 
 	this->widgets.package_manager.window->add(*box);
 
+	// ------------------------------------------
+	// CONNECT SIGNALS TO THE DISPATCHERS
+	// ------------------------------------------
+
 	this->widgets.package_manager.open_window.connect([this]() {
 		this->widgets.package_manager.window->set_position(Gtk::WIN_POS_CENTER);
 		this->widgets.package_manager.spinner->start();
@@ -73,6 +77,13 @@ int Framework::init(int argc, char *argv[]) {
 		this->widgets.package_manager.main_info->set_text(this->widgets.package_manager.info_string);
 		this->widgets.package_manager.subtitle->set_text(this->widgets.package_manager.subtitle_string);
 	});
+
+	// ------------------------------------------
+	// THIS FOLLOWING SIGNAL WILL BE CALLED AFTER
+	// THE APPLICATION STARTED IT WILL UPDATE
+	// THE PACKAGES AND THEN EMIT A DISPATCHER
+	// SIGNAL FOR OPENING A NEW SESSION
+	// ------------------------------------------
 
 	this->widgets.app->signal_startup().connect([this]() {
 		this->widgets.update_thread = Glib::Thread::create([this]() {
@@ -90,6 +101,11 @@ int Framework::init(int argc, char *argv[]) {
 
 		});
 	});
+
+	// ------------------------------------------
+	// THIS DISPATCHER IS CALLED AFTER THE
+	// UPDATE THREAD HAS DONE HIS WORK
+	// ------------------------------------------
 
 	this->widgets.start_session.connect([this]() {
 

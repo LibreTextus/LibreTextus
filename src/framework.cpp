@@ -50,18 +50,22 @@ int Framework::init(int argc, char *argv[]) {
 	Gtk::VBox * box = new Gtk::VBox;
 	this->widgets.package_manager.main_info = new Gtk::Label("Test");
 	this->widgets.package_manager.subtitle = new Gtk::Label("Test");
+	this->widgets.package_manager.spinner = new Gtk::Spinner;
 
 	box->pack_start(*this->widgets.package_manager.main_info, Gtk::PACK_SHRINK, 0);
 	box->pack_start(*this->widgets.package_manager.subtitle, Gtk::PACK_SHRINK, 0);
+	box->pack_start(*this->widgets.package_manager.spinner, Gtk::PACK_SHRINK, 10);
 
 	this->widgets.package_manager.window->add(*box);
 
 	this->widgets.package_manager.open_window.connect([this]() {
 		this->widgets.package_manager.window->set_position(Gtk::WIN_POS_CENTER);
+		this->widgets.package_manager.spinner->start();
 		this->widgets.package_manager.window->show_all();
 	});
 
 	this->widgets.package_manager.close_window.connect([this]() {
+		this->widgets.package_manager.spinner->stop();
 		this->widgets.package_manager.window->hide();
 	});
 

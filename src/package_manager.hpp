@@ -19,6 +19,16 @@ namespace Libre {
 		std::string dummy_path;
 
   public:
+
+		Gtk::Window * window;
+		Gtk::Label * main_info;
+		Gtk::Label * subtitle;
+		Glib::Dispatcher open_window;
+		Glib::Dispatcher close_window;
+		Glib::Dispatcher update_text;
+		std::string info_string;
+		std::string subtitle_string;
+
     PackageManager() = default;
     virtual ~PackageManager() = default;
 

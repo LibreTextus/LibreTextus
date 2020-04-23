@@ -668,8 +668,10 @@ void SignalHandler::add_source_dir() {
 
 	ok_button->signal_clicked().connect([url_entry, this]() {
 		this->widgets->dialog_window->close();
-		this->widgets->package_manager.install(url_entry->get_text());
-		this->sync_enabled_sources();
+		Glib::Thread::create([url_entry, this]() {
+			this->widgets->package_manager.install(url_entry->get_text());
+			this->widgets->sync_sources_dispatcher.emit();
+		});
 	}, false);
 
 	url_entry->signal_key_press_event().connect([ok_button](GdkEventKey * event) -> gboolean {
@@ -748,8 +750,10 @@ void SignalHandler::remove_source_dir() {
 
 	ok_button->signal_clicked().connect([combo, this]() {
 		this->widgets->dialog_window->close();
-		this->widgets->package_manager.remove(combo->get_active_text());
-		this->sync_enabled_sources();
+		Glib::Thread::create([combo, this]() {
+			this->widgets->package_manager.remove(combo->get_active_text());
+			this->widgets->sync_sources_dispatcher.emit();
+		});
 	});
 
 	cancel_button->signal_clicked().connect([this]() {

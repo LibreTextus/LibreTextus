@@ -3,12 +3,6 @@
 int Framework::init(int argc, char *argv[]) {
 
 	// ------------------------------------------
-	// CHECK FOR UPDATES
-	// ------------------------------------------
-
-	this->widgets.package_manager.init();
-
-	// ------------------------------------------
 	// CREATE BUILDER AND APPLICATION
 	// ------------------------------------------
 
@@ -47,46 +41,103 @@ int Framework::init(int argc, char *argv[]) {
 	this->widgets.style->add_provider_for_screen(screen, this->widgets.font_size_css, GTK_STYLE_PROVIDER_PRIORITY_APPLICATION);
 
 	// ------------------------------------------
-	// INITIALIZE SIGNALHANDLER
+	// CREATE WINDOW FOR THE PACKAGEMANAGER
 	// ------------------------------------------
 
-	this->signal_handler.init(&this->widgets);
+	this->widgets.package_manager.window = new Gtk::Window;
+	this->widgets.package_manager.window->set_title("Info");
+	this->widgets.package_manager.window->set_default_size(250, 80);
+	Gtk::VBox * box = new Gtk::VBox;
+	this->widgets.package_manager.main_info = new Gtk::Label("Test");
+	this->widgets.package_manager.subtitle = new Gtk::Label("Test");
 
-	// ------------------------------------------
-	// SET TEXT ON STARTUP
-	// ------------------------------------------
+	box->pack_start(*this->widgets.package_manager.main_info, Gtk::PACK_SHRINK, 0);
+	box->pack_start(*this->widgets.package_manager.subtitle, Gtk::PACK_SHRINK, 0);
 
-	this->widgets.search_entry->set_text("GEN, 1, 1-20");
-	this->widgets.search_entry->set_position(-1);
+	this->widgets.package_manager.window->add(*box);
 
-	// ------------------------------------------
-	// DISABLE EVERYTHING WHICH COULD INTERRUPT
-	// THE SEARCHENGINE WHILE SEARCHING THE
-	// RESULT TO AVOID A SEGMATION FAULT
-	// ------------------------------------------
+	this->widgets.package_manager.open_window.connect([this]() {
+		this->widgets.package_manager.window->set_position(Gtk::WIN_POS_CENTER);
+		this->widgets.package_manager.window->show_all();
+	});
 
-	for (int i = 0; i < this->widgets.combo_boxes.size(); i++) {
-		this->widgets.combo_boxes[i]->set_button_sensitivity(Gtk::SENSITIVITY_OFF);
-		this->widgets.close_buttons[i]->set_sensitive(false);
-	}
+	this->widgets.package_manager.close_window.connect([this]() {
+		this->widgets.package_manager.window->hide();
+	});
 
-	this->widgets.search_entry->set_editable(false);
-	this->widgets.action_group->set_sensitive(false);
+	this->widgets.package_manager.update_text.connect([this]() {
+		this->widgets.package_manager.main_info->set_text(this->widgets.package_manager.info_string);
+		this->widgets.package_manager.subtitle->set_text(this->widgets.package_manager.subtitle_string);
+	});
 
-	// ------------------------------------------
-	// SET REPLACE_ID TO -1 -> EVERY TEXT_BUFFER
-	// WILL BE UPDATED IF IT IS >= 0 JUST THIS
-	// SPECIFIC TEXT_BUFFER WILL BE UPDATED
-	// ------------------------------------------
+	this->widgets.app->signal_startup().connect([this]() {
+		this->widgets.update_thread = Glib::Thread::create([this]() {
+			// ------------------------------------------
+			// CHECK FOR UPDATES
+			// ------------------------------------------
 
-	this->widgets.replace_id = -1;
+			this->widgets.package_manager.init();
 
-	// ------------------------------------------
-	// CREATE A NEW THREAD FOR SEARCHING
-	// THE RESULTS
-	// ------------------------------------------
+			// ------------------------------------------
+			// START SESSION
+			// ------------------------------------------
 
-	this->widgets.process_thread = Glib::Thread::create(sigc::mem_fun(this->signal_handler, &SignalHandler::do_search), true);
+			this->widgets.start_session.emit();
+
+		});
+	});
+
+	this->widgets.start_session.connect([this]() {
+
+		if (this->widgets.update_thread->joinable()) {
+			this->widgets.update_thread->join();
+		}
+
+		// ------------------------------------------
+		// INITIALIZE SIGNALHANDLER
+		// ------------------------------------------
+
+		this->signal_handler.init(&this->widgets);
+
+		// ------------------------------------------
+		// SET TEXT ON STARTUP
+		// ------------------------------------------
+
+		this->widgets.search_entry->set_text("GEN, 1, 1-20");
+		this->widgets.search_entry->set_position(-1);
+
+		// ------------------------------------------
+		// DISABLE EVERYTHING WHICH COULD INTERRUPT
+		// THE SEARCHENGINE WHILE SEARCHING THE
+		// RESULT TO AVOID A SEGMATION FAULT
+		// ------------------------------------------
+
+		for (int i = 0; i < this->widgets.combo_boxes.size(); i++) {
+			this->widgets.combo_boxes[i]->set_button_sensitivity(Gtk::SENSITIVITY_OFF);
+			this->widgets.close_buttons[i]->set_sensitive(false);
+		}
+
+		this->widgets.search_entry->set_editable(false);
+		this->widgets.action_group->set_sensitive(false);
+
+		// ------------------------------------------
+		// SET REPLACE_ID TO -1 -> EVERY TEXT_BUFFER
+		// WILL BE UPDATED IF IT IS >= 0 JUST THIS
+		// SPECIFIC TEXT_BUFFER WILL BE UPDATED
+		// ------------------------------------------
+
+		this->widgets.replace_id = -1;
+
+		// ------------------------------------------
+		// CREATE A NEW THREAD FOR SEARCHING
+		// THE RESULTS
+		// ------------------------------------------
+
+		this->widgets.process_thread = Glib::Thread::create(sigc::mem_fun(this->signal_handler, &SignalHandler::do_search), true);
+
+		this->signal_handler.sync_enabled_sources();
+	});
+
 
 	// ------------------------------------------
 	// CONNECT FOLLOWING SIGNALS:
@@ -110,11 +161,6 @@ int Framework::init(int argc, char *argv[]) {
 		false
 	);
 
-	this->widgets.app->signal_startup().connect(
-		sigc::mem_fun(this->signal_handler, &SignalHandler::sync_enabled_sources),
-		false
-	);
-
 	// ------------------------------------------
 	// CONNECT FOLLOWING DISPATCHERS:
 	// * SET_TEXT_DISPACHER:
@@ -125,6 +171,7 @@ int Framework::init(int argc, char *argv[]) {
 
 	this->widgets.set_text_dispatcher.connect(sigc::mem_fun(this->signal_handler, &SignalHandler::set_text));
 	this->widgets.delete_thread_dispatcher.connect(sigc::mem_fun(this->signal_handler, &SignalHandler::delete_thread));
+	this->widgets.sync_sources_dispatcher.connect(sigc::mem_fun(this->signal_handler, &SignalHandler::sync_enabled_sources));
 
 
 	return 0;

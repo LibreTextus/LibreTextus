@@ -48,10 +48,18 @@ void Libre::PackageManager::init() {
 void Libre::PackageManager::install(std::string url) {
 
 	std::string name;
-
 	name = url.substr(url.find_last_of("/") + 1);
 
+	this->info_string = "Install " + name;
+	this->subtitle_string = "This could take a while...";
+	this->open_window.emit();
+	this->update_text.emit();
+
 	system(("git clone " + url + " " + this->root_path + name).c_str());
+
+	this->info_string = "Looking for sources...";
+	this->subtitle_string = "";
+	this->update_text.emit();
 
 	for (auto & i : std::experimental::filesystem::directory_iterator(this->root_path + name)) {
 		if (std::experimental::filesystem::is_directory(i.path())) {
@@ -64,11 +72,18 @@ void Libre::PackageManager::install(std::string url) {
 					f_info["package"] = name;
 					f_info["enabled"] = true;
 
+					this->subtitle_string = "Found: " + file;
+					this->update_text.emit();
+
 					this->sources[file] = f_info;
 				}
 			}
 		}
 	}
+
+	this->info_string = "Update sources.yml";
+	this->subtitle_string = "";
+	this->update_text.emit();
 
 	YAML::Emitter emitter;
 	emitter << this->sources;
@@ -79,6 +94,7 @@ void Libre::PackageManager::install(std::string url) {
 		fout.close();
 	}
 
+	this->close_window.emit();
 }
 
 // LIBRE::PACKAGEMANAGER::REMOVE -----------------------------------------------
@@ -86,15 +102,29 @@ void Libre::PackageManager::install(std::string url) {
 // -----------------------------------------------------------------------------
 
 void Libre::PackageManager::remove(std::string package) {
+	this->info_string = "Removing directory...";
+	this->subtitle_string = "";
+	this->open_window.emit();
+	this->update_text.emit();
+
 	std::experimental::filesystem::remove_all(this->root_path + package);
+
+	this->info_string = "Update sources.yml";
+	this->subtitle_string = "";
+	this->update_text.emit();
 
 	for (YAML::const_iterator i = this->sources.begin(); i != this->sources.end();) {
 		if (i->second["package"].as<std::string>() == package) {
 			this->sources.remove(i->first);
+			this->subtitle_string = "Removing " + i->first.as<std::string>();
+			this->update_text.emit();
 			continue;
 		}
 		i++;
 	}
+
+	this->subtitle_string = "";
+	this->update_text.emit();
 
 	YAML::Emitter emitter;
 	emitter << this->sources;
@@ -104,6 +134,8 @@ void Libre::PackageManager::remove(std::string package) {
 		fout << emitter.c_str();
 		fout.close();
 	}
+
+	this->close_window.emit();
 }
 
 // LIBRE::PACKAGEMANAGER::DISABLE ----------------------------------------------

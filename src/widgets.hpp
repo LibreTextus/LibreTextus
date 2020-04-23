@@ -54,8 +54,11 @@ namespace Libre {
 		// -------------------------------------------------------------------------
 
 		Glib::Thread * process_thread;
+		Glib::Thread * update_thread;
 		Glib::Dispatcher set_text_dispatcher;
 		Glib::Dispatcher delete_thread_dispatcher;
+		Glib::Dispatcher sync_sources_dispatcher;
+		Glib::Dispatcher start_session;
 		std::vector<std::array<std::string, 2>> found_text;
 		bool procress_finished;
 		int replace_id;

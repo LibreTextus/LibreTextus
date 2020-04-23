@@ -47,6 +47,7 @@ int Framework::init(int argc, char *argv[]) {
 	this->widgets.package_manager.window = new Gtk::Window;
 	this->widgets.package_manager.window->set_title("Info");
 	this->widgets.package_manager.window->set_default_size(250, 80);
+	this->widgets.package_manager.window->set_icon_from_file("data/Icon.svg");
 
 	Gtk::VBox * box = new Gtk::VBox;
 	box->set_border_width(10);

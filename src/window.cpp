@@ -188,7 +188,10 @@ bool Libre::MainWindow::create(Libre::Widgets * w, SignalHandler * s) {
 	w->panels = new Gtk::HBox(false, 0);
 	w->panels->set_spacing(5);
 	w->panels->set_border_width(5);
+	w->panels->set_homogeneous(true);
 	w->add_panel();
+
+	w->text_view = new Libre::TextView;
 
 
 	// ------------------------------------------
@@ -196,7 +199,8 @@ bool Libre::MainWindow::create(Libre::Widgets * w, SignalHandler * s) {
 	// ------------------------------------------
 
 	v_box->pack_start(*w->search_entry, Gtk::PACK_SHRINK, 0);
-	v_box->pack_end(*w->panels, Gtk::PACK_EXPAND_WIDGET, 0);
+	v_box->pack_start(*w->panels, Gtk::PACK_SHRINK, 0);
+	v_box->pack_start(*w->text_view, Gtk::PACK_EXPAND_WIDGET, 0);
 
 	// ------------------------------------------
 	// CONNECT THE FUNCTIONS TO THE COMBOBOXES
@@ -242,7 +246,7 @@ bool Libre::PreferencesWindow::create(Libre::Widgets * w, SignalHandler * s) {
 	w->preferences_window->set_default_size(500, 400);
 	w->preferences_window->set_title("Preferences");
 	w->preferences_window->set_position(Gtk::WIN_POS_CENTER);
-	w->preferences_window->set_icon_from_file("data/Icon.svg")
+	w->preferences_window->set_icon_from_file("data/Icon.svg");
 
 	// ------------------------------------------
 	// CREATE A NEW NOTEBOOK AND SET THE TAB

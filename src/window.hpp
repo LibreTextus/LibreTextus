@@ -4,6 +4,7 @@
 #include <gtkmm.h>
 #include <vector>
 #include <yaml-cpp/yaml.h>
+#include "text_view.hpp"
 #include "widgets.hpp"
 #include "signal_handler.hpp"
 #include "settings.hpp"

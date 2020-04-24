@@ -8,7 +8,9 @@
 #include <yaml-cpp/yaml.h>
 #include <tsl/ordered_map.h>
 
+#include "text_view.hpp"
 #include "package_manager.hpp"
+#include "search_engine.hpp"
 #include "settings.hpp"
 
 namespace Libre {
@@ -22,6 +24,7 @@ namespace Libre {
 		// -------------------------------------------------------------------------
 
 		Settings settings;
+		std::vector<SearchEngine> search_engine;
 
 		Gtk::Window * window;
 		Glib::RefPtr<Gtk::Application> app;
@@ -29,14 +32,15 @@ namespace Libre {
 		Glib::RefPtr<Gtk::CssProvider> css;
 		Glib::RefPtr<Gtk::CssProvider> font_size_css;
 		int font_size;
-		Gtk::HBox * panels;
 		Gtk::SearchEntry * search_entry;
+		Gtk::HBox * panels;
 		Gtk::Button * add_button;
 		std::vector<Gtk::Button *> close_buttons;
 		std::vector<Gtk::HBox *> headers;
-		std::vector<Gtk::TextView *> text_views;
 		std::vector<Gtk::ComboBoxText *> combo_boxes;
-		std::vector<Glib::RefPtr<Gtk::TextBuffer>> search_results;
+		Libre::TextView * text_view;
+		std::string found_position;
+		std::vector<std::string> found_verses;
 		bool is_fullscreen;
 
 		Gtk::Window * preferences_window;
@@ -59,7 +63,6 @@ namespace Libre {
 		Glib::Dispatcher delete_thread_dispatcher;
 		Glib::Dispatcher sync_sources_dispatcher;
 		Glib::Dispatcher start_session;
-		std::vector<std::array<std::string, 2>> found_text;
 		bool procress_finished;
 		int replace_id;
 
@@ -94,32 +97,10 @@ namespace Libre {
 			// ------------------------------------------
 
 			Gtk::VBox * scrl_container = new Gtk::VBox(false, 0);
-			this->text_views.push_back(new Gtk::TextView);
-			Gtk::ScrolledWindow * scrolled_window = new Gtk::ScrolledWindow;
 			this->headers.push_back(new Gtk::HBox(false, 0));
 			this->close_buttons.push_back(new Gtk::Button);
 			this->close_buttons.back()->set_image_from_icon_name("window-close", Gtk::ICON_SIZE_BUTTON);
 			this->close_buttons.back()->set_name("view_button");
-
-			// ------------------------------------------
-			// SET PROPERTIES OF TEXT_VIEW
-			// ------------------------------------------
-
-			this->search_results.push_back(Gtk::TextBuffer::create());
-			this->text_views.back()->set_buffer(this->search_results.back());
-			this->text_views.back()->set_editable(false);
-			this->text_views.back()->set_cursor_visible(false);
-			this->text_views.back()->set_wrap_mode(Gtk::WRAP_WORD);
-			this->text_views.back()->set_border_width(10);
-
-			// ------------------------------------------
-			// DISPLAY HEADER AND SCROLLED_WINDOW
-			// ------------------------------------------
-
-			scrl_container->pack_start(*this->headers.back(), Gtk::PACK_SHRINK, 0);
-			scrl_container->pack_end(*scrolled_window, Gtk::PACK_EXPAND_WIDGET, 0);
-
-			scrolled_window->add(*this->text_views.back());
 
 			// ------------------------------------------
 			// ADD COMBOBOX TO HEADER AND APPEND SOURCES
@@ -148,10 +129,7 @@ namespace Libre {
 			this->headers.back()->pack_end(*this->combo_boxes.back(), Gtk::PACK_SHRINK, 0);
 			this->headers.back()->set_border_width(10);
 
-			this->found_text.push_back({"", ""});
-
-			this->panels->pack_start(*scrl_container, Gtk::PACK_EXPAND_WIDGET, 0);
-
+			this->panels->pack_start(*this->headers.back(), Gtk::PACK_EXPAND_WIDGET, 0);
 		}
 	};
 }

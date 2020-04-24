@@ -6,14 +6,12 @@
 #include <yaml-cpp/yaml.h>
 #include <thread>
 #include <algorithm>
-#include "search_engine.hpp"
 #include "settings.hpp"
 
 #include "widgets.hpp"
 
 class SignalHandler {
 private:
-	std::vector<SearchEngine> search_engine;
 	Libre::Widgets * widgets;
 	Settings settings;
 	std::string mark_argument;
@@ -47,6 +45,7 @@ public:
 	void add_source();
 	void remove_source();
 	void remove_source_by_reference(Gtk::Button * b);
+
 
 	void add_source_dir();
 	void remove_source_dir();

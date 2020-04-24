@@ -16,7 +16,7 @@ void SignalHandler::init(Libre::Widgets * w) {
 
 	this->widgets = w;	// SET WIDGETS
 
-	this->search_engine.push_back(
+	this->widgets->search_engine.push_back(
 		SearchEngine(
 			this->widgets->package_manager.get_source_path(this->settings.get<std::string>("startup_file")),
 			this->widgets->package_manager.get_root_path() + this->settings.get<std::string>("names_file")
@@ -68,7 +68,7 @@ void SignalHandler::init(Libre::Widgets * w) {
 	// PASS THE STYLES TO THE SEARCHENGINE
 	// ------------------------------------------
 
-	this->search_engine[0].set_mark_argument(this->mark_argument);
+	this->widgets->search_engine[0].set_mark_argument(this->mark_argument);
 }
 
 // SIGNAL_HANDLER::SEARCH_REQUEST ----------------------------------------------
@@ -91,8 +91,9 @@ gboolean SignalHandler::search_request(GdkEventKey * event) {
 		for (int i = 0; i < this->widgets->combo_boxes.size(); i++) {
 			this->widgets->combo_boxes[i]->set_button_sensitivity(Gtk::SENSITIVITY_OFF);
 			this->widgets->close_buttons[i]->set_sensitive(false);
-			this->widgets->search_results[i]->set_text("");
 		}
+
+		this->widgets->text_view->clear();
 
 		this->widgets->add_button->set_sensitive(false);
 
@@ -154,9 +155,6 @@ void SignalHandler::source_changed(Gtk::ComboBoxText * b) {
 			break;
 		}
 	}
-
-	this->widgets->search_results[this->widgets->replace_id]->set_text("");
-
 	// ------------------------------------------
 	// CREATE A PROCESS_THREAD WHICH CALLES THE
 	// DO_REPLACEMENT FUNCTION
@@ -179,17 +177,9 @@ void SignalHandler::set_text() {
 	// ------------------------------------------
 
 	if (this->widgets->replace_id == -1) {
-		for (int i = 0; i < this->widgets->search_results.size(); i++) {
-			this->widgets->search_results[i]->insert_markup(
-				this->widgets->search_results[i]->end(),
-				this->widgets->found_text[i][1] + "\n\n"
-			);
-		}
+		this->widgets->text_view->add_verse(this->widgets->found_position, this->widgets->found_verses);
 	} else {
-		this->widgets->search_results[this->widgets->replace_id]->insert_markup(
-			this->widgets->search_results[this->widgets->replace_id]->end(),
-			this->widgets->found_text[this->widgets->replace_id][1] + "\n\n"
-		);
+		this->widgets->text_view->replace_verse(this->widgets->found_position, this->widgets->replace_id, this->widgets->found_verses.back());
 	}
 
 	// ------------------------------------------
@@ -226,7 +216,7 @@ void SignalHandler::do_search() {
 	// SET THE SEARCH ARGUMENT
 	// ------------------------------------------
 
-	this->search_engine[0].set_search_argument(this->widgets->search_entry->get_text());
+	this->widgets->search_engine[0].set_search_argument(this->widgets->search_entry->get_text());
 
 	// ------------------------------------------
 	// THE SEARCH_ENGINE WILL SEARCH UNTIL THE
@@ -236,29 +226,29 @@ void SignalHandler::do_search() {
 	// DISPATCHER AND SET THE PROGRESSBAR
 	// ------------------------------------------
 
-	while (this->search_engine[0].search(&this->widgets->found_text[0][1])) {
+	this->widgets->found_verses.clear();
+	this->widgets->found_verses.push_back("");
 
-		this->widgets->found_text[0][0] = this->search_engine[0].get_last_search_results()->back();
+	while (this->widgets->search_engine[0].search(&this->widgets->found_verses[0])) {
 
-		this->widgets->found_text[0][1] = "<span font_weight=\"ultralight\">" + this->widgets->found_text[0][0] + "</span>\n\n" + this->widgets->found_text[0][1];
+		this->widgets->found_position = this->widgets->search_engine[0].get_last_search_results()->back();
 
 		// ------------------------------------------
 		// SET THE SAME VERSES THE THE OTHER BUFFERS
 		// ------------------------------------------
 
-		for (int i = 1; i < this->widgets->search_results.size(); i++) {
-			this->widgets->found_text[i][1] = "<span font_weight=\"ultralight\">" + this->widgets->found_text[0][0] + "</span>\n\n";
-			this->widgets->found_text[i][1] += this->search_engine[i].get_verse(this->widgets->found_text[0][0]);
-			this->widgets->found_text[i][0] = this->widgets->found_text[0][0];
+		for (int i = 1; i < this->widgets->search_engine.size(); i++) {
+			this->widgets->found_verses.push_back(this->widgets->search_engine[i].get_verse(this->widgets->found_position));
 		}
 
 		this->widgets->set_text_dispatcher.emit();
 
 		this->widgets->procress_finished = false;
 		while (!this->widgets->procress_finished) {}
-		this->widgets->search_entry->set_progress_fraction(this->search_engine[0].get_progress());
+		this->widgets->search_entry->set_progress_fraction(this->widgets->search_engine[0].get_progress());
 
-		this->widgets->found_text[0][1] = "";
+		this->widgets->found_verses.clear();
+		this->widgets->found_verses.push_back("");
 	}
 
 	this->widgets->search_entry->set_progress_fraction(0.0);
@@ -287,11 +277,11 @@ void SignalHandler::do_search() {
 
 void SignalHandler::do_replacement() {
 
-	this->search_engine[this->widgets->replace_id].set_source(
+	this->widgets->search_engine[this->widgets->replace_id].set_source(
 		this->widgets->package_manager.get_source_path(std::string(this->widgets->combo_boxes[this->widgets->replace_id]->get_active_text()))
 	);
 
-	std::vector<std::string> * v = this->search_engine[0].get_last_search_results();
+	std::vector<std::string> * v = this->widgets->search_engine[0].get_last_search_results();
 
 	int x = 0;
 
@@ -299,11 +289,12 @@ void SignalHandler::do_replacement() {
 	// REPLACE BUFFER WITH NEW SOURCE CONTENT
 	// -----------------------------------------
 
+	this->widgets->found_verses.clear();
+
 	for (std::vector<std::string>::iterator i = v->begin(); i != v->end() && v->size() != 0; i++) {
 		this->widgets->procress_finished = false;
-		this->widgets->found_text[this->widgets->replace_id][1] = "<span font_weight=\"ultralight\">" + *i + "</span>\n\n";
-		this->widgets->found_text[this->widgets->replace_id][1] += this->search_engine[this->widgets->replace_id].get_verse(*i);
-		this->widgets->found_text[this->widgets->replace_id][0] = *i;
+		this->widgets->found_verses.push_back(this->widgets->search_engine[this->widgets->replace_id].get_verse(*i));
+		this->widgets->found_position = *i;
 
 		this->widgets->set_text_dispatcher.emit();
 		while (!this->widgets->procress_finished) {}
@@ -440,14 +431,14 @@ void SignalHandler::add_source() {
 	// ADD A NEW SEARCH ENGINE AND SET ITS ARGS
 	// ------------------------------------------
 
-	this->search_engine.push_back(
+	this->widgets->search_engine.push_back(
 		SearchEngine(
 			this->widgets->package_manager.get_source_path(this->settings.get<std::string>("startup_file")),
 			this->widgets->package_manager.get_root_path() + this->settings.get<std::string>("names_file")
 		)
 	);
 
-	this->search_engine.back().set_mark_argument(this->mark_argument);
+	this->widgets->search_engine.back().set_mark_argument(this->mark_argument);
 
 	// ------------------------------------------
 	// ADD PANEL AND CONNECT THE BUTTONS
@@ -486,7 +477,7 @@ void SignalHandler::add_source() {
 // -----------------------------------------------------------------------------
 
 void SignalHandler::remove_source() {
-	if (this->search_engine.size() > 1) { // IF THERE IS JUST ONE SOURCE IT DOES NOT REMOVE IT
+	if (this->widgets->search_engine.size() > 1) { // IF THERE IS JUST ONE SOURCE IT DOES NOT REMOVE IT
 
 		// ------------------------------------------
 		// DELETE THE BACK OF EVERY VECTOR AND DELETE
@@ -494,21 +485,16 @@ void SignalHandler::remove_source() {
 		// GETS THE POINTERS (t, c, h) TO DELETE THEM
 		// ------------------------------------------
 
-		this->search_engine.pop_back();
+		this->widgets->search_engine.pop_back();
 
 		this->widgets->panels->remove(*this->widgets->panels->get_children().back());
 
-		Gtk::TextView * t = this->widgets->text_views.back();
 		Gtk::ComboBoxText * c = this->widgets->combo_boxes.back();
 		Gtk::HBox * h = this->widgets->headers.back();
-		this->widgets->text_views.pop_back();
 		this->widgets->combo_boxes.pop_back();
-		this->widgets->search_results.pop_back();
-		this->widgets->found_text.pop_back();
 		this->widgets->headers.pop_back();
 
 		delete h;
-		delete t;
 		delete c;
 		delete this->widgets->add_button;
 
@@ -525,6 +511,8 @@ void SignalHandler::remove_source() {
 		this->widgets->add_button->signal_clicked().connect(sigc::mem_fun(this, &SignalHandler::add_source), false);
 
 		this->widgets->add_button->show();
+
+		this->widgets->text_view->remove_tab(this->widgets->search_engine.size());
 	}
 }
 
@@ -534,7 +522,7 @@ void SignalHandler::remove_source() {
 // -----------------------------------------------------------------------------
 
 void SignalHandler::remove_source_by_reference(Gtk::Button * b) {
-	if (this->search_engine.size() > 1) {
+	if (this->widgets->search_engine.size() > 1) {
 
 		// ------------------------------------------
 		// BECAUSE THIS FUNCTION JUST HAS A POINTER
@@ -542,7 +530,7 @@ void SignalHandler::remove_source_by_reference(Gtk::Button * b) {
 		// TO COMPATE IT WITH THE ARGUMENT
 		// ------------------------------------------
 
-		std::vector<std::string> last_search_results = *this->search_engine[0].get_last_search_results();
+		std::vector<std::string> last_search_results = *this->widgets->search_engine[0].get_last_search_results();
 
 		int i = 0;
 		for (;i < this->widgets->close_buttons.size(); i++) {
@@ -558,23 +546,17 @@ void SignalHandler::remove_source_by_reference(Gtk::Button * b) {
 		 // SIMILAR TO THE REMOVE_SOURCE FUNCTION
 		 // ------------------------------------------
 
-		this->search_engine.erase(this->search_engine.begin());
+		this->widgets->search_engine.erase(this->widgets->search_engine.begin());
 
 		this->widgets->panels->remove(*this->widgets->panels->get_children()[i]);
 
-		Gtk::TextView * t = this->widgets->text_views[i];
 		Gtk::ComboBoxText * c = this->widgets->combo_boxes[i];
 		Gtk::HBox * h = this->widgets->headers[i];
-		this->widgets->text_views.erase(this->widgets->text_views.begin() + i);
 		this->widgets->combo_boxes.erase(this->widgets->combo_boxes.begin() + i);
 		this->widgets->headers.erase(this->widgets->headers.begin() + i);
 
 		delete h;
-		delete t;
 		delete c;
-
-		this->widgets->search_results.erase(this->widgets->search_results.begin() + i);
-		this->widgets->found_text.erase(this->widgets->found_text.begin() + i);
 
 		// ------------------------------------------
 		// MOVE THE ADD_BUTTON IF NECESSARY
@@ -602,7 +584,8 @@ void SignalHandler::remove_source_by_reference(Gtk::Button * b) {
 		// THE SOURCE OF A PANEL CHANGES AFTER THAT
 		// ------------------------------------------
 
-		this->search_engine[0].set_last_search_result(last_search_results);
+		this->widgets->search_engine[0].set_last_search_result(last_search_results);
+		this->widgets->text_view->remove_tab(i);
 
 	}
 }
@@ -831,5 +814,4 @@ void SignalHandler::sync_enabled_sources() {
 				this->sync_enabled_sources();
 		});
 	}
-
 }

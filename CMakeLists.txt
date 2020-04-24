@@ -21,6 +21,8 @@ add_library(libre_textus STATIC
 	src/source_handler.cpp
 	src/package_manager.cpp
 	src/package_manager.hpp
+	src/text_view.hpp
+	src/text_view.cpp
 )
 
 include_directories(include/)

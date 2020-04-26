@@ -1,14 +1,37 @@
 #include "text_view.hpp"
 
-Libre::TextView::TextView() {
+Libre::TextView::TextView(const std::string & info) {
 	this->set_name("text_view");
 	this->main.set_name("text_view");
-	this->add(this->main);
+	this->information_text.set_markup(info);
+	this->information_text.set_justify(Gtk::JUSTIFY_CENTER);
+	this->information_text.set_line_wrap(true);
+	this->information_text.set_line_wrap_mode(Pango::WRAP_WORD);
+	this->information_text.set_selectable(true);
+
+	this->add(this->overlay);
 	this->get_vscrollbar()->hide();
+	this->overlay.add(this->information_text);
+
+
 	this->padding_x = 10;
 	this->padding_y = 10;
-	this->max_verses = 10;
+	this->max_verses = 20;
 	this->scroll_status = 0;
+}
+
+void Libre::TextView::show_information() {
+	this->overlay.set_halign(Gtk::ALIGN_CENTER);
+	this->overlay.set_valign(Gtk::ALIGN_CENTER);
+	this->overlay.remove();
+	this->overlay.add(this->information_text);
+}
+
+void Libre::TextView::show_content() {
+	this->overlay.set_halign(Gtk::ALIGN_START);
+	this->overlay.set_valign(Gtk::ALIGN_START);
+	this->overlay.remove();
+	this->overlay.add(this->main);
 }
 
 void Libre::TextView::clear() {
@@ -38,6 +61,7 @@ void Libre::TextView::add_verse(const std::string & caption, const std::vector<s
 		l->set_line_wrap(true);
 		l->set_alignment(Gtk::ALIGN_START);
 		l->set_line_wrap_mode(Pango::WRAP_WORD);
+		l->set_selectable(true);
 		l->set_markup(caption + "\n" + verses_content[i]);
 		this->verses.back()->pack_start(*l, Gtk::PACK_EXPAND_WIDGET, this->padding_x);
 	}

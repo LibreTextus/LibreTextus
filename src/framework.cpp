@@ -123,41 +123,7 @@ int Framework::init(int argc, char *argv[]) {
 
 		this->signal_handler.init(&this->widgets);
 
-		// ------------------------------------------
-		// SET TEXT ON STARTUP
-		// ------------------------------------------
-
-		this->widgets.search_entry->set_text("GEN 1;5-7");
-		this->widgets.search_entry->set_position(-1);
-
-		// ------------------------------------------
-		// DISABLE EVERYTHING WHICH COULD INTERRUPT
-		// THE SEARCHENGINE WHILE SEARCHING THE
-		// RESULT TO AVOID A SEGMATION FAULT
-		// ------------------------------------------
-
-		for (int i = 0; i < this->widgets.combo_boxes.size(); i++) {
-			this->widgets.combo_boxes[i]->set_button_sensitivity(Gtk::SENSITIVITY_OFF);
-			this->widgets.close_buttons[i]->set_sensitive(false);
-		}
-
-		this->widgets.search_entry->set_editable(false);
-		this->widgets.action_group->set_sensitive(false);
-
-		// ------------------------------------------
-		// SET REPLACE_ID TO -1 -> EVERY TEXT_BUFFER
-		// WILL BE UPDATED IF IT IS >= 0 JUST THIS
-		// SPECIFIC TEXT_BUFFER WILL BE UPDATED
-		// ------------------------------------------
-
-		this->widgets.replace_id = -1;
-
-		// ------------------------------------------
-		// CREATE A NEW THREAD FOR SEARCHING
-		// THE RESULTS
-		// ------------------------------------------
-
-		this->widgets.process_thread = Glib::Thread::create(sigc::mem_fun(this->signal_handler, &SignalHandler::do_search), true);
+		this->widgets.text_view->show_information();
 
 		this->signal_handler.sync_enabled_sources();
 	});

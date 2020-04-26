@@ -9,3 +9,11 @@ theme:
     - light
 
 font_size: 15
+
+splash_text: |
+  <big>Welcome to LibreTextus!</big>
+  Here are some search syntax hints:
+  <i>WORD WORD2</i> will give you all verses with <i>WORD</i> or <i>WORD2</i> in it.
+  <i>"WORD ANOTHER WORD"</i> this means you want exactly what is quoted
+  To get specific verses or chapters use the standart notation like: <i>GEN 1, 1-10</i>
+  <i>WORD@GEN 1</i> will give all <i>WORD</i> in <i>GEN 1</i>

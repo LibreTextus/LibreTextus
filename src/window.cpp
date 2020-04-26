@@ -191,7 +191,7 @@ bool Libre::MainWindow::create(Libre::Widgets * w, SignalHandler * s) {
 	w->panels->set_homogeneous(true);
 	w->add_panel();
 
-	w->text_view = new Libre::TextView;
+	w->text_view = new Libre::TextView(w->settings.get<std::string>("splash_text"));
 
 
 	// ------------------------------------------

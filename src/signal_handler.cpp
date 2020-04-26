@@ -83,7 +83,15 @@ gboolean SignalHandler::search_request(GdkEventKey * event) {
 	// ------------------------------------------
 	// IF ENTER IS PRESSED (KEYCODE: 65293)
 	// ------------------------------------------
-	if (event->keyval == 65293 && this->widgets->search_entry->get_text() != "") {
+	if (event->keyval == 65293) {
+
+		if (this->widgets->search_entry->get_text() == "") {
+			this->widgets->text_view->show_information();
+			return false;
+		}
+
+		this->widgets->text_view->show_content();
+
 		// ------------------------------------------
 		// DISABLE ALL WIDGETS
 		// ------------------------------------------

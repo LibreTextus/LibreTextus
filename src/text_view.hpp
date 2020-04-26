@@ -11,6 +11,8 @@ namespace Libre {
 	class TextView : public Gtk::ScrolledWindow {
 	private:
 		Gtk::VBox main;
+		Gtk::Overlay overlay;
+		Gtk::Label information_text;
 		std::vector<Gtk::HBox *> verses;
 		std::vector<std::string> captions;
 		std::vector<std::vector<std::string>> content;
@@ -20,7 +22,7 @@ namespace Libre {
 		int max_verses;
 
 	public:
-		TextView();
+		TextView(const std::string & info_text);
 		virtual ~TextView() = default;
 
 		void clear();
@@ -28,6 +30,8 @@ namespace Libre {
 		void replace_verse(const std::string & caption, const int & version, const std::string & content);
 		void _display();
 		bool on_scroll_event(GdkEventScroll * scroll_event);
+		void show_information();
+		void show_content();
 
 		void remove_tab(const int & id);
 

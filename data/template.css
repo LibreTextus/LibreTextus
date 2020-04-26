@@ -30,7 +30,7 @@ scrollbar {
 	background-color: @theme_background_color;
 }
 
-text, .text_view {
+text, #text_view {
 	color: @theme_text_color;
 	background-color: @theme_text_background_color;
 }

@@ -2,10 +2,10 @@
 
 ## Dependencies
 
-You need to install *yaml-cpp* and *gtkmm*
+You need to install *cmake* *build-essential* *yaml-cpp* and *gtkmm*
 
 ```
-sudo apt install libgtkmm-3.0-dev libyaml-cpp-dev
+sudo apt install libgtkmm-3.0-dev libyaml-cpp-dev cmake build-essential
 ```
 
 ## How to Build

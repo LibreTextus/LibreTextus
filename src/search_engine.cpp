@@ -135,8 +135,6 @@ void SearchEngine::interpret_string() {
 
 	arg = std::regex_replace(arg, e, "");
 
-	std::cout << "ARGUMENT: " << arg << '\n';
-
 	for (Libre::NameMap::iterator i = this->names.begin(); i != this->names.end(); i++) {
 		for (std::vector<std::string>::iterator x = i.value().begin(); x != i.value().end(); x++) {
 			e = *x;
@@ -276,14 +274,6 @@ void SearchEngine::interpret_string() {
 	}
 
 	this->interpret_argument(&this->search_argument);
-
-	std::cout << "SEARCH ARGUMENT: " << this->search_argument << '\n';
-
-	for (int i = 0; i < pos.size(); i++) {
-		std::cout << "[" + std::to_string(i) + "][BEGIN]: " << pos[i][0] << (this->file.find(pos[i][0]) != this->file.end() ? " √" : " x") << '\n';
-		std::cout << "[" + std::to_string(i) + "][END]: " << pos[i][1] << (this->file.find(pos[i][1]) != this->file.end() ? " √" : " x") << '\n';
-	}
-
 }
 
 // SEARCHENGINE::INTERPRET_ARGUMENT --------------------------------------------

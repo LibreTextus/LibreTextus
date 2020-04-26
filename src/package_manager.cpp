@@ -35,7 +35,7 @@ void Libre::PackageManager::init() {
 	// ------------------------------------------
 
 	if (std::experimental::filesystem::is_empty(this->root_path)) {
-		this->install("http://hackernet.local:3000/LibreTextus/BibleEditions");
+		this->install("http://github.com/LibreTextus/BibleEditions");
 		std::experimental::filesystem::rename(this->root_path + "BibleEditions/biblebooks.yml",
 																					this->root_path + "biblebooks.yml");
 	}

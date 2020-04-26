@@ -30,7 +30,7 @@ Libre::BookMap SourceHandler::to_map(YAML::Node n) {
 	for (YAML::const_iterator b = n.begin(); b != n.end(); b++) {
 		for (YAML::const_iterator c = b->second.begin(); c != b->second.end(); c++) {
 			for (YAML::const_iterator v = c->second.begin(); v != c->second.end(); v++) {
-				output[b->first.as<std::string>() + ", " +c->first.as<std::string>() + ", " + v->first.as<std::string>()] =  v->second.as<std::string>();
+				output[b->first.as<std::string>() + " " +c->first.as<std::string>() + ", " + v->first.as<std::string>()] =  v->second.as<std::string>();
 			}
 		}
 	}

@@ -7,7 +7,7 @@
 SearchEngine::SearchEngine(std::string file_path, std::string names_path) {
 	this->file = this->source_handler.get_source(file_path);
 	this->names = this->source_handler.get_names(names_path);
-	this->last_result = this->file.begin();
+	this->active_verse = this->file.begin();
 
 	W = "[\\w\\u00C0-\\u024f]";
 }
@@ -18,12 +18,11 @@ SearchEngine::SearchEngine(std::string file_path, std::string names_path) {
 
 void SearchEngine::set_search_argument(std::string arg) {
 	this->search_argument = arg;
-	this->interpreted_argument = arg;
-	interpret_argument(&this->interpreted_argument);
 
-	this->is_book = this->search_position();
+	this->interpret_string();
 	this->last_search_results.clear();
-	this->last_result = this->file.begin();
+	this->active_verse = this->positions.front()[0];
+	this->active_verse_index = 0;
 }
 
 // SEARCHENGINE::SET_MARK_ARGUMENT ---------------------------------------------
@@ -42,7 +41,7 @@ void SearchEngine::set_source(std::string path) {
 	this->file.clear();
 	this->file = this->source_handler.get_source(path);
 
-	this->last_result = this->file.begin();
+	this->active_verse = this->file.begin();
 }
 
 // SEARCHENGINE::GET_VERSE -----------------------------------------------------
@@ -64,83 +63,41 @@ std::string SearchEngine::get_verse(std::string p) {
 
 float SearchEngine::get_progress() {
 	if (this->file.size()) {
-		return static_cast<float>(std::distance(this->file.begin(), this->last_result)) / this->file.size();
+		return static_cast<float>(std::distance(this->file.begin(), this->active_verse)) / this->file.size();
 	}
 
 	return 0;
 }
 
 // SEARCHENGINE::SEARCH ------------------------------------------------------­­­--
-// THIS FUNCTION WILL CALL THE SEARCH_BOOK OR THE SEARCH_WORD FUNCTION
+// THIS FUNCTION WILL SEARCH THE ASKED VERSES
 // -----------------------------------------------------------------------------
 
 bool SearchEngine::search(std::string * text) {
-	if (this->is_book) {
-		return search_book(text);
-	}
-	else {
-		return search_word(text);
-	}
-}
 
-// SEARCHENGINE::SEARCH_BOOK ---------------------------------------------------
-// THIS FUNCTION RETURNS EVERY VERSE LOCATED IN THE ASKED POSITION
-// -----------------------------------------------------------------------------
+	std::regex e(this->search_argument);
 
-bool SearchEngine::search_book(std::string * text) {
-
-	bool begin = this->last_result != this->file.begin();
-
-	bool end = false;
-
-	while (this->last_result != this->file.end()){
-		if (this->last_result->first == this->positions[0]) {
-			begin = true;
+	while (this->active_verse != this->positions.back()[1]) {
+		if (this->active_verse == this->positions[this->active_verse_index][1]) {
+			this->active_verse_index++;
+			this->active_verse = this->positions[this->active_verse_index][0];
 		}
 
-		if (this->last_result->first == this->positions[1]) {
-			end = true;
-		}
+		if (std::regex_search(this->active_verse.value(), e) || this->search_argument == "") {
 
-		if (begin) {
+			*text = this->active_verse.value();
 
-			*text += this->last_result.value();
-
-			this->last_search_results.push_back(this->last_result->first);
-
-			this->last_result++;
-
-			if (end) {
-				this->last_result = this->file.end();
+			if (this->search_argument != "") {
+				this->mark_result(text);
 			}
 
-			return true;
-		}
-		this->last_result++;
-	}
-}
+			this->last_search_results.push_back(this->active_verse->first);
 
-// SEARCHENGINE::SEARCH_WORD ---------------------------------------------------
-// THIS FUNCTION ITERATES THRUE THE BOOMAP AT RETURNS THE REGEX MACHES
-// -----------------------------------------------------------------------------
-
-bool SearchEngine::search_word(std::string * text) {
-
-	std::regex e(this->interpreted_argument);
-	// -- BOOK LOOP
-
-	while (this->last_result != this->file.end()) {
-		if (std::regex_search(this->last_result.value(), e)) {	//	IF THERE IS THE EXPRESSION SEARCHED FOR
-			*text += this->last_result.value();
-			mark_result(text);
-
-			this->last_search_results.push_back(this->last_result->first);
-			
-			this->last_result++;
+			this->active_verse++;
 
 			return true;
 		}
-		this->last_result++;
+		this->active_verse++;
 	}
 
 	return false;
@@ -151,9 +108,10 @@ bool SearchEngine::search_word(std::string * text) {
 // SEARCH ARGUMENT. IF IT IS A BOOK POSITION SET THE POSITION AND RETURNS TRUE
 // -----------------------------------------------------------------------------
 
-bool SearchEngine::search_position() {
+void SearchEngine::interpret_string() {
 
-	std::string arg_backup = this->search_argument;
+	std::string arg = this->search_argument;
+	std::string search = "";
 
 	// ------------------------------------------
 	// CREATE A TEMPORARY POSITION ARRAY
@@ -163,138 +121,169 @@ bool SearchEngine::search_position() {
 	// 	* { VERSE START, VERSE END }
 	// ------------------------------------------
 
-	std::string pos[3][2];
+	std::vector<std::array<std::string, 2>> pos;
 
-	for (int i = 0; i < 3; i++) {
-		for (int x = 0; x < 2; x++) {
-			pos[i][x] = "";
-		}
-	}
-
-	// ------------------------------------------
-	// COUNT THE NUMBER OF COMMAS TO KNOW IF THE
-	// ARGUMENT HAS THIS FORM:
-	//	*B, C, V - V*
-	// OR THIR FORM:
-	//	*B, C, V - B, C, V*
-	// ------------------------------------------
-
-	std::regex e(",");
+	std::regex e("@");
 	std::smatch m;
 
-	int comma_count = 0;
-
-	std::string arg_copy = this->search_argument;
-
-	while (std::regex_search(arg_copy, m, e)) {
-		comma_count++;
-		arg_copy = m.suffix().str();
+	if (std::regex_search(arg, m, e)){
+		search = m.prefix().str();
+		arg = m.suffix().str();
 	}
 
-	// -----------------------------------------
-	// CHANGE THE POSSIBLE BOOK SHORTCUT TO THE
-	// STANDART SHORTCUT. E.G. 1Mo -> GEN
-	// -----------------------------------------
+	e = " ";
+
+	arg = std::regex_replace(arg, e, "");
+
+	std::cout << "ARGUMENT: " << arg << '\n';
 
 	for (Libre::NameMap::iterator i = this->names.begin(); i != this->names.end(); i++) {
 		for (std::vector<std::string>::iterator x = i.value().begin(); x != i.value().end(); x++) {
-			e = "\\b" + *x + "\\b";
-			this->search_argument = std::regex_replace(this->search_argument, e, i->first);
+			e = *x;
+			arg = std::regex_replace(arg, e, i->first);
 		}
 	}
 
-	// ------------------------------------------
-	// REMOVE ALL SPACES
-	// ------------------------------------------
+	while (true) {
+		pos.push_back({"", ""});
 
-	e = " ";
-	this->search_argument = std::regex_replace(this->search_argument, e, "");
+		if (this->names.find(arg.substr(0, 3)) != this->names.end()) {
+			pos.back()[0] = arg.substr(0, 3) + " ";
+			arg.erase(0, 3);
 
-	// ------------------------------------------
-	// DIFFER BETWEEN TWO COMMAS AND FOUR COMMAS
-	// ------------------------------------------
+		} else if (arg.substr(0, 1) == ";") {
+			arg.erase(0, 1);
+			pos.back()[0] = pos[pos.size() - 2][0].substr(0, 4);
 
-	if (comma_count == 2) {
+		} else if (arg.substr(0, 1) == ".") {
+			pos.back()[0] = pos[pos.size() - 2][0].substr(0, pos[pos.size() - 2][0].find(",") + 2);
 
-		// ------------------------------------------
-		// SPLIT THE ARGUMENT IN BOOK, CHAPTER, VERSE
-		// BUT ALWAY TO THE 0 OF THE ARRAYS
-		// ------------------------------------------
+			e = "\\d+";
+			std::regex_search(arg, m, e);
+			pos.back()[0] += m.str();
+			arg = m.suffix().str();
 
-		e = "[\\w-]+";
-		arg_copy = this->search_argument;
+			pos.back()[1] = pos.back()[0];
 
-		for (int i = 0; i < 3; i++) {
-			std::regex_search(arg_copy, m, e);
-
-			pos[i][0] = m.str();
-			arg_copy = m.suffix().str();
-		}
-
-		// ------------------------------------------
-		// IF THERE IS A *-* SPLIT IT UP IN START END
-		// IF THER IS NO *-* TAKE IT FOR START & END
-		// ------------------------------------------
-
-		e = "-";
-
-		std::string part;
-
-		for (int i = 0; i < 3; i++) {
-			part = pos[i][0];
-			if (std::regex_search(part, m, e)) {
-				pos[i][0] = m.prefix().str();
-				pos[i][1] = m.suffix().str();
-
-			} else {
-				pos[i][1] = pos[i][0];
+			if (arg.substr(0, 1) == "-") {
+				arg.erase(0, 1);
+				pos.back()[1].erase(pos.back()[0].find(",") + 2, std::string::npos);
+				std::regex_search(arg, m, e);
+				pos.back()[1] += m.str();
+				arg = m.suffix().str();
 			}
+
+			if (arg == "") {
+				break;
+			}
+
+			continue;
+
+		} else {
+			break;
 		}
-	} else if (comma_count == 4) {
 
-		// ------------------------------------------
-		// SEARCH THE *-* FOR SPLITTING IT UP
-		// ------------------------------------------
+		e = "\\d+";
+		std::regex_search(arg, m, e);
+		pos.back()[0] += m.str() + ", ";
+		arg = m.suffix().str();
 
-		e = "-";
-		std::regex_search(this->search_argument, m, e);
+		if (arg.substr(0, 1) == "-") {
+			arg.erase(0, 1);
 
-		std::string prefix = m.prefix().str();
-		std::string suffix = m.suffix().str();
+			if (this->names.find(arg.substr(0, 3)) != this->names.end()) {
+				pos.back()[1] = arg.substr(0, 3) + " ";
+				arg.erase(0, 3);
 
-		// ------------------------------------------
-		// SET VARIABLE *PREFIX* AS START POSITION
-		// SET VARIABLE *SUFFIX* AS END POSITION
-		// ------------------------------------------
+				std::regex_search(arg, m, e);
+				pos.back()[1] += m.str() + ", ";
+				arg = m.suffix().str();
 
-		e = "\\w+";
+				pos.back()[0] += "1";
+				pos.back()[1] += "1";
+			} else {
 
-		for (int i = 0; i < 3; i++) {
-			std::regex_search(prefix, m, e);
-			pos[i][0] = m.str();
-			prefix = m.suffix().str();
+				pos.back()[0] += "1";
 
-			std::regex_search(suffix, m, e);
-			pos[i][1] = m.str();
-			suffix = m.suffix().str();
+				std::regex_search(arg, m, e);
+				pos.back()[1] = pos.back()[0].substr(0, 4) + m.str() + ", ";
+				arg = m.suffix();
+
+				Libre::BookMap::iterator i = this->file.find(pos.back()[1] + "1");
+
+				for (;i->first.substr(0, i->first.find(",") + 2) == pos.back()[1]; i++) {}
+
+				i--;
+
+				pos.back()[1] = i->first;
+			}
+
+		} else if (arg.substr(0, 1) == ",") {
+			arg.erase(0, 1);
+
+			std::regex_search(arg, m, e);
+			pos.back()[0] += m.str();
+			arg = m.suffix().str();
+
+			pos.back()[1] = pos.back()[0];
+
+			if (arg.substr(0, 1) == "-") {
+				arg.erase(0, 1);
+				pos.back()[1].erase(pos.back()[0].find(",") + 2, std::string::npos);
+				std::regex_search(arg, m, e);
+				pos.back()[1] += m.str();
+				arg = m.suffix().str();
+			}
+
+
+
+		} else {
+			pos.back()[0] += "1";
+			pos.back()[1] = pos.back()[0];
+
+			Libre::BookMap::iterator i = this->file.find(pos.back()[1]);
+
+			for (;i->first.substr(0, i->first.find(",")) == pos.back()[1].substr(0, pos.back()[1].find(",")); i++) {}
+
+			i--;
+
+			pos.back()[1] = i->first;
+		}
+
+		if (arg == "") {
+			break;
 		}
 	}
 
-	// ------------------------------------------
-	// SET THE POSITION AND IF EVERY POSITION IS
-	// KNOWN RETURN TRUE ELSE RESET SEARCH
-	// ARGUMENT AND RETURN FALSE
-	// ------------------------------------------
+	bool valid_position = true;
 
-	this->positions[0] = pos[0][0] + ", " + pos[1][0] + ", " + pos[2][0];
-	this->positions[1] = pos[0][1] + ", " + pos[1][1] + ", " + pos[2][1];
-
-	if (pos[0][1] == "" || pos[1][1] == "" || pos[2][1] == "") {
-		this->search_argument = arg_backup;
-		return false;
+	for (int i = 0; i < pos.size(); i++) {
+		if (this->file.find(pos[i][0]) == this->file.end()) {
+			valid_position = false;
+			break;
+		}
 	}
 
-	return true;
+	this->positions.clear();
+
+	if (valid_position) {
+		for (int i = 0; i < pos.size(); i++) {
+			this->positions.push_back({this->file.find(pos[i][0]), this->file.find(pos[i][1]) + 1});
+			this->search_argument = search;
+		}
+	} else {
+		this->positions.push_back({this->file.begin(), this->file.end()});
+	}
+
+	this->interpret_argument(&this->search_argument);
+
+	std::cout << "SEARCH ARGUMENT: " << this->search_argument << '\n';
+
+	for (int i = 0; i < pos.size(); i++) {
+		std::cout << "[" + std::to_string(i) + "][BEGIN]: " << pos[i][0] << (this->file.find(pos[i][0]) != this->file.end() ? " √" : " x") << '\n';
+		std::cout << "[" + std::to_string(i) + "][END]: " << pos[i][1] << (this->file.find(pos[i][1]) != this->file.end() ? " √" : " x") << '\n';
+	}
+
 }
 
 // SEARCHENGINE::INTERPRET_ARGUMENT --------------------------------------------
@@ -371,6 +360,6 @@ void SearchEngine::interpret_argument(std::string * arg) {
 // -----------------------------------------------------------------------------
 
 void SearchEngine::mark_result(std::string * text) {
-	std::regex e(this->interpreted_argument);
+	std::regex e(this->search_argument);
 	*text = std::regex_replace(*text, e, this->mark_argument);
 }

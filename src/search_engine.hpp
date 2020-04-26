@@ -15,19 +15,16 @@ class SearchEngine {
 private:
 	Libre::BookMap file;
 	Libre::NameMap names;
-	Libre::BookMap::iterator last_result;
+	Libre::BookMap::iterator active_verse;
+	int active_verse_index;
 	SourceHandler source_handler;
 	std::vector<std::string> last_search_results;
 	std::string W;
 	std::string search_argument;
-	std::string interpreted_argument;
 	std::string mark_argument;
-	std::string positions[2];
-	bool is_book;
+	std::vector<std::array<Libre::BookMap::iterator, 2>> positions;
 
-	bool search_word(std::string * text);
-	bool search_book(std::string * text);
-	bool search_position();
+	void interpret_string();
 	void interpret_argument(std::string * text);
 	void mark_result(std::string * text);
 

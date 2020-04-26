@@ -127,7 +127,7 @@ int Framework::init(int argc, char *argv[]) {
 		// SET TEXT ON STARTUP
 		// ------------------------------------------
 
-		this->widgets.search_entry->set_text("GEN, 1, 1-20");
+		this->widgets.search_entry->set_text("GEN 1;5-7");
 		this->widgets.search_entry->set_position(-1);
 
 		// ------------------------------------------

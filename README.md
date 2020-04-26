@@ -1,6 +1,6 @@
 # LibreTextus
 
-# Dependencies
+## Dependencies
 
 You need to install *yaml-cpp* and *gtkmm*
 
@@ -8,7 +8,7 @@ You need to install *yaml-cpp* and *gtkmm*
 sudo apt install libgtkmm-3.0-dev libyaml-cpp-dev
 ```
 
-# How to build
+## How to Build
 
 ```bash
 mkdir build
@@ -19,3 +19,7 @@ make
 
 ./LibreTextus
 ```
+
+## Get Involved
+If you want to make some pull requests or write issues just do it, we appreciate every help!
+

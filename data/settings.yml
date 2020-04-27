@@ -1,19 +1,10 @@
-root_dir: "~/.libre_textus/"
-startup_file: "Schlachter 1951"
-names_file: "biblebooks.yml"
-
+root_dir: ~/.libre_textus/
+startup_file: Schlachter 1951
+names_file: biblebooks.yml
 theme:
   active: light
   themes:
     - dark
     - light
-
 font_size: 15
-
-splash_text: |
-  <big>Welcome to LibreTextus!</big>
-  Here are some search syntax hints:
-  <i>WORD WORD2</i> will give you all verses with <i>WORD</i> or <i>WORD2</i> in it.
-  <i>"WORD ANOTHER WORD"</i> this means you want exactly what is quoted
-  To get specific verses or chapters use the standart notation like: <i>GEN 1, 1-10</i>
-  <i>WORD@GEN 1</i> will give all <i>WORD</i> in <i>GEN 1</i>
+splash_text: "<big>Welcome to LibreTextus!</big>\nHere are some search syntax hints:\n<i>WORD WORD2</i> will give you all verses with <i>WORD</i> or <i>WORD2</i> in it.\n<i>\"WORD ANOTHER WORD\"</i> this means you want exactly what is quoted\nTo get specific verses or chapters use the standart notation like: <i>GEN 1, 1-10</i>\n<i>WORD@GEN 1</i> will give all <i>WORD</i> in <i>GEN 1</i>\n"

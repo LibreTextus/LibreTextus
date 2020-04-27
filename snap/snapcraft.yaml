@@ -1,0 +1,37 @@
+name: libretextus # you probably want to 'snapcraft register <name>'
+base: core18 # the base snap is the execution environment for this snap
+version: '0.1' # just for humans, typically '1.2+git' or '1.3.2'
+summary: Simple Bible Utility # 79 char long summary
+license: CC0-1.0
+icon: data/Icon.png
+description: |
+  LibreTextus is a simple way to search in the Bible in a powerful way.
+
+grade: devel # must be 'stable' to release into candidate/stable channels
+confinement: devmode # use 'strict' once you have the right plugs and slots
+
+environment:
+  SNAP_RUNTIME: $SNAP
+
+parts:
+  libretextus:
+    plugin: cmake
+
+    source: .
+    build-packages:
+      - g++
+      - cmake
+      - make
+      - libgtkmm-3.0-dev
+    stage-packages:
+      - libgtkmm-3.0-1v5
+      - git
+      - adwaita-icon-theme-full
+apps:
+  libretextus:
+    command: LibreTextus
+    extensions: [gnome-3-28]
+    desktop: libretextus.desktop
+    plugs:
+      - desktop
+      - desktop-legacy

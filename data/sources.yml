@@ -1,0 +1,16 @@
+Textus Receptus:
+  path: /home/nathanreiner/snap/libretextus/x1/.libre_textus/BibleEditions/grc/Textus Receptus.yml
+  package: BibleEditions
+  enabled: true
+Luther 1912:
+  path: /home/nathanreiner/snap/libretextus/x1/.libre_textus/BibleEditions/deu/Luther-1912.yml
+  package: BibleEditions
+  enabled: true
+Schlachter 1951:
+  path: /home/nathanreiner/snap/libretextus/x1/.libre_textus/BibleEditions/deu/Schlachter-1951.yml
+  package: BibleEditions
+  enabled: true
+Zürcher 1931:
+  path: /home/nathanreiner/snap/libretextus/x1/.libre_textus/BibleEditions/deu/Zürcher-1931.yml
+  package: BibleEditions
+  enabled: true

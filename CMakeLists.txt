@@ -25,13 +25,16 @@ add_library(libre_textus STATIC
 	src/text_view.cpp
 )
 
+file(GLOB YAML_FILES
+	include/yaml-cpp/*
+)
+
+add_library(yaml-cpp STATIC ${YAML_FILES})
+
 include_directories(include/)
 
 include_directories(${GTKMM_INCLUDE_DIRS})
 link_directories(${GTKMM_LIBRARY_DIRS})
-
-include(FindPkgConfig)
-pkg_search_module(YAMLCPP REQUIRED yaml-cpp)
 
 find_package(X11 REQUIRED)
 include_directories(${X11_INCLUDE_DIR})
@@ -42,3 +45,10 @@ target_link_libraries(libre_textus ${GTKMM_LIBRARIES} yaml-cpp ${X11_LIBRARIES} 
 target_link_libraries(LibreTextus ${GTKMM_LIBRARIES} ${X11_LIBRARIES} libre_textus yaml-cpp stdc++fs)
 
 file(COPY data/ DESTINATION data/)
+file(COPY libretextus.desktop DESTINATION ./)
+
+install(TARGETS LibreTextus DESTINATION .)
+install(DIRECTORY data DESTINATION .)
+install(TARGETS libre_textus DESTINATION .)
+install(TARGETS yaml-cpp DESTINATION .)
+install(FILES libretextus.desktop DESTINATION .)

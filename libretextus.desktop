@@ -1,0 +1,6 @@
+[Desktop Entry]
+Name=LibreTextus
+Icon=${SNAP}/data/Icon.svg
+Type=Application
+Exec=LibreTextus
+Terminal=false

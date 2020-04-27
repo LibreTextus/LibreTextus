@@ -35,3 +35,4 @@ apps:
     plugs:
       - desktop
       - desktop-legacy
+      - home

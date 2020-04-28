@@ -1,3 +1,5 @@
+[![libretextus](https://snapcraft.io//libretextus/badge.svg)](https://snapcraft.io/libretextus)
+
 # LibreTextus
 
 ## Dependencies

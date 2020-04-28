@@ -23,6 +23,8 @@ add_library(libre_textus STATIC
 	src/package_manager.hpp
 	src/text_view.hpp
 	src/text_view.cpp
+	src/path.hpp
+	src/path.cpp
 )
 
 file(GLOB YAML_FILES

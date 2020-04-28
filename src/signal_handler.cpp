@@ -412,7 +412,7 @@ void SignalHandler::zoom_reset() {
 void SignalHandler::theme_changed() {
 	settings.set("theme-active", this->widgets->preferences_theme_combo->get_active_text());
 
-	if(!this->widgets->css->load_from_path("data/" + this->widgets->preferences_theme_combo->get_active_text() + ".css")) {
+	if(!this->widgets->css->load_from_path(DATA(this->widgets->preferences_theme_combo->get_active_text() + ".css"))) {
 			std::cerr << "Failed to load css\n";
 	}
 }

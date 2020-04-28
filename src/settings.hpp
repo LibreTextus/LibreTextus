@@ -6,6 +6,8 @@
 #include <iostream>
 #include <fstream>
 
+#include "path.hpp"
+
 // -----------------------------------------------------------------------------
 // THIS CLASS IS FOR READ AND WRITE THE SETTINGS STORED IN THE YAML FILE
 // -----------------------------------------------------------------------------
@@ -22,7 +24,7 @@ public:
 
 	template <typename T>
 	T get(std::string arg) {
-		YAML::Node output = YAML::LoadFile("data/settings.yml");
+		YAML::Node output = YAML::LoadFile(DATA("settings.yml"));
 
 		std::regex e("-");
 		std::smatch m;
@@ -40,7 +42,7 @@ public:
 	// ---------------------------------------------------------------------------
 
 	YAML::Node get(std::string arg) {
-		YAML::Node output = YAML::LoadFile("data/settings.yml");
+		YAML::Node output = YAML::LoadFile(DATA("settings.yml"));
 
 		std::regex e("-");
 		std::smatch m;
@@ -58,7 +60,7 @@ public:
 	// ---------------------------------------------------------------------------
 
 	void set(std::string tag, std::string arg) {
-		YAML::Node node = YAML::LoadFile("data/settings.yml");
+		YAML::Node node = YAML::LoadFile(DATA("settings.yml"));
 
 		YAML::iterator i = node.begin();
 
@@ -83,7 +85,7 @@ public:
 		YAML::Emitter emitter;
 		emitter << node;
 
-		std::ofstream fout("data/settings.yml");
+		std::ofstream fout(DATA("settings.yml"));
 		if (fout.is_open()) {
 			fout << emitter.c_str();
 			fout.close();

@@ -8,10 +8,15 @@ description: |
   LibreTextus is a simple way to search in the Bible in a powerful way.
 
 grade: devel # must be 'stable' to release into candidate/stable channels
-confinement: devmode # use 'strict' once you have the right plugs and slots
+confinement: strict # use 'strict' once you have the right plugs and slots
 
-environment:
-  SNAP_RUNTIME: $SNAP
+plugs:
+  home-dir:
+    interface: personal-files
+    read:
+    - $HOME/.libre_textus
+    write:
+    - $HOME/.libre_textus
 
 parts:
   libretextus:
@@ -35,4 +40,7 @@ apps:
     plugs:
       - desktop
       - desktop-legacy
+      - home-dir
+      - browser-support
+      - network
       - home

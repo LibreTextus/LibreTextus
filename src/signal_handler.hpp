@@ -7,7 +7,7 @@
 #include <thread>
 #include <algorithm>
 #include "settings.hpp"
-
+#include "path.hpp"
 #include "widgets.hpp"
 
 class SignalHandler {

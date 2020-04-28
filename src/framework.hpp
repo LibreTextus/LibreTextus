@@ -8,6 +8,7 @@
 #include "widgets.hpp"
 #include "settings.hpp"
 #include "window.hpp"
+#include "path.hpp"
 
 class Framework {
 private:

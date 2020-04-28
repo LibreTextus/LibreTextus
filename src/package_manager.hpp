@@ -7,8 +7,12 @@
 #include <experimental/filesystem>
 #include <regex>
 #include <gtkmm.h>
-#include "settings.hpp"
+#include <unistd.h>
+#include <sys/types.h>
+#include <pwd.h>
 #include <iostream>
+#include "settings.hpp"
+#include "path.hpp"
 
 namespace Libre {
   class PackageManager {

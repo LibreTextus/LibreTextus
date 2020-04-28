@@ -24,7 +24,7 @@ int Framework::init(int argc, char *argv[]) {
 	// ------------------------------------------
 
 	this->widgets.css = Gtk::CssProvider::create();
-	if(!this->widgets.css->load_from_path("data/" + this->settings.get<std::string>("theme-active") + ".css")) {
+	if(!this->widgets.css->load_from_path(DATA(this->settings.get<std::string>("theme-active") + ".css"))) {
 			std::cerr << "Failed to load css\n";
 			return 1;
 	}
@@ -47,7 +47,7 @@ int Framework::init(int argc, char *argv[]) {
 	this->widgets.package_manager.window = new Gtk::Window;
 	this->widgets.package_manager.window->set_title("Info");
 	this->widgets.package_manager.window->set_default_size(250, 80);
-	this->widgets.package_manager.window->set_icon_from_file("data/Icon.svg");
+	this->widgets.package_manager.window->set_icon_from_file(DATA("Icon.svg"));
 
 	Gtk::VBox * box = new Gtk::VBox;
 	box->set_border_width(10);

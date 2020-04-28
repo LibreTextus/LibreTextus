@@ -8,6 +8,7 @@
 #include "widgets.hpp"
 #include "signal_handler.hpp"
 #include "settings.hpp"
+#include "path.hpp"
 
 namespace Libre {
 	namespace MainWindow {

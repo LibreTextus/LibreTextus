@@ -7,9 +7,6 @@
 #include <experimental/filesystem>
 #include <regex>
 #include <gtkmm.h>
-#include <unistd.h>
-#include <sys/types.h>
-#include <pwd.h>
 #include <iostream>
 #include "settings.hpp"
 #include "path.hpp"

@@ -10,14 +10,6 @@ description: |
 grade: devel # must be 'stable' to release into candidate/stable channels
 confinement: strict # use 'strict' once you have the right plugs and slots
 
-plugs:
-  home-dir:
-    interface: personal-files
-    read:
-    - $HOME/.libre_textus
-    write:
-    - $HOME/.libre_textus
-
 parts:
   libretextus:
     plugin: cmake
@@ -40,7 +32,6 @@ apps:
     plugs:
       - desktop
       - desktop-legacy
-      - home-dir
       - browser-support
       - network
       - home

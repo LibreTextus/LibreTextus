@@ -9,6 +9,5 @@ std::string DATA(const std::string & object) {
 	}
 	#endif
 
-	std::cout << output << '\n';
 	return output;
 }

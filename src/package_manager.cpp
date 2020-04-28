@@ -7,7 +7,6 @@
 
 void Libre::PackageManager::init() {
 	this->dummy_path = DATA("dummy.yml");
-	this->sources = YAML::LoadFile(DATA("sources.yml"));
 
 	// ------------------------------------------
 	// GET ROOT DIR AND REPLACE THE *~* WTIH THE
@@ -18,7 +17,7 @@ void Libre::PackageManager::init() {
 
 	if (this->root_path.find("~") == 0) {
 		this->root_path.erase(0, 1);
-		this->root_path = (getenv("SNAP") == NULL ? getenv("HOME") : getpwuid(getuid())->pw_dir) + this->root_path;
+		this->root_path = (getenv("SNAP_USER_COMMON") == NULL ? getenv("HOME") : getenv("SNAP_USER_COMMON")) + this->root_path;
 	}
 
 	// ------------------------------------------
@@ -35,9 +34,13 @@ void Libre::PackageManager::init() {
 	// ------------------------------------------
 
 	if (std::experimental::filesystem::is_empty(this->root_path)) {
+		std::experimental::filesystem::copy(DATA("sources.yml"), this->root_path + "sources.yml");
+		this->sources = YAML::LoadFile(DATA("sources.yml"));
 		this->install("git://github.com/LibreTextus/BibleEditions");
 		std::experimental::filesystem::rename(this->root_path + "BibleEditions/biblebooks.yml",
 																					this->root_path + "biblebooks.yml");
+	} else {
+		this->sources = YAML::LoadFile(this->root_path + "sources.yml");
 	}
 }
 
@@ -123,7 +126,7 @@ void Libre::PackageManager::install(std::string url) {
 	YAML::Emitter emitter;
 	emitter << this->sources;
 
-	std::ofstream fout(DATA("sources.yml"));
+	std::ofstream fout(this->root_path + "sources.yml");
 	if (fout.is_open()) {
 		fout << emitter.c_str();
 		fout.close();
@@ -186,7 +189,7 @@ void Libre::PackageManager::remove(std::string package) {
 	YAML::Emitter emitter;
 	emitter << this->sources;
 
-	std::ofstream fout(DATA("sources.yml"));
+	std::ofstream fout(this->root_path + "sources.yml");
 	if (fout.is_open()) {
 		fout << emitter.c_str();
 		fout.close();
@@ -206,7 +209,7 @@ void Libre::PackageManager::disable(std::string package) {
 	YAML::Emitter emitter;
 	emitter << this->sources;
 
-	std::ofstream fout(DATA("sources.yml"));
+	std::ofstream fout(this->root_path + "sources.yml");
 	if (fout.is_open()) {
 		fout << emitter.c_str();
 		fout.close();
@@ -223,7 +226,7 @@ void Libre::PackageManager::enable(std::string package) {
 	YAML::Emitter emitter;
 	emitter << this->sources;
 
-	std::ofstream fout(DATA("sources.yml"));
+	std::ofstream fout(this->root_path + "sources.yml");
 	if (fout.is_open()) {
 		fout << emitter.c_str();
 		fout.close();

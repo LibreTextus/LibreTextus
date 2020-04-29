@@ -125,7 +125,7 @@ void SearchEngine::interpret_string() {
 
 	for (Libre::NameMap::iterator i = this->names.begin(); i != this->names.end(); i++) {
 		for (std::vector<std::string>::iterator x = i.value().begin(); x != i.value().end(); x++) {
-			e = "\b" + *x + "\b";
+			e = *x;
 			arg = std::regex_replace(arg, e, i->first);
 		}
 	}
@@ -166,19 +166,22 @@ void SearchEngine::interpret_string() {
 			}
 
 			if (arg == "") {
-				run = false;
+				break;
 			}
 
 			continue;
 
 		} else {
-			run = false;
+			break;
 		}
 
 		e = "\\d+";
-		std::regex_search(arg, m, e);
-		pos.back()[0] += m.str() + ", ";
-		arg = m.suffix().str();
+		if (std::regex_search(arg, m, e)) {
+			pos.back()[0] += m.str() + ", ";
+			arg = m.suffix().str();
+		} else {
+			break;
+		}
 
 		if (arg.substr(0, 1) == "-") {
 			arg.erase(0, 1);
@@ -226,8 +229,6 @@ void SearchEngine::interpret_string() {
 				pos.back()[1] += m.str();
 				arg = m.suffix().str();
 			}
-
-
 
 		} else {
 			pos.back()[0] += "1";

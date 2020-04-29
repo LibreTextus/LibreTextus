@@ -104,18 +104,22 @@ void Libre::TextView::_display() {
 }
 
 bool Libre::TextView::on_scroll_event(GdkEventScroll * scroll_event) {
+
 	this->scroll_status += scroll_event->delta_y;
 
-	if (this->scroll_status < 0) {
+	if (this->verses.size() < this->max_verses) {
 		this->scroll_status = 0;
-		this->get_vscrollbar()->set_value(this->get_vscrollbar()->get_value() - this->verses[this->scroll_status + this->max_verses - 1]->get_height());
-		this->_display();
-	}
+		if (this->verses.size() != 0) {
+			this->get_vscrollbar()->set_value(this->get_vscrollbar()->get_value() + (scroll_event->delta_y > 0 ? 1 : -1) * this->verses[this->scroll_status]->get_height());
+		}
 
-	if (this->scroll_status >= this->verses.size() - this->max_verses) {
+	} else if (this->scroll_status < 0) {
+		this->scroll_status = 0;
+
+	} else if (this->scroll_status >= this->verses.size() - this->max_verses || this->get_vscrollbar()->get_value() != 0) {
 		this->scroll_status = this->verses.size() - this->max_verses;
-		this->get_vscrollbar()->set_value(this->get_vscrollbar()->get_value() + this->verses[this->scroll_status]->get_height());
-		this->_display();
+		this->get_vscrollbar()->set_value(this->get_vscrollbar()->get_value() + (scroll_event->delta_y > 0 ? 1 : -1) * this->verses[this->scroll_status]->get_height());
+
 	}
 
 	this->_display();

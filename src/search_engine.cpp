@@ -48,12 +48,12 @@ void SearchEngine::set_source(std::string path) {
 // RETURNS VERSE THE ARGUMENT HAS TO BE IN THES FORM: *BOOK, CHAPTER, VERSE*
 // -----------------------------------------------------------------------------
 
-std::string SearchEngine::get_verse(std::string p) {
+std::string * SearchEngine::get_verse(std::string p) {
 	if (this->file.find(p) != this->file.end()) {
-		return this->file[p];
+		return &this->file[p];
 	}
 	else {
-		return "~~~";
+		return nullptr;
 	}
 }
 
@@ -113,14 +113,6 @@ void SearchEngine::interpret_string() {
 	std::string arg = this->search_argument;
 	std::string search = "";
 
-	// ------------------------------------------
-	// CREATE A TEMPORARY POSITION ARRAY
-	// THIS ARRAY HAS THE FOLLOWING CONTENTS:
-	// 	* { BOOK START, BOOK END }
-	// 	* { CHAPTER START, CHAPTER END }
-	// 	* { VERSE START, VERSE END }
-	// ------------------------------------------
-
 	std::vector<std::array<std::string, 2>> pos;
 
 	std::regex e("@");
@@ -131,18 +123,20 @@ void SearchEngine::interpret_string() {
 		arg = m.suffix().str();
 	}
 
-	e = " ";
-
-	arg = std::regex_replace(arg, e, "");
-
 	for (Libre::NameMap::iterator i = this->names.begin(); i != this->names.end(); i++) {
 		for (std::vector<std::string>::iterator x = i.value().begin(); x != i.value().end(); x++) {
-			e = *x;
+			e = "\b" + *x + "\b";
 			arg = std::regex_replace(arg, e, i->first);
 		}
 	}
 
-	while (true) {
+	e = " ";
+
+	arg = std::regex_replace(arg, e, "");
+
+	bool run = this->names.find(arg.substr(0, 3)) != this->names.end();
+
+	while (run) {
 		pos.push_back({"", ""});
 
 		if (this->names.find(arg.substr(0, 3)) != this->names.end()) {
@@ -172,13 +166,13 @@ void SearchEngine::interpret_string() {
 			}
 
 			if (arg == "") {
-				break;
+				run = false;
 			}
 
 			continue;
 
 		} else {
-			break;
+			run = false;
 		}
 
 		e = "\\d+";
@@ -249,19 +243,18 @@ void SearchEngine::interpret_string() {
 		}
 
 		if (arg == "") {
-			break;
+			run = false;
 		}
 	}
 
-	bool valid_position = true;
+	bool valid_position = (pos.size() != 0);
 
 	for (int i = 0; i < pos.size(); i++) {
-		if (this->file.find(pos[i][0]) == this->file.end()) {
+		if (this->file.find(pos[i][0]) == this->file.end() || this->file.find(pos[i][1]) == this->file.end()) {
 			valid_position = false;
 			break;
 		}
 	}
-
 	this->positions.clear();
 
 	if (valid_position) {

@@ -47,7 +47,7 @@ void Libre::TextView::clear() {
 }
 
 
-void Libre::TextView::add_verse(const std::string & caption, const std::vector<std::string> & verses_content) {
+void Libre::TextView::add_verse(const std::string & caption, const std::vector<std::string *> & verses_content) {
 	this->captions.push_back(caption);
 	this->content.push_back(verses_content);
 
@@ -62,14 +62,14 @@ void Libre::TextView::add_verse(const std::string & caption, const std::vector<s
 		l->set_alignment(Gtk::ALIGN_START);
 		l->set_line_wrap_mode(Pango::WRAP_WORD);
 		l->set_selectable(true);
-		l->set_markup(caption + "\n" + verses_content[i]);
+		l->set_markup(caption + "\n" + (verses_content[i] == nullptr ? "~~~" : *verses_content[i]));
 		this->verses.back()->pack_start(*l, Gtk::PACK_EXPAND_WIDGET, this->padding_x);
 	}
 
 	this->_display();
 }
 
-void Libre::TextView::replace_verse(const std::string & caption, const int & version, const std::string & content) {
+void Libre::TextView::replace_verse(const std::string & caption, const int & version, const std::string * verse_content) {
 	int verse_id = std::distance(this->captions.begin(), std::find(this->captions.begin(), this->captions.end(), caption));
 
 	if (this->verses[verse_id]->get_children().size() > version) {
@@ -83,7 +83,7 @@ void Libre::TextView::replace_verse(const std::string & caption, const int & ver
 	l->set_line_wrap(true);
 	l->set_alignment(Gtk::ALIGN_START);
 	l->set_line_wrap_mode(Pango::WRAP_WORD);
-	l->set_markup(caption + "\n" + content);
+	l->set_markup(caption + "\n" + (verse_content == nullptr ? "~~~" : *verse_content));
 
 	this->verses[verse_id]->pack_start(*l, Gtk::PACK_EXPAND_WIDGET, this->padding_x);
 	this->verses[verse_id]->reorder_child(*l, version);
@@ -107,7 +107,7 @@ bool Libre::TextView::on_scroll_event(GdkEventScroll * scroll_event) {
 
 	this->scroll_status += scroll_event->delta_y;
 
-	if (this->verses.size() < this->max_verses) {
+	if (this->verses.size() <= this->max_verses) {
 		this->scroll_status = 0;
 		if (this->verses.size() != 0) {
 			this->get_vscrollbar()->set_value(this->get_vscrollbar()->get_value() + (scroll_event->delta_y > 0 ? 1 : -1) * this->verses[this->scroll_status]->get_height());

@@ -141,7 +141,7 @@ void SignalHandler::source_changed(Gtk::ComboBoxText * b) {
 		this->widgets->close_buttons[i]->set_sensitive(false);
 	}
 
-	this->widgets->add_button->set_sensitive(true);
+	this->widgets->add_button->set_sensitive(false);
 
 	this->widgets->search_entry->set_editable(false);
 	this->widgets->action_group->set_sensitive(false);
@@ -235,9 +235,9 @@ void SignalHandler::do_search() {
 	// ------------------------------------------
 
 	this->widgets->found_verses.clear();
-	this->widgets->found_verses.push_back("");
+	this->widgets->found_verses.push_back(new std::string(""));
 
-	while (this->widgets->search_engine[0].search(&this->widgets->found_verses[0])) {
+	while (this->widgets->search_engine[0].search(this->widgets->found_verses[0])) {
 
 		this->widgets->found_position = this->widgets->search_engine[0].get_last_search_results()->back();
 
@@ -256,7 +256,7 @@ void SignalHandler::do_search() {
 		this->widgets->search_entry->set_progress_fraction(this->widgets->search_engine[0].get_progress());
 
 		this->widgets->found_verses.clear();
-		this->widgets->found_verses.push_back("");
+		this->widgets->found_verses.push_back(new std::string(""));
 	}
 
 	this->widgets->search_entry->set_progress_fraction(0.0);

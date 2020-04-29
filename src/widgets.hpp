@@ -40,7 +40,7 @@ namespace Libre {
 		std::vector<Gtk::ComboBoxText *> combo_boxes;
 		Libre::TextView * text_view;
 		std::string found_position;
-		std::vector<std::string> found_verses;
+		std::vector<std::string *> found_verses;
 		bool is_fullscreen;
 
 		Gtk::Window * preferences_window;
@@ -71,6 +71,7 @@ namespace Libre {
 		~Widgets() {
 			delete window;
 			delete preferences_window;
+			delete dialog_window;
 		}
 
 		// LIBRE::WIDGETS::APPENDS_SOURCES -----------------------------------------

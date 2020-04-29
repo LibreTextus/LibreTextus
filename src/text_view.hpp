@@ -15,7 +15,7 @@ namespace Libre {
 		Gtk::Label information_text;
 		std::vector<Gtk::HBox *> verses;
 		std::vector<std::string> captions;
-		std::vector<std::vector<std::string>> content;
+		std::vector<std::vector<std::string *>> content;
 		int scroll_status;
 		int padding_x;
 		int padding_y;
@@ -26,8 +26,8 @@ namespace Libre {
 		virtual ~TextView() = default;
 
 		void clear();
-		void add_verse(const std::string & caption, const std::vector<std::string> & verses_content);
-		void replace_verse(const std::string & caption, const int & version, const std::string & content);
+		void add_verse(const std::string & caption, const std::vector<std::string *> & verses_content);
+		void replace_verse(const std::string & caption, const int & version, const std::string * content);
 		void _display();
 		bool on_scroll_event(GdkEventScroll * scroll_event);
 		void show_information();

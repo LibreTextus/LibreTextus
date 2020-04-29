@@ -37,6 +37,7 @@ public:
 	void set_mark_argument(std::string arg);
 	void set_source(std::string path);
 	float get_progress();
+	std::string * get_verse(std::string p);
 
 	std::vector<std::string> * get_last_search_results() {
 		return &this->last_search_results;
@@ -45,8 +46,6 @@ public:
 	void set_last_search_result(std::vector<std::string> & v) {
 		this->last_search_results = v;
 	}
-
-	std::string get_verse(std::string p);
 };
 
 #endif

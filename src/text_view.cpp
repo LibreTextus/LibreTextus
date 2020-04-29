@@ -8,6 +8,7 @@ Libre::TextView::TextView(const std::string & info) {
 	this->information_text.set_line_wrap(true);
 	this->information_text.set_line_wrap_mode(Pango::WRAP_WORD);
 	this->information_text.set_selectable(true);
+	this->information_text.set_can_focus(false);
 
 	this->add(this->overlay);
 	this->get_vscrollbar()->hide();
@@ -62,6 +63,7 @@ void Libre::TextView::add_verse(const std::string & caption, const std::vector<s
 		l->set_alignment(Gtk::ALIGN_START);
 		l->set_line_wrap_mode(Pango::WRAP_WORD);
 		l->set_selectable(true);
+		l->set_can_focus(false);
 		l->set_markup(caption + "\n" + (verses_content[i] == nullptr ? "~~~" : *verses_content[i]));
 		this->verses.back()->pack_start(*l, Gtk::PACK_EXPAND_WIDGET, this->padding_x);
 	}
@@ -83,6 +85,8 @@ void Libre::TextView::replace_verse(const std::string & caption, const int & ver
 	l->set_line_wrap(true);
 	l->set_alignment(Gtk::ALIGN_START);
 	l->set_line_wrap_mode(Pango::WRAP_WORD);
+	l->set_selectable(true);
+	l->set_can_focus(false);
 	l->set_markup(caption + "\n" + (verse_content == nullptr ? "~~~" : *verse_content));
 
 	this->verses[verse_id]->pack_start(*l, Gtk::PACK_EXPAND_WIDGET, this->padding_x);

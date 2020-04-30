@@ -4,6 +4,7 @@
 #include <yaml-cpp/yaml.h>
 #include <iostream>
 #include <tsl/ordered_map.h>
+#include <chrono>
 
 // -----------------------------------------------------------------------------
 // THE SOURCEHANDLER CLASS IS FOR MAKE IT MORE EFFICIENT. IT LOADS A FILE IF IT
@@ -28,8 +29,8 @@ public:
 	SourceHandler() = default;
 	virtual ~SourceHandler() = default;
 
-	Libre::BookMap get_source(std::string s);
-	Libre::NameMap get_names(std::string s);
+	Libre::BookMap * get_source(std::string s);
+	Libre::NameMap * get_names(std::string s);
 };
 
 #endif

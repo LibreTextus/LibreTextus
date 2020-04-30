@@ -7,7 +7,7 @@
 SearchEngine::SearchEngine(std::string file_path, std::string names_path) {
 	this->file = this->source_handler.get_source(file_path);
 	this->names = this->source_handler.get_names(names_path);
-	this->active_verse = this->file.begin();
+	this->active_verse = this->file->begin();
 
 	W = "[\\w\\u00C0-\\u024f]";
 }
@@ -38,10 +38,9 @@ void SearchEngine::set_mark_argument(std::string arg) {
 // -----------------------------------------------------------------------------
 
 void SearchEngine::set_source(std::string path) {
-	this->file.clear();
 	this->file = this->source_handler.get_source(path);
 
-	this->active_verse = this->file.begin();
+	this->active_verse = this->file->begin();
 }
 
 // SEARCHENGINE::GET_VERSE -----------------------------------------------------
@@ -49,8 +48,8 @@ void SearchEngine::set_source(std::string path) {
 // -----------------------------------------------------------------------------
 
 std::string * SearchEngine::get_verse(std::string p) {
-	if (this->file.find(p) != this->file.end()) {
-		return &this->file[p];
+	if (this->file->find(p) != this->file->end()) {
+		return &(*this->file)[p];
 	}
 	else {
 		return nullptr;
@@ -62,8 +61,8 @@ std::string * SearchEngine::get_verse(std::string p) {
 // -----------------------------------------------------------------------------
 
 float SearchEngine::get_progress() {
-	if (this->file.size()) {
-		return static_cast<float>(std::distance(this->file.begin(), this->active_verse)) / this->file.size();
+	if (this->file->size()) {
+		return static_cast<float>(std::distance(this->file->begin(), this->active_verse)) / this->file->size();
 	}
 
 	return 0;
@@ -123,7 +122,7 @@ void SearchEngine::interpret_string() {
 		arg = m.suffix().str();
 	}
 
-	for (Libre::NameMap::iterator i = this->names.begin(); i != this->names.end(); i++) {
+	for (Libre::NameMap::iterator i = this->names->begin(); i != this->names->end(); i++) {
 		for (std::vector<std::string>::iterator x = i.value().begin(); x != i.value().end(); x++) {
 			e = *x;
 			arg = std::regex_replace(arg, e, i->first);
@@ -134,12 +133,12 @@ void SearchEngine::interpret_string() {
 
 	arg = std::regex_replace(arg, e, "");
 
-	bool run = this->names.find(arg.substr(0, 3)) != this->names.end();
+	bool run = this->names->find(arg.substr(0, 3)) != this->names->end();
 
 	while (run) {
 		pos.push_back({"", ""});
 
-		if (this->names.find(arg.substr(0, 3)) != this->names.end()) {
+		if (this->names->find(arg.substr(0, 3)) != this->names->end()) {
 			pos.back()[0] = arg.substr(0, 3) + " ";
 			arg.erase(0, 3);
 
@@ -148,7 +147,7 @@ void SearchEngine::interpret_string() {
 			pos.back()[0] = pos[pos.size() - 2][0].substr(0, 4);
 
 		} else if (arg.substr(0, 1) == ".") {
-			pos.back()[0] = pos[pos.size() - 2][0].substr(0, pos[pos.size() - 2][0].find(",") + 2);
+			pos.back()[0] = pos[pos.size() - 2][0].substr(0, pos[pos.size() - 2][0].find(",") + 1);
 
 			e = "\\d+";
 			std::regex_search(arg, m, e);
@@ -159,7 +158,7 @@ void SearchEngine::interpret_string() {
 
 			if (arg.substr(0, 1) == "-") {
 				arg.erase(0, 1);
-				pos.back()[1].erase(pos.back()[0].find(",") + 2, std::string::npos);
+				pos.back()[1].erase(pos.back()[0].find(",") + 1, std::string::npos);
 				std::regex_search(arg, m, e);
 				pos.back()[1] += m.str();
 				arg = m.suffix().str();
@@ -177,7 +176,7 @@ void SearchEngine::interpret_string() {
 
 		e = "\\d+";
 		if (std::regex_search(arg, m, e)) {
-			pos.back()[0] += m.str() + ", ";
+			pos.back()[0] += m.str() + ",";
 			arg = m.suffix().str();
 		} else {
 			break;
@@ -186,12 +185,12 @@ void SearchEngine::interpret_string() {
 		if (arg.substr(0, 1) == "-") {
 			arg.erase(0, 1);
 
-			if (this->names.find(arg.substr(0, 3)) != this->names.end()) {
-				pos.back()[1] = arg.substr(0, 3) + " ";
+			if (this->names->find(arg.substr(0, 3)) != this->names->end()) {
+				pos.back()[1] = arg.substr(0, 3);
 				arg.erase(0, 3);
 
 				std::regex_search(arg, m, e);
-				pos.back()[1] += m.str() + ", ";
+				pos.back()[1] += m.str() + ",";
 				arg = m.suffix().str();
 
 				pos.back()[0] += "1";
@@ -201,12 +200,12 @@ void SearchEngine::interpret_string() {
 				pos.back()[0] += "1";
 
 				std::regex_search(arg, m, e);
-				pos.back()[1] = pos.back()[0].substr(0, 4) + m.str() + ", ";
+				pos.back()[1] = pos.back()[0].substr(0, 4) + m.str() + ",";
 				arg = m.suffix();
 
-				Libre::BookMap::iterator i = this->file.find(pos.back()[1] + "1");
+				Libre::BookMap::iterator i = this->file->find(pos.back()[1] + "1");
 
-				for (;i->first.substr(0, i->first.find(",") + 2) == pos.back()[1]; i++) {}
+				for (;i->first.substr(0, i->first.find(",") + 1) == pos.back()[1]; i++) {}
 
 				i--;
 
@@ -224,7 +223,7 @@ void SearchEngine::interpret_string() {
 
 			if (arg.substr(0, 1) == "-") {
 				arg.erase(0, 1);
-				pos.back()[1].erase(pos.back()[0].find(",") + 2, std::string::npos);
+				pos.back()[1].erase(pos.back()[0].find(",") + 1, std::string::npos);
 				std::regex_search(arg, m, e);
 				pos.back()[1] += m.str();
 				arg = m.suffix().str();
@@ -234,7 +233,7 @@ void SearchEngine::interpret_string() {
 			pos.back()[0] += "1";
 			pos.back()[1] = pos.back()[0];
 
-			Libre::BookMap::iterator i = this->file.find(pos.back()[1]);
+			Libre::BookMap::iterator i = this->file->find(pos.back()[1]);
 
 			for (;i->first.substr(0, i->first.find(",")) == pos.back()[1].substr(0, pos.back()[1].find(",")); i++) {}
 
@@ -251,7 +250,9 @@ void SearchEngine::interpret_string() {
 	bool valid_position = (pos.size() != 0);
 
 	for (int i = 0; i < pos.size(); i++) {
-		if (this->file.find(pos[i][0]) == this->file.end() || this->file.find(pos[i][1]) == this->file.end()) {
+		std::cout << "[" + std::to_string(i) + "][0]: " << pos[i][0] << (this->file->find(pos[i][0]) == this->file->end() ? " x" : " √") << '\n';
+		std::cout << "[" + std::to_string(i) + "][1]: " << pos[i][1] << (this->file->find(pos[i][1]) == this->file->end() ? " x" : " √") << '\n';
+		if (this->file->find(pos[i][0]) == this->file->end() || this->file->find(pos[i][1]) == this->file->end()) {
 			valid_position = false;
 			break;
 		}
@@ -260,11 +261,11 @@ void SearchEngine::interpret_string() {
 
 	if (valid_position) {
 		for (int i = 0; i < pos.size(); i++) {
-			this->positions.push_back({this->file.find(pos[i][0]), this->file.find(pos[i][1]) + 1});
+			this->positions.push_back({this->file->find(pos[i][0]), this->file->find(pos[i][1]) + 1});
 			this->search_argument = search;
 		}
 	} else {
-		this->positions.push_back({this->file.begin(), this->file.end()});
+		this->positions.push_back({this->file->begin(), this->file->end()});
 	}
 
 	this->interpret_argument(&this->search_argument);

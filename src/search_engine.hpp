@@ -13,8 +13,8 @@
 
 class SearchEngine {
 private:
-	Libre::BookMap file;
-	Libre::NameMap names;
+	Libre::BookMap * file;
+	Libre::NameMap * names;
 	Libre::BookMap::iterator active_verse;
 	int active_verse_index;
 	SourceHandler source_handler;

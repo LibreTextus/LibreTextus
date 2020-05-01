@@ -59,6 +59,7 @@ namespace Libre {
 
 		Glib::Thread * process_thread;
 		Glib::Thread * update_thread;
+		std::mutex process_mutex;
 		Glib::Dispatcher set_text_dispatcher;
 		Glib::Dispatcher delete_thread_dispatcher;
 		Glib::Dispatcher sync_sources_dispatcher;

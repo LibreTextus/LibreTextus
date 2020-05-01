@@ -83,6 +83,7 @@ gboolean SignalHandler::search_request(GdkEventKey * event) {
 	// ------------------------------------------
 	// IF ENTER IS PRESSED (KEYCODE: 65293)
 	// ------------------------------------------
+
 	if (event->keyval == 65293) {
 
 		if (this->widgets->search_entry->get_text() == "") {
@@ -105,7 +106,7 @@ gboolean SignalHandler::search_request(GdkEventKey * event) {
 
 		this->widgets->add_button->set_sensitive(false);
 
-		this->widgets->search_entry->set_editable(false);
+		this->widgets->search_entry->set_sensitive(false);
 		this->widgets->action_group->set_sensitive(false);
 
 		this->widgets->replace_id = -1;
@@ -143,7 +144,7 @@ void SignalHandler::source_changed(Gtk::ComboBoxText * b) {
 
 	this->widgets->add_button->set_sensitive(false);
 
-	this->widgets->search_entry->set_editable(false);
+	this->widgets->search_entry->set_sensitive(false);
 	this->widgets->action_group->set_sensitive(false);
 
 	// ------------------------------------------
@@ -184,18 +185,17 @@ void SignalHandler::set_text() {
 	// A SPECIFIC TEXT_BUFFER
 	// ------------------------------------------
 
+	this->widgets->process_mutex.lock();
+
 	if (this->widgets->replace_id == -1) {
 		this->widgets->text_view->add_verse(this->widgets->found_position, this->widgets->found_verses);
 	} else {
 		this->widgets->text_view->replace_verse(this->widgets->found_position, this->widgets->replace_id, this->widgets->found_verses.back());
 	}
 
-	// ------------------------------------------
-	// SET PROCESS_FINISHED TO TRUE THAT THE
-	// PROCESS_THREAD CAN CONTINUE
-	// ------------------------------------------
-
 	this->widgets->procress_finished = true;
+
+	this->widgets->process_mutex.unlock();
 }
 
 // SIGNALHANDLER::DELETE_THREAD ------------------------------------------------
@@ -204,11 +204,27 @@ void SignalHandler::set_text() {
 // -----------------------------------------------------------------------------
 
 void SignalHandler::delete_thread() {
-	if (this->widgets->process_thread) {
-		if (this->widgets->process_thread->joinable()) {
-			this->widgets->process_thread->join();
-		}
+	if (this->widgets->process_thread->joinable()) {
+		this->widgets->process_thread->join();
 	}
+
+	this->widgets->search_entry->set_progress_fraction(0.0);
+
+	// ------------------------------------------
+	// ENABLE EVERY WIDGETS WHICH WERE DISABLED
+	// ------------------------------------------
+
+	for (int i = 0; i < this->widgets->combo_boxes.size(); i++) {
+		this->widgets->combo_boxes[i]->set_button_sensitivity(Gtk::SENSITIVITY_ON);
+		this->widgets->close_buttons[i]->set_sensitive(true);
+	}
+
+	this->widgets->add_button->set_sensitive(true);
+
+	this->widgets->search_entry->set_sensitive(true);
+	this->widgets->search_entry->grab_focus();
+	this->widgets->search_entry->set_position(-1);
+	this->widgets->action_group->set_sensitive(true);
 }
 
 // SIGNALHANDLER::DO_SEARCH ----------------------------------------------------
@@ -239,6 +255,8 @@ void SignalHandler::do_search() {
 
 	while (this->widgets->search_engine[0].search(this->widgets->found_verses[0])) {
 
+		this->widgets->process_mutex.lock();
+
 		this->widgets->found_position = this->widgets->search_engine[0].get_last_search_results()->back();
 
 		// ------------------------------------------
@@ -249,31 +267,23 @@ void SignalHandler::do_search() {
 			this->widgets->found_verses.push_back(this->widgets->search_engine[i].get_verse(this->widgets->found_position));
 		}
 
+		this->widgets->procress_finished = false;
+
+		this->widgets->process_mutex.unlock();
+
 		this->widgets->set_text_dispatcher.emit();
 
-		this->widgets->procress_finished = false;
-		while (!this->widgets->procress_finished) {}
+		while (!this->widgets->procress_finished) { std::this_thread::yield(); }
+
+		this->widgets->process_mutex.lock();
+
 		this->widgets->search_entry->set_progress_fraction(this->widgets->search_engine[0].get_progress());
 
 		this->widgets->found_verses.clear();
 		this->widgets->found_verses.push_back(new std::string(""));
+
+		this->widgets->process_mutex.unlock();
 	}
-
-	this->widgets->search_entry->set_progress_fraction(0.0);
-
-	// ------------------------------------------
-	// ENABLE EVERY WIDGETS WHICH WERE DISABLED
-	// ------------------------------------------
-
-	for (int i = 0; i < this->widgets->combo_boxes.size(); i++) {
-		this->widgets->combo_boxes[i]->set_button_sensitivity(Gtk::SENSITIVITY_ON);
-		this->widgets->close_buttons[i]->set_sensitive(true);
-	}
-
-	this->widgets->add_button->set_sensitive(true);
-
-	this->widgets->search_entry->set_editable(true);
-	this->widgets->action_group->set_sensitive(true);
 
 	this->widgets->delete_thread_dispatcher.emit();
 }
@@ -300,30 +310,24 @@ void SignalHandler::do_replacement() {
 	this->widgets->found_verses.clear();
 
 	for (std::vector<std::string>::iterator i = v->begin(); i != v->end() && v->size() != 0; i++) {
+
+		this->widgets->process_mutex.lock();
+
 		this->widgets->procress_finished = false;
 		this->widgets->found_verses.push_back(this->widgets->search_engine[this->widgets->replace_id].get_verse(*i));
 		this->widgets->found_position = *i;
 
+		this->widgets->process_mutex.unlock();
+
 		this->widgets->set_text_dispatcher.emit();
-		while (!this->widgets->procress_finished) {}
+
+		while (!this->widgets->procress_finished) { std::this_thread::yield(); }
+
+		this->widgets->process_mutex.lock();
 		x++;
 		this->widgets->search_entry->set_progress_fraction(x / static_cast<float>(v->size()));
+		this->widgets->process_mutex.unlock();
 	}
-
-	// ------------------------------------------
-	// ENABLE EVERY WIDGET WHICH WERE DISABLED
-	// ------------------------------------------
-
-	for (int i = 0; i < this->widgets->combo_boxes.size(); i++) {
-		this->widgets->combo_boxes[i]->set_button_sensitivity(Gtk::SENSITIVITY_ON);
-		this->widgets->close_buttons[i]->set_sensitive(true);
-	}
-
-	this->widgets->add_button->set_sensitive(true);
-
-	this->widgets->search_entry->set_editable(true);
-	this->widgets->action_group->set_sensitive(true);
-	this->widgets->search_entry->set_progress_fraction(0.0);
 
 	this->widgets->delete_thread_dispatcher.emit();
 }

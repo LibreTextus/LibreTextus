@@ -1,7 +1,7 @@
 @import "template.css";
 
 @define-color theme_text_color #000;
-@define-color theme_text_background_color #fff;
-@define-color theme_background_color #e6e6e6;
+@define-color theme_text_background_color #EBF5DF;
+@define-color theme_background_color #CCCCC0;
 @define-color theme_highlight_color #457fb5;
-@define-color theme_accent_color #d2cdcd;
+@define-color theme_accent_color #80877F;

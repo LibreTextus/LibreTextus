@@ -20,6 +20,9 @@ box, .combo, menu, menubar, entry, button, spinbutton {
 	background-color: @theme_background_color;
 	color: @theme_text_color;
 	border-color: @theme_accent_color;
+	border-width: 1px;
+	box-shadow: none;
+	background-image: none;
 }
 
 menuitem:hover {
@@ -75,6 +78,9 @@ paned separator {
                                    color-stop(0.25, @theme_highlight_color),
 																	 color-stop(0.25, @theme_text_background_color)
 																	 );
+	box-shadow: none;
+ 	background-image: none;
+ 	border: none;
 }
 
 #note_toggle check {
@@ -85,6 +91,10 @@ paned separator {
 																	 color-stop(0.25, @theme_text_background_color)
 																	 );
 	margin-top: 2px;
+	box-shadow: none;
+ 	background-image: none;
+ 	border: none;
+	-gtk-icon-shadow: none;
 }
 
 /* SETTINGS */
@@ -97,6 +107,12 @@ tabs, tab, header {
 
 tab {
 	padding: 5px;
+	box-shadow: none;
+}
+
+tab label {
+	font-style: normal;
+	font-weight: normal;
 }
 
 stack, tab:checked {
@@ -116,4 +132,13 @@ tab:hover {
 notebook {
 	border-width: 0px;
 	background-color: @theme_background_color;
+}
+
+checkbutton check {
+	border: none;
+	box-shadow: none;
+	background-color: @theme_background_color;
+	background-image: none;
+	font-weight: 300;
+	color: @theme_text_color;
 }

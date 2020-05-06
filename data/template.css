@@ -64,6 +64,29 @@ separator {
 	background-color: @theme_accent_color;
 }
 
+paned separator {
+	background-color: @theme_accent_color;
+}
+
+#note_toggle:checked check {
+	-gtk-icon-source: -gtk-gradient (radial,
+                                   center center, 0,
+                                   center center, 1,
+                                   color-stop(0.25, @theme_highlight_color),
+																	 color-stop(0.25, @theme_text_background_color)
+																	 );
+}
+
+#note_toggle check {
+	-gtk-icon-source: -gtk-gradient (radial,
+                                   center center, 0,
+                                   center center, 1,
+                                   color-stop(0.25, @theme_background_color),
+																	 color-stop(0.25, @theme_text_background_color)
+																	 );
+	margin-top: 2px;
+}
+
 /* SETTINGS */
 
 tabs, tab, header {

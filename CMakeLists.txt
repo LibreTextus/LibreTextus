@@ -25,6 +25,8 @@ add_library(libre_textus STATIC
 	src/text_view.cpp
 	src/path.hpp
 	src/path.cpp
+	src/notebook.hpp
+	src/notebook.cpp
 )
 
 file(GLOB YAML_FILES

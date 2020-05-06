@@ -64,8 +64,38 @@ void Libre::TextView::add_verse(const std::string & caption, const std::vector<s
 		l->set_line_wrap_mode(Pango::WRAP_WORD);
 		l->set_selectable(true);
 		l->set_can_focus(false);
-		l->set_markup(caption + "\n" + (verses_content[i] == nullptr ? "~~~" : *verses_content[i]));
-		this->verses.back()->pack_start(*l, Gtk::PACK_EXPAND_WIDGET, this->padding_x);
+		l->set_markup((verses_content[i] == nullptr ? "~~~" : *verses_content[i]));
+
+		Gtk::Label * c = new Gtk::Label;
+		c->set_name("text_view");
+		c->set_line_wrap(true);
+		c->set_alignment(Gtk::ALIGN_START);
+		c->set_line_wrap_mode(Pango::WRAP_WORD);
+		c->set_selectable(true);
+		c->set_can_focus(false);
+		c->set_text(caption);
+
+		Gtk::CheckButton * b = new Gtk::CheckButton;
+		b->set_name("note_toggle");
+		b->set_can_focus(false);
+		b->set_active((this->note_book_file[caption] ? true : false));
+		b->signal_clicked().connect([this, caption, b]() {
+			this->m_signal_toggle_note.emit(caption);
+			b->set_active((this->note_book_file[caption] ? true : false));
+		});
+
+		Gtk::VBox * vbox = new Gtk::VBox;
+		vbox->set_name("text_view");
+		Gtk::HBox * hbox = new Gtk::HBox;
+		hbox->set_name("text_view");
+
+		hbox->pack_start(*c, Gtk::PACK_SHRINK, 0);
+		hbox->pack_start(*b, Gtk::PACK_SHRINK, 5);
+
+		vbox->pack_start(*hbox, Gtk::PACK_SHRINK, 0);
+		vbox->pack_start(*l, Gtk::PACK_EXPAND_WIDGET, 0);
+
+		this->verses.back()->pack_start(*vbox, Gtk::PACK_EXPAND_WIDGET, this->padding_x);
 	}
 
 	this->_display();

@@ -9,6 +9,7 @@
 #include <tsl/ordered_map.h>
 
 #include "text_view.hpp"
+#include "notebook.hpp"
 #include "package_manager.hpp"
 #include "search_engine.hpp"
 #include "settings.hpp"
@@ -39,9 +40,12 @@ namespace Libre {
 		std::vector<Gtk::HBox *> headers;
 		std::vector<Gtk::ComboBoxText *> combo_boxes;
 		Libre::TextView * text_view;
+		Libre::NoteBook * note_book;
+		Gtk::Paned * note_paned;
 		std::string found_position;
 		std::vector<std::string *> found_verses;
 		bool is_fullscreen;
+		bool is_note_book_open;
 
 		Gtk::Window * preferences_window;
 		Gtk::SpinButton * font_size_spinbutton;
@@ -70,9 +74,33 @@ namespace Libre {
 		Widgets() = default;
 
 		~Widgets() {
-			delete window;
-			delete preferences_window;
-			delete dialog_window;
+			delete this->window;
+			delete this->preferences_window;
+			delete this->dialog_window;
+
+			delete this->search_entry;
+			delete this->panels;
+			delete this->add_button;
+
+			for (int i = 0; i < this->headers.size(); i++) {
+				delete this->close_buttons[i];
+				delete this->headers[i];
+				delete this->combo_boxes[i];
+			}
+
+			delete this->text_view;
+			delete this->note_book;
+			delete this->note_paned;
+
+			delete this->font_size_spinbutton;
+			delete this->preferences_theme_combo;
+			delete this->book_manager_box;
+		}
+
+		void destroy_with_children(Gtk::Window * w) {
+			this->app->remove_window(*w);
+
+			delete w;
 		}
 
 		// LIBRE::WIDGETS::APPENDS_SOURCES -----------------------------------------

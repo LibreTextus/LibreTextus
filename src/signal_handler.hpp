@@ -54,6 +54,8 @@ public:
 
 	void theme_changed();
 	void default_font_size_changed();
+
+	void toggle_note(std::string position);
 };
 
 #endif

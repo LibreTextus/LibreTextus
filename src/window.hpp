@@ -4,7 +4,10 @@
 #include <gtkmm.h>
 #include <vector>
 #include <yaml-cpp/yaml.h>
+#include <fstream>
+#include <experimental/filesystem>
 #include "text_view.hpp"
+#include "notebook.hpp"
 #include "widgets.hpp"
 #include "signal_handler.hpp"
 #include "settings.hpp"

@@ -6,6 +6,7 @@
 #include <string>
 #include <algorithm>
 #include <iostream>
+#include <yaml-cpp/yaml.h>
 
 namespace Libre {
 	class TextView : public Gtk::ScrolledWindow {
@@ -20,6 +21,9 @@ namespace Libre {
 		int padding_x;
 		int padding_y;
 		int max_verses;
+		YAML::Node note_book_file;
+		typedef sigc::signal<void, std::string> type_signal_toggle_note;
+		type_signal_toggle_note m_signal_toggle_note;
 
 	public:
 		TextView(const std::string & info_text);
@@ -32,8 +36,14 @@ namespace Libre {
 		bool on_scroll_event(GdkEventScroll * scroll_event);
 		void show_information();
 		void show_content();
-
 		void remove_tab(const int & id);
+		void set_note_book(YAML::Node & n) {
+			this->note_book_file = n;
+		}
+
+		type_signal_toggle_note signal_toggle_note() {
+			return this->m_signal_toggle_note;
+		}
 
 	};
 }

@@ -1,6 +1,8 @@
-project(LibreTextus_0.1)
+cmake_policy(SET CMP0048 NEW)
+cmake_policy(SET CMP0077 NEW)
+project(LibreTextus VERSION 0.1)
 
-cmake_minimum_required(VERSION 2.6)
+cmake_minimum_required(VERSION 3.11)
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
 
@@ -29,13 +31,26 @@ add_library(libre_textus STATIC
 	src/notebook.cpp
 )
 
-file(GLOB YAML_FILES
-	include/yaml-cpp/*
-)
+include(FetchContent)
+FetchContent_Declare(
+		yaml-cpp
+		GIT_REPOSITORY https://github.com/jbeder/yaml-cpp.git
+		GIT_SHALLOW	ON
+		GIT_TAG yaml-cpp-0.6.3
+	)
+FetchContent_GetProperties(yaml-cpp)
+if(NOT yaml-cpp_POPULATED)
+	message(STATUS "Populating yaml-cpp...")
+	FetchContent_Populate(yaml-cpp)
+	set(YAML_CPP_BUILD_TESTS OFF CACHE BOOL "disable yaml tests")
+	add_subdirectory(${yaml-cpp_SOURCE_DIR} ${yaml-cpp_BINARY_DIR})
+	message(STATUS "Done.")
+endif()
 
-add_library(yaml-cpp STATIC ${YAML_FILES})
+set(CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} -w")
 
-include_directories(include/)
+include_directories(BEFORE SYSTEM ${yaml-cpp_SOURCE_DIR} ${yaml-cpp_BINARY_DIR}/include)
+target_link_libraries(libre_textus yaml-cpp)
 
 include_directories(${GTKMM_INCLUDE_DIRS})
 link_directories(${GTKMM_LIBRARY_DIRS})
@@ -43,10 +58,13 @@ link_directories(${GTKMM_LIBRARY_DIRS})
 find_package(X11 REQUIRED)
 include_directories(${X11_INCLUDE_DIR})
 
+include_directories(include/)
+
 add_executable(LibreTextus src/main.cpp)
 
-target_link_libraries(libre_textus ${GTKMM_LIBRARIES} yaml-cpp ${X11_LIBRARIES} stdc++fs)
-target_link_libraries(LibreTextus ${GTKMM_LIBRARIES} ${X11_LIBRARIES} libre_textus yaml-cpp stdc++fs)
+target_link_libraries(libre_textus ${GTKMM_LIBRARIES} ${X11_LIBRARIES} yaml-cpp stdc++fs)
+target_link_libraries(LibreTextus ${GTKMM_LIBRARIES} ${X11_LIBRARIES} libre_textus stdc++fs)
+
 
 file(COPY data/ DESTINATION data/)
 file(COPY libretextus.desktop DESTINATION ./)
@@ -54,5 +72,4 @@ file(COPY libretextus.desktop DESTINATION ./)
 install(TARGETS LibreTextus DESTINATION .)
 install(DIRECTORY data DESTINATION .)
 install(TARGETS libre_textus DESTINATION .)
-install(TARGETS yaml-cpp DESTINATION .)
 install(FILES libretextus.desktop DESTINATION .)

@@ -13,17 +13,23 @@ confinement: strict # use 'strict' once you have the right plugs and slots
 parts:
   libretextus:
     plugin: cmake
-
     source: .
     build-packages:
       - g++
-      - cmake
       - make
       - libgtkmm-3.0-dev
+      - git
+    build-snaps:
+      - cmake
     stage-packages:
       - libgtkmm-3.0-1v5
       - git
       - adwaita-icon-theme-full
+
+    override-build: |
+      cmake ../src -DCMAKE_INSTALL_PREFIX=../install
+      make -j2
+      make install
 apps:
   libretextus:
     command: LibreTextus

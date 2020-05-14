@@ -1,5 +1,5 @@
 if(${CMAKE_VERSION} VERSION_LESS "3.11")
-	message("Build newer cmake version")
+	message("Build LibreTextus with a newer version")
 	message("-- Download CMake source")
 	execute_process(COMMAND "git" "clone" "https://github.com/Kitware/CMake"
 									WORKING_DIRECTORY "${CMAKE_BINARY_DIR}"
@@ -16,10 +16,15 @@ if(${CMAKE_VERSION} VERSION_LESS "3.11")
 	execute_process(COMMAND "make"
 									WORKING_DIRECTORY "${CMAKE_BINARY_DIR}/CMake/"
 	)
-	message("-- Configure LibreTextus")
-	execute_process(COMMAND "${CMAKE_BINARY_DIR}/CMake/bin/cmake" "${CMAKE_SOURCE_DIR}" "-DCMAKE_INSTALL_PREFIX=${CMAKE_INSTALL_PREFIX}"
+	message("-- Create bin")
+	execute_process(COMMAND "mkdir" "${CMAKE_BINARY_DIR}/bin"
 									WORKING_DIRECTORY "${CMAKE_BINARY_DIR}"
 	)
+	message("-- Configure LibreTextus")
+	execute_process(COMMAND "${CMAKE_BINARY_DIR}/CMake/bin/cmake" "${CMAKE_SOURCE_DIR}" "-DCMAKE_INSTALL_PREFIX=${CMAKE_INSTALL_PREFIX}"
+									WORKING_DIRECTORY "${CMAKE_BINARY_DIR}/bin"
+	)
+	message("Done. Do 'cd bin; make' to build LibreTextus")
 else()
 	cmake_policy(SET CMP0048 NEW)
 	cmake_policy(SET CMP0077 NEW)

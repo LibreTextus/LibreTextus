@@ -11,16 +11,29 @@ grade: devel # must be 'stable' to release into candidate/stable channels
 confinement: strict # use 'strict' once you have the right plugs and slots
 
 parts:
+  cmake:
+    plugin: cmake
+    source: "https://github.com/Kitware/CMake.git"
+    build-packages:
+      - g++
+      - make
+      - libssl-dev
+    override-build: |
+      cp -R ../src/ ./
+      cd src
+      ./bootstrap
+      make -j2
+      make install
   libretextus:
     plugin: cmake
     source: .
+    after:
+      - cmake
     build-packages:
       - g++
       - make
       - libgtkmm-3.0-dev
       - git
-    build-snaps:
-      - cmake
     stage-packages:
       - libgtkmm-3.0-1v5
       - git

@@ -34,13 +34,27 @@ Libre::BookMap * SourceHandler::get_source(std::string s) {
 Libre::BookMap SourceHandler::to_map(YAML::Node n) {
 	Libre::BookMap output;
 
-	for (YAML::const_iterator b = n.begin(); b != n.end(); b++) {
-		for (YAML::const_iterator c = b->second.begin(); c != b->second.end(); c++) {
-			for (YAML::const_iterator v = c->second.begin(); v != c->second.end(); v++) {
-				output[b->first.as<std::string>() + " " +c->first.as<std::string>() + "," + v->first.as<std::string>()] =  v->second.as<std::string>();
+	for (int b = 0; b < n.size(); b++) {
+		for (int c = 0; c < n[b].begin()->second.size(); c++) {
+			for (int v = 0; v < n[b].begin()->second[c].begin()->second.size(); v++) {
+				// std::cout << n[b].begin()->first << " " << n[b].begin()->second[c].begin()->first << "," << n[b].begin()->second[c].begin()->second[v].begin()->first << '\n';
+				std::string v_pos = n[b].begin()->first.as<std::string>();
+				v_pos += " " + n[b].begin()->second[c].begin()->first.as<std::string>();
+				v_pos	+= "," + n[b].begin()->second[c].begin()->second[v].begin()->first.as<std::string>();
+				output[v_pos] = n[b].begin()->second[c].begin()->second[v].begin()->second.as<std::string>();
 			}
 		}
 	}
+
+	// for (int b = 0; b < n.size(); b++) {
+	// 	for (int c = 0; c < n[b].begin()->second.size(); c++) {
+	// 		for (int v = 0; v < n[b].begin()->second[c].size(); v++) {
+	// 			// output[b->first.as<std::string>() + " " +c->first.as<std::string>() + "," + v->first.as<std::string>()] =  v->second.as<std::string>();
+	// 		}
+	// 	}
+	// }
+
+	// std::cout << output.begin()->first << " : " << output.begin()->second << '\n';
 
 	return output;
 }

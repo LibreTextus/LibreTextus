@@ -93,6 +93,12 @@ else()
 	target_link_libraries(libre_textus ${GTKMM_LIBRARIES} ${X11_LIBRARIES} yaml-cpp stdc++fs)
 	target_link_libraries(LibreTextus ${GTKMM_LIBRARIES} ${X11_LIBRARIES} libre_textus stdc++fs)
 
+	enable_testing()
+	add_executable(md_test test/md_test.cpp)
+	target_link_libraries(md_test libre_textus)
+	add_test(markdown_test md_test)
+	add_custom_target(check COMMAND ${CMAKE_CTEST_COMMAND} DEPENDS md_test)
+
 
 	file(COPY data/ DESTINATION data/)
 	file(COPY libretextus.desktop DESTINATION ./)

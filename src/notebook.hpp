@@ -5,31 +5,58 @@
 #include <iostream>
 #include <yaml-cpp/yaml.h>
 #include <fstream>
+#include <string>
+#include <markdown/markdown.hpp>
+#include <bitset>
+
+#include "path.hpp"
+
 
 namespace Libre {
-	class NoteBook : public Gtk::ScrolledWindow {
+	class NoteBook : public Gtk::VBox {
 	private:
 		Glib::RefPtr<Gtk::TextBuffer> content_buffer;
+		Gtk::ScrolledWindow scrolled_window;
 		Gtk::TextView text_view;
 		YAML::Node notes_file;
 		std::string path;
 		std::string active_position;
-		Gtk::HBox * header;
+		Gtk::HBox header;
 		Gtk::Label title;
+		Gtk::Button close_button;
+		Glib::RefPtr<Gtk::TextBuffer::Tag> tag_bold;
+		Glib::RefPtr<Gtk::TextBuffer::Tag> tag_italic;
+		Glib::RefPtr<Gtk::TextBuffer::Tag> tag_strikethrough;
+		Glib::RefPtr<Gtk::TextBuffer::Tag> tag_hidden;
+		Glib::RefPtr<Gtk::TextBuffer::Tag> tag_h1;
+		Glib::RefPtr<Gtk::TextBuffer::Tag> tag_h2;
+		Glib::RefPtr<Gtk::TextBuffer::Tag> tag_h3;
+		Glib::RefPtr<Gtk::TextBuffer::Tag> tag_h4;
+		Glib::RefPtr<Gtk::TextBuffer::Tag> tag_h5;
+		Glib::RefPtr<Gtk::TextBuffer::Tag> tag_h6;
+		Glib::RefPtr<Gtk::TextBuffer::Tag> tag_blockquotes;
+		MD::String markdown_text;
 
 	public:
-		NoteBook(Gtk::HBox * h);
+		NoteBook();
 		virtual ~NoteBook();
 
 		void open_note(const std::string & verse);
-		void safe_note();
+		void save_note();
+
+		void change_style_of_selection();
+		void on_content_change();
+		void on_new_selection(const Gtk::TextBuffer::iterator & i, const Glib::RefPtr<Gtk::TextBuffer::Mark> & m);
 
 		void set_file(YAML::Node & n, std::string p) {
 			this->notes_file = n;
 			this->path = p;
+			this->open_note(this->active_position);
 		}
 
-		void on_content_change();
+		Gtk::Button * get_close_button() {
+			return &this->close_button;
+		}
 	};
 } /* Libre */
 

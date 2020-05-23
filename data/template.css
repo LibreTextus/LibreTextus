@@ -1,3 +1,7 @@
+.background {
+	color: #000;
+}
+
 window {
 	box-shadow: 0 0 0 1px @theme_accent_color;
 	background-color: @theme_background_color;
@@ -95,6 +99,30 @@ paned separator {
  	background-image: none;
  	border: none;
 	-gtk-icon-shadow: none;
+}
+
+#note_header {
+	padding: 10px 10px 10px 10px;
+}
+
+#note_text_control {
+	background-color: @theme_background_color;
+	margin-left: 5px;
+	margin-right: 5px;
+	border-width: 0px;
+	opacity: 0.5;
+}
+
+#note_text_control:active {
+	background-color: @theme_background_color;
+}
+
+#note_text_control:checked {
+	opacity: 1;
+}
+
+#note_header_title {
+	margin-right: 40px;
 }
 
 /* SETTINGS */

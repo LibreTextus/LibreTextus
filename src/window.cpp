@@ -194,26 +194,14 @@ bool Libre::MainWindow::create(Libre::Widgets * w, SignalHandler * s) {
 	w->text_view = new Libre::TextView(w->settings.get<std::string>("splash_text"));
 	w->text_view->signal_toggle_note().connect(sigc::mem_fun(s, &SignalHandler::toggle_note));
 
-	Gtk::VBox * note_container = new Gtk::VBox;
-
-	Gtk::Button * note_close = new Gtk::Button;
-	note_close->set_image_from_icon_name("window-close", Gtk::ICON_SIZE_BUTTON);
-	note_close->set_name("view_button");
-	note_close->signal_clicked().connect(sigc::bind<std::string>(sigc::mem_fun(s, &SignalHandler::toggle_note), ""));
-	Gtk::HBox * note_header = new Gtk::HBox;
-	note_header->set_border_width(10);
-	note_header->pack_end(*note_close, Gtk::PACK_SHRINK, 0);
-
-	w->note_book = new Libre::NoteBook(note_header);
+	w->note_book = new Libre::NoteBook;
+	w->note_book->get_close_button()->signal_clicked().connect(sigc::bind<std::string>(sigc::mem_fun(s, &SignalHandler::toggle_note), ""));
 	w->is_note_book_open = false;
-
-	note_container->pack_start(*note_header, Gtk::PACK_SHRINK, 0);
-	note_container->pack_start(*w->note_book, Gtk::PACK_EXPAND_WIDGET, 0);
 
  	w->note_paned = new Gtk::Paned;
 
 	w->note_paned->pack1(*w->text_view, true, false);
-	w->note_paned->pack2(*note_container, true, true);
+	w->note_paned->pack2(*w->note_book, true, true);
 	w->note_paned->set_wide_handle(true);
 	w->note_paned->set_position(800);
 	w->note_paned->set_orientation(Gtk::ORIENTATION_VERTICAL);

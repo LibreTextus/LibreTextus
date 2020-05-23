@@ -831,7 +831,7 @@ void SignalHandler::sync_enabled_sources() {
 void SignalHandler::toggle_note(std::string position) {
 	if (position == "") {
 		this->widgets->note_paned->set_position(this->widgets->note_paned->get_height());
-		this->widgets->note_book->safe_note();
+		this->widgets->note_book->save_note();
 	} else {
 		if (this->widgets->note_paned->get_position() > this->widgets->note_paned->get_height() - 50) {
 			this->widgets->note_paned->set_position(this->widgets->note_paned->get_height() * 2 / 3);

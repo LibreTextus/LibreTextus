@@ -129,9 +129,9 @@ namespace Libre {
 			Gtk::VBox * scrl_container = new Gtk::VBox(false, 0);
 			this->headers.push_back(new Gtk::HBox(false, 0));
 			this->close_buttons.push_back(new Gtk::Button);
-			this->close_buttons.back()->set_image_from_icon_name("window-close", Gtk::ICON_SIZE_BUTTON);
-			this->close_buttons.back()->set_name("view_button");
-
+			this->close_buttons.back()->set_name("close_button");
+			Gtk::Image * img = new Gtk::Image(DATA("res/close.svg"));
+			this->close_buttons.back()->set_image(*img);
 			// ------------------------------------------
 			// ADD COMBOBOX TO HEADER AND APPEND SOURCES
 			// ------------------------------------------
@@ -151,8 +151,9 @@ namespace Libre {
 			}
 
 			this->add_button = new Gtk::Button;
-			this->add_button->set_image_from_icon_name("list-add", Gtk::ICON_SIZE_BUTTON);
-			this->add_button->set_name("view_button");
+			this->add_button->set_name("add_button");
+			img = new Gtk::Image(DATA("res/add.svg"));
+			this->add_button->set_image(*img);
 
 			this->headers.back()->pack_end(*this->add_button, Gtk::PACK_SHRINK, 0);
 			this->headers.back()->pack_end(*this->close_buttons.back(), Gtk::PACK_SHRINK, 0);

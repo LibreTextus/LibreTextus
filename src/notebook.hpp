@@ -7,7 +7,6 @@
 #include <fstream>
 #include <string>
 #include <markdown/markdown.hpp>
-#include <bitset>
 
 #include "path.hpp"
 

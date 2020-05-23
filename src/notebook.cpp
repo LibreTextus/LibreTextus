@@ -72,8 +72,10 @@ Libre::NoteBook::NoteBook() {
 	// ------------------------------------------
 	// SET PROPERTIES FOR THE CLOSE_BUTTON
 	// ------------------------------------------
-	this->close_button.set_image_from_icon_name("window-close", Gtk::ICON_SIZE_BUTTON);
-	this->close_button.set_name("view_button");
+
+	Gtk::Image * img = new Gtk::Image(DATA("res/close.svg"));
+	this->close_button.set_image(*img);
+	this->close_button.set_name("close_button");
 
 	// ------------------------------------------
 	// SET PROPERTIES FOR THE HEADER

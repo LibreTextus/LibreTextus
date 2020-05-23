@@ -9,38 +9,26 @@ void Libre::PackageManager::init() {
 	this->dummy_path = DATA("dummy.yml");
 
 	// ------------------------------------------
-	// GET ROOT DIR AND REPLACE THE *~* WTIH THE
-	// HOME DIRECTORY PATH
-	// ------------------------------------------
-
-	this->root_path = this->settings.get<std::string>("root_dir");
-
-	if (this->root_path.find("~") == 0) {
-		this->root_path.erase(0, 1);
-		this->root_path = (getenv("SNAP_USER_COMMON") == NULL ? getenv("HOME") : getenv("SNAP_USER_COMMON")) + this->root_path;
-	}
-
-	// ------------------------------------------
 	// CHECK IF THE ROOT DIRECTORY EXISTS
 	// ------------------------------------------
 
-	if (!std::experimental::filesystem::exists(this->root_path)) {
-		std::cout << "Create directory at: " << this->root_path << '\n';
-		std::experimental::filesystem::create_directory(this->root_path);
+	if (!std::experimental::filesystem::exists(HOME())) {
+		std::cout << "Create directory at: " << HOME() << '\n';
+		std::experimental::filesystem::create_directory(HOME());
 	}
 
 	// ------------------------------------------
 	// CHECK IF THE ROOT DIRECTORY IS EMPTY
 	// ------------------------------------------
 
-	if (std::experimental::filesystem::is_empty(this->root_path)) {
-		std::experimental::filesystem::copy(DATA("sources.yml"), this->root_path + "sources.yml");
+	if (std::experimental::filesystem::is_empty(HOME())) {
+		std::experimental::filesystem::copy(DATA("sources.yml"), HOME("sources.yml"));
 		this->sources = YAML::LoadFile(DATA("sources.yml"));
 		this->install("git://github.com/LibreTextus/BibleEditions");
-		std::experimental::filesystem::rename(this->root_path + "BibleEditions/biblebooks.yml",
-																					this->root_path + "biblebooks.yml");
+		std::experimental::filesystem::rename(HOME("BibleEditions/biblebooks.yml"),
+																					HOME("biblebooks.yml"));
 	} else {
-		this->sources = YAML::LoadFile(this->root_path + "sources.yml");
+		this->sources = YAML::LoadFile(HOME("sources.yml"));
 	}
 }
 
@@ -72,7 +60,7 @@ void Libre::PackageManager::install(std::string url) {
 	// CLONE SOURCE-REPOSITORY
 	// ------------------------------------------
 
-	system(("git clone " + url + " " + this->root_path + name).c_str());
+	system(("git clone " + url + " " + HOME(name)).c_str());
 
 	// ------------------------------------------
 	// DISPLAY FOLLOWING INFORMATION:
@@ -90,7 +78,7 @@ void Libre::PackageManager::install(std::string url) {
 	// SOURCE YAML FILES
 	// ------------------------------------------
 
-	for (auto & i : std::experimental::filesystem::directory_iterator(this->root_path + name)) {
+	for (auto & i : std::experimental::filesystem::directory_iterator(HOME(name))) {
 		if (std::experimental::filesystem::is_directory(i.path())) {
 			for (auto & f : std::experimental::filesystem::directory_iterator(i.path().string())) {
 				if (f.path().extension() == ".yml" || f.path().extension() == ".yaml") {
@@ -126,7 +114,7 @@ void Libre::PackageManager::install(std::string url) {
 	YAML::Emitter emitter;
 	emitter << this->sources;
 
-	std::ofstream fout(this->root_path + "sources.yml");
+	std::ofstream fout(HOME("sources.yml"));
 	if (fout.is_open()) {
 		fout << emitter.c_str();
 		fout.close();
@@ -154,7 +142,7 @@ void Libre::PackageManager::remove(std::string package) {
 	// REMOVE PACKAGE DIRECTORY
 	// ------------------------------------------
 
-	std::experimental::filesystem::remove_all(this->root_path + package);
+	std::experimental::filesystem::remove_all(HOME(package));
 
 	// ------------------------------------------
 	// SET INFORMATION
@@ -189,7 +177,7 @@ void Libre::PackageManager::remove(std::string package) {
 	YAML::Emitter emitter;
 	emitter << this->sources;
 
-	std::ofstream fout(this->root_path + "sources.yml");
+	std::ofstream fout(HOME("sources.yml"));
 	if (fout.is_open()) {
 		fout << emitter.c_str();
 		fout.close();
@@ -209,7 +197,7 @@ void Libre::PackageManager::disable(std::string package) {
 	YAML::Emitter emitter;
 	emitter << this->sources;
 
-	std::ofstream fout(this->root_path + "sources.yml");
+	std::ofstream fout(HOME("sources.yml"));
 	if (fout.is_open()) {
 		fout << emitter.c_str();
 		fout.close();
@@ -226,7 +214,7 @@ void Libre::PackageManager::enable(std::string package) {
 	YAML::Emitter emitter;
 	emitter << this->sources;
 
-	std::ofstream fout(this->root_path + "sources.yml");
+	std::ofstream fout(HOME("sources.yml"));
 	if (fout.is_open()) {
 		fout << emitter.c_str();
 		fout.close();
@@ -240,7 +228,7 @@ void Libre::PackageManager::enable(std::string package) {
 std::vector<std::string> Libre::PackageManager::get_packages() {
 	std::vector<std::string> output;
 
-	for (auto & i : std::experimental::filesystem::directory_iterator(this->root_path)) {
+	for (auto & i : std::experimental::filesystem::directory_iterator(HOME())) {
 		if (std::experimental::filesystem::is_directory(i.path())) {
 			output.push_back(i.path().filename().string());
 		}

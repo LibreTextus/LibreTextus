@@ -121,17 +121,17 @@ int Framework::init(int argc, char *argv[]) {
 		// LOAD NOTEBOOK FILE
 		// ------------------------------------------
 
-		if (!std::experimental::filesystem::exists(this->widgets.package_manager.get_root_path() + this->widgets.settings.get<std::string>("notebook"))) {
-			std::ofstream fout(this->widgets.package_manager.get_root_path() + this->widgets.settings.get<std::string>("notebook"));
+		if (!std::experimental::filesystem::exists(HOME(this->widgets.settings.get<std::string>("notebook")))) {
+			std::ofstream fout(HOME(this->widgets.settings.get<std::string>("notebook")));
 			fout << "# LibreTextus Notes\n---" << std::endl;
 			fout.close();
 		}
 
-		YAML::Node n = YAML::LoadFile(this->widgets.package_manager.get_root_path() + this->widgets.settings.get<std::string>("notebook"));
+		YAML::Node n = YAML::LoadFile(HOME(this->widgets.settings.get<std::string>("notebook")));
 
 		this->widgets.text_view->set_note_book(n);
 		this->widgets.note_book->set_file(n,
-			this->widgets.package_manager.get_root_path() + this->widgets.settings.get<std::string>("notebook")
+			HOME(this->widgets.settings.get<std::string>("notebook"))
 		);
 
 		// ------------------------------------------

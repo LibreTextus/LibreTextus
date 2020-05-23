@@ -19,7 +19,7 @@ void SignalHandler::init(Libre::Widgets * w) {
 	this->widgets->search_engine.push_back(
 		SearchEngine(
 			this->widgets->package_manager.get_source_path(this->settings.get<std::string>("startup_file")),
-			this->widgets->package_manager.get_root_path() + this->settings.get<std::string>("names_file")
+			HOME(this->settings.get<std::string>("names_file"))
 		)
 	);
 	// ------------------------------------------
@@ -446,7 +446,7 @@ void SignalHandler::add_source() {
 	this->widgets->search_engine.push_back(
 		SearchEngine(
 			this->widgets->package_manager.get_source_path(this->settings.get<std::string>("startup_file")),
-			this->widgets->package_manager.get_root_path() + this->settings.get<std::string>("names_file")
+			HOME(this->settings.get<std::string>("names_file"))
 		)
 	);
 

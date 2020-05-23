@@ -14,7 +14,6 @@
 namespace Libre {
   class PackageManager {
   private:
-    std::string root_path;
     Settings settings;
 		YAML::Node sources;
 		std::string dummy_path;
@@ -40,10 +39,6 @@ namespace Libre {
     void disable(std::string);
     void enable(std::string);
 		std::vector<std::string> get_packages();
-
-		std::string get_root_path() {
-			return this->root_path;
-		}
 
 		YAML::Node get_sources() {
 			return this->sources;

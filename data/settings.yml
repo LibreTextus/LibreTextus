@@ -1,4 +1,3 @@
-root_dir: ~/.libre_textus/
 startup_file: Schlachter 1951
 names_file: biblebooks.yml
 notebook: notes.yml

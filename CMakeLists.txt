@@ -57,6 +57,8 @@ else()
 		src/path.cpp
 		src/notebook.hpp
 		src/notebook.cpp
+		src/log.hpp
+		src/log.cpp
 	)
 
 	include(FetchContent)

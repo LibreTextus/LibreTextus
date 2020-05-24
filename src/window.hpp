@@ -12,6 +12,7 @@
 #include "signal_handler.hpp"
 #include "settings.hpp"
 #include "path.hpp"
+#include "log.hpp"
 
 namespace Libre {
 	namespace MainWindow {

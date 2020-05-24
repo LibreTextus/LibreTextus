@@ -9,6 +9,7 @@
 #include "settings.hpp"
 #include "path.hpp"
 #include "widgets.hpp"
+#include "log.hpp"
 
 class SignalHandler {
 private:

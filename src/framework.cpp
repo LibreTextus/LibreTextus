@@ -1,10 +1,14 @@
 #include "framework.hpp"
 
 int Framework::init(int argc, char *argv[]) {
+	LOG_RESET();
+	LOG("--------------------- LOG BEGIN ---------------------");
 
 	// ------------------------------------------
 	// CREATE BUILDER AND APPLICATION
 	// ------------------------------------------
+
+	LOG("-- Create Application");
 
 	this->widgets.app = Gtk::Application::create(argc, argv);
 
@@ -12,8 +16,12 @@ int Framework::init(int argc, char *argv[]) {
 	// CREATING THE WINDOWS
 	// ------------------------------------------
 
+	LOG("-- Create Main Window");
+
 	Libre::MainWindow::create(&this->widgets, &this->signal_handler);
 	this->widgets.window->show_all();
+
+	LOG("-- Create Properties Window");
 
 	Libre::PreferencesWindow::create(&this->widgets, &this->signal_handler);
 
@@ -22,6 +30,8 @@ int Framework::init(int argc, char *argv[]) {
 	// ------------------------------------------
 	// ADD CSS FILE AND LOAD IT
 	// ------------------------------------------
+
+	LOG("-- Load Css");
 
 	this->widgets.css = Gtk::CssProvider::create();
 	if(!this->widgets.css->load_from_path(DATA(this->settings.get<std::string>("theme-active") + ".css"))) {
@@ -44,6 +54,8 @@ int Framework::init(int argc, char *argv[]) {
 	// CREATE WINDOW FOR THE PACKAGEMANAGER
 	// ------------------------------------------
 
+	LOG("-- Init PackageManager");
+
 	this->widgets.package_manager.window = new Gtk::Window;
 	this->widgets.package_manager.window->set_title("Info");
 	this->widgets.package_manager.window->set_default_size(250, 80);
@@ -65,6 +77,8 @@ int Framework::init(int argc, char *argv[]) {
 	// ------------------------------------------
 	// CONNECT SIGNALS TO THE DISPATCHERS
 	// ------------------------------------------
+
+	LOG("-- Connect Signals");
 
 	this->widgets.package_manager.open_window.connect([this]() {
 		this->widgets.package_manager.window->set_position(Gtk::WIN_POS_CENTER);
@@ -90,6 +104,7 @@ int Framework::init(int argc, char *argv[]) {
 	// ------------------------------------------
 
 	this->widgets.app->signal_startup().connect([this]() {
+		LOG("--> \"startup\" emmited");
 		this->widgets.update_thread = Glib::Thread::create([this]() {
 			// ------------------------------------------
 			// CHECK FOR UPDATES
@@ -116,6 +131,8 @@ int Framework::init(int argc, char *argv[]) {
 		if (this->widgets.update_thread->joinable()) {
 			this->widgets.update_thread->join();
 		}
+
+		LOG("--> \"start_session\" emmited");
 
 		// ------------------------------------------
 		// LOAD NOTEBOOK FILE
@@ -185,9 +202,14 @@ int Framework::init(int argc, char *argv[]) {
 }
 
 void Framework::run() {
+
+	LOG("-- Run Application");
+
 	if (this->widgets.window) {
 		this->widgets.app->run(*this->widgets.window);
 	} else {
 		std::cerr << "ERROR: UNABLE TO RUN APPLICATION" << '\n';
 	}
+
+	LOG("--------------------- LOG END ---------------------");
 }

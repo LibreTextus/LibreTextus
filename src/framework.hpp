@@ -9,6 +9,7 @@
 #include "settings.hpp"
 #include "window.hpp"
 #include "path.hpp"
+#include "log.hpp"
 
 class Framework {
 private:

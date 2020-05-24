@@ -10,6 +10,8 @@ bool Libre::MainWindow::create(Libre::Widgets * w, SignalHandler * s) {
 	// CREATE A NEW WINDOW AND ITS PROPERTIES
 	// ------------------------------------------
 
+	LOG(" * Init new Main Window");
+
 	w->window = new Gtk::Window;
 	w->window->set_default_size(1000, 800);
 	w->window->set_title("LibreTextus");
@@ -27,6 +29,8 @@ bool Libre::MainWindow::create(Libre::Widgets * w, SignalHandler * s) {
 	// ------------------------------------------
 	// CREATE THE MENUBAR FOR THE WINDOW
 	// ------------------------------------------
+
+	LOG(" * Create ActionGroup for Menu");
 
 	w->action_group = Gtk::ActionGroup::create();
 
@@ -165,6 +169,8 @@ bool Libre::MainWindow::create(Libre::Widgets * w, SignalHandler * s) {
 	// ADD MENUBAR TO THE WINDOW
 	// ------------------------------------------
 
+	LOG(" * Create Menu");
+
 	Gtk::Widget * pMenubar = w->ui_manager->get_widget("/MenuBar");
 	if(pMenubar) {
 		v_box->pack_start(*pMenubar, Gtk::PACK_SHRINK);
@@ -175,6 +181,8 @@ bool Libre::MainWindow::create(Libre::Widgets * w, SignalHandler * s) {
 	// CREATE SEARCHENTRY AND SET ITS PROPERTIES
 	// ------------------------------------------
 
+	LOG(" * Create SearchEntry");
+
 	w->search_entry = new Gtk::SearchEntry;
 
 	w->search_entry->set_placeholder_text("Search");
@@ -182,8 +190,10 @@ bool Libre::MainWindow::create(Libre::Widgets * w, SignalHandler * s) {
 	w->add_button = nullptr;
 
 	// ------------------------------------------
-	// ADD THE STARTUP PANEL TO THE WINDOW
+	// CREATE TEXTVIEW AND NOTEBOOK
 	// ------------------------------------------
+
+	LOG(" * Create TextView and NoteBook");
 
 	w->panels = new Gtk::HBox(false, 0);
 	w->panels->set_spacing(5);
@@ -239,6 +249,8 @@ bool Libre::MainWindow::create(Libre::Widgets * w, SignalHandler * s) {
 	// CONNECT FUNCTION TO THE ADD BUTTON
 	// ------------------------------------------
 
+	LOG(" * Connect add_source Signal");
+
 	w->add_button->signal_clicked().connect(sigc::mem_fun(s, &SignalHandler::add_source), false);
 
 	return true;
@@ -254,6 +266,8 @@ bool Libre::PreferencesWindow::create(Libre::Widgets * w, SignalHandler * s) {
 	// CREATE A NEW WINDOW AND SET ITS PROPERTIES
 	// ------------------------------------------
 
+	LOG(" * Init new Properties Window");
+
 	w->preferences_window = new Gtk::Window;
 	w->preferences_window->set_default_size(500, 400);
 	w->preferences_window->set_title("Preferences");
@@ -265,6 +279,8 @@ bool Libre::PreferencesWindow::create(Libre::Widgets * w, SignalHandler * s) {
 	// POSITION TO THE LEFT SIDE AND SCROLLABLE
 	// ------------------------------------------
 
+	LOG(" * Create Tabs");
+
 	Gtk::Notebook * note_book = new Gtk::Notebook;
 	note_book->set_scrollable(true);
 	note_book->set_tab_pos(Gtk::POS_LEFT);
@@ -272,6 +288,8 @@ bool Libre::PreferencesWindow::create(Libre::Widgets * w, SignalHandler * s) {
 	// ------------------------------------------
 	// CREATE THE FIRST TAB FOR THE UI SETTINGS
 	// ------------------------------------------
+
+	LOG(" * Init Tab \"Theme\"");
 
 	Gtk::VBox * user_interface_box = new Gtk::VBox;
 	user_interface_box->set_spacing(10);
@@ -289,6 +307,8 @@ bool Libre::PreferencesWindow::create(Libre::Widgets * w, SignalHandler * s) {
 	// GET THE SETTINGS AND SET THE CHOSEN THEME
 	// TO THE COMBOBOX AS TEXT
 	// ------------------------------------------
+
+	LOG(" * Load Settings");
 
 	Settings settings;
 
@@ -337,6 +357,8 @@ bool Libre::PreferencesWindow::create(Libre::Widgets * w, SignalHandler * s) {
 	// CREATE THE KEYBINDINGS SETTINGS TAB
 	// ------------------------------------------
 
+	LOG(" * Init Tab \"Keybindings\"");
+
 	Gtk::Label * l2 = new Gtk::Label("Keybindings");
 
 	note_book->append_page(*l2, "Keybindings");
@@ -344,6 +366,8 @@ bool Libre::PreferencesWindow::create(Libre::Widgets * w, SignalHandler * s) {
 	// ------------------------------------------
 	// CREATE THE BOOKS MANAGER TAB
 	// ------------------------------------------
+
+	LOG(" * Init Tab \"BOOKS\"");
 
 	Gtk::VBox * books_box = new Gtk::VBox;
 
@@ -372,6 +396,8 @@ bool Libre::PreferencesWindow::create(Libre::Widgets * w, SignalHandler * s) {
 	books_box->pack_start(*sep, Gtk::PACK_SHRINK, 0);
 
 	books_box->pack_start(*manager_container, Gtk::PACK_EXPAND_WIDGET, 0);
+
+	LOG(" * Get Sources");
 
 	for (YAML::const_iterator i = w->package_manager.get_sources().begin(); i != w->package_manager.get_sources().end(); i++) {
 		book_container = new Gtk::HBox;
@@ -413,6 +439,8 @@ bool Libre::PreferencesWindow::create(Libre::Widgets * w, SignalHandler * s) {
 	// ------------------------------------------
 	// CONNECT BUTTONS TO FUNCTIONS
 	// ------------------------------------------
+
+	LOG(" * Connect Signals");
 
 	add->signal_clicked().connect(
 		sigc::mem_fun(s, &SignalHandler::add_source_dir),

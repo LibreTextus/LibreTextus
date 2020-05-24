@@ -14,6 +14,8 @@ void SignalHandler::init(Libre::Widgets * w) {
 	// TODO: GET STARTUP SOURCE FROM SETTINGS
 	// ------------------------------------------
 
+	LOG("-- Init SignalHandler");
+
 	this->widgets = w;	// SET WIDGETS
 
 	this->widgets->search_engine.push_back(
@@ -80,6 +82,7 @@ void SignalHandler::init(Libre::Widgets * w) {
 // -----------------------------------------------------------------------------
 
 gboolean SignalHandler::search_request(GdkEventKey * event) {
+	LOG("--> \"search_request\" emmited");
 	// ------------------------------------------
 	// IF ENTER IS PRESSED (KEYCODE: 65293)
 	// ------------------------------------------
@@ -118,6 +121,7 @@ gboolean SignalHandler::search_request(GdkEventKey * event) {
 		this->widgets->process_thread = Glib::Thread::create(
 			sigc::mem_fun(*this, &SignalHandler::do_search), true
 		);
+		LOG("--> \"do_search\" emmited");
 	}
 
 	return false;
@@ -130,6 +134,8 @@ gboolean SignalHandler::search_request(GdkEventKey * event) {
 // -----------------------------------------------------------------------------
 
 void SignalHandler::source_changed(Gtk::ComboBoxText * b) {
+
+	LOG("--> \"source_changed\" emmited");
 
 	// ------------------------------------------
 	// FIRST WE WILL DISABLE ALL WIDGETS WHICH
@@ -170,6 +176,7 @@ void SignalHandler::source_changed(Gtk::ComboBoxText * b) {
 	// ------------------------------------------
 
 	this->widgets->process_thread = Glib::Thread::create(sigc::mem_fun(*this, &SignalHandler::do_replacement), true);
+	LOG("--> \"do_replacement\" emmited");
 }
 
 // SIGNALHANDLER::SET_TEXT -----------------------------------------------------
@@ -345,6 +352,7 @@ void SignalHandler::quit() {
 // -----------------------------------------------------------------------------
 
 void SignalHandler::toggle_fullscreen() {
+	LOG("--> \"toggle_fullscreen\" emmited");
 	if (this->widgets->is_fullscreen)
 		this->widgets->window->unfullscreen();
 	else
@@ -358,6 +366,7 @@ void SignalHandler::toggle_fullscreen() {
 // -----------------------------------------------------------------------------
 
 void SignalHandler::toggle_iconify() {
+	LOG("--> \"toggle_iconify\" emmited");
 	this->widgets->window->iconify();
 }
 
@@ -366,6 +375,7 @@ void SignalHandler::toggle_iconify() {
 // -----------------------------------------------------------------------------
 
 void SignalHandler::toggle_search() {
+	LOG("--> \"toggle_search\" emmited");
 	this->widgets->search_entry->grab_focus_without_selecting();
 }
 
@@ -374,6 +384,7 @@ void SignalHandler::toggle_search() {
 // -----------------------------------------------------------------------------
 
 void SignalHandler::toggle_preferences() {
+	LOG("--> \"toggle_preferences\" emmited");
 	this->widgets->preferences_window->show_all();
 	this->widgets->preferences_window->raise();
 }
@@ -383,6 +394,7 @@ void SignalHandler::toggle_preferences() {
 // -----------------------------------------------------------------------------
 
 void SignalHandler::zoom_in() {
+	LOG("--> \"zoom_in\" emmited");
 	this->widgets->font_size += 2;
 	this->widgets->font_size_css->load_from_data("* { font-size: " + std::to_string(this->widgets->font_size) + "px; }");
 }
@@ -392,6 +404,7 @@ void SignalHandler::zoom_in() {
 // -----------------------------------------------------------------------------
 
 void SignalHandler::zoom_out() {
+	LOG("--> \"zoom_out\" emmited");
 	this->widgets->font_size -= 2;
 	if (this->widgets->font_size < 1) {
 		this->widgets->font_size = 1;
@@ -404,6 +417,7 @@ void SignalHandler::zoom_out() {
 // -----------------------------------------------------------------------------
 
 void SignalHandler::zoom_reset() {
+	LOG("--> \"zoom_reset\" emmited");
 	this->widgets->font_size = settings.get<int>("font_size");
 	this->widgets->font_size_css->load_from_data("* { font-size: " + std::to_string(this->widgets->font_size) + "px; }");
 }
@@ -414,6 +428,7 @@ void SignalHandler::zoom_reset() {
 // -----------------------------------------------------------------------------
 
 void SignalHandler::theme_changed() {
+	LOG("--> \"theme_changed\" emmited");
 	settings.set("theme-active", this->widgets->preferences_theme_combo->get_active_text());
 
 	if(!this->widgets->css->load_from_path(DATA(this->widgets->preferences_theme_combo->get_active_text() + ".css"))) {
@@ -427,6 +442,7 @@ void SignalHandler::theme_changed() {
 // -----------------------------------------------------------------------------
 
 void SignalHandler::default_font_size_changed() {
+	LOG("--> \"default_font_size_changed\" emmited");
 	this->widgets->font_size = this->widgets->font_size_spinbutton->get_value();
 	settings.set("font_size", std::to_string(this->widgets->font_size));
 	this->widgets->font_size_css->load_from_data("* { font-size: " + std::to_string(this->widgets->font_size) + "px; }");
@@ -438,6 +454,7 @@ void SignalHandler::default_font_size_changed() {
 // -----------------------------------------------------------------------------
 
 void SignalHandler::add_source() {
+	LOG("--> \"add_source\" emmited");
 
 	// ------------------------------------------
 	// ADD A NEW SEARCH ENGINE AND SET ITS ARGS
@@ -489,6 +506,7 @@ void SignalHandler::add_source() {
 // -----------------------------------------------------------------------------
 
 void SignalHandler::remove_source() {
+	LOG("--> \"remove_source\" emmited");
 	if (this->widgets->search_engine.size() > 1) { // IF THERE IS JUST ONE SOURCE IT DOES NOT REMOVE IT
 
 		// ------------------------------------------
@@ -534,6 +552,7 @@ void SignalHandler::remove_source() {
 // -----------------------------------------------------------------------------
 
 void SignalHandler::remove_source_by_reference(Gtk::Button * b) {
+	LOG("--> \"remove_source_by_reference\" emmited");
 	if (this->widgets->search_engine.size() > 1) {
 
 		// ------------------------------------------
@@ -609,6 +628,7 @@ void SignalHandler::remove_source_by_reference(Gtk::Button * b) {
 // -----------------------------------------------------------------------------
 
 void SignalHandler::add_source_dir() {
+	LOG("--> \"add_source_dir\" emmited");
 	// ------------------------------------------
 	// CHECK IF THE DIALOG WINDOW IS EXISTING
 	// IF TRUE DELETE IT AND CREATE AN NEW ONE
@@ -685,6 +705,7 @@ void SignalHandler::add_source_dir() {
 // -----------------------------------------------------------------------------
 
 void SignalHandler::remove_source_dir() {
+	LOG("--> \"remove_source_dir\" emmited");
 
 	// ------------------------------------------
 	// DELETE THE OLD WINDOW AND CREATE A NEW ONE
@@ -763,6 +784,7 @@ void SignalHandler::remove_source_dir() {
 // -----------------------------------------------------------------------------
 
 void SignalHandler::sync_enabled_sources() {
+	LOG("--> \"sync_enabled_sources\" emmited");
 
 	// ------------------------------------------
 	// SYNC THE COMBO BOXES
@@ -830,6 +852,7 @@ void SignalHandler::sync_enabled_sources() {
 }
 
 void SignalHandler::toggle_note(std::string position) {
+	LOG("--> \"toggle_note\" emmited");
 	if (position == "") {
 		this->widgets->note_paned->set_position(this->widgets->note_paned->get_height());
 		this->widgets->note_book->save_note();

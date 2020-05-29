@@ -111,6 +111,20 @@ Libre::NoteBook::~NoteBook() {
 
 void Libre::NoteBook::save_note() {
 
+	std::vector<YAML::const_iterator> v;
+
+	for (YAML::const_iterator i = this->notes_file.begin(); i != this->notes_file.end(); i++) {
+		if (i->second.as<std::string>().empty()) {
+			v.push_back(i);
+		}
+	}
+
+	for (size_t i = 0; i < v.size(); i++) {
+		this->notes_file.remove(v[i]->first);
+	}
+
+	this->m_signal_refresh.emit(0);
+
 	YAML::Emitter emitter;
 	emitter << this->notes_file;
 

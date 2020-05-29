@@ -11,16 +11,20 @@
 namespace Libre {
 	class TextView : public Gtk::ScrolledWindow {
 	private:
-		Gtk::VBox main;
+		Gtk::HBox main;
 		Gtk::Overlay overlay;
 		Gtk::Label information_text;
-		std::vector<Gtk::HBox *> verses;
+		std::vector<Gtk::VBox> verses;
+		std::vector<std::vector<Gtk::Label>> v_labels;
+		std::vector<std::vector<Gtk::Label>> c_labels;
+		std::vector<std::vector<Gtk::CheckButton>> verse_status;
 		std::vector<std::string> captions;
-		std::vector<std::vector<std::string *>> content;
+		std::vector<std::vector<std::string>> content;
 		int scroll_status;
 		int padding_x;
 		int padding_y;
 		int max_verses;
+		int tabs;
 		YAML::Node note_book_file;
 		typedef sigc::signal<void, std::string> type_signal_toggle_note;
 		type_signal_toggle_note m_signal_toggle_note;
@@ -32,11 +36,12 @@ namespace Libre {
 		void clear();
 		void add_verse(const std::string & caption, const std::vector<std::string *> & verses_content);
 		void replace_verse(const std::string & caption, const int & version, const std::string * content);
-		void _display();
+		void _display(int begin);
 		bool on_scroll_event(GdkEventScroll * scroll_event);
 		void show_information();
 		void show_content();
 		void remove_tab(const int & id);
+		void append_tab();
 		void set_note_book(YAML::Node & n) {
 			this->note_book_file = n;
 		}

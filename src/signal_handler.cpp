@@ -474,6 +474,7 @@ void SignalHandler::add_source() {
 	// ------------------------------------------
 
 	this->widgets->add_panel();
+	this->widgets->text_view->append_tab();
 
 	this->widgets->combo_boxes.back()->signal_changed().connect(
 		sigc::bind<Gtk::ComboBoxText *>(

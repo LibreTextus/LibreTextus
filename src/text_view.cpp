@@ -3,6 +3,7 @@
 Libre::TextView::TextView(const std::string & info) {
 	this->set_name("text_view");
 	this->main.set_name("text_view");
+	this->main.set_homogeneous(true);
 	this->information_text.set_markup(info);
 	this->information_text.set_justify(Gtk::JUSTIFY_CENTER);
 	this->information_text.set_line_wrap(true);
@@ -14,11 +15,56 @@ Libre::TextView::TextView(const std::string & info) {
 	this->get_vscrollbar()->hide();
 	this->overlay.add(this->information_text);
 
-
 	this->padding_x = 10;
 	this->padding_y = 10;
 	this->max_verses = 20;
+	this->tabs = 1;
 	this->scroll_status = 0;
+
+	this->verses.push_back(Gtk::VBox());
+	this->v_labels.push_back({});
+	this->c_labels.push_back({});
+	this->verse_status.push_back({});
+
+	this->verses[this->tabs - 1].set_name("text_view");
+
+	for (int i = 0; i < this->max_verses; i++) {
+		this->v_labels[this->tabs - 1].push_back(Gtk::Label());
+		this->v_labels[this->tabs - 1][i].set_name("text_view");
+		this->v_labels[this->tabs - 1][i].set_line_wrap(true);
+		this->v_labels[this->tabs - 1][i].set_alignment(Gtk::ALIGN_START);
+		this->v_labels[this->tabs - 1][i].set_line_wrap_mode(Pango::WRAP_WORD);
+		this->v_labels[this->tabs - 1][i].set_selectable(true);
+		this->v_labels[this->tabs - 1][i].set_can_focus(false);
+
+		this->c_labels[this->tabs - 1].push_back(Gtk::Label());
+		this->c_labels[this->tabs - 1][i].set_name("text_view");
+		this->c_labels[this->tabs - 1][i].set_line_wrap(true);
+		this->c_labels[this->tabs - 1][i].set_alignment(Gtk::ALIGN_START);
+		this->c_labels[this->tabs - 1][i].set_line_wrap_mode(Pango::WRAP_WORD);
+		this->c_labels[this->tabs - 1][i].set_selectable(true);
+		this->c_labels[this->tabs - 1][i].set_can_focus(false);
+
+		this->verse_status[this->tabs - 1].push_back(Gtk::CheckButton());
+		this->verse_status[this->tabs - 1][i].set_name("note_toggle");
+		this->verse_status[this->tabs - 1][i].set_can_focus(false);
+
+		Gtk::VBox * vbox = new Gtk::VBox;
+		vbox->set_name("text_view");
+		Gtk::HBox * hbox = new Gtk::HBox;
+		hbox->set_name("text_view");
+
+		hbox->pack_start(this->c_labels[this->tabs - 1][i], Gtk::PACK_SHRINK, 0);
+		hbox->pack_start(this->verse_status[this->tabs - 1][i], Gtk::PACK_SHRINK, 5);
+
+		vbox->pack_start(*hbox, Gtk::PACK_SHRINK, 0);
+		vbox->pack_start(this->v_labels[this->tabs - 1][i], Gtk::PACK_EXPAND_WIDGET, 0);
+
+		this->verses[this->tabs - 1].pack_start(*vbox, Gtk::PACK_EXPAND_WIDGET, this->padding_x);
+	}
+
+	this->main.pack_start(this->verses[0], Gtk::PACK_EXPAND_WIDGET, 5);
+
 }
 
 void Libre::TextView::show_information() {
@@ -29,173 +75,148 @@ void Libre::TextView::show_information() {
 }
 
 void Libre::TextView::show_content() {
-	this->overlay.set_halign(Gtk::ALIGN_START);
-	this->overlay.set_valign(Gtk::ALIGN_START);
+	this->overlay.set_halign(Gtk::ALIGN_FILL);
+	this->overlay.set_valign(Gtk::ALIGN_FILL);
 	this->overlay.remove();
 	this->overlay.add(this->main);
 }
 
 void Libre::TextView::clear() {
-	for (int i = 0; i < this->verses.size(); i++) {
-		Gtk::Widget * w = this->verses[i];
-		this->main.remove(*w);
-		delete w;
-	}
-
-	this->verses.clear();
-	this->captions.clear();
 	this->content.clear();
+	this->captions.clear();
 }
 
 
 void Libre::TextView::add_verse(const std::string & caption, const std::vector<std::string *> & verses_content) {
-	this->captions.push_back(caption);
-	this->content.push_back(verses_content);
-
-	this->verses.push_back(new Gtk::HBox);
-	this->verses.back()->set_homogeneous(true);
-	this->verses.back()->set_name("text_view");
-
-	for (int i = 0; i < verses_content.size(); i++) {
-		Gtk::Label * l = new Gtk::Label;
-		l->set_name("text_view");
-		l->set_line_wrap(true);
-		l->set_alignment(Gtk::ALIGN_START);
-		l->set_line_wrap_mode(Pango::WRAP_WORD);
-		l->set_selectable(true);
-		l->set_can_focus(false);
-		l->set_markup((verses_content[i] == nullptr ? "~~~" : *verses_content[i]));
-
-		Gtk::Label * c = new Gtk::Label;
-		c->set_name("text_view");
-		c->set_line_wrap(true);
-		c->set_alignment(Gtk::ALIGN_START);
-		c->set_line_wrap_mode(Pango::WRAP_WORD);
-		c->set_selectable(true);
-		c->set_can_focus(false);
-		c->set_text(caption);
-
-		Gtk::CheckButton * b = new Gtk::CheckButton;
-		b->set_name("note_toggle");
-		b->set_can_focus(false);
-		b->set_active((this->note_book_file[caption] ? true : false));
-		b->signal_clicked().connect([this, caption, b]() {
-			this->m_signal_toggle_note.emit(caption);
-			b->set_active((this->note_book_file[caption] ? true : false));
-		});
-
-		Gtk::VBox * vbox = new Gtk::VBox;
-		vbox->set_name("text_view");
-		Gtk::HBox * hbox = new Gtk::HBox;
-		hbox->set_name("text_view");
-
-		hbox->pack_start(*c, Gtk::PACK_SHRINK, 0);
-		hbox->pack_start(*b, Gtk::PACK_SHRINK, 5);
-
-		vbox->pack_start(*hbox, Gtk::PACK_SHRINK, 0);
-		vbox->pack_start(*l, Gtk::PACK_EXPAND_WIDGET, 0);
-
-		this->verses.back()->pack_start(*vbox, Gtk::PACK_EXPAND_WIDGET, this->padding_x);
+	this->content.push_back({});
+	for (int i = 0; i < this->tabs; i++) {
+		this->content[this->content.size() - 1].push_back((verses_content[i] == nullptr ? "~~~" : *verses_content[i]));
 	}
 
-	this->_display();
+	this->captions.push_back(caption);
+
+	this->_display(this->captions.size() - 1);
 }
 
 void Libre::TextView::replace_verse(const std::string & caption, const int & version, const std::string * verse_content) {
 	int verse_id = std::distance(this->captions.begin(), std::find(this->captions.begin(), this->captions.end(), caption));
+	this->content[verse_id][version] = (verse_content == nullptr ? "~~~" : *verse_content);
 
-	if (this->verses[verse_id]->get_children().size() > version) {
-		Gtk::Widget * old_l = this->verses[verse_id]->get_children()[version];
-		this->verses[verse_id]->remove(*old_l);
-		delete old_l;
-	}
-
-	Gtk::Label * l = new Gtk::Label;
-	l->set_name("text_view");
-	l->set_line_wrap(true);
-	l->set_alignment(Gtk::ALIGN_START);
-	l->set_line_wrap_mode(Pango::WRAP_WORD);
-	l->set_selectable(true);
-	l->set_can_focus(false);
-	l->set_markup((verse_content == nullptr ? "~~~" : *verse_content));
-
-	Gtk::Label * c = new Gtk::Label;
-	c->set_name("text_view");
-	c->set_line_wrap(true);
-	c->set_alignment(Gtk::ALIGN_START);
-	c->set_line_wrap_mode(Pango::WRAP_WORD);
-	c->set_selectable(true);
-	c->set_can_focus(false);
-	c->set_text(caption);
-
-	Gtk::CheckButton * b = new Gtk::CheckButton;
-	b->set_name("note_toggle");
-	b->set_can_focus(false);
-	b->set_active((this->note_book_file[caption] ? true : false));
-	b->signal_clicked().connect([this, caption, b]() {
-		this->m_signal_toggle_note.emit(caption);
-		b->set_active((this->note_book_file[caption] ? true : false));
-	});
-
-	Gtk::VBox * vbox = new Gtk::VBox;
-	vbox->set_name("text_view");
-	Gtk::HBox * hbox = new Gtk::HBox;
-	hbox->set_name("text_view");
-
-	hbox->pack_start(*c, Gtk::PACK_SHRINK, 0);
-	hbox->pack_start(*b, Gtk::PACK_SHRINK, 5);
-
-	vbox->pack_start(*hbox, Gtk::PACK_SHRINK, 0);
-	vbox->pack_start(*l, Gtk::PACK_EXPAND_WIDGET, 0);
-
-	this->verses[verse_id]->pack_start(*vbox, Gtk::PACK_EXPAND_WIDGET, this->padding_x);
-	this->verses[verse_id]->reorder_child(*vbox, version);
-
-	this->_display();
+	this->_display((verse_id >= this->scroll_status && verse_id < (this->scroll_status + this->max_verses) ?
+									verse_id - this->scroll_status : this->max_verses));
 }
 
-void Libre::TextView::_display() {
-	for (int i = 0; i < this->verses.size(); i++) {
-		this->main.remove(*this->verses[i]);
-	}
-
-	for (int i = 0; i < (this->verses.size() < this->max_verses ? this->verses.size() : this->max_verses); i++) {
-		this->main.pack_start(*this->verses[i + this->scroll_status], Gtk::PACK_EXPAND_WIDGET, this->padding_y);
-	}
+void Libre::TextView::_display(int begin) {
 
 	this->show_all();
+
+	for (int i = begin; i < this->max_verses; i++) {
+		for (int x = 0; x < this->tabs; x++) {
+			if (i < this->captions.size() - this->scroll_status) {
+				this->c_labels[x][i].set_text(this->captions[i + this->scroll_status]);
+				this->v_labels[x][i].set_markup(this->content[i + this->scroll_status][x]);
+				this->verse_status[x][i].set_active((this->note_book_file[this->captions[i + this->scroll_status]] ? true : false));
+				this->verse_status[x][i].signal_released().connect([this, i]() {
+					this->m_signal_toggle_note.emit(this->captions[i + this->scroll_status]);
+					for (int x = 0; x < this->tabs; x++) {
+						this->verse_status[x][i].set_active(true);
+					}
+				});
+			} else {
+				this->c_labels[x][i].hide();
+				this->v_labels[x][i].hide();
+				this->verse_status[x][i].hide();
+			}
+		}
+	}
 }
 
 bool Libre::TextView::on_scroll_event(GdkEventScroll * scroll_event) {
 
 	this->scroll_status += scroll_event->delta_y;
 
-	if (this->verses.size() <= this->max_verses) {
-		this->scroll_status = 0;
-		if (this->verses.size() != 0) {
-			this->get_vscrollbar()->set_value(this->get_vscrollbar()->get_value() + (scroll_event->delta_y > 0 ? 1 : -1) * this->verses[this->scroll_status]->get_height());
-		}
-
-	} else if (this->scroll_status < 0) {
+	if (this->scroll_status < 0) {
 		this->scroll_status = 0;
 
-	} else if (this->scroll_status >= this->verses.size() - this->max_verses || this->get_vscrollbar()->get_value() != 0) {
-		this->scroll_status = this->verses.size() - this->max_verses;
-		this->get_vscrollbar()->set_value(this->get_vscrollbar()->get_value() + (scroll_event->delta_y > 0 ? 1 : -1) * this->verses[this->scroll_status]->get_height());
-
+	} else if (this->scroll_status >= this->captions.size()) {
+		this->scroll_status = this->captions.size() - 1;
 	}
 
-	this->_display();
+	this->_display(0);
 
 	return false;
 }
 
 void Libre::TextView::remove_tab(const int & id) {
-	for (int i = 0; i < this->verses.size(); i++) {
-		Gtk::Widget * w = this->verses[i]->get_children()[id];
-		this->verses[i]->remove(*w);
-		delete w;
+	this->tabs--;
+
+	this->verses[id].get_parent()->remove(this->verses[id]);
+
+	for (int i = 0; i < this->max_verses; i++) {
+		this->c_labels[id][i].get_parent()->remove(this->c_labels[id][i]);
+		this->v_labels[id][i].get_parent()->remove(this->v_labels[id][i]);
+		this->verse_status[id][i].get_parent()->remove(this->verse_status[id][i]);
 	}
 
-	this->_display();
+	this->verses.erase(this->verses.begin() + id);
+	this->c_labels.erase(this->c_labels.begin() + id);
+	this->v_labels.erase(this->v_labels.begin() + id);
+	this->verse_status.erase(this->verse_status.begin() + id);
+
+	for (int i = 0; i < this->content.size(); i++) {
+		this->content[i].erase(this->content[i].begin() + id);
+	}
+}
+
+void Libre::TextView::append_tab() {
+	this->tabs++;
+
+	this->verses.push_back(Gtk::VBox());
+	this->v_labels.push_back({});
+	this->c_labels.push_back({});
+	this->verse_status.push_back({});
+
+	this->verses[this->tabs - 1].set_name("text_view");
+	this->verses[this->tabs - 1].set_border_width(5);
+
+	for (int i = 0; i < this->max_verses; i++) {
+		this->v_labels[this->tabs - 1].push_back(Gtk::Label());
+		this->v_labels[this->tabs - 1][i].set_name("text_view");
+		this->v_labels[this->tabs - 1][i].set_line_wrap(true);
+		this->v_labels[this->tabs - 1][i].set_alignment(Gtk::ALIGN_START);
+		this->v_labels[this->tabs - 1][i].set_line_wrap_mode(Pango::WRAP_WORD);
+		this->v_labels[this->tabs - 1][i].set_selectable(true);
+		this->v_labels[this->tabs - 1][i].set_can_focus(false);
+
+		this->c_labels[this->tabs - 1].push_back(Gtk::Label());
+		this->c_labels[this->tabs - 1][i].set_name("text_view");
+		this->c_labels[this->tabs - 1][i].set_line_wrap(true);
+		this->c_labels[this->tabs - 1][i].set_alignment(Gtk::ALIGN_START);
+		this->c_labels[this->tabs - 1][i].set_line_wrap_mode(Pango::WRAP_WORD);
+		this->c_labels[this->tabs - 1][i].set_selectable(true);
+		this->c_labels[this->tabs - 1][i].set_can_focus(false);
+
+		this->verse_status[this->tabs - 1].push_back(Gtk::CheckButton());
+		this->verse_status[this->tabs - 1][i].set_name("note_toggle");
+		this->verse_status[this->tabs - 1][i].set_can_focus(false);
+
+		Gtk::VBox * vbox = new Gtk::VBox;
+		vbox->set_name("text_view");
+		Gtk::HBox * hbox = new Gtk::HBox;
+		hbox->set_name("text_view");
+
+		hbox->pack_start(this->c_labels[this->tabs - 1][i], Gtk::PACK_SHRINK, 0);
+		hbox->pack_start(this->verse_status[this->tabs - 1][i], Gtk::PACK_SHRINK, 5);
+
+		vbox->pack_start(*hbox, Gtk::PACK_SHRINK, 0);
+		vbox->pack_start(this->v_labels[this->tabs - 1][i], Gtk::PACK_EXPAND_WIDGET, 0);
+
+		this->verses[this->tabs - 1].pack_start(*vbox, Gtk::PACK_EXPAND_WIDGET, this->padding_x);
+	}
+
+	this->main.pack_start(this->verses[this->tabs - 1], Gtk::PACK_EXPAND_WIDGET, 5);
+
+	for (int i = 0; i < this->content.size(); i++) {
+		this->content[i].push_back("");
+	}
 }

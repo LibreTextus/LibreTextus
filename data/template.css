@@ -7,11 +7,20 @@ window {
 	background-color: @theme_background_color;
 }
 
-entry.search {
+#search_entry {
 	border-radius: 0px;
 	padding: 10px;
 	color: @theme_text_color;
 	background-color: @theme_text_background_color;
+}
+
+#search_entry entry.search {
+	background-color: @theme_text_background_color;
+	border: none;
+}
+
+#search_entry label {
+	opacity: 0.5;
 }
 
 image {
@@ -24,10 +33,12 @@ image:focus {
 	opacity: 0.8;
 }
 
-progress {
+#search_entry progress {
 	border-bottom-color: @theme_highlight_color;
 	border-bottom-width: 5px;
-	margin: -5px;
+	margin: -10px;
+	margin-left: -18px;
+	margin-right: -8em;
 }
 
 box, .combo, menu, menubar, entry, button, spinbutton {

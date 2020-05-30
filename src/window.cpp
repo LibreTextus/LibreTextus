@@ -187,6 +187,15 @@ bool Libre::MainWindow::create(Libre::Widgets * w, SignalHandler * s) {
 
 	w->search_entry->set_placeholder_text("Search");
 
+	w->number_results = new Gtk::Label("0 Results");
+
+	Gtk::HBox * search_box = new Gtk::HBox;
+
+	search_box->pack_start(*w->search_entry, Gtk::PACK_EXPAND_WIDGET, 0);
+	search_box->pack_start(*w->number_results, Gtk::PACK_SHRINK, 10);
+
+	search_box->set_name("search_entry");
+
 	w->add_button = nullptr;
 
 	// ------------------------------------------
@@ -229,7 +238,7 @@ bool Libre::MainWindow::create(Libre::Widgets * w, SignalHandler * s) {
 	// DISPLAY THE PANEL AND SEARCHENTRY
 	// ------------------------------------------
 
-	v_box->pack_start(*w->search_entry, Gtk::PACK_SHRINK, 0);
+	v_box->pack_start(*search_box, Gtk::PACK_SHRINK, 0);
 	v_box->pack_start(*w->panels, Gtk::PACK_SHRINK, 0);
 	v_box->pack_start(*w->note_paned, Gtk::PACK_EXPAND_WIDGET, 0);
 

@@ -87,7 +87,9 @@ gboolean SignalHandler::search_request(GdkEventKey * event) {
 	// IF ENTER IS PRESSED (KEYCODE: 65293)
 	// ------------------------------------------
 
-	if (event->keyval == 65293 && this->widgets->search_entry->get_text() != this->widgets->search_engine[0].get_search_argument()) {
+	if (event->keyval == 65293) {
+
+		this->widgets->number_results->set_text("0 Results");
 
 		if (this->widgets->search_entry->get_text() == "") {
 			this->widgets->text_view->show_information();
@@ -223,6 +225,8 @@ void SignalHandler::delete_thread() {
 	}
 
 	this->widgets->search_entry->set_progress_fraction(0.0);
+
+	this->widgets->number_results->set_text(std::to_string(this->widgets->search_engine[0].get_last_search_results()->size()) + " Results");
 
 	// ------------------------------------------
 	// ENABLE EVERY WIDGETS WHICH WERE DISABLED

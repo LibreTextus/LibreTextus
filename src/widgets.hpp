@@ -34,6 +34,7 @@ namespace Libre {
 		Glib::RefPtr<Gtk::CssProvider> font_size_css;
 		int font_size;
 		Gtk::SearchEntry * search_entry;
+		Gtk::Label * number_results;
 		Gtk::HBox * panels;
 		Gtk::Button * add_button;
 		std::vector<Gtk::Button *> close_buttons;
@@ -79,6 +80,7 @@ namespace Libre {
 			delete this->dialog_window;
 
 			delete this->search_entry;
+			delete this->number_results;
 			delete this->panels;
 			delete this->add_button;
 

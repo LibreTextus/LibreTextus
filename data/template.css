@@ -47,26 +47,37 @@ scrollbar {
 	background-color: @theme_background_color;
 }
 
-text, #text_view {
+text, #text_view, #verse_box {
 	color: @theme_text_color;
 	background-color: @theme_text_background_color;
+}
+
+#verse_box {
+	padding-top: 5px;
+	padding-right: 5px;
+	padding-bottom: 5px;
+	padding-left: 10px;
 }
 
 #active_verse {
 	background-color: @theme_text_background_color;
 
-	border-width: 1px;
-	border-color: @theme_background_color;
-	border-style: dashed;
-
 	padding-top: 5px;
 	padding-right: 5px;
 	padding-bottom: 5px;
-	padding-left: 5px;
+	padding-left: 10px;
+
+	border-left-width: 4px;
+	border-left-style: solid;
+	border-left-color: @theme_background_color;
+}
+
+#text_view:focus #active_verse {
+	border-color: @theme_highlight_color;
 }
 
 button:active {
-	background-color: @theme_text_background_color;
+	border-left-color: @theme_text_background_color;
 }
 
 #add_button, #close_button {

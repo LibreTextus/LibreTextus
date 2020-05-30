@@ -54,7 +54,7 @@ Libre::TextView::TextView(const std::string & info) {
 		this->verse_status[this->tabs - 1][i].set_can_focus(false);
 
 		Gtk::VBox * vbox = new Gtk::VBox;
-		vbox->set_name("text_view");
+		vbox->set_name("verse_box");
 		Gtk::HBox * hbox = new Gtk::HBox;
 		hbox->set_name("text_view");
 
@@ -211,6 +211,8 @@ void Libre::TextView::remove_tab(const int & id) {
 	for (int i = 0; i < this->content.size(); i++) {
 		this->content[i].erase(this->content[i].begin() + id);
 	}
+
+	this->verses[0].get_children()[0]->set_name("active_verse");
 }
 
 void Libre::TextView::append_tab() {
@@ -246,7 +248,7 @@ void Libre::TextView::append_tab() {
 		this->verse_status[this->tabs - 1][i].set_can_focus(false);
 
 		Gtk::VBox * vbox = new Gtk::VBox;
-		vbox->set_name("text_view");
+		vbox->set_name("verse_box");
 		Gtk::HBox * hbox = new Gtk::HBox;
 		hbox->set_name("text_view");
 
@@ -264,6 +266,4 @@ void Libre::TextView::append_tab() {
 	for (int i = 0; i < this->content.size(); i++) {
 		this->content[i].push_back("");
 	}
-
-	this->verses[this->tabs - 1].get_children()[0]->set_name("active_verse");
 }

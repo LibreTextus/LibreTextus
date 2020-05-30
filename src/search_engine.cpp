@@ -18,6 +18,7 @@ SearchEngine::SearchEngine(std::string file_path, std::string names_path) {
 
 void SearchEngine::set_search_argument(std::string arg) {
 	this->search_argument = arg;
+	this->raw_search_argument = arg;
 
 	this->interpret_string();
 	this->last_search_results.clear();

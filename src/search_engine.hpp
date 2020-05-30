@@ -21,6 +21,7 @@ private:
 	std::vector<std::string> last_search_results;
 	std::string W;
 	std::string search_argument;
+	std::string raw_search_argument;
 	std::string mark_argument;
 	std::vector<std::array<Libre::BookMap::iterator, 2>> positions;
 
@@ -45,6 +46,10 @@ public:
 
 	void set_last_search_result(std::vector<std::string> & v) {
 		this->last_search_results = v;
+	}
+
+	std::string & get_search_argument() {
+		return this->raw_search_argument;
 	}
 };
 

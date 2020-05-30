@@ -126,6 +126,7 @@ gboolean SignalHandler::search_request(GdkEventKey * event) {
 
 	} else if (event->keyval == 65307) {
 		this->widgets->text_view->grab_focus();
+		this->widgets->search_entry->set_position(-1);
 	}
 
 	return false;
@@ -378,7 +379,7 @@ void SignalHandler::toggle_iconify() {
 
 void SignalHandler::toggle_search() {
 	LOG("--> \"toggle_search\" emmited");
-	this->widgets->search_entry->grab_focus_without_selecting();
+	this->widgets->search_entry->grab_focus();
 }
 
 // SIGNALHANDLER::TOGGLE_PREFERENCES -------------------------------------------

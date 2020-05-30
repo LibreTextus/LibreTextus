@@ -90,6 +90,8 @@ void Libre::TextView::clear() {
 	this->content.clear();
 	this->captions.clear();
 
+	this->scroll_status = 0;
+
 	this->_display(0);
 }
 

@@ -52,6 +52,19 @@ text, #text_view {
 	background-color: @theme_text_background_color;
 }
 
+#active_verse {
+	background-color: @theme_text_background_color;
+
+	border-width: 1px;
+	border-color: @theme_background_color;
+	border-style: dashed;
+
+	padding-top: 5px;
+	padding-right: 5px;
+	padding-bottom: 5px;
+	padding-left: 5px;
+}
+
 button:active {
 	background-color: @theme_text_background_color;
 }

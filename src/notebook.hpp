@@ -62,6 +62,10 @@ namespace Libre {
 		type_signal_refresh signal_refresh() {
 			return this->m_signal_refresh;
 		}
+
+		void on_grab_focus() {
+			this->text_view.grab_focus();
+		}
 	};
 } /* Libre */
 

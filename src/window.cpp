@@ -206,6 +206,14 @@ bool Libre::MainWindow::create(Libre::Widgets * w, SignalHandler * s) {
 
 	w->note_book = new Libre::NoteBook;
 	w->note_book->get_close_button()->signal_clicked().connect(sigc::bind<std::string>(sigc::mem_fun(s, &SignalHandler::toggle_note), ""));
+
+	w->note_book->signal_key_press_event().connect([s](GdkEventKey * key) -> bool {
+		if (key->keyval == 65307) {
+			s->toggle_note("");
+		}
+		return false;
+	});
+
 	w->note_book->signal_refresh().connect(sigc::mem_fun(w->text_view, &Libre::TextView::_display));
 	w->is_note_book_open = false;
 

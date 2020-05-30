@@ -25,6 +25,7 @@ namespace Libre {
 		int padding_y;
 		int max_verses;
 		int tabs;
+		float scroll_sensitivity;
 		YAML::Node note_book_file;
 		typedef sigc::signal<void, std::string> type_signal_toggle_note;
 		type_signal_toggle_note m_signal_toggle_note;
@@ -38,6 +39,7 @@ namespace Libre {
 		void replace_verse(const std::string & caption, const int & version, const std::string * content);
 		void _display(int begin);
 		bool on_scroll_event(GdkEventScroll * scroll_event);
+		bool on_key_press_event(GdkEventKey * key);
 		void show_information();
 		void show_content();
 		void remove_tab(const int & id);
@@ -48,6 +50,11 @@ namespace Libre {
 
 		type_signal_toggle_note signal_toggle_note() {
 			return this->m_signal_toggle_note;
+		}
+
+		bool on_button_release_event(GdkEventButton * button_event) {
+				this->grab_focus();
+				return false;
 		}
 
 	};

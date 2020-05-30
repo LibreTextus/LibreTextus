@@ -2,6 +2,8 @@
 
 Libre::TextView::TextView(const std::string & info) {
 	this->set_name("text_view");
+	this->set_can_focus(true);
+	this->set_focus_on_click(true);
 	this->main.set_name("text_view");
 	this->main.set_homogeneous(true);
 	this->information_text.set_markup(info);
@@ -20,6 +22,7 @@ Libre::TextView::TextView(const std::string & info) {
 	this->max_verses = 20;
 	this->tabs = 1;
 	this->scroll_status = 0;
+	this->scroll_sensitivity = 0.5;
 
 	this->verses.push_back(Gtk::VBox());
 	this->v_labels.push_back({});
@@ -27,6 +30,7 @@ Libre::TextView::TextView(const std::string & info) {
 	this->verse_status.push_back({});
 
 	this->verses[this->tabs - 1].set_name("text_view");
+	this->verses[this->tabs - 1].set_border_width(5);
 
 	for (int i = 0; i < this->max_verses; i++) {
 		this->v_labels[this->tabs - 1].push_back(Gtk::Label());
@@ -63,8 +67,9 @@ Libre::TextView::TextView(const std::string & info) {
 		this->verses[this->tabs - 1].pack_start(*vbox, Gtk::PACK_EXPAND_WIDGET, this->padding_x);
 	}
 
-	this->main.pack_start(this->verses[0], Gtk::PACK_EXPAND_WIDGET, 5);
+	this->verses[0].get_children()[0]->set_name("active_verse");
 
+	this->main.pack_start(this->verses[0], Gtk::PACK_EXPAND_WIDGET, 5);
 }
 
 void Libre::TextView::show_information() {
@@ -84,6 +89,8 @@ void Libre::TextView::show_content() {
 void Libre::TextView::clear() {
 	this->content.clear();
 	this->captions.clear();
+
+	this->_display(0);
 }
 
 
@@ -133,7 +140,14 @@ void Libre::TextView::_display(int begin) {
 
 bool Libre::TextView::on_scroll_event(GdkEventScroll * scroll_event) {
 
-	this->scroll_status += scroll_event->delta_y;
+	if (this->captions.size() == 0) {
+		return false;
+	}
+
+	this->scroll_status += (
+		scroll_event->delta_y > this->scroll_sensitivity ?
+		1 :
+		(scroll_event->delta_y < -this->scroll_sensitivity ? -1 : 0));
 
 	if (this->scroll_status < 0) {
 		this->scroll_status = 0;
@@ -145,6 +159,37 @@ bool Libre::TextView::on_scroll_event(GdkEventScroll * scroll_event) {
 	this->_display(0);
 
 	return false;
+}
+
+bool Libre::TextView::on_key_press_event(GdkEventKey * key) {
+
+	if (this->captions.size() == 0) {
+		return true;
+	}
+
+	switch (key->keyval) {
+		case 107: this->scroll_status -= 1; break;
+		case 106: this->scroll_status += 1; break;
+		case 65362: this->scroll_status -= 1; break;
+		case 65364: this->scroll_status += 1; break;
+		case 65293: this->m_signal_toggle_note.emit(this->captions[this->scroll_status]); break;
+		default: this->error_bell(); break;
+	}
+
+	if (this->scroll_status < 0) {
+		this->scroll_status = 0;
+		this->error_bell();
+
+	} else if (this->scroll_status >= this->captions.size()) {
+		this->scroll_status = this->captions.size() - 1;
+		this->error_bell();
+	}
+
+	if (this->main.is_visible()) {
+		this->_display(0);
+	}
+
+	return true;
 }
 
 void Libre::TextView::remove_tab(const int & id) {
@@ -219,4 +264,6 @@ void Libre::TextView::append_tab() {
 	for (int i = 0; i < this->content.size(); i++) {
 		this->content[i].push_back("");
 	}
+
+	this->verses[this->tabs - 1].get_children()[0]->set_name("active_verse");
 }

@@ -95,6 +95,7 @@ gboolean SignalHandler::search_request(GdkEventKey * event) {
 		}
 
 		this->widgets->text_view->show_content();
+		this->widgets->text_view->grab_focus();
 
 		// ------------------------------------------
 		// DISABLE ALL WIDGETS
@@ -122,6 +123,9 @@ gboolean SignalHandler::search_request(GdkEventKey * event) {
 			sigc::mem_fun(*this, &SignalHandler::do_search), true
 		);
 		LOG("--> \"do_search\" emmited");
+
+	} else if (event->keyval == 65307) {
+		this->widgets->text_view->grab_focus();
 	}
 
 	return false;
@@ -229,8 +233,6 @@ void SignalHandler::delete_thread() {
 	this->widgets->add_button->set_sensitive(true);
 
 	this->widgets->search_entry->set_sensitive(true);
-	this->widgets->search_entry->grab_focus();
-	this->widgets->search_entry->set_position(-1);
 	this->widgets->action_group->set_sensitive(true);
 }
 
@@ -857,10 +859,12 @@ void SignalHandler::toggle_note(std::string position) {
 	if (position == "") {
 		this->widgets->note_paned->set_position(this->widgets->note_paned->get_height());
 		this->widgets->note_book->save_note();
+		this->widgets->text_view->grab_focus();
 	} else {
 		if (this->widgets->note_paned->get_position() > this->widgets->note_paned->get_height() - 50) {
 			this->widgets->note_paned->set_position(this->widgets->note_paned->get_height() * 2 / 3);
 		}
 		this->widgets->note_book->open_note(position);
+		this->widgets->note_book->grab_focus();
 	}
 }

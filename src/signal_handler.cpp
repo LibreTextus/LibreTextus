@@ -537,7 +537,9 @@ void SignalHandler::remove_source() {
 
 		this->widgets->add_button = new Gtk::Button;
 		this->widgets->add_button->set_image_from_icon_name("list-add", Gtk::ICON_SIZE_BUTTON);
-		this->widgets->add_button->set_name("view_button");
+		this->widgets->add_button->set_name("add_button");
+		Gtk::Image * img = new Gtk::Image(DATA("res/add.svg"));
+		this->widgets->add_button->set_image(*img);
 
 		this->widgets->headers.back()->pack_end(*this->widgets->add_button, Gtk::PACK_SHRINK, 0);
 		this->widgets->headers.back()->reorder_child(*this->widgets->add_button, 0);

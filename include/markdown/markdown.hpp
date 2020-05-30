@@ -94,11 +94,14 @@ namespace MD {
 		}
 
 		void set_text(std::string text) {
+
 			for (size_t i = 0; i < this->size_; i++) {
 				this->alloc.destroy(this->tagged_chars + i);
 			}
 
-			this->alloc.deallocate(this->tagged_chars, this->size_);
+			if (this->size_ != 0) {
+				this->alloc.deallocate(this->tagged_chars, this->size_);
+			}
 
 			this->parse(text);
 		}

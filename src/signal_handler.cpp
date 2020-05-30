@@ -157,6 +157,8 @@ void SignalHandler::source_changed(Gtk::ComboBoxText * b) {
 		this->widgets->close_buttons[i]->set_sensitive(false);
 	}
 
+	this->widgets->text_view->grab_focus();
+
 	this->widgets->add_button->set_sensitive(false);
 
 	this->widgets->search_entry->set_sensitive(false);

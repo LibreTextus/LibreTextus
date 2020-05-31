@@ -13,6 +13,14 @@ Libre::TextView::TextView(const std::string & info) {
 	this->information_text.set_selectable(true);
 	this->information_text.set_can_focus(false);
 
+	this->no_result_label.set_markup("<span size=\"xx-large\">No Results</span>");
+	this->no_result_label.set_justify(Gtk::JUSTIFY_CENTER);
+	this->no_result_label.set_line_wrap(true);
+	this->no_result_label.set_line_wrap_mode(Pango::WRAP_WORD);
+	this->no_result_label.set_selectable(true);
+	this->no_result_label.set_can_focus(false);
+	this->no_result_label.set_name("no_result_label");
+
 	this->add(this->overlay);
 	this->get_vscrollbar()->hide();
 	this->overlay.add(this->information_text);
@@ -81,6 +89,7 @@ void Libre::TextView::show_information() {
 	this->overlay.set_valign(Gtk::ALIGN_CENTER);
 	this->overlay.remove();
 	this->overlay.add(this->information_text);
+	this->show_all();
 }
 
 void Libre::TextView::show_content() {
@@ -88,6 +97,17 @@ void Libre::TextView::show_content() {
 	this->overlay.set_valign(Gtk::ALIGN_FILL);
 	this->overlay.remove();
 	this->overlay.add(this->main);
+	this->show_all();
+}
+
+void Libre::TextView::show_if_results() {
+	if (this->captions.size() == 0) {
+		this->overlay.set_halign(Gtk::ALIGN_CENTER);
+		this->overlay.set_valign(Gtk::ALIGN_CENTER);
+		this->overlay.remove();
+		this->overlay.add(this->no_result_label);
+		this->show_all();
+	}
 }
 
 void Libre::TextView::clear() {
@@ -121,7 +141,11 @@ void Libre::TextView::replace_verse(const std::string & caption, const int & ver
 
 void Libre::TextView::_display(int begin) {
 
-	this->show_all();
+	if (this->captions.size() != 0) {
+		this->show_all();
+	} else {
+		this->main.hide();
+	}
 
 	for (int i = begin; i < this->max_verses; i++) {
 		for (int x = 0; x < this->tabs; x++) {

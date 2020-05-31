@@ -7,6 +7,10 @@ window {
 	background-color: @theme_background_color;
 }
 
+#no_result_label {
+	opacity: 0.5;
+}
+
 #search_entry {
 	border-radius: 0px;
 	padding: 10px;

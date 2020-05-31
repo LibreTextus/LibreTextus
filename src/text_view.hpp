@@ -14,6 +14,7 @@ namespace Libre {
 		Gtk::HBox main;
 		Gtk::Overlay overlay;
 		Gtk::Label information_text;
+		Gtk::Label no_result_label;
 		std::vector<Gtk::VBox> verses;
 		std::vector<std::vector<Gtk::Label>> v_labels;
 		std::vector<std::vector<Gtk::Label>> c_labels;
@@ -42,6 +43,7 @@ namespace Libre {
 		bool on_key_press_event(GdkEventKey * key);
 		void show_information();
 		void show_content();
+		void show_if_results();
 		void remove_tab(const int & id);
 		void append_tab();
 		void label_populate_popup(Gtk::Menu * menu, int tab, int version);

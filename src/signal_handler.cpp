@@ -233,6 +233,8 @@ void SignalHandler::delete_thread() {
 
 	this->widgets->number_results->set_text(std::to_string(this->widgets->search_engine[0].get_last_search_results()->size()) + " Results");
 
+	this->widgets->text_view->show_if_results();
+
 	// ------------------------------------------
 	// ENABLE EVERY WIDGETS WHICH WERE DISABLED
 	// ------------------------------------------
@@ -246,6 +248,10 @@ void SignalHandler::delete_thread() {
 
 	this->widgets->search_entry->set_sensitive(true);
 	this->widgets->action_group->set_sensitive(true);
+
+	if (this->widgets->search_engine[0].get_last_search_results()->size() == 0) {
+		this->widgets->search_entry->grab_focus();
+	}
 }
 
 // SIGNALHANDLER::DO_SEARCH ----------------------------------------------------

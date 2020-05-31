@@ -30,6 +30,14 @@ void Libre::PackageManager::init() {
 	} else {
 		this->sources = YAML::LoadFile(HOME("sources.yml"));
 	}
+
+	for (YAML::const_iterator i = this->sources.begin(); i != this->sources.end(); i++) {
+		if (std::find(this->packages.begin(), this->packages.end(), i->second["package"].as<std::string>()) == this->packages.end()) {
+			this->packages.push_back(i->second["package"].as<std::string>());
+		}
+	}
+
+	this->update();
 }
 
 // LIBRE::PACKAGEMANAGER::INSTALL ----------------------------------------------
@@ -51,8 +59,10 @@ void Libre::PackageManager::install(std::string url) {
 	//	This could take a while...
 	// ------------------------------------------
 
+	this->mtx.lock();
 	this->info_string = "Install " + name;
 	this->subtitle_string = "This could take a while...";
+	this->mtx.unlock();
 	this->open_window.emit();
 	this->update_text.emit();
 
@@ -68,8 +78,10 @@ void Libre::PackageManager::install(std::string url) {
 	//		Found ${source name}
 	// ------------------------------------------
 
+	this->mtx.lock();
 	this->info_string = "Looking for sources...";
 	this->subtitle_string = "";
+	this->mtx.unlock();
 	this->update_text.emit();
 
 	// ------------------------------------------
@@ -89,7 +101,9 @@ void Libre::PackageManager::install(std::string url) {
 					f_info["package"] = name;
 					f_info["enabled"] = true;
 
+					this->mtx.lock();
 					this->subtitle_string = "Found: " + file;
+					this->mtx.unlock();
 					this->update_text.emit();
 
 					this->sources[file] = f_info;
@@ -103,8 +117,10 @@ void Libre::PackageManager::install(std::string url) {
 	// 		Update sources.yml
 	// ------------------------------------------
 
+	this->mtx.lock();
 	this->info_string = "Update sources.yml";
 	this->subtitle_string = "";
+	this->mtx.unlock();
 	this->update_text.emit();
 
 	// ------------------------------------------
@@ -120,7 +136,9 @@ void Libre::PackageManager::install(std::string url) {
 		fout.close();
 	}
 
+	this->mtx.lock();
 	this->close_window.emit();
+	this->mtx.unlock();
 }
 
 // LIBRE::PACKAGEMANAGER::REMOVE -----------------------------------------------
@@ -133,8 +151,10 @@ void Libre::PackageManager::remove(std::string package) {
 	// OPEN WINDOW AND DISPLAY INFORMATION
 	// ------------------------------------------
 
+	this->mtx.lock();
 	this->info_string = "Removing directory...";
 	this->subtitle_string = "";
+	this->mtx.unlock();
 	this->open_window.emit();
 	this->update_text.emit();
 
@@ -148,8 +168,10 @@ void Libre::PackageManager::remove(std::string package) {
 	// SET INFORMATION
 	// ------------------------------------------
 
+	this->mtx.lock();
 	this->info_string = "Update sources.yml";
 	this->subtitle_string = "";
+	this->mtx.unlock();
 	this->update_text.emit();
 
 	// ------------------------------------------
@@ -160,7 +182,9 @@ void Libre::PackageManager::remove(std::string package) {
 	for (YAML::const_iterator i = this->sources.begin(); i != this->sources.end();) {
 		if (i->second["package"].as<std::string>() == package) {
 			this->sources.remove(i->first);
+			this->mtx.lock();
 			this->subtitle_string = "Removing " + i->first.as<std::string>();
+			this->mtx.unlock();
 			this->update_text.emit();
 			continue;
 		}
@@ -171,7 +195,9 @@ void Libre::PackageManager::remove(std::string package) {
 	// WRITE THE NEW SOURCES LIST
 	// ------------------------------------------
 
+	this->mtx.lock();
 	this->subtitle_string = "";
+	this->mtx.unlock();
 	this->update_text.emit();
 
 	YAML::Emitter emitter;
@@ -183,7 +209,9 @@ void Libre::PackageManager::remove(std::string package) {
 		fout.close();
 	}
 
+	this->mtx.lock();
 	this->close_window.emit();
+	this->mtx.unlock();
 }
 
 // LIBRE::PACKAGEMANAGER::DISABLE ----------------------------------------------
@@ -221,18 +249,36 @@ void Libre::PackageManager::enable(std::string package) {
 	}
 }
 
+// LIBRE::PACKAGEMANAGER::UPDATE -----------------------------------------------
+// THIS FUNCTION UPDATES THE PACKAGES
+// -----------------------------------------------------------------------------
+
+void Libre::PackageManager::update() {
+
+	this->mtx.lock();
+	this->info_string = "Update Packages";
+	this->subtitle_string = "";
+	this->mtx.unlock();
+	this->open_window.emit();
+	this->update_text.emit();
+
+	for (int i = 0; i < this->packages.size(); i++) {
+		system(("git -C " + HOME(this->packages[i]) + " pull").c_str());
+		this->mtx.lock();
+		this->subtitle_string = "Updating " + this->packages[i];
+		this->mtx.unlock();
+		this->update_text.emit();
+	}
+
+	this->mtx.lock();
+	this->close_window.emit();
+	this->mtx.unlock();
+}
+
 // LIBRE::PACKAGEMANAGER::GET_PACKAGES -----------------------------------------
 // RETURN NAMES OF THE INSTALLED PACKAGES
 // -----------------------------------------------------------------------------
 
-std::vector<std::string> Libre::PackageManager::get_packages() {
-	std::vector<std::string> output;
-
-	for (auto & i : std::experimental::filesystem::directory_iterator(HOME())) {
-		if (std::experimental::filesystem::is_directory(i.path())) {
-			output.push_back(i.path().filename().string());
-		}
-	}
-
-	return output;
+std::vector<std::string> & Libre::PackageManager::get_packages() {
+	return this->packages;
 }

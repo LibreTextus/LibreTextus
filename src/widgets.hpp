@@ -5,6 +5,7 @@
 #include <vector>
 #include <gtkmm.h>
 #include <iostream>
+#include <mutex>
 #include <yaml-cpp/yaml.h>
 #include <tsl/ordered_map.h>
 

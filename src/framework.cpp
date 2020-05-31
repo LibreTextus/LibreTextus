@@ -81,19 +81,25 @@ int Framework::init(int argc, char *argv[]) {
 	LOG("-- Connect Signals");
 
 	this->widgets.package_manager.open_window.connect([this]() {
+		this->widgets.package_manager.mtx.lock();
 		this->widgets.package_manager.window->set_position(Gtk::WIN_POS_CENTER);
 		this->widgets.package_manager.spinner->start();
+		this->widgets.package_manager.mtx.unlock();
 		this->widgets.package_manager.window->show_all();
 	});
 
 	this->widgets.package_manager.close_window.connect([this]() {
+		this->widgets.package_manager.mtx.lock();
 		this->widgets.package_manager.spinner->stop();
+		this->widgets.package_manager.mtx.unlock();
 		this->widgets.package_manager.window->hide();
 	});
 
 	this->widgets.package_manager.update_text.connect([this]() {
+		this->widgets.package_manager.mtx.lock();
 		this->widgets.package_manager.main_info->set_text(this->widgets.package_manager.info_string);
 		this->widgets.package_manager.subtitle->set_text(this->widgets.package_manager.subtitle_string);
+		this->widgets.package_manager.mtx.unlock();
 	});
 
 	// ------------------------------------------

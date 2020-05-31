@@ -6,7 +6,9 @@
 #include <yaml-cpp/yaml.h>
 #include <experimental/filesystem>
 #include <regex>
+#include <algorithm>
 #include <gtkmm.h>
+#include <mutex>
 #include <iostream>
 #include "settings.hpp"
 #include "path.hpp"
@@ -17,9 +19,9 @@ namespace Libre {
     Settings settings;
 		YAML::Node sources;
 		std::string dummy_path;
+		std::vector<std::string> packages;
 
   public:
-
 		Gtk::Window * window;
 		Gtk::Label * main_info;
 		Gtk::Label * subtitle;
@@ -29,6 +31,7 @@ namespace Libre {
 		Glib::Dispatcher update_text;
 		std::string info_string;
 		std::string subtitle_string;
+		std::mutex mtx;
 
     PackageManager() = default;
     virtual ~PackageManager() = default;
@@ -38,7 +41,8 @@ namespace Libre {
     void install(std::string);
     void disable(std::string);
     void enable(std::string);
-		std::vector<std::string> get_packages();
+		void update();
+		std::vector<std::string> & get_packages();
 
 		YAML::Node get_sources() {
 			return this->sources;

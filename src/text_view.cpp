@@ -41,6 +41,10 @@ Libre::TextView::TextView(const std::string & info) {
 		this->v_labels[this->tabs - 1][i].set_selectable(true);
 		this->v_labels[this->tabs - 1][i].set_can_focus(false);
 
+		this->v_labels[this->tabs - 1][i].signal_populate_popup().connect(
+			sigc::bind<int, int>(sigc::mem_fun(this, &Libre::TextView::label_populate_popup), this->tabs - 1, i)
+		);
+
 		this->c_labels[this->tabs - 1].push_back(Gtk::Label());
 		this->c_labels[this->tabs - 1][i].set_name("text_view");
 		this->c_labels[this->tabs - 1][i].set_line_wrap(true);
@@ -237,6 +241,10 @@ void Libre::TextView::append_tab() {
 		this->v_labels[this->tabs - 1][i].set_selectable(true);
 		this->v_labels[this->tabs - 1][i].set_can_focus(false);
 
+		this->v_labels[this->tabs - 1][i].signal_populate_popup().connect(
+			sigc::bind<int, int>(sigc::mem_fun(this, &Libre::TextView::label_populate_popup), this->tabs - 1, i)
+		);
+
 		this->c_labels[this->tabs - 1].push_back(Gtk::Label());
 		this->c_labels[this->tabs - 1][i].set_name("text_view");
 		this->c_labels[this->tabs - 1][i].set_line_wrap(true);
@@ -267,5 +275,28 @@ void Libre::TextView::append_tab() {
 
 	for (int i = 0; i < this->content.size(); i++) {
 		this->content[i].push_back("");
+	}
+}
+
+void Libre::TextView::label_populate_popup(Gtk::Menu * menu, int tab, int version) {
+	int begin = 0;
+	int end = 0;
+	this->v_labels[tab][version].get_selection_bounds(begin, end);
+
+	std::string selection = this->v_labels[tab][version].get_text().substr(begin, end - begin);
+
+	std::cout << "SELECTION: " << selection << '\n';
+
+	if (!selection.empty()) {
+		Gtk::MenuItem * search_item = new Gtk::MenuItem(std::string("Search ") + "\"" + selection + "\"");
+		search_item->signal_button_release_event().connect([this, selection](GdkEventButton * b) -> bool {
+			this->m_signal_right_click_search.emit(selection);
+			return false;
+		});
+
+		Gtk::SeparatorMenuItem * sep = new Gtk::SeparatorMenuItem;
+		menu->prepend(*sep);
+		menu->prepend(*search_item);
+		menu->show_all();
 	}
 }

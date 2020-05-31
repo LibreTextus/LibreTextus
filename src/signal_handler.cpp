@@ -879,3 +879,40 @@ void SignalHandler::toggle_note(std::string position) {
 		this->widgets->note_book->grab_focus();
 	}
 }
+
+void SignalHandler::right_click_search(std::string text) {
+
+	this->widgets->search_entry->set_text(text);
+
+	this->widgets->number_results->set_text("Searching");
+
+	this->widgets->text_view->show_content();
+	this->widgets->text_view->grab_focus();
+
+	// ------------------------------------------
+	// DISABLE ALL WIDGETS
+	// ------------------------------------------
+
+	for (int i = 0; i < this->widgets->combo_boxes.size(); i++) {
+		this->widgets->combo_boxes[i]->set_button_sensitivity(Gtk::SENSITIVITY_OFF);
+		this->widgets->close_buttons[i]->set_sensitive(false);
+	}
+
+	this->widgets->text_view->clear();
+
+	this->widgets->add_button->set_sensitive(false);
+
+	this->widgets->search_entry->set_sensitive(false);
+	this->widgets->action_group->set_sensitive(false);
+
+	this->widgets->replace_id = -1;
+
+	// ------------------------------------------
+	// CREATE A NEW PROCESS_THREAD
+	// ------------------------------------------
+
+	this->widgets->process_thread = Glib::Thread::create(
+		sigc::mem_fun(*this, &SignalHandler::do_search), true
+	);
+	LOG("--> \"do_search\" emmited");
+}

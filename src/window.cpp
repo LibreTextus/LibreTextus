@@ -212,6 +212,7 @@ bool Libre::MainWindow::create(Libre::Widgets * w, SignalHandler * s) {
 
 	w->text_view = new Libre::TextView(w->settings.get<std::string>("splash_text"));
 	w->text_view->signal_toggle_note().connect(sigc::mem_fun(s, &SignalHandler::toggle_note));
+	w->text_view->signal_right_click_search().connect(sigc::mem_fun(s, &SignalHandler::right_click_search));
 
 	w->note_book = new Libre::NoteBook;
 	w->note_book->get_close_button()->signal_clicked().connect(sigc::bind<std::string>(sigc::mem_fun(s, &SignalHandler::toggle_note), ""));

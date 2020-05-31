@@ -89,7 +89,7 @@ gboolean SignalHandler::search_request(GdkEventKey * event) {
 
 	if (event->keyval == 65293) {
 
-		this->widgets->number_results->set_text("0 Results");
+		this->widgets->number_results->set_text("Searching");
 
 		if (this->widgets->search_entry->get_text() == "") {
 			this->widgets->text_view->show_information();

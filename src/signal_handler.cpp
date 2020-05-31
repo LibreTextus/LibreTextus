@@ -222,11 +222,14 @@ void SignalHandler::set_text() {
 // -----------------------------------------------------------------------------
 
 void SignalHandler::delete_thread() {
+
 	if (this->widgets->process_thread->joinable()) {
 		this->widgets->process_thread->join();
 	}
 
-	this->widgets->search_entry->set_progress_fraction(0.0);
+	if (this->widgets->search_entry->get_progress_fraction() != 0) {
+		this->widgets->search_entry->set_progress_fraction(0);
+	}
 
 	this->widgets->number_results->set_text(std::to_string(this->widgets->search_engine[0].get_last_search_results()->size()) + " Results");
 

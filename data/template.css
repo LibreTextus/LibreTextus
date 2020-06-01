@@ -7,6 +7,19 @@ window {
 	background-color: @theme_background_color;
 }
 
+#splash_screen {
+	background-image: url('res/splash_screen.png');
+	background-size: 640px 320px;
+}
+
+#splash_screen label {
+	color: #bdbdbd;
+}
+
+#splash_screen * {
+	background: none;
+}
+
 #no_result_label {
 	opacity: 0.5;
 }

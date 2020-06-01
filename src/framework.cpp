@@ -19,7 +19,6 @@ int Framework::init(int argc, char *argv[]) {
 	LOG("-- Create Main Window");
 
 	Libre::MainWindow::create(&this->widgets, &this->signal_handler);
-	this->widgets.window->show_all();
 
 	LOG("-- Create Properties Window");
 
@@ -50,6 +49,8 @@ int Framework::init(int argc, char *argv[]) {
 	this->widgets.style->add_provider_for_screen(screen, this->widgets.css, GTK_STYLE_PROVIDER_PRIORITY_APPLICATION);
 	this->widgets.style->add_provider_for_screen(screen, this->widgets.font_size_css, GTK_STYLE_PROVIDER_PRIORITY_APPLICATION);
 
+	this->widgets.window->show_all();
+
 	// ------------------------------------------
 	// CREATE WINDOW FOR THE PACKAGEMANAGER
 	// ------------------------------------------
@@ -57,17 +58,22 @@ int Framework::init(int argc, char *argv[]) {
 	LOG("-- Init PackageManager");
 
 	this->widgets.package_manager.window = new Gtk::Window;
-	this->widgets.package_manager.window->set_title("Info");
-	this->widgets.package_manager.window->set_default_size(250, 80);
+	this->widgets.package_manager.window->set_default_size(640, 315);
 	this->widgets.package_manager.window->set_icon_from_file(DATA("Icon.svg"));
+	this->widgets.package_manager.window->set_type_hint(Gdk::WINDOW_TYPE_HINT_SPLASHSCREEN);
+	this->widgets.package_manager.window->set_name("splash_screen");
 
 	Gtk::VBox * box = new Gtk::VBox;
 	box->set_border_width(10);
 
+	Gtk::Label * title = new Gtk::Label;
+	title->set_markup("<span font='42'>LibreTextus</span>");
 	this->widgets.package_manager.main_info = new Gtk::Label("Test");
 	this->widgets.package_manager.subtitle = new Gtk::Label("Test");
 	this->widgets.package_manager.spinner = new Gtk::Spinner;
+	this->widgets.package_manager.spinner->set_size_request(70, 70);
 
+	box->pack_start(*title, Gtk::PACK_EXPAND_WIDGET, 0);
 	box->pack_start(*this->widgets.package_manager.main_info, Gtk::PACK_SHRINK, 0);
 	box->pack_start(*this->widgets.package_manager.subtitle, Gtk::PACK_SHRINK, 0);
 	box->pack_start(*this->widgets.package_manager.spinner, Gtk::PACK_SHRINK, 10);
@@ -112,9 +118,12 @@ int Framework::init(int argc, char *argv[]) {
 	this->widgets.app->signal_startup().connect([this]() {
 		LOG("--> \"startup\" emmited");
 		this->widgets.update_thread = Glib::Thread::create([this]() {
+
 			// ------------------------------------------
 			// CHECK FOR UPDATES
 			// ------------------------------------------
+
+			this->widgets.window->set_opacity(0);
 
 			this->widgets.package_manager.init();
 
@@ -139,6 +148,8 @@ int Framework::init(int argc, char *argv[]) {
 		}
 
 		LOG("--> \"start_session\" emmited");
+
+		this->widgets.window->set_opacity(1);
 
 		// ------------------------------------------
 		// LOAD NOTEBOOK FILE

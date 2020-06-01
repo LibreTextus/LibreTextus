@@ -11,6 +11,7 @@
 
 #include "text_view.hpp"
 #include "notebook.hpp"
+#include "history_button.hpp"
 #include "package_manager.hpp"
 #include "search_engine.hpp"
 #include "settings.hpp"
@@ -34,6 +35,7 @@ namespace Libre {
 		Glib::RefPtr<Gtk::CssProvider> css;
 		Glib::RefPtr<Gtk::CssProvider> font_size_css;
 		int font_size;
+		Libre::HistoryButton * history_button;
 		Gtk::SearchEntry * search_entry;
 		Gtk::Label * number_results;
 		Gtk::HBox * panels;

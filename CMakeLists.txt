@@ -59,6 +59,8 @@ else()
 		src/notebook.cpp
 		src/log.hpp
 		src/log.cpp
+		src/history_button.hpp
+		src/history_button.cpp
 	)
 
 	include(FetchContent)

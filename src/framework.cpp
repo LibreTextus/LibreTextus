@@ -166,6 +166,8 @@ int Framework::init(int argc, char *argv[]) {
 		this->widgets.text_view->show_information();
 
 		this->signal_handler.sync_enabled_sources();
+
+		this->widgets.search_entry->grab_focus();
 	});
 
 

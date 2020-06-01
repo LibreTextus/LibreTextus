@@ -184,13 +184,15 @@ bool Libre::MainWindow::create(Libre::Widgets * w, SignalHandler * s) {
 	LOG(" * Create SearchEntry");
 
 	w->search_entry = new Gtk::SearchEntry;
-
 	w->search_entry->set_placeholder_text("Search");
 
 	w->number_results = new Gtk::Label("0 Results");
+	w->history_button = new Libre::HistoryButton;
+	w->history_button->trigger_search().connect(sigc::mem_fun(s, &SignalHandler::trigger_search));
 
 	Gtk::HBox * search_box = new Gtk::HBox;
 
+	search_box->pack_start(*w->history_button, Gtk::PACK_SHRINK, 0);
 	search_box->pack_start(*w->search_entry, Gtk::PACK_EXPAND_WIDGET, 0);
 	search_box->pack_start(*w->number_results, Gtk::PACK_SHRINK, 10);
 
@@ -212,7 +214,7 @@ bool Libre::MainWindow::create(Libre::Widgets * w, SignalHandler * s) {
 
 	w->text_view = new Libre::TextView(w->settings.get<std::string>("splash_text"));
 	w->text_view->signal_toggle_note().connect(sigc::mem_fun(s, &SignalHandler::toggle_note));
-	w->text_view->signal_right_click_search().connect(sigc::mem_fun(s, &SignalHandler::right_click_search));
+	w->text_view->signal_right_click_search().connect(sigc::mem_fun(s, &SignalHandler::trigger_search));
 
 	w->note_book = new Libre::NoteBook;
 	w->note_book->get_close_button()->signal_clicked().connect(sigc::bind<std::string>(sigc::mem_fun(s, &SignalHandler::toggle_note), ""));

@@ -98,6 +98,8 @@ gboolean SignalHandler::search_request(GdkEventKey * event) {
 			return false;
 		}
 
+		this->widgets->history_button->add_to_history(this->widgets->search_entry->get_text());
+
 		this->widgets->text_view->show_content();
 		this->widgets->text_view->grab_focus();
 
@@ -115,6 +117,7 @@ gboolean SignalHandler::search_request(GdkEventKey * event) {
 		this->widgets->add_button->set_sensitive(false);
 
 		this->widgets->search_entry->set_sensitive(false);
+		this->widgets->history_button->set_sensitive(false);
 		this->widgets->action_group->set_sensitive(false);
 
 		this->widgets->replace_id = -1;
@@ -162,6 +165,7 @@ void SignalHandler::source_changed(Gtk::ComboBoxText * b) {
 	this->widgets->add_button->set_sensitive(false);
 
 	this->widgets->search_entry->set_sensitive(false);
+	this->widgets->history_button->set_sensitive(false);
 	this->widgets->action_group->set_sensitive(false);
 
 	// ------------------------------------------
@@ -247,6 +251,7 @@ void SignalHandler::delete_thread() {
 	this->widgets->add_button->set_sensitive(true);
 
 	this->widgets->search_entry->set_sensitive(true);
+	this->widgets->history_button->set_sensitive(true);
 	this->widgets->action_group->set_sensitive(true);
 
 	if (this->widgets->search_engine[0].get_last_search_results()->size() == 0) {
@@ -889,7 +894,7 @@ void SignalHandler::toggle_note(std::string position) {
 	}
 }
 
-void SignalHandler::right_click_search(std::string text) {
+void SignalHandler::trigger_search(std::string text) {
 
 	this->widgets->search_entry->set_text(text);
 

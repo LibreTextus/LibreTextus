@@ -41,17 +41,20 @@ image:focus {
 	border-bottom-color: @theme_highlight_color;
 	border-bottom-width: 5px;
 	margin: -10px;
-	margin-left: -18px;
+	margin-left: -86px;
 	margin-right: -8em;
 }
 
-box, .combo, menu, menubar, entry, button, spinbutton {
+box, .combo, menu, menubar, entry, spinbutton, button {
 	background-color: @theme_background_color;
 	color: @theme_text_color;
 	border-color: @theme_accent_color;
 	border-width: 1px;
 	box-shadow: none;
+	text-shadow: none;
+	text-decoration: none;
 	background-image: none;
+	-gtk-icon-shadow: none;
 }
 
 menuitem:hover {
@@ -91,12 +94,11 @@ text, #text_view, #verse_box {
 	border-color: @theme_highlight_color;
 }
 
-button:active {
-	border-left-color: @theme_text_background_color;
-}
-
 #add_button, #close_button {
 	background-color: @theme_background_color;
+	color: @theme_text_color;
+	box-shadow: none;
+	background-image: none;
 	border: none;
 	margin-left: 5px;
 	margin-right: -5px;
@@ -172,6 +174,38 @@ paned separator {
 
 #note_header_title {
 	margin-right: 40px;
+}
+
+#history_button {
+	background-color: @theme_text_background_color;
+	color: @theme_text_color;
+}
+
+#history_button * {
+	background-color: @theme_text_background_color;
+}
+
+#history_button button {
+	background-color: @theme_text_background_color;
+	color: @theme_text_color;
+	box-shadow: none;
+	background-image: none;
+	border: none;
+	padding: 0;
+	opacity: 0.8;
+	margin: 5px 5px 5px 5px;
+}
+
+#history_button image {
+	background-color: @theme_text_background_color;
+	color: @theme_text_color;
+	box-shadow: none;
+	background-image: none;
+	padding: 0;
+}
+
+#history_button button:hover {
+	opacity: 1;
 }
 
 /* SETTINGS */

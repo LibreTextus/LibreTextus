@@ -29,77 +29,108 @@ namespace Libre {
 		Settings settings;
 		std::vector<SearchEngine> search_engine;
 
-		Gtk::Window * window;
 		Glib::RefPtr<Gtk::Application> app;
-		Glib::RefPtr<Gtk::StyleContext> style;
-		Glib::RefPtr<Gtk::CssProvider> css;
-		Glib::RefPtr<Gtk::CssProvider> font_size_css;
-		int font_size;
-		Libre::HistoryButton * history_button;
-		Gtk::SearchEntry * search_entry;
-		Gtk::Label * number_results;
-		Gtk::HBox * panels;
-		Gtk::Button * add_button;
-		std::vector<Gtk::Button *> close_buttons;
-		std::vector<Gtk::HBox *> headers;
-		std::vector<Gtk::ComboBoxText *> combo_boxes;
-		Libre::TextView * text_view;
-		Libre::NoteBook * note_book;
-		Gtk::Paned * note_paned;
-		std::string found_position;
-		std::vector<std::string *> found_verses;
-		bool is_fullscreen;
-		bool is_note_book_open;
 
-		Gtk::Window * preferences_window;
-		Gtk::SpinButton * font_size_spinbutton;
-		Gtk::ComboBoxText * preferences_theme_combo;
-		Gtk::VBox * book_manager_box;
-		tsl::ordered_map<std::string, Gtk::CheckButton *> preferences_sources_check;
+		struct Main {
+			Gtk::Window * window;
+			Libre::HistoryButton * history_button;
+			Gtk::SearchEntry * search_entry;
+			Gtk::Label * number_results;
+			Gtk::HBox * panels;
+			Gtk::Button * add_button;
+			std::vector<Gtk::Button *> close_buttons;
+			std::vector<Gtk::HBox *> headers;
+			std::vector<Gtk::ComboBoxText *> combo_boxes;
+			Libre::TextView * text_view;
+			Libre::NoteBook * note_book;
+			Gtk::Paned * note_paned;
+			bool is_fullscreen;
+			bool is_note_book_open;
+		} main;
 
-		Glib::RefPtr<Gtk::UIManager> ui_manager;
-		Glib::RefPtr<Gtk::ActionGroup> action_group;
-		Gtk::Window * dialog_window;
+		struct SplashScreen {
+			Gtk::Window * window;
+			Gtk::Spinner * spinner;
+			Gtk::Label * header_label;
+			Gtk::Label * info_label;
+			Glib::Dispatcher text_dispatcher;
+			std::mutex mutex;
+			std::string header_string;
+			std::string info_string;
+		} splash_screen;
+
+		struct Preferences {
+			Gtk::Window * window;
+			Gtk::SpinButton * font_size_spinbutton;
+			Gtk::ComboBoxText * theme_combo;
+			Gtk::VBox * book_manager_box;
+			tsl::ordered_map<std::string, Gtk::CheckButton *> sources_check;
+		} preferences;
+
+		struct Style {
+			Glib::RefPtr<Gtk::StyleContext> style;
+			Glib::RefPtr<Gtk::CssProvider> css;
+			Glib::RefPtr<Gtk::CssProvider> font_size_css;
+			int font_size;
+		} style;
+
+		struct UI {
+			Glib::RefPtr<Gtk::UIManager> manager;
+			Glib::RefPtr<Gtk::ActionGroup> action_group;
+		} ui;
+
+		struct Dialog {
+			Gtk::Window * window;
+		} dialog;
 
 		// -------------------------------------------------------------------------
 		// DECLINE VARIABLES USED BY THE PROCESS THREAD
 		// -------------------------------------------------------------------------
 
-		Glib::Thread * process_thread;
-		Glib::Thread * update_thread;
-		std::mutex process_mutex;
-		Glib::Dispatcher set_text_dispatcher;
-		Glib::Dispatcher delete_thread_dispatcher;
-		Glib::Dispatcher sync_sources_dispatcher;
-		Glib::Dispatcher start_session;
-		bool procress_finished;
-		int replace_id;
+		struct Processing {
+			Glib::Thread * process_thread;
+			Glib::Thread * update_thread;
+			std::mutex process_mutex;
+			Glib::Dispatcher set_text_dispatcher;
+			Glib::Dispatcher delete_thread_dispatcher;
+			Glib::Dispatcher sync_sources_dispatcher;
+			Glib::Dispatcher start_session;
+			bool procress_finished;
+			int replace_id;
+			std::string found_position;
+			std::vector<std::string *> found_verses;
+		} processing;
 
 		Widgets() = default;
 
 		~Widgets() {
-			delete this->window;
-			delete this->preferences_window;
-			delete this->dialog_window;
+			delete this->main.window;
+			delete this->preferences.window;
+			delete this->dialog.window;
 
-			delete this->search_entry;
-			delete this->number_results;
-			delete this->panels;
-			delete this->add_button;
+			delete this->splash_screen.window;
+			delete this->splash_screen.spinner;
+			delete this->splash_screen.header_label;
+			delete this->splash_screen.info_label;
 
-			for (int i = 0; i < this->headers.size(); i++) {
-				delete this->close_buttons[i];
-				delete this->headers[i];
-				delete this->combo_boxes[i];
+			delete this->main.search_entry;
+			delete this->main.number_results;
+			delete this->main.panels;
+			delete this->main.add_button;
+
+			for (int i = 0; i < this->main.headers.size(); i++) {
+				delete this->main.close_buttons[i];
+				delete this->main.headers[i];
+				delete this->main.combo_boxes[i];
 			}
 
-			delete this->text_view;
-			delete this->note_book;
-			delete this->note_paned;
+			delete this->main.text_view;
+			delete this->main.note_book;
+			delete this->main.note_paned;
 
-			delete this->font_size_spinbutton;
-			delete this->preferences_theme_combo;
-			delete this->book_manager_box;
+			delete this->preferences.font_size_spinbutton;
+			delete this->preferences.theme_combo;
+			delete this->preferences.book_manager_box;
 		}
 
 		void destroy_with_children(Gtk::Window * w) {
@@ -132,40 +163,40 @@ namespace Libre {
 			// ------------------------------------------
 
 			Gtk::VBox * scrl_container = new Gtk::VBox(false, 0);
-			this->headers.push_back(new Gtk::HBox(false, 0));
-			this->close_buttons.push_back(new Gtk::Button);
-			this->close_buttons.back()->set_name("close_button");
+			this->main.headers.push_back(new Gtk::HBox(false, 0));
+			this->main.close_buttons.push_back(new Gtk::Button);
+			this->main.close_buttons.back()->set_name("close_button");
 			Gtk::Image * img = new Gtk::Image(DATA("res/close.svg"));
-			this->close_buttons.back()->set_image(*img);
+			this->main.close_buttons.back()->set_image(*img);
 			// ------------------------------------------
 			// ADD COMBOBOX TO HEADER AND APPEND SOURCES
 			// ------------------------------------------
 
-			this->combo_boxes.push_back(new Gtk::ComboBoxText);
+			this->main.combo_boxes.push_back(new Gtk::ComboBoxText);
 
-			this->append_sources(this->combo_boxes.back());
+			this->append_sources(this->main.combo_boxes.back());
 
 			// ------------------------------------------
 			// REMOVE THE ADD BUTTON FROM THE LAST HEADER
 			// AND ADD IT TO THIS HEADER
 			// ------------------------------------------
 
-			if (this->add_button != nullptr) {
-				this->add_button->get_parent()->remove(*this->add_button);
-				delete this->add_button;
+			if (this->main.add_button != nullptr) {
+				this->main.add_button->get_parent()->remove(*this->main.add_button);
+				delete this->main.add_button;
 			}
 
-			this->add_button = new Gtk::Button;
-			this->add_button->set_name("add_button");
+			this->main.add_button = new Gtk::Button;
+			this->main.add_button->set_name("add_button");
 			img = new Gtk::Image(DATA("res/add.svg"));
-			this->add_button->set_image(*img);
+			this->main.add_button->set_image(*img);
 
-			this->headers.back()->pack_end(*this->add_button, Gtk::PACK_SHRINK, 0);
-			this->headers.back()->pack_end(*this->close_buttons.back(), Gtk::PACK_SHRINK, 0);
-			this->headers.back()->pack_end(*this->combo_boxes.back(), Gtk::PACK_SHRINK, 0);
-			this->headers.back()->set_border_width(10);
+			this->main.headers.back()->pack_end(*this->main.add_button, Gtk::PACK_SHRINK, 0);
+			this->main.headers.back()->pack_end(*this->main.close_buttons.back(), Gtk::PACK_SHRINK, 0);
+			this->main.headers.back()->pack_end(*this->main.combo_boxes.back(), Gtk::PACK_SHRINK, 0);
+			this->main.headers.back()->set_border_width(10);
 
-			this->panels->pack_start(*this->headers.back(), Gtk::PACK_EXPAND_WIDGET, 0);
+			this->main.panels->pack_start(*this->main.headers.back(), Gtk::PACK_EXPAND_WIDGET, 0);
 		}
 	};
 }

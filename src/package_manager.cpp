@@ -60,10 +60,9 @@ void Libre::PackageManager::install(std::string url) {
 	// ------------------------------------------
 
 	this->mtx.lock();
-	this->info_string = "Install " + name;
-	this->subtitle_string = "This could take a while...";
+	this->header_string = "Install " + name;
+	this->info_string = "This could take a while...";
 	this->mtx.unlock();
-	this->open_window.emit();
 	this->update_text.emit();
 
 	// ------------------------------------------
@@ -79,8 +78,8 @@ void Libre::PackageManager::install(std::string url) {
 	// ------------------------------------------
 
 	this->mtx.lock();
-	this->info_string = "Looking for sources...";
-	this->subtitle_string = "";
+	this->header_string = "Looking for sources...";
+	this->info_string = "";
 	this->mtx.unlock();
 	this->update_text.emit();
 
@@ -102,7 +101,7 @@ void Libre::PackageManager::install(std::string url) {
 					f_info["enabled"] = true;
 
 					this->mtx.lock();
-					this->subtitle_string = "Found: " + file;
+					this->info_string = "Found: " + file;
 					this->mtx.unlock();
 					this->update_text.emit();
 
@@ -118,8 +117,8 @@ void Libre::PackageManager::install(std::string url) {
 	// ------------------------------------------
 
 	this->mtx.lock();
-	this->info_string = "Update sources.yml";
-	this->subtitle_string = "";
+	this->header_string = "Update sources.yml";
+	this->info_string = "";
 	this->mtx.unlock();
 	this->update_text.emit();
 
@@ -135,10 +134,6 @@ void Libre::PackageManager::install(std::string url) {
 		fout << emitter.c_str();
 		fout.close();
 	}
-
-	this->mtx.lock();
-	this->close_window.emit();
-	this->mtx.unlock();
 }
 
 // LIBRE::PACKAGEMANAGER::REMOVE -----------------------------------------------
@@ -152,10 +147,9 @@ void Libre::PackageManager::remove(std::string package) {
 	// ------------------------------------------
 
 	this->mtx.lock();
-	this->info_string = "Removing directory...";
-	this->subtitle_string = "";
+	this->header_string = "Removing directory...";
+	this->info_string = "";
 	this->mtx.unlock();
-	this->open_window.emit();
 	this->update_text.emit();
 
 	// ------------------------------------------
@@ -169,8 +163,8 @@ void Libre::PackageManager::remove(std::string package) {
 	// ------------------------------------------
 
 	this->mtx.lock();
-	this->info_string = "Update sources.yml";
-	this->subtitle_string = "";
+	this->header_string = "Update sources.yml";
+	this->info_string = "";
 	this->mtx.unlock();
 	this->update_text.emit();
 
@@ -183,7 +177,7 @@ void Libre::PackageManager::remove(std::string package) {
 		if (i->second["package"].as<std::string>() == package) {
 			this->sources.remove(i->first);
 			this->mtx.lock();
-			this->subtitle_string = "Removing " + i->first.as<std::string>();
+			this->info_string = "Removing " + i->first.as<std::string>();
 			this->mtx.unlock();
 			this->update_text.emit();
 			continue;
@@ -196,7 +190,7 @@ void Libre::PackageManager::remove(std::string package) {
 	// ------------------------------------------
 
 	this->mtx.lock();
-	this->subtitle_string = "";
+	this->info_string = "";
 	this->mtx.unlock();
 	this->update_text.emit();
 
@@ -208,10 +202,6 @@ void Libre::PackageManager::remove(std::string package) {
 		fout << emitter.c_str();
 		fout.close();
 	}
-
-	this->mtx.lock();
-	this->close_window.emit();
-	this->mtx.unlock();
 }
 
 // LIBRE::PACKAGEMANAGER::DISABLE ----------------------------------------------
@@ -256,23 +246,18 @@ void Libre::PackageManager::enable(std::string package) {
 void Libre::PackageManager::update() {
 
 	this->mtx.lock();
-	this->info_string = "Update Packages";
-	this->subtitle_string = "";
+	this->header_string = "Update Packages";
+	this->info_string = "";
 	this->mtx.unlock();
-	this->open_window.emit();
 	this->update_text.emit();
 
 	for (int i = 0; i < this->packages.size(); i++) {
 		system(("git -C " + HOME(this->packages[i]) + " pull").c_str());
 		this->mtx.lock();
-		this->subtitle_string = "Updating " + this->packages[i];
+		this->info_string = "Updating " + this->packages[i];
 		this->mtx.unlock();
 		this->update_text.emit();
 	}
-
-	this->mtx.lock();
-	this->close_window.emit();
-	this->mtx.unlock();
 }
 
 // LIBRE::PACKAGEMANAGER::GET_PACKAGES -----------------------------------------

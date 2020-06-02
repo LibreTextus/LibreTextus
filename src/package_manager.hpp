@@ -22,15 +22,9 @@ namespace Libre {
 		std::vector<std::string> packages;
 
   public:
-		Gtk::Window * window;
-		Gtk::Label * main_info;
-		Gtk::Label * subtitle;
-		Gtk::Spinner * spinner;
-		Glib::Dispatcher open_window;
-		Glib::Dispatcher close_window;
 		Glib::Dispatcher update_text;
+		std::string header_string;
 		std::string info_string;
-		std::string subtitle_string;
 		std::mutex mtx;
 
     PackageManager() = default;

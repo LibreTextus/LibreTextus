@@ -12,19 +12,19 @@ bool Libre::MainWindow::create(Libre::Widgets * w, SignalHandler * s) {
 
 	LOG(" * Init new Main Window");
 
-	w->window = new Gtk::Window;
-	w->window->set_default_size(1000, 800);
-	w->window->set_title("LibreTextus");
-	w->window->set_icon_from_file(DATA("Icon.svg"));
-	w->window->set_position(Gtk::WIN_POS_CENTER);
-	w->is_fullscreen = false;
+	w->main.window = new Gtk::Window;
+	w->main.window->set_default_size(1000, 800);
+	w->main.window->set_title("LibreTextus");
+	w->main.window->set_icon_from_file(DATA("Icon.svg"));
+	w->main.window->set_position(Gtk::WIN_POS_CENTER);
+	w->main.is_fullscreen = false;
 
 	// ------------------------------------------
 	// ADD THE ROOT VBOX TO THE WINDOW
 	// ------------------------------------------
 
 	Gtk::VBox * v_box = new Gtk::VBox(false, 0);
-	w->window->add(*v_box);
+	w->main.window->add(*v_box);
 
 	// ------------------------------------------
 	// CREATE THE MENUBAR FOR THE WINDOW
@@ -32,88 +32,88 @@ bool Libre::MainWindow::create(Libre::Widgets * w, SignalHandler * s) {
 
 	LOG(" * Create ActionGroup for Menu");
 
-	w->action_group = Gtk::ActionGroup::create();
+	w->ui.action_group = Gtk::ActionGroup::create();
 
 	// ------------------------------------------
 	// CREATE FILE MENU
 	// ------------------------------------------
 
-	w->action_group->add(Gtk::Action::create("FileMenu", Gtk::Stock::FILE));
+	w->ui.action_group->add(Gtk::Action::create("FileMenu", Gtk::Stock::FILE));
 
 	// ------------------------------------------
 	// CREATE QUIT MENU
 	// ------------------------------------------
 
-	w->action_group->add(Gtk::Action::create("FileNewTab", "New Tab"),
+	w->ui.action_group->add(Gtk::Action::create("FileNewTab", "New Tab"),
 			Gtk::AccelKey("<control>T"));
-	w->action_group->add(Gtk::Action::create("FileCloseTab", "Close Tab"),
+	w->ui.action_group->add(Gtk::Action::create("FileCloseTab", "Close Tab"),
 			Gtk::AccelKey("<control>W"));
-	w->action_group->add(Gtk::Action::create("FileQuit", Gtk::Stock::QUIT),
+	w->ui.action_group->add(Gtk::Action::create("FileQuit", Gtk::Stock::QUIT),
 					sigc::mem_fun(s, &SignalHandler::quit));
 
 	// ------------------------------------------
 	// CREATE EDIT MENU
 	// ------------------------------------------
 
-	w->action_group->add(Gtk::Action::create("EditMenu", Gtk::Stock::EDIT));
-	w->action_group->add(Gtk::Action::create("EditCut", Gtk::Stock::CUT));
-	w->action_group->add(Gtk::Action::create("EditCopy", Gtk::Stock::COPY));
-	w->action_group->add(Gtk::Action::create("EditPaste", Gtk::Stock::PASTE));
-	w->action_group->add(Gtk::Action::create("EditFind", Gtk::Stock::FIND),
+	w->ui.action_group->add(Gtk::Action::create("EditMenu", Gtk::Stock::EDIT));
+	w->ui.action_group->add(Gtk::Action::create("EditCut", Gtk::Stock::CUT));
+	w->ui.action_group->add(Gtk::Action::create("EditCopy", Gtk::Stock::COPY));
+	w->ui.action_group->add(Gtk::Action::create("EditPaste", Gtk::Stock::PASTE));
+	w->ui.action_group->add(Gtk::Action::create("EditFind", Gtk::Stock::FIND),
 			Gtk::AccelKey("<control>F"), sigc::mem_fun(s, &SignalHandler::toggle_search));
-	w->action_group->add(Gtk::Action::create("EditPreferences", Gtk::Stock::PREFERENCES),
+	w->ui.action_group->add(Gtk::Action::create("EditPreferences", Gtk::Stock::PREFERENCES),
 			Gtk::AccelKey(',', Gdk::ModifierType::CONTROL_MASK), sigc::mem_fun(s, &SignalHandler::toggle_preferences));
 
 	// ------------------------------------------
 	// CREATE VIEW MENU
 	// ------------------------------------------
 
-	w->action_group->add(Gtk::Action::create("ViewMenu", "View"));
-	w->action_group->add(Gtk::Action::create("ViewAddSource", "Add Source"),
+	w->ui.action_group->add(Gtk::Action::create("ViewMenu", "View"));
+	w->ui.action_group->add(Gtk::Action::create("ViewAddSource", "Add Source"),
 			Gtk::AccelKey("<control>N"), sigc::mem_fun(s, &SignalHandler::add_source));
-	w->action_group->add(Gtk::Action::create("ViewRemoveSource", "Remove Source"),
+	w->ui.action_group->add(Gtk::Action::create("ViewRemoveSource", "Remove Source"),
 			Gtk::AccelKey("<control>D"), sigc::mem_fun(s, &SignalHandler::remove_source));
-	w->action_group->add(Gtk::Action::create("ViewToggleNotes", "Toggle Notes"),
+	w->ui.action_group->add(Gtk::Action::create("ViewToggleNotes", "Toggle Notes"),
 			Gtk::AccelKey("<control><alt>N"));
-	w->action_group->add(Gtk::Action::create("ViewToggleComments", "Toggle Comments"),
+	w->ui.action_group->add(Gtk::Action::create("ViewToggleComments", "Toggle Comments"),
 			Gtk::AccelKey("<control><alt>C"));
-	w->action_group->add(Gtk::Action::create("ViewZoomIn", Gtk::Stock::ZOOM_IN),
+	w->ui.action_group->add(Gtk::Action::create("ViewZoomIn", Gtk::Stock::ZOOM_IN),
 			Gtk::AccelKey('+', Gdk::ModifierType::CONTROL_MASK), sigc::mem_fun(s, &SignalHandler::zoom_in));
-	w->action_group->add(Gtk::Action::create("ViewZoomOut", Gtk::Stock::ZOOM_OUT),
+	w->ui.action_group->add(Gtk::Action::create("ViewZoomOut", Gtk::Stock::ZOOM_OUT),
 			Gtk::AccelKey('-', Gdk::ModifierType::CONTROL_MASK), sigc::mem_fun(s, &SignalHandler::zoom_out));
-	w->action_group->add(Gtk::Action::create("ViewZoomReset", Gtk::Stock::ZOOM_100),
+	w->ui.action_group->add(Gtk::Action::create("ViewZoomReset", Gtk::Stock::ZOOM_100),
 			Gtk::AccelKey('=', Gdk::ModifierType::CONTROL_MASK), sigc::mem_fun(s, &SignalHandler::zoom_reset));
-	w->action_group->add(Gtk::Action::create("ViewMinimize", "Minimize"),
+	w->ui.action_group->add(Gtk::Action::create("ViewMinimize", "Minimize"),
 			Gtk::AccelKey("<control>M"), sigc::mem_fun(s, &SignalHandler::toggle_iconify));
-	w->action_group->add(Gtk::Action::create("ViewToggleFullscreen", Gtk::Stock::FULLSCREEN),
+	w->ui.action_group->add(Gtk::Action::create("ViewToggleFullscreen", Gtk::Stock::FULLSCREEN),
 			Gtk::AccelKey("F11"), sigc::mem_fun(s, &SignalHandler::toggle_fullscreen));
 
 	// ------------------------------------------
 	// CREATE HISTORY MENU
 	// ------------------------------------------
 
-	w->action_group->add(Gtk::Action::create("HistoryMenu", "History"));
-	w->action_group->add(Gtk::Action::create("HistoryBack", Gtk::Stock::GO_BACK),
+	w->ui.action_group->add(Gtk::Action::create("HistoryMenu", "History"));
+	w->ui.action_group->add(Gtk::Action::create("HistoryBack", Gtk::Stock::GO_BACK),
 			Gtk::AccelKey("<control>Z"));
-	w->action_group->add(Gtk::Action::create("HistoryForward", Gtk::Stock::GO_FORWARD),
+	w->ui.action_group->add(Gtk::Action::create("HistoryForward", Gtk::Stock::GO_FORWARD),
 			Gtk::AccelKey("<control><shift>Z"));
 
 	// ------------------------------------------
 	// CREATE HELP MENU
 	// ------------------------------------------
 
-	w->action_group->add(Gtk::Action::create("HelpMenu", Gtk::Stock::HELP));
-	w->action_group->add(Gtk::Action::create("HelpGetHelp", Gtk::Stock::HELP));
-	w->action_group->add(Gtk::Action::create("HelpAbout", Gtk::Stock::ABOUT));
+	w->ui.action_group->add(Gtk::Action::create("HelpMenu", Gtk::Stock::HELP));
+	w->ui.action_group->add(Gtk::Action::create("HelpGetHelp", Gtk::Stock::HELP));
+	w->ui.action_group->add(Gtk::Action::create("HelpAbout", Gtk::Stock::ABOUT));
 
 	// ------------------------------------------
 	// ADD UIMANAGER ACCEL GROUP TO THE WINDOW
 	// ------------------------------------------
 
-	w->ui_manager = Gtk::UIManager::create();
-	w->ui_manager->insert_action_group(w->action_group);
+	w->ui.manager = Gtk::UIManager::create();
+	w->ui.manager->insert_action_group(w->ui.action_group);
 
-	w->window->add_accel_group(w->ui_manager->get_accel_group());
+	w->main.window->add_accel_group(w->ui.manager->get_accel_group());
 
 	Glib::ustring ui_info =
 				"<ui>"
@@ -159,7 +159,7 @@ bool Libre::MainWindow::create(Libre::Widgets * w, SignalHandler * s) {
 				"</ui>";
 
 	try {
-		w->ui_manager->add_ui_from_string(ui_info);
+		w->ui.manager->add_ui_from_string(ui_info);
 	}
 	catch(const Glib::Error& ex) {
 		std::cerr << "building menus failed: " <<  ex.what();
@@ -171,7 +171,7 @@ bool Libre::MainWindow::create(Libre::Widgets * w, SignalHandler * s) {
 
 	LOG(" * Create Menu");
 
-	Gtk::Widget * pMenubar = w->ui_manager->get_widget("/MenuBar");
+	Gtk::Widget * pMenubar = w->ui.manager->get_widget("/MenuBar");
 	if(pMenubar) {
 		v_box->pack_start(*pMenubar, Gtk::PACK_SHRINK);
 	}
@@ -183,22 +183,27 @@ bool Libre::MainWindow::create(Libre::Widgets * w, SignalHandler * s) {
 
 	LOG(" * Create SearchEntry");
 
-	w->search_entry = new Gtk::SearchEntry;
-	w->search_entry->set_placeholder_text("Search");
+	w->main.search_entry = new Gtk::SearchEntry;
+	w->main.search_entry->set_placeholder_text("Search");
 
-	w->number_results = new Gtk::Label("0 Results");
-	w->history_button = new Libre::HistoryButton;
-	w->history_button->trigger_search().connect(sigc::mem_fun(s, &SignalHandler::trigger_search));
+	w->main.search_entry->signal_key_press_event().connect(
+		sigc::mem_fun(s, &SignalHandler::search_request),
+		false
+	);
+
+	w->main.number_results = new Gtk::Label("0 Results");
+	w->main.history_button = new Libre::HistoryButton;
+	w->main.history_button->trigger_search().connect(sigc::mem_fun(s, &SignalHandler::trigger_search));
 
 	Gtk::HBox * search_box = new Gtk::HBox;
 
-	search_box->pack_start(*w->history_button, Gtk::PACK_SHRINK, 0);
-	search_box->pack_start(*w->search_entry, Gtk::PACK_EXPAND_WIDGET, 0);
-	search_box->pack_start(*w->number_results, Gtk::PACK_SHRINK, 10);
+	search_box->pack_start(*w->main.history_button, Gtk::PACK_SHRINK, 0);
+	search_box->pack_start(*w->main.search_entry, Gtk::PACK_EXPAND_WIDGET, 0);
+	search_box->pack_start(*w->main.number_results, Gtk::PACK_SHRINK, 10);
 
 	search_box->set_name("search_entry");
 
-	w->add_button = nullptr;
+	w->main.add_button = nullptr;
 
 	// ------------------------------------------
 	// CREATE TEXTVIEW AND NOTEBOOK
@@ -206,62 +211,62 @@ bool Libre::MainWindow::create(Libre::Widgets * w, SignalHandler * s) {
 
 	LOG(" * Create TextView and NoteBook");
 
-	w->panels = new Gtk::HBox(false, 0);
-	w->panels->set_spacing(5);
-	w->panels->set_border_width(5);
-	w->panels->set_homogeneous(true);
+	w->main.panels = new Gtk::HBox(false, 0);
+	w->main.panels->set_spacing(5);
+	w->main.panels->set_border_width(5);
+	w->main.panels->set_homogeneous(true);
 	w->add_panel();
 
-	w->text_view = new Libre::TextView(w->settings.get<std::string>("splash_text"));
-	w->text_view->signal_toggle_note().connect(sigc::mem_fun(s, &SignalHandler::toggle_note));
-	w->text_view->signal_right_click_search().connect(sigc::mem_fun(s, &SignalHandler::trigger_search));
+	w->main.text_view = new Libre::TextView(w->settings.get<std::string>("splash_text"));
+	w->main.text_view->signal_toggle_note().connect(sigc::mem_fun(s, &SignalHandler::toggle_note));
+	w->main.text_view->signal_right_click_search().connect(sigc::mem_fun(s, &SignalHandler::trigger_search));
 
-	w->note_book = new Libre::NoteBook;
-	w->note_book->get_close_button()->signal_clicked().connect(sigc::bind<std::string>(sigc::mem_fun(s, &SignalHandler::toggle_note), ""));
+	w->main.note_book = new Libre::NoteBook;
+	w->main.note_book->get_close_button()->signal_clicked().connect(sigc::bind<std::string>(sigc::mem_fun(s, &SignalHandler::toggle_note), ""));
 
-	w->note_book->signal_key_press_event().connect([s](GdkEventKey * key) -> bool {
+	w->main.note_book->signal_key_press_event().connect([s](GdkEventKey * key) -> bool {
 		if (key->keyval == 65307) {
 			s->toggle_note("");
 		}
 		return false;
 	});
 
-	w->note_book->signal_refresh().connect(sigc::mem_fun(w->text_view, &Libre::TextView::_display));
-	w->is_note_book_open = false;
+	w->main.note_book->signal_refresh().connect(sigc::mem_fun(w->main.text_view, &Libre::TextView::_display));
+	w->main.is_note_book_open = false;
 
- 	w->note_paned = new Gtk::Paned;
+ 	w->main.note_paned = new Gtk::Paned;
 
-	w->note_paned->pack1(*w->text_view, true, false);
-	w->note_paned->pack2(*w->note_book, true, true);
-	w->note_paned->set_wide_handle(true);
-	w->note_paned->set_position(800);
-	w->note_paned->set_orientation(Gtk::ORIENTATION_VERTICAL);
+	w->main.note_paned->pack1(*w->main.text_view, true, false);
+	w->main.note_paned->pack2(*w->main.note_book, true, true);
+	w->main.note_paned->set_wide_handle(true);
+	w->main.note_paned->set_position(800);
+	w->main.note_paned->set_orientation(Gtk::ORIENTATION_VERTICAL);
 
 	// ------------------------------------------
 	// DISPLAY THE PANEL AND SEARCHENTRY
 	// ------------------------------------------
 
 	v_box->pack_start(*search_box, Gtk::PACK_SHRINK, 0);
-	v_box->pack_start(*w->panels, Gtk::PACK_SHRINK, 0);
-	v_box->pack_start(*w->note_paned, Gtk::PACK_EXPAND_WIDGET, 0);
+	v_box->pack_start(*w->main.panels, Gtk::PACK_SHRINK, 0);
+	v_box->pack_start(*w->main.note_paned, Gtk::PACK_EXPAND_WIDGET, 0);
 
 	// ------------------------------------------
 	// CONNECT THE FUNCTIONS TO THE COMBOBOXES
 	// AND TO THE CLOSEBUTTONS
 	// ------------------------------------------
 
-	for (int i = 0; i < w->combo_boxes.size(); i++) {
-		w->combo_boxes[i]->signal_changed().connect(
+	for (int i = 0; i < w->main.combo_boxes.size(); i++) {
+		w->main.combo_boxes[i]->signal_changed().connect(
 			sigc::bind<Gtk::ComboBoxText *>(
 			sigc::mem_fun(s, &SignalHandler::source_changed),
-			w->combo_boxes[i]),
+			w->main.combo_boxes[i]),
 			false
 		);
 
-		w->close_buttons[i]->signal_clicked().connect(
+		w->main.close_buttons[i]->signal_clicked().connect(
 			sigc::bind<Gtk::Button *>(
 			sigc::mem_fun(s, &SignalHandler::remove_source_by_reference),
-			w->close_buttons[i]),
+			w->main.close_buttons[i]),
 			false
 		);
 	}
@@ -272,7 +277,7 @@ bool Libre::MainWindow::create(Libre::Widgets * w, SignalHandler * s) {
 
 	LOG(" * Connect add_source Signal");
 
-	w->add_button->signal_clicked().connect(sigc::mem_fun(s, &SignalHandler::add_source), false);
+	w->main.add_button->signal_clicked().connect(sigc::mem_fun(s, &SignalHandler::add_source), false);
 
 	return true;
 }
@@ -289,11 +294,11 @@ bool Libre::PreferencesWindow::create(Libre::Widgets * w, SignalHandler * s) {
 
 	LOG(" * Init new Properties Window");
 
-	w->preferences_window = new Gtk::Window;
-	w->preferences_window->set_default_size(500, 400);
-	w->preferences_window->set_title("Preferences");
-	w->preferences_window->set_position(Gtk::WIN_POS_CENTER);
-	w->preferences_window->set_icon_from_file(DATA("Icon.svg"));
+	w->preferences.window = new Gtk::Window;
+	w->preferences.window->set_default_size(500, 400);
+	w->preferences.window->set_title("Preferences");
+	w->preferences.window->set_position(Gtk::WIN_POS_CENTER);
+	w->preferences.window->set_icon_from_file(DATA("Icon.svg"));
 
 	// ------------------------------------------
 	// CREATE A NEW NOTEBOOK AND SET THE TAB
@@ -322,7 +327,7 @@ bool Libre::PreferencesWindow::create(Libre::Widgets * w, SignalHandler * s) {
 
 	Gtk::HBox * theme_box = new Gtk::HBox;
 	Gtk::Label * theme_label = new Gtk::Label("Theme", Gtk::ALIGN_START);
-	w->preferences_theme_combo = new Gtk::ComboBoxText;
+	w->preferences.theme_combo = new Gtk::ComboBoxText;
 
 	// ------------------------------------------
 	// GET THE SETTINGS AND SET THE CHOSEN THEME
@@ -334,19 +339,24 @@ bool Libre::PreferencesWindow::create(Libre::Widgets * w, SignalHandler * s) {
 	Settings settings;
 
 	for (int i = 0; i < settings.get("theme-themes").size(); i++) {
-		w->preferences_theme_combo->append(settings.get("theme-themes")[i].as<std::string>());
+		w->preferences.theme_combo->append(settings.get("theme-themes")[i].as<std::string>());
 
 		if (settings.get("theme-themes")[i].as<std::string>() == settings.get("theme-active").as<std::string>()) {
-			w->preferences_theme_combo->set_active(i);
+			w->preferences.theme_combo->set_active(i);
 		}
 	}
+
+	w->preferences.theme_combo->signal_changed().connect(
+		sigc::mem_fun(s, &SignalHandler::theme_changed),
+		false
+	);
 
 	// ------------------------------------------
 	// DISPLAY THE LABEL AND COMBOBOX
 	// ------------------------------------------
 
 	theme_box->pack_start(*theme_label);
-	theme_box->pack_end(*w->preferences_theme_combo);
+	theme_box->pack_end(*w->preferences.theme_combo);
 
 	user_interface_box->pack_start(*theme_box, Gtk::PACK_SHRINK, 0);
 
@@ -361,14 +371,19 @@ bool Libre::PreferencesWindow::create(Libre::Widgets * w, SignalHandler * s) {
 		settings.get<int>("font_size"), 1, 100
 	);
 
-	w->font_size_spinbutton = new Gtk::SpinButton(spinbutton_adjustment, 1, 0);
+	w->preferences.font_size_spinbutton = new Gtk::SpinButton(spinbutton_adjustment, 1, 0);
+
+	w->preferences.font_size_spinbutton->signal_value_changed().connect(
+		sigc::mem_fun(s, &SignalHandler::default_font_size_changed),
+		false
+	);
 
 	// ------------------------------------------
 	// DISPLAY THE LABEL AND THE SPINBUTTON
 	// ------------------------------------------
 
 	font_size_box->pack_start(*font_size_label);
-	font_size_box->pack_end(*w->font_size_spinbutton);
+	font_size_box->pack_end(*w->preferences.font_size_spinbutton);
 
 	user_interface_box->pack_start(*font_size_box, Gtk::PACK_SHRINK, 0);
 
@@ -399,8 +414,8 @@ bool Libre::PreferencesWindow::create(Libre::Widgets * w, SignalHandler * s) {
 
 	books_box->pack_start(*books_page_title, Gtk::PACK_SHRINK, 0);
 
-	w->book_manager_box = new Gtk::VBox;
-	w->book_manager_box->set_spacing(5);
+	w->preferences.book_manager_box = new Gtk::VBox;
+	w->preferences.book_manager_box->set_spacing(5);
 
 	Gtk::Label * book_title = new Gtk::Label("Source");
 	Gtk::HBox * book_container = new Gtk::HBox;
@@ -423,20 +438,20 @@ bool Libre::PreferencesWindow::create(Libre::Widgets * w, SignalHandler * s) {
 	for (YAML::const_iterator i = w->package_manager.get_sources().begin(); i != w->package_manager.get_sources().end(); i++) {
 		book_container = new Gtk::HBox;
 		book_title = new Gtk::Label(i->first.as<std::string>(), Gtk::ALIGN_START);
-		w->preferences_sources_check[i->first.as<std::string>()] = new Gtk::CheckButton;
+		w->preferences.sources_check[i->first.as<std::string>()] = new Gtk::CheckButton;
 
 		book_container->pack_start(*book_title, Gtk::PACK_SHRINK, 0);
-		book_container->pack_end(*w->preferences_sources_check[i->first.as<std::string>()], Gtk::PACK_SHRINK, 0);
-		w->book_manager_box->pack_start(*book_container, Gtk::PACK_SHRINK, 0);
+		book_container->pack_end(*w->preferences.sources_check[i->first.as<std::string>()], Gtk::PACK_SHRINK, 0);
+		w->preferences.book_manager_box->pack_start(*book_container, Gtk::PACK_SHRINK, 0);
 
-		w->preferences_sources_check[i->first.as<std::string>()]->signal_clicked().connect([s, w, i]() {
-			(w->preferences_sources_check[i->first.as<std::string>()]->get_active() ?
+		w->preferences.sources_check[i->first.as<std::string>()]->signal_clicked().connect([s, w, i]() {
+			(w->preferences.sources_check[i->first.as<std::string>()]->get_active() ?
 				w->package_manager.enable(i->first.as<std::string>()) : w->package_manager.disable(i->first.as<std::string>()));
 				s->sync_enabled_sources();
 		});
 	}
 
-	manager_container->add(*w->book_manager_box);
+	manager_container->add(*w->preferences.book_manager_box);
 
 	Gtk::HBox * manage_panel = new Gtk::HBox;
 	manage_panel->set_border_width(20);
@@ -479,7 +494,7 @@ bool Libre::PreferencesWindow::create(Libre::Widgets * w, SignalHandler * s) {
 	// ADD NOTEBOOK TO THE PREFERENCES WINDOW
 	// ------------------------------------------
 
-	w->preferences_window->add(*note_book);
+	w->preferences.window->add(*note_book);
 
 	return true;
 }

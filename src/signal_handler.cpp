@@ -14,9 +14,16 @@ void SignalHandler::init(Libre::Widgets * w) {
 	// TODO: GET STARTUP SOURCE FROM SETTINGS
 	// ------------------------------------------
 
+
 	LOG("-- Init SignalHandler");
 
-	this->widgets = w;	// SET WIDGETS
+	this->widgets = w;
+
+	this->widgets->splash_screen.mutex.lock();
+	this->widgets->splash_screen.header_string = "Init SearchEngine";
+	this->widgets->splash_screen.info_string = "Load File";
+	this->widgets->splash_screen.mutex.unlock();
+	this->widgets->splash_screen.text_dispatcher.emit();
 
 	this->widgets->search_engine.push_back(
 		SearchEngine(
@@ -31,8 +38,13 @@ void SignalHandler::init(Libre::Widgets * w) {
 	// TO HEX COLOR (#BD8188)
 	// ------------------------------------------
 
+	this->widgets->splash_screen.mutex.lock();
+	this->widgets->splash_screen.info_string = "Fetch mark color";
+	this->widgets->splash_screen.mutex.unlock();
+	this->widgets->splash_screen.text_dispatcher.emit();
+
 	Gdk::RGBA rgba;
-	this->widgets->style->lookup_color("theme_highlight_color", rgba);
+	this->widgets->style.style->lookup_color("theme_highlight_color", rgba);
 
 	std::string r, g, b;
 
@@ -89,51 +101,51 @@ gboolean SignalHandler::search_request(GdkEventKey * event) {
 
 	if (event->keyval == 65293) {
 
-		this->widgets->number_results->set_text("Searching");
+		this->widgets->main.number_results->set_text("Searching");
 
-		if (this->widgets->search_entry->get_text() == "") {
-			this->widgets->text_view->show_information();
-			this->widgets->text_view->clear();
+		if (this->widgets->main.search_entry->get_text() == "") {
+			this->widgets->main.text_view->show_information();
+			this->widgets->main.text_view->clear();
 			this->widgets->search_engine[0].set_search_argument("");
 			return false;
 		}
 
-		this->widgets->history_button->add_to_history(this->widgets->search_entry->get_text());
+		this->widgets->main.history_button->add_to_history(this->widgets->main.search_entry->get_text());
 
-		this->widgets->text_view->show_content();
-		this->widgets->text_view->grab_focus();
+		this->widgets->main.text_view->show_content();
+		this->widgets->main.text_view->grab_focus();
 
 		// ------------------------------------------
 		// DISABLE ALL WIDGETS
 		// ------------------------------------------
 
-		for (int i = 0; i < this->widgets->combo_boxes.size(); i++) {
-			this->widgets->combo_boxes[i]->set_button_sensitivity(Gtk::SENSITIVITY_OFF);
-			this->widgets->close_buttons[i]->set_sensitive(false);
+		for (int i = 0; i < this->widgets->main.combo_boxes.size(); i++) {
+			this->widgets->main.combo_boxes[i]->set_button_sensitivity(Gtk::SENSITIVITY_OFF);
+			this->widgets->main.close_buttons[i]->set_sensitive(false);
 		}
 
-		this->widgets->text_view->clear();
+		this->widgets->main.text_view->clear();
 
-		this->widgets->add_button->set_sensitive(false);
+		this->widgets->main.add_button->set_sensitive(false);
 
-		this->widgets->search_entry->set_sensitive(false);
-		this->widgets->history_button->set_sensitive(false);
-		this->widgets->action_group->set_sensitive(false);
+		this->widgets->main.search_entry->set_sensitive(false);
+		this->widgets->main.history_button->set_sensitive(false);
+		this->widgets->ui.action_group->set_sensitive(false);
 
-		this->widgets->replace_id = -1;
+		this->widgets->processing.replace_id = -1;
 
 		// ------------------------------------------
 		// CREATE A NEW PROCESS_THREAD
 		// ------------------------------------------
 
-		this->widgets->process_thread = Glib::Thread::create(
+		this->widgets->processing.process_thread = Glib::Thread::create(
 			sigc::mem_fun(*this, &SignalHandler::do_search), true
 		);
 		LOG("--> \"do_search\" emmited");
 
 	} else if (event->keyval == 65307) {
-		this->widgets->text_view->grab_focus();
-		this->widgets->search_entry->set_position(-1);
+		this->widgets->main.text_view->grab_focus();
+		this->widgets->main.search_entry->set_position(-1);
 	}
 
 	return false;
@@ -155,18 +167,18 @@ void SignalHandler::source_changed(Gtk::ComboBoxText * b) {
 	// SAME AS IN THE SEARCH_REQUEST FUNCTION
 	// ------------------------------------------
 
-	for (int i = 0; i < this->widgets->combo_boxes.size(); i++) {
-		this->widgets->combo_boxes[i]->set_button_sensitivity(Gtk::SENSITIVITY_OFF);
-		this->widgets->close_buttons[i]->set_sensitive(false);
+	for (int i = 0; i < this->widgets->main.combo_boxes.size(); i++) {
+		this->widgets->main.combo_boxes[i]->set_button_sensitivity(Gtk::SENSITIVITY_OFF);
+		this->widgets->main.close_buttons[i]->set_sensitive(false);
 	}
 
-	this->widgets->text_view->grab_focus();
+	this->widgets->main.text_view->grab_focus();
 
-	this->widgets->add_button->set_sensitive(false);
+	this->widgets->main.add_button->set_sensitive(false);
 
-	this->widgets->search_entry->set_sensitive(false);
-	this->widgets->history_button->set_sensitive(false);
-	this->widgets->action_group->set_sensitive(false);
+	this->widgets->main.search_entry->set_sensitive(false);
+	this->widgets->main.history_button->set_sensitive(false);
+	this->widgets->ui.action_group->set_sensitive(false);
 
 	// ------------------------------------------
 	// THE REPLACE_ID WILL BE SET TO THE SPECIFIC
@@ -174,14 +186,14 @@ void SignalHandler::source_changed(Gtk::ComboBoxText * b) {
 	// THIS WAY IS MORE EFFICIENT
 	// ------------------------------------------
 
-	this->widgets->replace_id = 0;
+	this->widgets->processing.replace_id = 0;
 
-	for (;this->widgets->replace_id < this->widgets->combo_boxes.size(); this->widgets->replace_id++) {
+	for (;this->widgets->processing.replace_id < this->widgets->main.combo_boxes.size(); this->widgets->processing.replace_id++) {
 		// ------------------------------------------
 		// IF B IS THE SAME AS THE COMBOBOX AT INDEX
 		// REPLACE_ID.
 		// ------------------------------------------
-		if (b == this->widgets->combo_boxes[this->widgets->replace_id]) {
+		if (b == this->widgets->main.combo_boxes[this->widgets->processing.replace_id]) {
 			break;
 		}
 	}
@@ -190,7 +202,7 @@ void SignalHandler::source_changed(Gtk::ComboBoxText * b) {
 	// DO_REPLACEMENT FUNCTION
 	// ------------------------------------------
 
-	this->widgets->process_thread = Glib::Thread::create(sigc::mem_fun(*this, &SignalHandler::do_replacement), true);
+	this->widgets->processing.process_thread = Glib::Thread::create(sigc::mem_fun(*this, &SignalHandler::do_replacement), true);
 	LOG("--> \"do_replacement\" emmited");
 }
 
@@ -207,17 +219,24 @@ void SignalHandler::set_text() {
 	// A SPECIFIC TEXT_BUFFER
 	// ------------------------------------------
 
-	this->widgets->process_mutex.lock();
+	this->widgets->processing.process_mutex.lock();
 
-	if (this->widgets->replace_id == -1) {
-		this->widgets->text_view->add_verse(this->widgets->found_position, this->widgets->found_verses);
+	if (this->widgets->processing.replace_id == -1) {
+		this->widgets->main.text_view->add_verse(
+			this->widgets->processing.found_position,
+			this->widgets->processing.found_verses
+		);
 	} else {
-		this->widgets->text_view->replace_verse(this->widgets->found_position, this->widgets->replace_id, this->widgets->found_verses.back());
+		this->widgets->main.text_view->replace_verse(
+			this->widgets->processing.found_position,
+			this->widgets->processing.replace_id,
+			this->widgets->processing.found_verses.back()
+		);
 	}
 
-	this->widgets->procress_finished = true;
+	this->widgets->processing.procress_finished = true;
 
-	this->widgets->process_mutex.unlock();
+	this->widgets->processing.process_mutex.unlock();
 }
 
 // SIGNALHANDLER::DELETE_THREAD ------------------------------------------------
@@ -227,35 +246,35 @@ void SignalHandler::set_text() {
 
 void SignalHandler::delete_thread() {
 
-	if (this->widgets->process_thread->joinable()) {
-		this->widgets->process_thread->join();
+	if (this->widgets->processing.process_thread->joinable()) {
+		this->widgets->processing.process_thread->join();
 	}
 
-	if (this->widgets->search_entry->get_progress_fraction() != 0) {
-		this->widgets->search_entry->set_progress_fraction(0);
+	if (this->widgets->main.search_entry->get_progress_fraction() != 0) {
+		this->widgets->main.search_entry->set_progress_fraction(0);
 	}
 
-	this->widgets->number_results->set_text(std::to_string(this->widgets->search_engine[0].get_last_search_results()->size()) + " Results");
+	this->widgets->main.number_results->set_text(std::to_string(this->widgets->search_engine[0].get_last_search_results()->size()) + " Results");
 
-	this->widgets->text_view->show_if_results();
+	this->widgets->main.text_view->show_if_results();
 
 	// ------------------------------------------
 	// ENABLE EVERY WIDGETS WHICH WERE DISABLED
 	// ------------------------------------------
 
-	for (int i = 0; i < this->widgets->combo_boxes.size(); i++) {
-		this->widgets->combo_boxes[i]->set_button_sensitivity(Gtk::SENSITIVITY_ON);
-		this->widgets->close_buttons[i]->set_sensitive(true);
+	for (int i = 0; i < this->widgets->main.combo_boxes.size(); i++) {
+		this->widgets->main.combo_boxes[i]->set_button_sensitivity(Gtk::SENSITIVITY_ON);
+		this->widgets->main.close_buttons[i]->set_sensitive(true);
 	}
 
-	this->widgets->add_button->set_sensitive(true);
+	this->widgets->main.add_button->set_sensitive(true);
 
-	this->widgets->search_entry->set_sensitive(true);
-	this->widgets->history_button->set_sensitive(true);
-	this->widgets->action_group->set_sensitive(true);
+	this->widgets->main.search_entry->set_sensitive(true);
+	this->widgets->main.history_button->set_sensitive(true);
+	this->widgets->ui.action_group->set_sensitive(true);
 
 	if (this->widgets->search_engine[0].get_last_search_results()->size() == 0) {
-		this->widgets->search_entry->grab_focus();
+		this->widgets->main.search_entry->grab_focus();
 	}
 }
 
@@ -272,7 +291,7 @@ void SignalHandler::do_search() {
 	// SET THE SEARCH ARGUMENT
 	// ------------------------------------------
 
-	this->widgets->search_engine[0].set_search_argument(this->widgets->search_entry->get_text());
+	this->widgets->search_engine[0].set_search_argument(this->widgets->main.search_entry->get_text());
 
 	// ------------------------------------------
 	// THE SEARCH_ENGINE WILL SEARCH UNTIL THE
@@ -282,42 +301,42 @@ void SignalHandler::do_search() {
 	// DISPATCHER AND SET THE PROGRESSBAR
 	// ------------------------------------------
 
-	this->widgets->found_verses.clear();
-	this->widgets->found_verses.push_back(new std::string(""));
+	this->widgets->processing.found_verses.clear();
+	this->widgets->processing.found_verses.push_back(new std::string(""));
 
-	while (this->widgets->search_engine[0].search(this->widgets->found_verses[0])) {
+	while (this->widgets->search_engine[0].search(this->widgets->processing.found_verses[0])) {
 
-		this->widgets->process_mutex.lock();
+		this->widgets->processing.process_mutex.lock();
 
-		this->widgets->found_position = this->widgets->search_engine[0].get_last_search_results()->back();
+		this->widgets->processing.found_position = this->widgets->search_engine[0].get_last_search_results()->back();
 
 		// ------------------------------------------
 		// SET THE SAME VERSES THE THE OTHER BUFFERS
 		// ------------------------------------------
 
 		for (int i = 1; i < this->widgets->search_engine.size(); i++) {
-			this->widgets->found_verses.push_back(this->widgets->search_engine[i].get_verse(this->widgets->found_position));
+			this->widgets->processing.found_verses.push_back(this->widgets->search_engine[i].get_verse(this->widgets->processing.found_position));
 		}
 
-		this->widgets->procress_finished = false;
+		this->widgets->processing.procress_finished = false;
 
-		this->widgets->process_mutex.unlock();
+		this->widgets->processing.process_mutex.unlock();
 
-		this->widgets->set_text_dispatcher.emit();
+		this->widgets->processing.set_text_dispatcher.emit();
 
-		while (!this->widgets->procress_finished) { std::this_thread::yield(); }
+		while (!this->widgets->processing.procress_finished) { std::this_thread::yield(); }
 
-		this->widgets->process_mutex.lock();
+		this->widgets->processing.process_mutex.lock();
 
-		this->widgets->search_entry->set_progress_fraction(this->widgets->search_engine[0].get_progress());
+		this->widgets->main.search_entry->set_progress_fraction(this->widgets->search_engine[0].get_progress());
 
-		this->widgets->found_verses.clear();
-		this->widgets->found_verses.push_back(new std::string(""));
+		this->widgets->processing.found_verses.clear();
+		this->widgets->processing.found_verses.push_back(new std::string(""));
 
-		this->widgets->process_mutex.unlock();
+		this->widgets->processing.process_mutex.unlock();
 	}
 
-	this->widgets->delete_thread_dispatcher.emit();
+	this->widgets->processing.delete_thread_dispatcher.emit();
 }
 
 // SIGNALHANDLER::DO_REPLACEMENT -----------------------------------------------
@@ -327,8 +346,10 @@ void SignalHandler::do_search() {
 
 void SignalHandler::do_replacement() {
 
-	this->widgets->search_engine[this->widgets->replace_id].set_source(
-		this->widgets->package_manager.get_source_path(std::string(this->widgets->combo_boxes[this->widgets->replace_id]->get_active_text()))
+	this->widgets->search_engine[this->widgets->processing.replace_id].set_source(
+		this->widgets->package_manager.get_source_path(
+			std::string(this->widgets->main.combo_boxes[this->widgets->processing.replace_id]->get_active_text())
+		)
 	);
 
 	std::vector<std::string> * v = this->widgets->search_engine[0].get_last_search_results();
@@ -339,29 +360,29 @@ void SignalHandler::do_replacement() {
 	// REPLACE BUFFER WITH NEW SOURCE CONTENT
 	// -----------------------------------------
 
-	this->widgets->found_verses.clear();
+	this->widgets->processing.found_verses.clear();
 
 	for (std::vector<std::string>::iterator i = v->begin(); i != v->end() && v->size() != 0; i++) {
 
-		this->widgets->process_mutex.lock();
+		this->widgets->processing.process_mutex.lock();
 
-		this->widgets->procress_finished = false;
-		this->widgets->found_verses.push_back(this->widgets->search_engine[this->widgets->replace_id].get_verse(*i));
-		this->widgets->found_position = *i;
+		this->widgets->processing.procress_finished = false;
+		this->widgets->processing.found_verses.push_back(this->widgets->search_engine[this->widgets->processing.replace_id].get_verse(*i));
+		this->widgets->processing.found_position = *i;
 
-		this->widgets->process_mutex.unlock();
+		this->widgets->processing.process_mutex.unlock();
 
-		this->widgets->set_text_dispatcher.emit();
+		this->widgets->processing.set_text_dispatcher.emit();
 
-		while (!this->widgets->procress_finished) { std::this_thread::yield(); }
+		while (!this->widgets->processing.procress_finished) { std::this_thread::yield(); }
 
-		this->widgets->process_mutex.lock();
+		this->widgets->processing.process_mutex.lock();
 		x++;
-		this->widgets->search_entry->set_progress_fraction(x / static_cast<float>(v->size()));
-		this->widgets->process_mutex.unlock();
+		this->widgets->main.search_entry->set_progress_fraction(x / static_cast<float>(v->size()));
+		this->widgets->processing.process_mutex.unlock();
 	}
 
-	this->widgets->delete_thread_dispatcher.emit();
+	this->widgets->processing.delete_thread_dispatcher.emit();
 }
 
 // SIGNALHANDLER::QUIT ---------------------------------------------------------
@@ -378,12 +399,12 @@ void SignalHandler::quit() {
 
 void SignalHandler::toggle_fullscreen() {
 	LOG("--> \"toggle_fullscreen\" emmited");
-	if (this->widgets->is_fullscreen)
-		this->widgets->window->unfullscreen();
+	if (this->widgets->main.is_fullscreen)
+		this->widgets->main.window->unfullscreen();
 	else
-		this->widgets->window->fullscreen();
+		this->widgets->main.window->fullscreen();
 
-	this->widgets->is_fullscreen = !this->widgets->is_fullscreen;
+	this->widgets->main.is_fullscreen = !this->widgets->main.is_fullscreen;
 }
 
 // SIGNALHANDLER::TOGGLE_ICONIFY -----------------------------------------------
@@ -392,7 +413,7 @@ void SignalHandler::toggle_fullscreen() {
 
 void SignalHandler::toggle_iconify() {
 	LOG("--> \"toggle_iconify\" emmited");
-	this->widgets->window->iconify();
+	this->widgets->main.window->iconify();
 }
 
 // SIGNALHANDLER::TOGGLE_SEARCH ------------------------------------------------
@@ -401,7 +422,7 @@ void SignalHandler::toggle_iconify() {
 
 void SignalHandler::toggle_search() {
 	LOG("--> \"toggle_search\" emmited");
-	this->widgets->search_entry->grab_focus();
+	this->widgets->main.search_entry->grab_focus();
 }
 
 // SIGNALHANDLER::TOGGLE_PREFERENCES -------------------------------------------
@@ -410,8 +431,8 @@ void SignalHandler::toggle_search() {
 
 void SignalHandler::toggle_preferences() {
 	LOG("--> \"toggle_preferences\" emmited");
-	this->widgets->preferences_window->show_all();
-	this->widgets->preferences_window->raise();
+	this->widgets->preferences.window->show_all();
+	this->widgets->preferences.window->raise();
 }
 
 // SIGNALHANDLER::ZOOM_IN ------------------------------------------------------
@@ -420,8 +441,8 @@ void SignalHandler::toggle_preferences() {
 
 void SignalHandler::zoom_in() {
 	LOG("--> \"zoom_in\" emmited");
-	this->widgets->font_size += 2;
-	this->widgets->font_size_css->load_from_data("* { font-size: " + std::to_string(this->widgets->font_size) + "px; }");
+	this->widgets->style.font_size += 2;
+	this->widgets->style.font_size_css->load_from_data("* { font-size: " + std::to_string(this->widgets->style.font_size) + "px; }");
 }
 
 // SIGNALHANDLER::ZOOM_OUT -----------------------------------------------------
@@ -430,11 +451,11 @@ void SignalHandler::zoom_in() {
 
 void SignalHandler::zoom_out() {
 	LOG("--> \"zoom_out\" emmited");
-	this->widgets->font_size -= 2;
-	if (this->widgets->font_size < 1) {
-		this->widgets->font_size = 1;
+	this->widgets->style.font_size -= 2;
+	if (this->widgets->style.font_size < 1) {
+		this->widgets->style.font_size = 1;
 	}
-	this->widgets->font_size_css->load_from_data("* { font-size: " + std::to_string(this->widgets->font_size) + "px; }");
+	this->widgets->style.font_size_css->load_from_data("* { font-size: " + std::to_string(this->widgets->style.font_size) + "px; }");
 }
 
 // SIGNALHANDLER::ZOOM_RESET ---------------------------------------------------
@@ -443,8 +464,8 @@ void SignalHandler::zoom_out() {
 
 void SignalHandler::zoom_reset() {
 	LOG("--> \"zoom_reset\" emmited");
-	this->widgets->font_size = settings.get<int>("font_size");
-	this->widgets->font_size_css->load_from_data("* { font-size: " + std::to_string(this->widgets->font_size) + "px; }");
+	this->widgets->style.font_size = settings.get<int>("font_size");
+	this->widgets->style.font_size_css->load_from_data("* { font-size: " + std::to_string(this->widgets->style.font_size) + "px; }");
 }
 
 // SIGNALHANDLER::THEME_CHANGED ------------------------------------------------
@@ -454,9 +475,9 @@ void SignalHandler::zoom_reset() {
 
 void SignalHandler::theme_changed() {
 	LOG("--> \"theme_changed\" emmited");
-	settings.set("theme-active", this->widgets->preferences_theme_combo->get_active_text());
+	settings.set("theme-active", this->widgets->preferences.theme_combo->get_active_text());
 
-	if(!this->widgets->css->load_from_path(DATA(this->widgets->preferences_theme_combo->get_active_text() + ".css"))) {
+	if(!this->widgets->style.css->load_from_path(DATA(this->widgets->preferences.theme_combo->get_active_text() + ".css"))) {
 			std::cerr << "Failed to load css\n";
 	}
 }
@@ -468,9 +489,9 @@ void SignalHandler::theme_changed() {
 
 void SignalHandler::default_font_size_changed() {
 	LOG("--> \"default_font_size_changed\" emmited");
-	this->widgets->font_size = this->widgets->font_size_spinbutton->get_value();
-	settings.set("font_size", std::to_string(this->widgets->font_size));
-	this->widgets->font_size_css->load_from_data("* { font-size: " + std::to_string(this->widgets->font_size) + "px; }");
+	this->widgets->style.font_size = this->widgets->preferences.font_size_spinbutton->get_value();
+	settings.set("font_size", std::to_string(this->widgets->style.font_size));
+	this->widgets->style.font_size_css->load_from_data("* { font-size: " + std::to_string(this->widgets->style.font_size) + "px; }");
 }
 
 // SIGNALHANDLER::ADD_SOURCE ---------------------------------------------------
@@ -499,30 +520,30 @@ void SignalHandler::add_source() {
 	// ------------------------------------------
 
 	this->widgets->add_panel();
-	this->widgets->text_view->append_tab();
+	this->widgets->main.text_view->append_tab();
 
-	this->widgets->combo_boxes.back()->signal_changed().connect(
+	this->widgets->main.combo_boxes.back()->signal_changed().connect(
 		sigc::bind<Gtk::ComboBoxText *>(
 		sigc::mem_fun(this, &SignalHandler::source_changed),
-		this->widgets->combo_boxes.back()),
+		this->widgets->main.combo_boxes.back()),
 		false
 	);
 
-	this->widgets->close_buttons.back()->signal_clicked().connect(
+	this->widgets->main.close_buttons.back()->signal_clicked().connect(
 		sigc::bind<Gtk::Button *>(
 		sigc::mem_fun(this, &SignalHandler::remove_source_by_reference),
-		this->widgets->close_buttons.back()),
+		this->widgets->main.close_buttons.back()),
 		false
 	);
 
-	this->widgets->add_button->signal_clicked().connect(sigc::mem_fun(this, &SignalHandler::add_source), false);
+	this->widgets->main.add_button->signal_clicked().connect(sigc::mem_fun(this, &SignalHandler::add_source), false);
 
 	// ------------------------------------------
 	// DISPLAY THE NEW PANEL
 	// ------------------------------------------
 
-	this->widgets->panels->show_all();
-	this->source_changed(this->widgets->combo_boxes.back());
+	this->widgets->main.panels->show_all();
+	this->source_changed(this->widgets->main.combo_boxes.back());
 }
 
 // SIGNALHANDLER::REMOVE_SOURCE ------------------------------------------------
@@ -543,34 +564,34 @@ void SignalHandler::remove_source() {
 
 		this->widgets->search_engine.pop_back();
 
-		this->widgets->panels->remove(*this->widgets->panels->get_children().back());
+		this->widgets->main.panels->remove(*this->widgets->main.panels->get_children().back());
 
-		Gtk::ComboBoxText * c = this->widgets->combo_boxes.back();
-		Gtk::HBox * h = this->widgets->headers.back();
-		this->widgets->combo_boxes.pop_back();
-		this->widgets->headers.pop_back();
+		Gtk::ComboBoxText * c = this->widgets->main.combo_boxes.back();
+		Gtk::HBox * h = this->widgets->main.headers.back();
+		this->widgets->main.combo_boxes.pop_back();
+		this->widgets->main.headers.pop_back();
 
 		delete h;
 		delete c;
-		delete this->widgets->add_button;
+		delete this->widgets->main.add_button;
 
 		// ------------------------------------------
 		// NOW IT ADDS THE ADD_BUTTON TO THE NEW BACK
 		// ------------------------------------------
 
-		this->widgets->add_button = new Gtk::Button;
-		this->widgets->add_button->set_image_from_icon_name("list-add", Gtk::ICON_SIZE_BUTTON);
-		this->widgets->add_button->set_name("add_button");
+		this->widgets->main.add_button = new Gtk::Button;
+		this->widgets->main.add_button->set_image_from_icon_name("list-add", Gtk::ICON_SIZE_BUTTON);
+		this->widgets->main.add_button->set_name("add_button");
 		Gtk::Image * img = new Gtk::Image(DATA("res/add.svg"));
-		this->widgets->add_button->set_image(*img);
+		this->widgets->main.add_button->set_image(*img);
 
-		this->widgets->headers.back()->pack_end(*this->widgets->add_button, Gtk::PACK_SHRINK, 0);
-		this->widgets->headers.back()->reorder_child(*this->widgets->add_button, 0);
-		this->widgets->add_button->signal_clicked().connect(sigc::mem_fun(this, &SignalHandler::add_source), false);
+		this->widgets->main.headers.back()->pack_end(*this->widgets->main.add_button, Gtk::PACK_SHRINK, 0);
+		this->widgets->main.headers.back()->reorder_child(*this->widgets->main.add_button, 0);
+		this->widgets->main.add_button->signal_clicked().connect(sigc::mem_fun(this, &SignalHandler::add_source), false);
 
-		this->widgets->add_button->show();
+		this->widgets->main.add_button->show();
 
-		this->widgets->text_view->remove_tab(this->widgets->search_engine.size());
+		this->widgets->main.text_view->remove_tab(this->widgets->search_engine.size());
 	}
 }
 
@@ -592,9 +613,9 @@ void SignalHandler::remove_source_by_reference(Gtk::Button * b) {
 		std::vector<std::string> last_search_results = *this->widgets->search_engine[0].get_last_search_results();
 
 		int i = 0;
-		for (;i < this->widgets->close_buttons.size(); i++) {
-			if (b == this->widgets->close_buttons[i]) {
-				this->widgets->close_buttons.erase(this->widgets->close_buttons.begin() + i);
+		for (;i < this->widgets->main.close_buttons.size(); i++) {
+			if (b == this->widgets->main.close_buttons[i]) {
+				this->widgets->main.close_buttons.erase(this->widgets->main.close_buttons.begin() + i);
 				delete b;
 				break;
 			}
@@ -607,12 +628,12 @@ void SignalHandler::remove_source_by_reference(Gtk::Button * b) {
 
 		this->widgets->search_engine.erase(this->widgets->search_engine.begin());
 
-		this->widgets->panels->remove(*this->widgets->panels->get_children()[i]);
+		this->widgets->main.panels->remove(*this->widgets->main.panels->get_children()[i]);
 
-		Gtk::ComboBoxText * c = this->widgets->combo_boxes[i];
-		Gtk::HBox * h = this->widgets->headers[i];
-		this->widgets->combo_boxes.erase(this->widgets->combo_boxes.begin() + i);
-		this->widgets->headers.erase(this->widgets->headers.begin() + i);
+		Gtk::ComboBoxText * c = this->widgets->main.combo_boxes[i];
+		Gtk::HBox * h = this->widgets->main.headers[i];
+		this->widgets->main.combo_boxes.erase(this->widgets->main.combo_boxes.begin() + i);
+		this->widgets->main.headers.erase(this->widgets->main.headers.begin() + i);
 
 		delete h;
 		delete c;
@@ -621,22 +642,22 @@ void SignalHandler::remove_source_by_reference(Gtk::Button * b) {
 		// MOVE THE ADD_BUTTON IF NECESSARY
 		// ------------------------------------------
 
-		if (this->widgets->add_button != nullptr && i != this->widgets->close_buttons.size()) {
-			this->widgets->add_button->get_parent()->remove(*this->widgets->add_button);
-			delete this->widgets->add_button;
-			this->widgets->add_button = new Gtk::Button;
+		if (this->widgets->main.add_button != nullptr && i != this->widgets->main.close_buttons.size()) {
+			this->widgets->main.add_button->get_parent()->remove(*this->widgets->main.add_button);
+			delete this->widgets->main.add_button;
+			this->widgets->main.add_button = new Gtk::Button;
 		}
 
-		this->widgets->add_button->set_name("add_button");
+		this->widgets->main.add_button->set_name("add_button");
 		Gtk::Image * img = new Gtk::Image(DATA("res/add.svg"));
-		this->widgets->add_button->set_image(*img);
+		this->widgets->main.add_button->set_image(*img);
 
-		this->widgets->headers.back()->pack_end(*this->widgets->add_button, Gtk::PACK_SHRINK, 0);
-		this->widgets->headers.back()->reorder_child(*this->widgets->add_button, 0);
+		this->widgets->main.headers.back()->pack_end(*this->widgets->main.add_button, Gtk::PACK_SHRINK, 0);
+		this->widgets->main.headers.back()->reorder_child(*this->widgets->main.add_button, 0);
 
-		this->widgets->add_button->signal_clicked().connect(sigc::mem_fun(this, &SignalHandler::add_source), false);
+		this->widgets->main.add_button->signal_clicked().connect(sigc::mem_fun(this, &SignalHandler::add_source), false);
 
-		this->widgets->add_button->show();
+		this->widgets->main.add_button->show();
 
 		// ------------------------------------------
 		// IT STORES THE LAST SEARCH RESULT IN THE
@@ -645,7 +666,7 @@ void SignalHandler::remove_source_by_reference(Gtk::Button * b) {
 		// ------------------------------------------
 
 		this->widgets->search_engine[0].set_last_search_result(last_search_results);
-		this->widgets->text_view->remove_tab(i);
+		this->widgets->main.text_view->remove_tab(i);
 
 	}
 }
@@ -662,15 +683,15 @@ void SignalHandler::add_source_dir() {
 	// IF TRUE DELETE IT AND CREATE AN NEW ONE
 	// ------------------------------------------
 
-	if (this->widgets->dialog_window != nullptr) {
-		delete this->widgets->dialog_window;
+	if (this->widgets->dialog.window != nullptr) {
+		delete this->widgets->dialog.window;
 	}
-	this->widgets->dialog_window = new Gtk::Window;
-	this->widgets->dialog_window->set_title("Add source directory");
-	this->widgets->dialog_window->set_default_size(500, 100);
-	this->widgets->dialog_window->set_keep_above(true);
-	this->widgets->dialog_window->set_resizable(false);
-	this->widgets->dialog_window->set_position(Gtk::WIN_POS_CENTER);
+	this->widgets->dialog.window = new Gtk::Window;
+	this->widgets->dialog.window->set_title("Add source directory");
+	this->widgets->dialog.window->set_default_size(500, 100);
+	this->widgets->dialog.window->set_keep_above(true);
+	this->widgets->dialog.window->set_resizable(false);
+	this->widgets->dialog.window->set_position(Gtk::WIN_POS_CENTER);
 
 	// ------------------------------------------
 	// CREATE THE ROOT BOX FOR THE DIALOG WINDOW
@@ -702,19 +723,19 @@ void SignalHandler::add_source_dir() {
 	box->pack_start(*url_entry, Gtk::PACK_SHRINK, 0);
 	box->pack_start(*button_container, Gtk::PACK_SHRINK, 0);
 
-	this->widgets->dialog_window->add(*box);
+	this->widgets->dialog.window->add(*box);
 
-	this->widgets->dialog_window->show_all();
+	this->widgets->dialog.window->show_all();
 
 	// ------------------------------------------
 	// CONNECT SIGNALS
 	// ------------------------------------------
 
 	ok_button->signal_clicked().connect([url_entry, this]() {
-		this->widgets->dialog_window->close();
+		this->widgets->dialog.window->close();
 		Glib::Thread::create([url_entry, this]() {
 			this->widgets->package_manager.install(url_entry->get_text());
-			this->widgets->sync_sources_dispatcher.emit();
+			this->widgets->processing.sync_sources_dispatcher.emit();
 		});
 	}, false);
 
@@ -725,7 +746,7 @@ void SignalHandler::add_source_dir() {
 		return false;
 	}, false);
 
-	cancel_button->signal_clicked().connect([this]() { this->widgets->dialog_window->close(); });
+	cancel_button->signal_clicked().connect([this]() { this->widgets->dialog.window->close(); });
 }
 
 // SIGNALHANDLER::REMOVE_SOURCE_DIR --------------------------------------------
@@ -739,16 +760,16 @@ void SignalHandler::remove_source_dir() {
 	// DELETE THE OLD WINDOW AND CREATE A NEW ONE
 	// ------------------------------------------
 
-	if (this->widgets->dialog_window != nullptr) {
-		delete this->widgets->dialog_window;
+	if (this->widgets->dialog.window != nullptr) {
+		delete this->widgets->dialog.window;
 	}
 
-	this->widgets->dialog_window = new Gtk::Window;
-	this->widgets->dialog_window->set_title("Add source directory");
-	this->widgets->dialog_window->set_default_size(300, 100);
-	this->widgets->dialog_window->set_keep_above(true);
-	this->widgets->dialog_window->set_resizable(false);
-	this->widgets->dialog_window->set_position(Gtk::WIN_POS_CENTER);
+	this->widgets->dialog.window = new Gtk::Window;
+	this->widgets->dialog.window->set_title("Add source directory");
+	this->widgets->dialog.window->set_default_size(300, 100);
+	this->widgets->dialog.window->set_keep_above(true);
+	this->widgets->dialog.window->set_resizable(false);
+	this->widgets->dialog.window->set_position(Gtk::WIN_POS_CENTER);
 
 	// ------------------------------------------
 	// CREATE ALL WIDGETS AND THEIR PROPERTIES
@@ -786,23 +807,23 @@ void SignalHandler::remove_source_dir() {
 
 	combo->set_active(0);
 
-	this->widgets->dialog_window->add(*box);
-	this->widgets->dialog_window->show_all();
+	this->widgets->dialog.window->add(*box);
+	this->widgets->dialog.window->show_all();
 
 	// ------------------------------------------
 	// CONNECT FUNCTIONS TO BUTTONS
 	// ------------------------------------------
 
 	ok_button->signal_clicked().connect([combo, this]() {
-		this->widgets->dialog_window->close();
+		this->widgets->dialog.window->close();
 		Glib::Thread::create([combo, this]() {
 			this->widgets->package_manager.remove(combo->get_active_text());
-			this->widgets->sync_sources_dispatcher.emit();
+			this->widgets->processing.sync_sources_dispatcher.emit();
 		});
 	});
 
 	cancel_button->signal_clicked().connect([this]() {
-		this->widgets->dialog_window->close();
+		this->widgets->dialog.window->close();
 	});
 }
 
@@ -818,26 +839,26 @@ void SignalHandler::sync_enabled_sources() {
 	// SYNC THE COMBO BOXES
 	// ------------------------------------------
 
-	for (int i = 0; i < this->widgets->combo_boxes.size(); i++) {
-		Gtk::HBox * parent = this->widgets->headers[i];
+	for (int i = 0; i < this->widgets->main.combo_boxes.size(); i++) {
+		Gtk::HBox * parent = this->widgets->main.headers[i];
 		std::vector<Gtk::Widget *> v = parent->get_children();
 
-		int pos = std::distance(v.end(), std::find(v.begin(), v.end(), this->widgets->combo_boxes[i]));
+		int pos = std::distance(v.end(), std::find(v.begin(), v.end(), this->widgets->main.combo_boxes[i]));
 
-		delete this->widgets->combo_boxes[i];
-		this->widgets->combo_boxes[i] = new Gtk::ComboBoxText;
+		delete this->widgets->main.combo_boxes[i];
+		this->widgets->main.combo_boxes[i] = new Gtk::ComboBoxText;
 
-		parent->pack_end(*this->widgets->combo_boxes[i], Gtk::PACK_SHRINK, 0);
-		parent->reorder_child(*this->widgets->combo_boxes[i], pos);
+		parent->pack_end(*this->widgets->main.combo_boxes[i], Gtk::PACK_SHRINK, 0);
+		parent->reorder_child(*this->widgets->main.combo_boxes[i], pos);
 
-		this->widgets->combo_boxes[i]->show();
+		this->widgets->main.combo_boxes[i]->show();
 
-		this->widgets->append_sources(this->widgets->combo_boxes[i]);
+		this->widgets->append_sources(this->widgets->main.combo_boxes[i]);
 
-		this->widgets->combo_boxes[i]->signal_changed().connect(
+		this->widgets->main.combo_boxes[i]->signal_changed().connect(
 			sigc::bind<Gtk::ComboBoxText *>(
 			sigc::mem_fun(this, &SignalHandler::source_changed),
-			this->widgets->combo_boxes[i]),
+			this->widgets->main.combo_boxes[i]),
 			false
 		);
 	}
@@ -847,32 +868,32 @@ void SignalHandler::sync_enabled_sources() {
 	// ------------------------------------------
 
 	for (YAML::const_iterator i = this->widgets->package_manager.get_sources().begin(); i != this->widgets->package_manager.get_sources().end(); i++) {
-		delete this->widgets->preferences_sources_check[i->first.as<std::string>()];
+		delete this->widgets->preferences.sources_check[i->first.as<std::string>()];
 	}
 
-	this->widgets->preferences_sources_check.clear();
+	this->widgets->preferences.sources_check.clear();
 
-	std::vector<Gtk::Widget *> v = this->widgets->book_manager_box->get_children();
+	std::vector<Gtk::Widget *> v = this->widgets->preferences.book_manager_box->get_children();
 
 	for (std::vector<Gtk::Widget *>::iterator i = v.begin(); i != v.end(); i++) {
-		this->widgets->book_manager_box->remove(*(*i));
+		this->widgets->preferences.book_manager_box->remove(*(*i));
 	}
 
 	for (YAML::const_iterator i = this->widgets->package_manager.get_sources().begin(); i != this->widgets->package_manager.get_sources().end(); i++) {
 		Gtk::HBox * book_container = new Gtk::HBox;
 		Gtk::Label * book_title = new Gtk::Label(i->first.as<std::string>(), Gtk::ALIGN_START);
-		this->widgets->preferences_sources_check[i->first.as<std::string>()] = new Gtk::CheckButton;
+		this->widgets->preferences.sources_check[i->first.as<std::string>()] = new Gtk::CheckButton;
 
-		this->widgets->preferences_sources_check[i->first.as<std::string>()]->set_active(this->widgets->package_manager.is_enabled(i->first.as<std::string>()));
+		this->widgets->preferences.sources_check[i->first.as<std::string>()]->set_active(this->widgets->package_manager.is_enabled(i->first.as<std::string>()));
 
 		book_container->pack_start(*book_title, Gtk::PACK_SHRINK, 0);
-		book_container->pack_end(*this->widgets->preferences_sources_check[i->first.as<std::string>()], Gtk::PACK_SHRINK, 0);
-		this->widgets->book_manager_box->pack_start(*book_container, Gtk::PACK_SHRINK, 0);
+		book_container->pack_end(*this->widgets->preferences.sources_check[i->first.as<std::string>()], Gtk::PACK_SHRINK, 0);
+		this->widgets->preferences.book_manager_box->pack_start(*book_container, Gtk::PACK_SHRINK, 0);
 
-		this->widgets->book_manager_box->show_all();
+		this->widgets->preferences.book_manager_box->show_all();
 
-		this->widgets->preferences_sources_check[i->first.as<std::string>()]->signal_clicked().connect([this, i]() {
-			(this->widgets->preferences_sources_check[i->first.as<std::string>()]->get_active() ?
+		this->widgets->preferences.sources_check[i->first.as<std::string>()]->signal_clicked().connect([this, i]() {
+			(this->widgets->preferences.sources_check[i->first.as<std::string>()]->get_active() ?
 				this->widgets->package_manager.enable(i->first.as<std::string>()) : this->widgets->package_manager.disable(i->first.as<std::string>()));
 				this->sync_enabled_sources();
 		});
@@ -882,50 +903,50 @@ void SignalHandler::sync_enabled_sources() {
 void SignalHandler::toggle_note(std::string position) {
 	LOG("--> \"toggle_note\" emmited");
 	if (position == "") {
-		this->widgets->note_paned->set_position(this->widgets->note_paned->get_height());
-		this->widgets->note_book->save_note();
-		this->widgets->text_view->grab_focus();
+		this->widgets->main.note_paned->set_position(this->widgets->main.note_paned->get_height());
+		this->widgets->main.note_book->save_note();
+		this->widgets->main.text_view->grab_focus();
 	} else {
-		if (this->widgets->note_paned->get_position() > this->widgets->note_paned->get_height() - 50) {
-			this->widgets->note_paned->set_position(this->widgets->note_paned->get_height() * 2 / 3);
+		if (this->widgets->main.note_paned->get_position() > this->widgets->main.note_paned->get_height() - 50) {
+			this->widgets->main.note_paned->set_position(this->widgets->main.note_paned->get_height() * 2 / 3);
 		}
-		this->widgets->note_book->open_note(position);
-		this->widgets->note_book->grab_focus();
+		this->widgets->main.note_book->open_note(position);
+		this->widgets->main.note_book->grab_focus();
 	}
 }
 
 void SignalHandler::trigger_search(std::string text) {
 
-	this->widgets->search_entry->set_text(text);
+	this->widgets->main.search_entry->set_text(text);
 
-	this->widgets->number_results->set_text("Searching");
+	this->widgets->main.number_results->set_text("Searching");
 
-	this->widgets->text_view->show_content();
-	this->widgets->text_view->grab_focus();
+	this->widgets->main.text_view->show_content();
+	this->widgets->main.text_view->grab_focus();
 
 	// ------------------------------------------
 	// DISABLE ALL WIDGETS
 	// ------------------------------------------
 
-	for (int i = 0; i < this->widgets->combo_boxes.size(); i++) {
-		this->widgets->combo_boxes[i]->set_button_sensitivity(Gtk::SENSITIVITY_OFF);
-		this->widgets->close_buttons[i]->set_sensitive(false);
+	for (int i = 0; i < this->widgets->main.combo_boxes.size(); i++) {
+		this->widgets->main.combo_boxes[i]->set_button_sensitivity(Gtk::SENSITIVITY_OFF);
+		this->widgets->main.close_buttons[i]->set_sensitive(false);
 	}
 
-	this->widgets->text_view->clear();
+	this->widgets->main.text_view->clear();
 
-	this->widgets->add_button->set_sensitive(false);
+	this->widgets->main.add_button->set_sensitive(false);
 
-	this->widgets->search_entry->set_sensitive(false);
-	this->widgets->action_group->set_sensitive(false);
+	this->widgets->main.search_entry->set_sensitive(false);
+	this->widgets->ui.action_group->set_sensitive(false);
 
-	this->widgets->replace_id = -1;
+	this->widgets->processing.replace_id = -1;
 
 	// ------------------------------------------
 	// CREATE A NEW PROCESS_THREAD
 	// ------------------------------------------
 
-	this->widgets->process_thread = Glib::Thread::create(
+	this->widgets->processing.process_thread = Glib::Thread::create(
 		sigc::mem_fun(*this, &SignalHandler::do_search), true
 	);
 	LOG("--> \"do_search\" emmited");

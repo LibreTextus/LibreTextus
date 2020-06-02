@@ -55,7 +55,6 @@ bool Libre::HistoryButton::right_click(GdkEventButton * event) {
 
 			this->check_buttons.back().signal_button_release_event().connect([this, i, begin](GdkEventButton * event) -> bool {
 				if (!this->check_buttons[i - begin].get_active()) {
-					std::cout << this->search_history[i] << '\n';
 					this->m_trigger_search.emit(this->search_history[i]);
 					this->active_search = i;
 				}

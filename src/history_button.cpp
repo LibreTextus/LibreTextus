@@ -4,26 +4,19 @@ Libre::HistoryButton::HistoryButton() {
 
 	this->set_name("history_button");
 
-	Gtk::Image * img_left = new Gtk::Image(DATA("res/arrow_left.svg"));
-	Gtk::Image * img_right = new Gtk::Image(DATA("res/arrow_right.svg"));
+	Gtk::Image * img_left = new Gtk::Image(DATA("res/arrow_down.svg"));
 
-	this->back_button.set_image(*img_left);
-	this->forward_button.set_image(*img_right);
+	this->history_button.set_image(*img_left);
 
-	this->back_button.signal_clicked().connect(sigc::bind<bool>(sigc::mem_fun(this, &Libre::HistoryButton::button_pressed), false));
-	this->forward_button.signal_clicked().connect(sigc::bind<bool>(sigc::mem_fun(this, &Libre::HistoryButton::button_pressed), true));
+	this->history_button.signal_clicked().connect(sigc::mem_fun(this, &Libre::HistoryButton::right_click));
 
-	this->back_button.signal_button_press_event().connect(sigc::mem_fun(this, &Libre::HistoryButton::right_click));
-	this->forward_button.signal_button_press_event().connect(sigc::mem_fun(this, &Libre::HistoryButton::right_click));
-
-	this->pack_start(this->back_button, Gtk::PACK_SHRINK, 0);
-	this->pack_start(this->forward_button, Gtk::PACK_SHRINK, 0);
+	this->pack_start(this->history_button, Gtk::PACK_SHRINK, 0);
 
 	this->active_search = -1;
 }
 
-bool Libre::HistoryButton::right_click(GdkEventButton * event) {
-	if (event->button == 3 && !this->search_history.empty()) {
+void Libre::HistoryButton::right_click() {
+	if (!this->search_history.empty()) {
 
 		this->check_buttons.clear();
 
@@ -66,10 +59,8 @@ bool Libre::HistoryButton::right_click(GdkEventButton * event) {
 
 		this->popup_menu.show_all();
 
-		this->popup_menu.popup(event->button, event->time);
+		this->popup_menu.popup(0, 0);
 	}
-
-	return false;
 }
 
 void Libre::HistoryButton::button_pressed(bool forward) {

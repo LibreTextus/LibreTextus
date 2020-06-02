@@ -26,6 +26,8 @@ bool Libre::MainWindow::create(Libre::Widgets * w, SignalHandler * s) {
 	Gtk::VBox * v_box = new Gtk::VBox(false, 0);
 	w->main.window->add(*v_box);
 
+	w->main.history_button = new Libre::HistoryButton;
+
 	// ------------------------------------------
 	// CREATE THE MENUBAR FOR THE WINDOW
 	// ------------------------------------------
@@ -94,9 +96,9 @@ bool Libre::MainWindow::create(Libre::Widgets * w, SignalHandler * s) {
 
 	w->ui.action_group->add(Gtk::Action::create("HistoryMenu", "History"));
 	w->ui.action_group->add(Gtk::Action::create("HistoryBack", Gtk::Stock::GO_BACK),
-			Gtk::AccelKey("<control>Z"));
+			Gtk::AccelKey("<alt>Left"), sigc::bind<bool>(sigc::mem_fun(w->main.history_button, &Libre::HistoryButton::button_pressed), false));
 	w->ui.action_group->add(Gtk::Action::create("HistoryForward", Gtk::Stock::GO_FORWARD),
-			Gtk::AccelKey("<control><shift>Z"));
+			Gtk::AccelKey("<alt>Right"), sigc::bind<bool>(sigc::mem_fun(w->main.history_button, &Libre::HistoryButton::button_pressed), true));
 
 	// ------------------------------------------
 	// CREATE HELP MENU
@@ -171,11 +173,10 @@ bool Libre::MainWindow::create(Libre::Widgets * w, SignalHandler * s) {
 
 	LOG(" * Create Menu");
 
-	Gtk::Widget * pMenubar = w->ui.manager->get_widget("/MenuBar");
+	Gtk::Widget * pMenubar = w->ui.manager->get_widget("/ui/MenuBar");
 	if(pMenubar) {
 		v_box->pack_start(*pMenubar, Gtk::PACK_SHRINK);
 	}
-
 
 	// ------------------------------------------
 	// CREATE SEARCHENTRY AND SET ITS PROPERTIES
@@ -192,7 +193,6 @@ bool Libre::MainWindow::create(Libre::Widgets * w, SignalHandler * s) {
 	);
 
 	w->main.number_results = new Gtk::Label("0 Results");
-	w->main.history_button = new Libre::HistoryButton;
 	w->main.history_button->trigger_search().connect(sigc::mem_fun(s, &SignalHandler::trigger_search));
 
 	Gtk::HBox * search_box = new Gtk::HBox;

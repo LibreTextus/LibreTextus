@@ -9,8 +9,7 @@
 namespace Libre {
 	class HistoryButton : public Gtk::HBox {
 	private:
-		Gtk::Button back_button;
-		Gtk::Button forward_button;
+		Gtk::Button history_button;
 		Gtk::Menu popup_menu;
 		Gtk::RadioMenuItem first_item;
 		std::vector<std::string> search_history;
@@ -22,7 +21,7 @@ namespace Libre {
 		HistoryButton();
 		virtual ~HistoryButton() = default;
 
-		bool right_click(GdkEventButton * event);
+		void right_click();
 		void button_pressed(bool forward);
 
 		void add_to_history(std::string arg);

@@ -352,7 +352,7 @@ void SearchEngine::interpret_argument(std::string * arg) {
 	*arg = boost::regex_replace(*arg, e, "((?<=[^\\\\w\u00C0-\u024f])|\\\\A)$&(?=[^\\\\w\u00C0-\u024f]|$)");
 
 	e = "\\*";
-	*arg = boost::regex_replace(*arg, e, "\\\\w*");
+	*arg = boost::regex_replace(*arg, e, "[\\\\w\u00C0-\u024f]*");
 
 	e = " ";
 

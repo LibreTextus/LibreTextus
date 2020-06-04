@@ -23,6 +23,7 @@ private:
 	std::vector<std::string> last_search_results;
 	std::string W;
 	std::string search_argument;
+	std::vector<std::string> search_argument_vector;
 	std::string raw_search_argument;
 	std::string mark_argument;
 	std::vector<std::array<Libre::BookMap::iterator, 2>> positions;

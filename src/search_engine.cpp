@@ -75,7 +75,7 @@ float SearchEngine::get_progress() {
 
 bool SearchEngine::search(std::string * text) {
 
-	boost::regex e(this->search_argument);
+	boost::regex e;
 
 	while (this->active_verse != this->positions.back()[1]) {
 		if (this->active_verse == this->positions[this->active_verse_index][1]) {
@@ -83,7 +83,14 @@ bool SearchEngine::search(std::string * text) {
 			this->active_verse = this->positions[this->active_verse_index][0];
 		}
 
-		if (boost::regex_search(this->active_verse.value(), e) || this->search_argument == "") {
+		bool found = true;
+
+		for(int i = 0; i < this->search_argument_vector.size(); i++) { // this->active_verse.value()
+			e = this->search_argument_vector[i];
+			found &= boost::regex_search(this->active_verse.value(), e);
+		}
+
+		if (found || this->search_argument == "") {
 
 			*text = this->active_verse.value();
 
@@ -279,7 +286,25 @@ void SearchEngine::interpret_string() {
 
 	this->interpret_argument(&this->search_argument);
 
-	std::cout << "REGEX ARG: " << this->search_argument << '\n';
+	this->search_argument_vector.clear();
+
+	e = "&";
+	arg = this->search_argument;
+
+	while(boost::regex_search(arg, m, e)) {
+		this->search_argument_vector.push_back(m.prefix().str());
+		arg = m.suffix();
+	}
+
+	this->search_argument_vector.push_back(arg);
+
+	std::cout << "REGEX ARGS: ";
+
+	for (int i = 0; i < this->search_argument_vector.size(); i++) {
+		std::cout << this->search_argument_vector[i] << " AND ";
+	}
+
+	std::cout << "(" << this->search_argument_vector.size() << ")" << '\n';
 }
 
 // SEARCHENGINE::INTERPRET_ARGUMENT --------------------------------------------
@@ -317,7 +342,7 @@ void SearchEngine::interpret_argument(std::string * arg) {
 		arg_copy = m.suffix().str();
 	}
 
-	*arg = boost::regex_replace(*arg, e, "&ç&€");
+	*arg = boost::regex_replace(*arg, e, "_INSERT_");
 
 	// ------------------------------------------
 	// SELECT EVERY WORD AND LIST THEM IN
@@ -332,8 +357,7 @@ void SearchEngine::interpret_argument(std::string * arg) {
 	e = " ";
 
 	if (boost::regex_search(*arg, e)) {
-		*arg = "(" + *arg + ")";
-		*arg = boost::regex_replace(*arg, e, "|");
+		*arg = boost::regex_replace(*arg, e, "&");
 	}
 
 	// ------------------------------------------
@@ -342,13 +366,13 @@ void SearchEngine::interpret_argument(std::string * arg) {
 	// ------------------------------------------
 
 	for (std::vector<std::string>::iterator i = static_expressions.begin(); i != static_expressions.end(); i++) {
-		e = "(\\<|\\A)$&(\\>|$)";
-		*i = boost::regex_replace(*i, e, "(\\<|\\A)$&(\\>|$)");
+		e = "((?<=[^\\\\w\u00C0-\u024f])|\\\\A)$&(?=[^\\\\w\u00C0-\u024f]|$)";
+		*i = boost::regex_replace(*i, e, "((?<=[^\\\\w\u00C0-\u024f])|\\\\A)$&(?=[^\\\\w\u00C0-\u024f]|$)");
 
 		e = "\\*";
 		*i = boost::regex_replace(*i, e, "\\*");
 
-		e = "&ç&€";
+		e = "_INSERT_";
 
 		if (boost::regex_search(*arg, m, e))	{
 			*arg = m.prefix().str() + *i + m.suffix().str();
@@ -364,6 +388,7 @@ void SearchEngine::interpret_argument(std::string * arg) {
 // -----------------------------------------------------------------------------
 
 void SearchEngine::mark_result(std::string * text) {
-	boost::regex e(this->search_argument);
+	boost::regex e("&");
+	e = boost::regex_replace(this->search_argument, e, "|");
 	*text = boost::regex_replace(*text, e, this->mark_argument);
 }

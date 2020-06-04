@@ -9,7 +9,7 @@ SearchEngine::SearchEngine(std::string file_path, std::string names_path) {
 	this->names = this->source_handler.get_names(names_path);
 	this->active_verse = this->file->begin();
 
-	W = "[\\w\\u00C0-\\u024f]";
+	W = "\\w\u00C0-\u024f";
 }
 
 // SEARCHENGINE::SET_SEARCH_ARGUMENT -------------------------------------------
@@ -75,7 +75,7 @@ float SearchEngine::get_progress() {
 
 bool SearchEngine::search(std::string * text) {
 
-	std::regex e(this->search_argument);
+	boost::regex e(this->search_argument);
 
 	while (this->active_verse != this->positions.back()[1]) {
 		if (this->active_verse == this->positions[this->active_verse_index][1]) {
@@ -83,7 +83,7 @@ bool SearchEngine::search(std::string * text) {
 			this->active_verse = this->positions[this->active_verse_index][0];
 		}
 
-		if (std::regex_search(this->active_verse.value(), e) || this->search_argument == "") {
+		if (boost::regex_search(this->active_verse.value(), e) || this->search_argument == "") {
 
 			*text = this->active_verse.value();
 
@@ -115,10 +115,11 @@ void SearchEngine::interpret_string() {
 
 	std::vector<std::array<std::string, 2>> pos;
 
-	std::regex e("@");
-	std::smatch m;
+	boost::regex e("@");
 
-	if (std::regex_search(arg, m, e)){
+	boost::smatch m;
+
+	if (boost::regex_search(arg, m, e)){
 		search = m.prefix().str();
 		arg = m.suffix().str();
 	}
@@ -126,13 +127,13 @@ void SearchEngine::interpret_string() {
 	for (Libre::NameMap::iterator i = this->names->begin(); i != this->names->end(); i++) {
 		for (std::vector<std::string>::iterator x = i.value().begin(); x != i.value().end(); x++) {
 			e = *x;
-			arg = std::regex_replace(arg, e, i->first);
+			arg = boost::regex_replace(arg, e, i->first);
 		}
 	}
 
 	e = " ";
 
-	arg = std::regex_replace(arg, e, "");
+	arg = boost::regex_replace(arg, e, "");
 
 	bool run = this->names->find(arg.substr(0, 3)) != this->names->end();
 
@@ -151,7 +152,7 @@ void SearchEngine::interpret_string() {
 			pos.back()[0] = pos[pos.size() - 2][0].substr(0, pos[pos.size() - 2][0].find(",") + 1);
 
 			e = "\\d+";
-			std::regex_search(arg, m, e);
+			boost::regex_search(arg, m, e);
 			pos.back()[0] += m.str();
 			arg = m.suffix().str();
 
@@ -160,7 +161,7 @@ void SearchEngine::interpret_string() {
 			if (arg.substr(0, 1) == "-") {
 				arg.erase(0, 1);
 				pos.back()[1].erase(pos.back()[0].find(",") + 1, std::string::npos);
-				std::regex_search(arg, m, e);
+				boost::regex_search(arg, m, e);
 				pos.back()[1] += m.str();
 				arg = m.suffix().str();
 			}
@@ -176,11 +177,9 @@ void SearchEngine::interpret_string() {
 		}
 
 		e = "\\d+";
-		if (std::regex_search(arg, m, e)) {
+		if (boost::regex_search(arg, m, e)) {
 			pos.back()[0] += m.str() + ",";
 			arg = m.suffix().str();
-		} else {
-			break;
 		}
 
 		if (arg.substr(0, 1) == "-") {
@@ -190,7 +189,7 @@ void SearchEngine::interpret_string() {
 				pos.back()[1] = arg.substr(0, 3);
 				arg.erase(0, 3);
 
-				std::regex_search(arg, m, e);
+				boost::regex_search(arg, m, e);
 				pos.back()[1] += m.str() + ",";
 				arg = m.suffix().str();
 
@@ -200,7 +199,7 @@ void SearchEngine::interpret_string() {
 
 				pos.back()[0] += "1";
 
-				std::regex_search(arg, m, e);
+				boost::regex_search(arg, m, e);
 				pos.back()[1] = pos.back()[0].substr(0, 4) + m.str() + ",";
 				arg = m.suffix();
 
@@ -216,7 +215,7 @@ void SearchEngine::interpret_string() {
 		} else if (arg.substr(0, 1) == ",") {
 			arg.erase(0, 1);
 
-			std::regex_search(arg, m, e);
+			boost::regex_search(arg, m, e);
 			pos.back()[0] += m.str();
 			arg = m.suffix().str();
 
@@ -225,22 +224,31 @@ void SearchEngine::interpret_string() {
 			if (arg.substr(0, 1) == "-") {
 				arg.erase(0, 1);
 				pos.back()[1].erase(pos.back()[0].find(",") + 1, std::string::npos);
-				std::regex_search(arg, m, e);
+				boost::regex_search(arg, m, e);
 				pos.back()[1] += m.str();
 				arg = m.suffix().str();
 			}
 
 		} else {
-			pos.back()[0] += "1";
-			pos.back()[1] = pos.back()[0];
+			if (pos.back()[0].length() == 4) {
+				pos.back()[0] += "1,1";
+				pos.back()[1] = pos.back()[0];
 
-			Libre::BookMap::iterator i = this->file->find(pos.back()[1]);
+				Libre::BookMap::iterator i = this->file->find(pos.back()[1]);
 
-			for (;i->first.substr(0, i->first.find(",")) == pos.back()[1].substr(0, pos.back()[1].find(",")); i++) {}
+				for (;i->first.substr(0, i->first.find(" ")) == pos.back()[1].substr(0, pos.back()[1].find(" ")); i++) {}
+				i--;
+				pos.back()[1] = i->first;
+			} else {
+				pos.back()[0] += "1";
+				pos.back()[1] = pos.back()[0];
 
-			i--;
+				Libre::BookMap::iterator i = this->file->find(pos.back()[1]);
 
-			pos.back()[1] = i->first;
+				for (;i->first.substr(0, i->first.find(",")) == pos.back()[1].substr(0, pos.back()[1].find(",")); i++) {}
+				i--;
+				pos.back()[1] = i->first;
+			}
 		}
 
 		if (arg == "") {
@@ -270,6 +278,8 @@ void SearchEngine::interpret_string() {
 	}
 
 	this->interpret_argument(&this->search_argument);
+
+	std::cout << "REGEX ARG: " << this->search_argument << '\n';
 }
 
 // SEARCHENGINE::INTERPRET_ARGUMENT --------------------------------------------
@@ -277,6 +287,14 @@ void SearchEngine::interpret_string() {
 // -----------------------------------------------------------------------------
 
 void SearchEngine::interpret_argument(std::string * arg) {
+
+	while (arg->back() == ' ') {
+		arg->pop_back();
+	}
+
+	while (arg->front() == ' ') {
+		*arg = arg->substr(1, std::string::npos);
+	}
 
 	// ------------------------------------------
 	// IF THERE ARE QUOTED WORDS REPLACE IT WITH
@@ -287,35 +305,35 @@ void SearchEngine::interpret_argument(std::string * arg) {
 	// IN THE FOLLOWING PROCESS
 	// ------------------------------------------
 
-	std::regex e("\".[^\"]*\"");
-	std::smatch m;
+	boost::regex e("\".[^\"]*\"");
+
+	boost::smatch m;
 	std::vector<std::string> static_expressions;
 
 	std::string arg_copy = *arg;
 
-	while (std::regex_search(arg_copy, m, e)) {
+	while (boost::regex_search(arg_copy, m, e)) {
 		static_expressions.push_back(m.str());
 		arg_copy = m.suffix().str();
 	}
 
-	*arg = regex_replace(*arg, e, "&ç&€");
+	*arg = boost::regex_replace(*arg, e, "&ç&€");
 
 	// ------------------------------------------
 	// SELECT EVERY WORD AND LIST THEM IN
 	// PARANTHESES WITH *OR* OPERATORS
 	// ------------------------------------------
-
-	e = "[\\w\\*]+";
-	*arg = std::regex_replace(*arg, e, "\\b$&\\b");
+	e = "[\\w\u00C0-\u024f\\*]+";
+	*arg = boost::regex_replace(*arg, e, "((?<=[^\\\\w\u00C0-\u024f])|\\\\A)$&(?=[^\\\\w\u00C0-\u024f]|$)");
 
 	e = "\\*";
-	*arg = std::regex_replace(*arg, e, "\\w*");
+	*arg = boost::regex_replace(*arg, e, "\\\\w*");
 
 	e = " ";
 
-	if (std::regex_search(*arg, e)) {
+	if (boost::regex_search(*arg, e)) {
 		*arg = "(" + *arg + ")";
-		*arg = std::regex_replace(*arg, e, "|");
+		*arg = boost::regex_replace(*arg, e, "|");
 	}
 
 	// ------------------------------------------
@@ -324,21 +342,21 @@ void SearchEngine::interpret_argument(std::string * arg) {
 	// ------------------------------------------
 
 	for (std::vector<std::string>::iterator i = static_expressions.begin(); i != static_expressions.end(); i++) {
-		e = "\\b" + W + "+\\b";
-		*i = regex_replace(*i, e, "\\b$&\\b");
+		e = "(\\<|\\A)$&(\\>|$)";
+		*i = boost::regex_replace(*i, e, "(\\<|\\A)$&(\\>|$)");
 
 		e = "\\*";
-		*i = regex_replace(*i, e, "\\*");
+		*i = boost::regex_replace(*i, e, "\\*");
 
 		e = "&ç&€";
 
-		if (std::regex_search(*arg, m, e))	{
+		if (boost::regex_search(*arg, m, e))	{
 			*arg = m.prefix().str() + *i + m.suffix().str();
 		}
 	}
 
 	e = "\"";
-	*arg = std::regex_replace(*arg, e, "");
+	*arg = boost::regex_replace(*arg, e, "");
 }
 
 // SEARCHENGINE::MARK_RESULT ---------------------------------------------------
@@ -346,6 +364,6 @@ void SearchEngine::interpret_argument(std::string * arg) {
 // -----------------------------------------------------------------------------
 
 void SearchEngine::mark_result(std::string * text) {
-	std::regex e(this->search_argument);
-	*text = std::regex_replace(*text, e, this->mark_argument);
+	boost::regex e(this->search_argument);
+	*text = boost::regex_replace(*text, e, this->mark_argument);
 }

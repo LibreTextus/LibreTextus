@@ -90,12 +90,19 @@ else()
 	find_package(X11 REQUIRED)
 	include_directories(${X11_INCLUDE_DIR})
 
+	set(Boost_USE_STATIC_LIBS OFF)
+	set(Boost_USE_MULTITHREADED ON)
+	set(Boost_USE_STATIC_RUNTIME OFF)
+	find_package(Boost COMPONENTS regex)
+
+	include_directories(${Boost_INCLUDE_DIRS})
+
 	include_directories(include/)
 
 	add_executable(LibreTextus src/main.cpp)
 
-	target_link_libraries(libre_textus ${GTKMM_LIBRARIES} ${X11_LIBRARIES} yaml-cpp stdc++fs)
-	target_link_libraries(LibreTextus ${GTKMM_LIBRARIES} ${X11_LIBRARIES} libre_textus stdc++fs)
+	target_link_libraries(libre_textus ${GTKMM_LIBRARIES} ${X11_LIBRARIES} ${Boost_LIBRARIES} yaml-cpp stdc++fs)
+	target_link_libraries(LibreTextus ${GTKMM_LIBRARIES} ${X11_LIBRARIES} ${Boost_LIBRARIES} libre_textus stdc++fs)
 
 	enable_testing()
 	add_executable(md_test test/md_test.cpp)

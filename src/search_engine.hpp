@@ -4,9 +4,11 @@
 #include <yaml-cpp/yaml.h>
 #include <string>
 #include <iostream>
-#include <regex>
+#include <boost/regex.hpp>
+#include <boost/regex/icu.hpp>
 #include <vector>
 #include <algorithm>
+#include <locale>
 
 #include "source_handler.hpp"
 #include <tsl/ordered_map.h>

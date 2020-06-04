@@ -34,10 +34,12 @@ parts:
       - make
       - libgtkmm-3.0-dev
       - git
+      - libboost-regex-dev
     stage-packages:
       - libgtkmm-3.0-1v5
       - git
       - adwaita-icon-theme-full
+      - libboost-regex-dev
 
     override-build: |
       cmake ../src -DCMAKE_INSTALL_PREFIX=../install

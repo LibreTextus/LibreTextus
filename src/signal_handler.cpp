@@ -582,8 +582,9 @@ void SignalHandler::remove_source() {
 		this->widgets->main.add_button = new Gtk::Button;
 		this->widgets->main.add_button->set_image_from_icon_name("list-add", Gtk::ICON_SIZE_BUTTON);
 		this->widgets->main.add_button->set_name("add_button");
-		Gtk::Image * img = new Gtk::Image(DATA("res/add.svg"));
-		this->widgets->main.add_button->set_image(*img);
+		this->widgets->main.add_button->set_always_show_image(true);
+		// Gtk::Image * img = new Gtk::Image(DATA("res/add.svg"));
+		// this->widgets->main.add_button->set_image(*img);
 
 		this->widgets->main.headers.back()->pack_end(*this->widgets->main.add_button, Gtk::PACK_SHRINK, 0);
 		this->widgets->main.headers.back()->reorder_child(*this->widgets->main.add_button, 0);
@@ -649,8 +650,9 @@ void SignalHandler::remove_source_by_reference(Gtk::Button * b) {
 		}
 
 		this->widgets->main.add_button->set_name("add_button");
-		Gtk::Image * img = new Gtk::Image(DATA("res/add.svg"));
-		this->widgets->main.add_button->set_image(*img);
+		this->widgets->main.add_button->set_always_show_image(true);
+		// Gtk::Image * img = new Gtk::Image(DATA("res/add.svg"));
+		// this->widgets->main.add_button->set_image(*img);
 
 		this->widgets->main.headers.back()->pack_end(*this->widgets->main.add_button, Gtk::PACK_SHRINK, 0);
 		this->widgets->main.headers.back()->reorder_child(*this->widgets->main.add_button, 0);

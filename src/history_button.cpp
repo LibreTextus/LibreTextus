@@ -4,10 +4,6 @@ Libre::HistoryButton::HistoryButton() {
 
 	this->set_name("history_button");
 
-	Gtk::Image * img_left = new Gtk::Image(DATA("res/arrow_down.svg"));
-
-	this->history_button.set_image(*img_left);
-
 	this->history_button.signal_clicked().connect(sigc::mem_fun(this, &Libre::HistoryButton::right_click));
 
 	this->pack_start(this->history_button, Gtk::PACK_SHRINK, 0);

@@ -1,4 +1,5 @@
 #include "path.hpp"
+#include <iostream>
 
 std::string DATA(const std::string & object) {
 	std::string output;

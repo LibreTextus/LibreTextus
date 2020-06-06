@@ -20,7 +20,7 @@ int Framework::init(int argc, char *argv[]) {
 
 	this->widgets.splash_screen.window = new Gtk::Window;
 	this->widgets.splash_screen.window->set_default_size(640, 315);
-	this->widgets.splash_screen.window->set_icon_from_file(DATA("Icon.svg"));
+	this->widgets.splash_screen.window->set_icon_from_file(DATA("icon.svg"));
 	this->widgets.splash_screen.window->set_type_hint(Gdk::WINDOW_TYPE_HINT_SPLASHSCREEN);
 	this->widgets.splash_screen.window->set_name("splash_screen");
 

@@ -17,8 +17,7 @@
 #include "settings.hpp"
 
 namespace Libre {
-	class Widgets {
-	public:
+	struct Widgets {
 
 		PackageManager package_manager;
 

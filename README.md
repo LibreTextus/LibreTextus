@@ -4,11 +4,11 @@
 
 ## Dependencies
 
-You need to install *cmake* *build-essential* and *gtkmm*.  
+You need to install *cmake* *build-essential* *gettext* *boost-regex* and *gtkmm*.  
 If your cmake is too old, it will automaticly build the newest cmake from source and uses it instead. It wont affect your other cmake installation.
 
 ```
-sudo apt install cmake libgtkmm-3.0-dev build-essential libboost-regex-dev
+sudo apt install cmake libgtkmm-3.0-dev build-essential libboost-regex-dev gettext
 ```
 
 ## How to Build

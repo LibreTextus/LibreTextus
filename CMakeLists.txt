@@ -93,7 +93,7 @@ else()
 		execute_process(COMMAND "mkdir" "${CMAKE_BINARY_DIR}/locale")
 	endif()
 
-	file(GLOB PO_FILES "po/*.po")
+	file(GLOB PO_FILES "${CMAKE_SOURCE_DIR}/po/*.po")
 
 	foreach(PO_FILE ${PO_FILES})
 		get_filename_component(PO_NAME ${PO_FILE} NAME_WE)

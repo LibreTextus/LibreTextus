@@ -9,20 +9,11 @@ void Libre::PackageManager::init() {
 	this->dummy_path = DATA("dummy.yml");
 
 	// ------------------------------------------
-	// CHECK IF THE ROOT DIRECTORY EXISTS
-	// ------------------------------------------
-
-	if (!std::experimental::filesystem::exists(HOME())) {
-		std::experimental::filesystem::create_directory(HOME());
-	}
-
-	// ------------------------------------------
 	// CHECK IF THE ROOT DIRECTORY IS EMPTY
 	// ------------------------------------------
 
-	if (std::experimental::filesystem::is_empty(HOME())) {
+	if (!std::experimental::filesystem::exists(HOME("sources.yml"))) {
 		std::experimental::filesystem::copy(DATA("sources.yml"), HOME("sources.yml"));
-		std::experimental::filesystem::copy(DATA("settings.yml"), HOME("settings.yml"));
 		this->sources = YAML::LoadFile(DATA("sources.yml"));
 		this->install("git://github.com/LibreTextus/BibleEditions");
 		std::experimental::filesystem::rename(HOME("BibleEditions/biblebooks.yml"),

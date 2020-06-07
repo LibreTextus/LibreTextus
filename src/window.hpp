@@ -6,6 +6,7 @@
 #include <yaml-cpp/yaml.h>
 #include <fstream>
 #include <experimental/filesystem>
+#include <glibmm/i18n.h>
 #include "text_view.hpp"
 #include "notebook.hpp"
 #include "widgets.hpp"

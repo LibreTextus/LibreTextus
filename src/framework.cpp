@@ -29,8 +29,8 @@ int Framework::init(int argc, char *argv[]) {
 
 	Gtk::Label * title = new Gtk::Label;
 	title->set_markup("<span font='42'>LibreTextus</span>");
-	this->widgets.splash_screen.header_label = new Gtk::Label("Test");
-	this->widgets.splash_screen.info_label = new Gtk::Label("Test");
+	this->widgets.splash_screen.header_label = new Gtk::Label;
+	this->widgets.splash_screen.info_label = new Gtk::Label;
 	this->widgets.splash_screen.spinner = new Gtk::Spinner;
 	this->widgets.splash_screen.spinner->set_size_request(70, 70);
 

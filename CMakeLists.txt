@@ -63,6 +63,8 @@ else()
 		src/history_button.cpp
 	)
 
+	# FETCH YAML-CPP
+
 	include(FetchContent)
 	FetchContent_Declare(
 			yaml-cpp
@@ -71,6 +73,7 @@ else()
 			GIT_TAG yaml-cpp-0.6.3
 		)
 	FetchContent_GetProperties(yaml-cpp)
+
 	if(NOT yaml-cpp_POPULATED)
 		message(STATUS "Populating yaml-cpp...")
 		FetchContent_Populate(yaml-cpp)
@@ -80,6 +83,28 @@ else()
 	endif()
 
 	set(CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} -w")
+
+	# BUILD LOCALES
+
+	add_compile_definitions(GETTEXT_PACKAGE="libretextus")
+	add_compile_definitions(LIBRETEXTUS_LOCALEDIR="${CMAKE_BINARY_DIR}/locale")
+
+	if (NOT EXISTS "${CMAKE_BINARY_DIR}/locale")
+		execute_process(COMMAND "mkdir" "${CMAKE_BINARY_DIR}/locale")
+	endif()
+
+	file(GLOB PO_FILES "po/*.po")
+
+	foreach(PO_FILE ${PO_FILES})
+		get_filename_component(PO_NAME ${PO_FILE} NAME_WE)
+
+		if (NOT EXISTS "${CMAKE_BINARY_DIR}/locale/${PO_NAME}/LC_MESSAGES/")
+			execute_process(COMMAND "mkdir" "-p" "${CMAKE_BINARY_DIR}/locale/${PO_NAME}/LC_MESSAGES")
+		endif()
+
+		execute_process(COMMAND "msgfmt" "--check" "--verbose" "--output-file" "${CMAKE_BINARY_DIR}/locale/${PO_NAME}/LC_MESSAGES/libretextus.mo" "${PO_FILE}")
+	endforeach()
+
 
 	include_directories(BEFORE SYSTEM ${yaml-cpp_SOURCE_DIR} ${yaml-cpp_BINARY_DIR}/include)
 	target_link_libraries(libre_textus yaml-cpp)

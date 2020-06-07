@@ -7,6 +7,7 @@
 #include <fstream>
 #include <string>
 #include <markdown/markdown.hpp>
+#include <glibmm/i18n.h>
 
 #include "path.hpp"
 

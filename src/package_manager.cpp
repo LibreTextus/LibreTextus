@@ -13,7 +13,6 @@ void Libre::PackageManager::init() {
 	// ------------------------------------------
 
 	if (!std::experimental::filesystem::exists(HOME())) {
-		std::cout << "Create directory at: " << HOME() << '\n';
 		std::experimental::filesystem::create_directory(HOME());
 	}
 
@@ -23,6 +22,7 @@ void Libre::PackageManager::init() {
 
 	if (std::experimental::filesystem::is_empty(HOME())) {
 		std::experimental::filesystem::copy(DATA("sources.yml"), HOME("sources.yml"));
+		std::experimental::filesystem::copy(DATA("settings.yml"), HOME("settings.yml"));
 		this->sources = YAML::LoadFile(DATA("sources.yml"));
 		this->install("git://github.com/LibreTextus/BibleEditions");
 		std::experimental::filesystem::rename(HOME("BibleEditions/biblebooks.yml"),
@@ -60,8 +60,8 @@ void Libre::PackageManager::install(std::string url) {
 	// ------------------------------------------
 
 	this->mtx.lock();
-	this->header_string = "Install " + name;
-	this->info_string = "This could take a while...";
+	this->header_string = std::string(_("Install")) + " " + name;
+	this->info_string = _("This could take a while...");
 	this->mtx.unlock();
 	this->update_text.emit();
 
@@ -78,7 +78,7 @@ void Libre::PackageManager::install(std::string url) {
 	// ------------------------------------------
 
 	this->mtx.lock();
-	this->header_string = "Looking for sources...";
+	this->header_string = _("Looking for sources...");
 	this->info_string = "";
 	this->mtx.unlock();
 	this->update_text.emit();
@@ -101,7 +101,7 @@ void Libre::PackageManager::install(std::string url) {
 					f_info["enabled"] = true;
 
 					this->mtx.lock();
-					this->info_string = "Found: " + file;
+					this->info_string = std::string(_("Found")) + " : " + file;
 					this->mtx.unlock();
 					this->update_text.emit();
 
@@ -117,7 +117,7 @@ void Libre::PackageManager::install(std::string url) {
 	// ------------------------------------------
 
 	this->mtx.lock();
-	this->header_string = "Update sources.yml";
+	this->header_string = _("Update sources.yml");
 	this->info_string = "";
 	this->mtx.unlock();
 	this->update_text.emit();
@@ -147,7 +147,7 @@ void Libre::PackageManager::remove(std::string package) {
 	// ------------------------------------------
 
 	this->mtx.lock();
-	this->header_string = "Removing directory...";
+	this->header_string = _("Removing directory...");
 	this->info_string = "";
 	this->mtx.unlock();
 	this->update_text.emit();
@@ -163,7 +163,7 @@ void Libre::PackageManager::remove(std::string package) {
 	// ------------------------------------------
 
 	this->mtx.lock();
-	this->header_string = "Update sources.yml";
+	this->header_string = _("Update sources.yml");
 	this->info_string = "";
 	this->mtx.unlock();
 	this->update_text.emit();
@@ -177,7 +177,7 @@ void Libre::PackageManager::remove(std::string package) {
 		if (i->second["package"].as<std::string>() == package) {
 			this->sources.remove(i->first);
 			this->mtx.lock();
-			this->info_string = "Removing " + i->first.as<std::string>();
+			this->info_string = std::string(_("Removing")) + " " + i->first.as<std::string>();
 			this->mtx.unlock();
 			this->update_text.emit();
 			continue;
@@ -246,7 +246,7 @@ void Libre::PackageManager::enable(std::string package) {
 void Libre::PackageManager::update() {
 
 	this->mtx.lock();
-	this->header_string = "Update Packages";
+	this->header_string = _("Update Packages");
 	this->info_string = "";
 	this->mtx.unlock();
 	this->update_text.emit();
@@ -254,7 +254,7 @@ void Libre::PackageManager::update() {
 	for (int i = 0; i < this->packages.size(); i++) {
 		system(("git -C " + HOME(this->packages[i]) + " pull").c_str());
 		this->mtx.lock();
-		this->info_string = "Updating " + this->packages[i];
+		this->info_string = std::string(_("Updating")) + " " + this->packages[i];
 		this->mtx.unlock();
 		this->update_text.emit();
 	}

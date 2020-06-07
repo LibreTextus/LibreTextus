@@ -148,7 +148,7 @@ void Libre::NoteBook::open_note(const std::string & position) {
 	}
 
 	this->active_position = position;
-	this->title.set_text("Note - " + position);
+	this->title.set_text(std::string(_("Note")) + " - " + position);
 
 	this->on_content_change();
 }

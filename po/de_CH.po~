@@ -1,0 +1,268 @@
+# German translations for 0.1 package
+# German translation for 0.1.
+# Copyright (C) 2020 THE 0.1'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the 0.1 package.
+# Nathan Reiner <nathan.p.reiner@gmail.com>, 2020.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: 0.1\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2020-06-07 15:24+0200\n"
+"PO-Revision-Date: 2020-06-07 14:55+0200\n"
+"Last-Translator: Nathan Reiner <nathan.p.reiner@gmail.com>\n"
+"Language-Team: German\n"
+"Language: de_CH\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: ../src/notebook.cpp:151
+msgid "Note"
+msgstr "Notiz"
+
+#: ../src/package_manager.cpp:62
+msgid "Install"
+msgstr "Installiere"
+
+#: ../src/package_manager.cpp:63
+msgid "This could take a while..."
+msgstr "Das könnte ein Weile dauern..."
+
+#: ../src/package_manager.cpp:80
+msgid "Looking for sources..."
+msgstr "Suche nach Quellen..."
+
+#: ../src/package_manager.cpp:103
+msgid "Found"
+msgstr "Gefunden"
+
+#: ../src/package_manager.cpp:119 ../src/package_manager.cpp:165
+msgid "Update sources.yml"
+msgstr "Aktualisiere sources.yml"
+
+#: ../src/package_manager.cpp:149
+msgid "Removing directory..."
+msgstr "Entferne Verzeichnis..."
+
+#: ../src/package_manager.cpp:179
+msgid "Removing"
+msgstr "Entferne"
+
+#: ../src/package_manager.cpp:248
+msgid "Update Packages"
+msgstr "Aktualisiere Pakete"
+
+#: ../src/package_manager.cpp:256
+msgid "Updating"
+msgstr "Aktualisiere"
+
+#: ../src/signal_handler.cpp:23
+msgid "Init SearchEngine"
+msgstr "Initialisiere SearchEngine"
+
+#: ../src/signal_handler.cpp:24
+msgid "Load File"
+msgstr "Lade Datei"
+
+#: ../src/signal_handler.cpp:42
+msgid "Fetch mark color"
+msgstr "Rufe Markierungsfarbe ab"
+
+#: ../src/signal_handler.cpp:104 ../src/signal_handler.cpp:924
+msgid "Searching"
+msgstr "Suche"
+
+#: ../src/signal_handler.cpp:257 ../src/window.cpp:192
+msgid "Results"
+msgstr "Ergebnisse"
+
+#: ../src/signal_handler.cpp:692 ../src/signal_handler.cpp:770
+msgid "Add source directory"
+msgstr "Quellenverzeichnis hinzufügen"
+
+#. ------------------------------------------
+#. CREATE THE WIDGETS FOR THE DIALOG WINDOW
+#. ------------------------------------------
+#: ../src/signal_handler.cpp:710
+msgid "Enter the url of your git source repository:"
+msgstr "Geben Sie die Url von ihrem Quellen-Git-Repository ein."
+
+#: ../src/signal_handler.cpp:713
+msgid "url: example.org/your/source.git"
+msgstr "Url: beispiel.org/ihre/quelle.git"
+
+#: ../src/signal_handler.cpp:718
+msgid "Ok"
+msgstr "Ok"
+
+#: ../src/signal_handler.cpp:719 ../src/signal_handler.cpp:791
+msgid "Cancel"
+msgstr "Abbrechen"
+
+#: ../src/signal_handler.cpp:784
+msgid "Chose the repository you want to be removed:"
+msgstr "Wählen sie das Repository aus, welches entfernt werden soll:"
+
+#: ../src/signal_handler.cpp:790
+msgid "OK"
+msgstr "OK"
+
+#: ../src/text_view.cpp:16
+msgid "No Results"
+msgstr "Keine Ergebnisse"
+
+#: ../src/text_view.cpp:315 ../src/window.cpp:64 ../src/window.cpp:185
+msgid "Search"
+msgstr "Suche"
+
+#. ------------------------------------------
+#. CREATE FILE MENU
+#. ------------------------------------------
+#: ../src/window.cpp:43
+msgid "File"
+msgstr "Datei"
+
+#. ------------------------------------------
+#. CREATE QUIT MENU
+#. ------------------------------------------
+#: ../src/window.cpp:49
+msgid "New Tab"
+msgstr "Neuer Tab"
+
+#: ../src/window.cpp:51
+msgid "Close Tab"
+msgstr "Schliesse Tab"
+
+#: ../src/window.cpp:53
+msgid "Quit"
+msgstr "Beenden"
+
+#. ------------------------------------------
+#. CREATE EDIT MENU
+#. ------------------------------------------
+#: ../src/window.cpp:60
+msgid "Edit"
+msgstr "Bearbeiten"
+
+#: ../src/window.cpp:61
+msgid "Cut"
+msgstr "Ausschneiden"
+
+#: ../src/window.cpp:62
+msgid "Copy"
+msgstr "Kopieren"
+
+#: ../src/window.cpp:63
+msgid "Paste"
+msgstr "Einfügen"
+
+#. ------------------------------------------
+#. CREATE VIEW MENU
+#. ------------------------------------------
+#: ../src/window.cpp:73
+msgid "View"
+msgstr "Ansicht"
+
+#: ../src/window.cpp:74
+msgid "Add Source"
+msgstr "Quelle hinzufügen"
+
+#: ../src/window.cpp:76
+msgid "Remove Source"
+msgstr "Quelle entfernen"
+
+#: ../src/window.cpp:78
+msgid "Toggle Notes"
+msgstr "Zeige/Verstecke Notizen"
+
+#: ../src/window.cpp:80
+msgid "Zoom in"
+msgstr "Ansicht vergrössern"
+
+#: ../src/window.cpp:82
+msgid "Zoom out"
+msgstr "Ansicht verkleinern"
+
+#: ../src/window.cpp:84
+msgid "Zoom reset"
+msgstr "Ansichtsgrösse zurücksetzen"
+
+#: ../src/window.cpp:86
+msgid "Minimize"
+msgstr "Minimieren"
+
+#: ../src/window.cpp:88
+msgid "Fullscreen"
+msgstr "Vollbild"
+
+#. ------------------------------------------
+#. CREATE HISTORY MENU
+#. ------------------------------------------
+#: ../src/window.cpp:95
+msgid "History"
+msgstr "Chronik"
+
+#: ../src/window.cpp:96
+msgid "Go back"
+msgstr "Zurück"
+
+#: ../src/window.cpp:98
+msgid "Go forward"
+msgstr "Vorwärts"
+
+#. ------------------------------------------
+#. CREATE HELP MENU
+#. ------------------------------------------
+#: ../src/window.cpp:105 ../src/window.cpp:106
+msgid "Help"
+msgstr "Hilfe"
+
+#: ../src/window.cpp:107
+msgid "About"
+msgstr "Über"
+
+#: ../src/window.cpp:217
+msgid ""
+"<big>Welcome to LibreTextus!</big>\n"
+"Here are some search syntax hints:\n"
+"<i>WORD WORD2</i> will give you all verses with <i>WORD</i> or <i>WORD2</i> "
+"in it.\n"
+"<i>\"WORD ANOTHER WORD\"</i> this means you want exactly what is quoted\n"
+"To get specific verses or chapters use the standart notation like: <i>GEN 1, "
+"1-10</i>\n"
+"<i>WORD@GEN 1</i> will give all <i>WORD</i> in <i>GEN 1</i>\n"
+msgstr ""
+"<big>Willkommen bei LibreTextus!</big>\n"
+"Hier sind ein paar Syntax-Hinweise:\n"
+"<i>Wort Wort2</i> wird ihnen <i>WORD</i> or <i>WORD2</i> "
+"in it.\n"
+"<i>\"WORD ANOTHER WORD\"</i> this means you want exactly what is quoted\n"
+"To get specific verses or chapters use the standart notation like: <i>GEN 1, "
+"1-10</i>\n"
+"<i>WORD@GEN 1</i> will give all <i>WORD</i> in <i>GEN 1</i>\n"
+
+#: ../src/window.cpp:303
+msgid "Preferences"
+msgstr "Einstellungen"
+
+#: ../src/window.cpp:333
+msgid "Theme"
+msgstr "Thema"
+
+#: ../src/window.cpp:402 ../src/window.cpp:404
+msgid "Keybindings"
+msgstr "Tastenbelegungen"
+
+#: ../src/window.cpp:414 ../src/window.cpp:477
+msgid "Book Manager"
+msgstr "Bücher Verwaltung"
+
+#: ../src/window.cpp:424
+msgid "Source"
+msgstr "Quelle"
+
+#: ../src/window.cpp:430
+msgid "Enabled"
+msgstr "Aktiviert"

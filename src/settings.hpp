@@ -35,6 +35,10 @@ public:
 			arg = m.suffix().str();
 		}
 
+		if (!output[arg]) {
+			output[arg] = "";
+		}
+
 		return output[arg].as<T>();
 	}
 

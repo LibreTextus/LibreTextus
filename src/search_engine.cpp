@@ -75,7 +75,7 @@ float SearchEngine::get_progress() {
 
 bool SearchEngine::search(std::string * text) {
 
-	boost::regex e;
+	boost::regex e("", boost::regex::icase);
 
 	while (this->active_verse != this->positions.back()[1]) {
 		if (this->active_verse == this->positions[this->active_verse_index][1]) {
@@ -86,7 +86,7 @@ bool SearchEngine::search(std::string * text) {
 		bool found = true;
 
 		for(int i = 0; i < this->search_argument_vector.size(); i++) { // this->active_verse.value()
-			e = this->search_argument_vector[i];
+			e = boost::regex(this->search_argument_vector[i], boost::regex::icase);
 			found &= boost::regex_search(this->active_verse.value(), e);
 		}
 
@@ -122,7 +122,7 @@ void SearchEngine::interpret_string() {
 
 	std::vector<std::array<std::string, 2>> pos;
 
-	boost::regex e("@");
+	boost::regex e("@", boost::regex::icase);
 
 	boost::smatch m;
 
@@ -133,12 +133,12 @@ void SearchEngine::interpret_string() {
 
 	for (Libre::NameMap::iterator i = this->names->begin(); i != this->names->end(); i++) {
 		for (std::vector<std::string>::iterator x = i.value().begin(); x != i.value().end(); x++) {
-			e = *x;
+			e = boost::regex(*x, boost::regex::icase);
 			arg = boost::regex_replace(arg, e, i->first);
 		}
 	}
 
-	e = " ";
+	e = boost::regex(" ", boost::regex::icase);
 
 	arg = boost::regex_replace(arg, e, "");
 
@@ -158,7 +158,7 @@ void SearchEngine::interpret_string() {
 		} else if (arg.substr(0, 1) == ".") {
 			pos.back()[0] = pos[pos.size() - 2][0].substr(0, pos[pos.size() - 2][0].find(",") + 1);
 
-			e = "\\d+";
+			e = boost::regex("\\d+", boost::regex::icase);
 			boost::regex_search(arg, m, e);
 			pos.back()[0] += m.str();
 			arg = m.suffix().str();
@@ -183,7 +183,7 @@ void SearchEngine::interpret_string() {
 			break;
 		}
 
-		e = "\\d+";
+		e = boost::regex("\\d+", boost::regex::icase);
 		if (boost::regex_search(arg, m, e)) {
 			pos.back()[0] += m.str() + ",";
 			arg = m.suffix().str();
@@ -288,7 +288,7 @@ void SearchEngine::interpret_string() {
 
 	this->search_argument_vector.clear();
 
-	e = "&";
+	e = boost::regex("&", boost::regex::icase);
 	arg = this->search_argument;
 
 	while(boost::regex_search(arg, m, e)) {
@@ -330,7 +330,7 @@ void SearchEngine::interpret_argument(std::string * arg) {
 	// IN THE FOLLOWING PROCESS
 	// ------------------------------------------
 
-	boost::regex e("\".[^\"]*\"");
+	boost::regex e("\".[^\"]*\"", boost::regex::icase);
 
 	boost::smatch m;
 	std::vector<std::string> static_expressions;
@@ -348,7 +348,7 @@ void SearchEngine::interpret_argument(std::string * arg) {
 	// SELECT EVERY WORD AND LIST THEM IN
 	// PARANTHESES WITH *OR* OPERATORS
 	// ------------------------------------------
-	e = "[\\w\u00C0-\u024f\\*]+";
+	e = boost::regex("[\\w\u00C0-\u024f\\*]+", boost::regex::icase);
 	*arg = boost::regex_replace(*arg, e, "((?<=[^\\\\w\u00C0-\u024f])|\\\\A)$&(?=[^\\\\w\u00C0-\u024f]|$)");
 
 	e = "\\*";
@@ -389,6 +389,6 @@ void SearchEngine::interpret_argument(std::string * arg) {
 
 void SearchEngine::mark_result(std::string * text) {
 	boost::regex e("&");
-	e = boost::regex_replace(this->search_argument, e, "|");
+	e = boost::regex(boost::regex_replace(this->search_argument, e, "|"), boost::regex::icase);
 	*text = boost::regex_replace(*text, e, this->mark_argument);
 }

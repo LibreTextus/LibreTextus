@@ -13,7 +13,7 @@ Libre::TextView::TextView(const std::string & info) {
 	this->information_text.set_selectable(true);
 	this->information_text.set_can_focus(false);
 
-	this->no_result_label.set_markup("<span size=\"xx-large\">No Results</span>");
+	this->no_result_label.set_markup("<span size=\"xx-large\">" + std::string(_("No Results")) + "</span>");
 	this->no_result_label.set_justify(Gtk::JUSTIFY_CENTER);
 	this->no_result_label.set_line_wrap(true);
 	this->no_result_label.set_line_wrap_mode(Pango::WRAP_WORD);
@@ -312,7 +312,7 @@ void Libre::TextView::label_populate_popup(Gtk::Menu * menu, int tab, int versio
 	std::cout << "SELECTION: " << selection << '\n';
 
 	if (!selection.empty()) {
-		Gtk::MenuItem * search_item = new Gtk::MenuItem(std::string("Search ") + "\"" + selection + "\"");
+		Gtk::MenuItem * search_item = new Gtk::MenuItem(std::string(_("Search")) + " \"" + selection + "\"");
 		search_item->signal_button_release_event().connect([this, selection](GdkEventButton * b) -> bool {
 			this->m_signal_right_click_search.emit(selection);
 			return false;

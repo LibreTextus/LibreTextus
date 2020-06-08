@@ -7,6 +7,7 @@
 #include <algorithm>
 #include <iostream>
 #include <yaml-cpp/yaml.h>
+#include <glibmm/i18n.h>
 
 namespace Libre {
 	class TextView : public Gtk::ScrolledWindow {

@@ -40,28 +40,28 @@ bool Libre::MainWindow::create(Libre::Widgets * w, SignalHandler * s) {
 	// CREATE FILE MENU
 	// ------------------------------------------
 
-	w->ui.action_group->add(Gtk::Action::create("FileMenu", Gtk::Stock::FILE));
+	w->ui.action_group->add(Gtk::Action::create("FileMenu", _("File")));
 
 	// ------------------------------------------
 	// CREATE QUIT MENU
 	// ------------------------------------------
 
-	w->ui.action_group->add(Gtk::Action::create("FileNewTab", "New Tab"),
+	w->ui.action_group->add(Gtk::Action::create("FileNewTab", _("New Tab")),
 			Gtk::AccelKey("<control>T"));
-	w->ui.action_group->add(Gtk::Action::create("FileCloseTab", "Close Tab"),
+	w->ui.action_group->add(Gtk::Action::create("FileCloseTab", _("Close Tab")),
 			Gtk::AccelKey("<control>W"));
-	w->ui.action_group->add(Gtk::Action::create("FileQuit", Gtk::Stock::QUIT),
+	w->ui.action_group->add(Gtk::Action::create("FileQuit", _("Quit")),
 					sigc::mem_fun(s, &SignalHandler::quit));
 
 	// ------------------------------------------
 	// CREATE EDIT MENU
 	// ------------------------------------------
 
-	w->ui.action_group->add(Gtk::Action::create("EditMenu", Gtk::Stock::EDIT));
-	w->ui.action_group->add(Gtk::Action::create("EditCut", Gtk::Stock::CUT));
-	w->ui.action_group->add(Gtk::Action::create("EditCopy", Gtk::Stock::COPY));
-	w->ui.action_group->add(Gtk::Action::create("EditPaste", Gtk::Stock::PASTE));
-	w->ui.action_group->add(Gtk::Action::create("EditFind", Gtk::Stock::FIND),
+	w->ui.action_group->add(Gtk::Action::create("EditMenu", _("Edit")));
+	w->ui.action_group->add(Gtk::Action::create("EditCut", _("Cut")));
+	w->ui.action_group->add(Gtk::Action::create("EditCopy", _("Copy")));
+	w->ui.action_group->add(Gtk::Action::create("EditPaste", _("Paste")));
+	w->ui.action_group->add(Gtk::Action::create("EditFind", _("Search")),
 			Gtk::AccelKey("<control>F"), sigc::mem_fun(s, &SignalHandler::toggle_search));
 	w->ui.action_group->add(Gtk::Action::create("EditPreferences", Gtk::Stock::PREFERENCES),
 			Gtk::AccelKey(',', Gdk::ModifierType::CONTROL_MASK), sigc::mem_fun(s, &SignalHandler::toggle_preferences));
@@ -70,43 +70,41 @@ bool Libre::MainWindow::create(Libre::Widgets * w, SignalHandler * s) {
 	// CREATE VIEW MENU
 	// ------------------------------------------
 
-	w->ui.action_group->add(Gtk::Action::create("ViewMenu", "View"));
-	w->ui.action_group->add(Gtk::Action::create("ViewAddSource", "Add Source"),
+	w->ui.action_group->add(Gtk::Action::create("ViewMenu", _("View")));
+	w->ui.action_group->add(Gtk::Action::create("ViewAddSource", _("Add Source")),
 			Gtk::AccelKey("<control>N"), sigc::mem_fun(s, &SignalHandler::add_source));
-	w->ui.action_group->add(Gtk::Action::create("ViewRemoveSource", "Remove Source"),
+	w->ui.action_group->add(Gtk::Action::create("ViewRemoveSource", _("Remove Source")),
 			Gtk::AccelKey("<control>D"), sigc::mem_fun(s, &SignalHandler::remove_source));
-	w->ui.action_group->add(Gtk::Action::create("ViewToggleNotes", "Toggle Notes"),
+	w->ui.action_group->add(Gtk::Action::create("ViewToggleNotes", _("Toggle Notes")),
 			Gtk::AccelKey("<control><alt>N"));
-	w->ui.action_group->add(Gtk::Action::create("ViewToggleComments", "Toggle Comments"),
-			Gtk::AccelKey("<control><alt>C"));
-	w->ui.action_group->add(Gtk::Action::create("ViewZoomIn", Gtk::Stock::ZOOM_IN),
+	w->ui.action_group->add(Gtk::Action::create("ViewZoomIn", _("Zoom in")),
 			Gtk::AccelKey('+', Gdk::ModifierType::CONTROL_MASK), sigc::mem_fun(s, &SignalHandler::zoom_in));
-	w->ui.action_group->add(Gtk::Action::create("ViewZoomOut", Gtk::Stock::ZOOM_OUT),
+	w->ui.action_group->add(Gtk::Action::create("ViewZoomOut", _("Zoom out")),
 			Gtk::AccelKey('-', Gdk::ModifierType::CONTROL_MASK), sigc::mem_fun(s, &SignalHandler::zoom_out));
-	w->ui.action_group->add(Gtk::Action::create("ViewZoomReset", Gtk::Stock::ZOOM_100),
+	w->ui.action_group->add(Gtk::Action::create("ViewZoomReset", _("Zoom reset")),
 			Gtk::AccelKey('=', Gdk::ModifierType::CONTROL_MASK), sigc::mem_fun(s, &SignalHandler::zoom_reset));
-	w->ui.action_group->add(Gtk::Action::create("ViewMinimize", "Minimize"),
+	w->ui.action_group->add(Gtk::Action::create("ViewMinimize", _("Minimize")),
 			Gtk::AccelKey("<control>M"), sigc::mem_fun(s, &SignalHandler::toggle_iconify));
-	w->ui.action_group->add(Gtk::Action::create("ViewToggleFullscreen", Gtk::Stock::FULLSCREEN),
+	w->ui.action_group->add(Gtk::Action::create("ViewToggleFullscreen", _("Fullscreen")),
 			Gtk::AccelKey("F11"), sigc::mem_fun(s, &SignalHandler::toggle_fullscreen));
 
 	// ------------------------------------------
 	// CREATE HISTORY MENU
 	// ------------------------------------------
 
-	w->ui.action_group->add(Gtk::Action::create("HistoryMenu", "History"));
-	w->ui.action_group->add(Gtk::Action::create("HistoryBack", Gtk::Stock::GO_BACK),
+	w->ui.action_group->add(Gtk::Action::create("HistoryMenu", _("History")));
+	w->ui.action_group->add(Gtk::Action::create("HistoryBack", _("Go back")),
 			Gtk::AccelKey("<alt>Left"), sigc::bind<bool>(sigc::mem_fun(w->main.history_button, &Libre::HistoryButton::button_pressed), false));
-	w->ui.action_group->add(Gtk::Action::create("HistoryForward", Gtk::Stock::GO_FORWARD),
+	w->ui.action_group->add(Gtk::Action::create("HistoryForward", _("Go forward")),
 			Gtk::AccelKey("<alt>Right"), sigc::bind<bool>(sigc::mem_fun(w->main.history_button, &Libre::HistoryButton::button_pressed), true));
 
 	// ------------------------------------------
 	// CREATE HELP MENU
 	// ------------------------------------------
 
-	w->ui.action_group->add(Gtk::Action::create("HelpMenu", Gtk::Stock::HELP));
-	w->ui.action_group->add(Gtk::Action::create("HelpGetHelp", Gtk::Stock::HELP));
-	w->ui.action_group->add(Gtk::Action::create("HelpAbout", Gtk::Stock::ABOUT));
+	w->ui.action_group->add(Gtk::Action::create("HelpMenu", _("Help")));
+	w->ui.action_group->add(Gtk::Action::create("HelpGetHelp", _("Help")));
+	w->ui.action_group->add(Gtk::Action::create("HelpAbout", _("About")));
 
 	// ------------------------------------------
 	// ADD UIMANAGER ACCEL GROUP TO THE WINDOW
@@ -140,7 +138,6 @@ bool Libre::MainWindow::create(Libre::Widgets * w, SignalHandler * s) {
 				"			<menuitem action='ViewRemoveSource'/>"
 				"			<separator/>"
 				"			<menuitem action='ViewToggleNotes'/>"
-				"			<menuitem action='ViewToggleComments'/>"
 				"			<separator/>"
 				"			<menuitem action='ViewZoomIn'/>"
 				"			<menuitem action='ViewZoomOut'/>"
@@ -185,14 +182,14 @@ bool Libre::MainWindow::create(Libre::Widgets * w, SignalHandler * s) {
 	LOG(" * Create SearchEntry");
 
 	w->main.search_entry = new Gtk::SearchEntry;
-	w->main.search_entry->set_placeholder_text("Search");
+	w->main.search_entry->set_placeholder_text(_("Search"));
 
 	w->main.search_entry->signal_key_press_event().connect(
 		sigc::mem_fun(s, &SignalHandler::search_request),
 		false
 	);
 
-	w->main.number_results = new Gtk::Label("0 Results");
+	w->main.number_results = new Gtk::Label(std::string("0 ") + _("Results"));
 	w->main.history_button->trigger_search().connect(sigc::mem_fun(s, &SignalHandler::trigger_search));
 
 	Gtk::HBox * search_box = new Gtk::HBox;
@@ -217,7 +214,14 @@ bool Libre::MainWindow::create(Libre::Widgets * w, SignalHandler * s) {
 	w->main.panels->set_homogeneous(true);
 	w->add_panel();
 
-	w->main.text_view = new Libre::TextView(w->settings.get<std::string>("splash_text"));
+	std::string splash_text = _("<big>Welcome to LibreTextus!</big>\n"
+														"Here are some search syntax hints:\n"
+														"<i>WORD WORD2</i> will give you all verses with <i>WORD</i> and <i>WORD2</i> in it, but not in this order.\n"
+														"<i>\"WORD ANOTHER WORD\"</i> this means you want exactly what is quoted\n"
+														"To get specific verses or chapters use the standart notation like: <i>GEN 1,1-10</i>\n"
+														"<i>WORD@GEN 1</i> will give all <i>WORD</i> in <i>GEN 1</i>\n");
+
+	w->main.text_view = new Libre::TextView(splash_text);
 	w->main.text_view->signal_toggle_note().connect(sigc::mem_fun(s, &SignalHandler::toggle_note));
 	w->main.text_view->signal_right_click_search().connect(sigc::mem_fun(s, &SignalHandler::trigger_search));
 
@@ -296,7 +300,7 @@ bool Libre::PreferencesWindow::create(Libre::Widgets * w, SignalHandler * s) {
 
 	w->preferences.window = new Gtk::Window;
 	w->preferences.window->set_default_size(500, 400);
-	w->preferences.window->set_title("Preferences");
+	w->preferences.window->set_title(_("Preferences"));
 	w->preferences.window->set_position(Gtk::WIN_POS_CENTER);
 	w->preferences.window->set_icon_from_file(DATA("icon.svg"));
 
@@ -326,7 +330,7 @@ bool Libre::PreferencesWindow::create(Libre::Widgets * w, SignalHandler * s) {
 	// ------------------------------------------
 
 	Gtk::HBox * theme_box = new Gtk::HBox;
-	Gtk::Label * theme_label = new Gtk::Label("Theme", Gtk::ALIGN_START);
+	Gtk::Label * theme_label = new Gtk::Label(_("Theme"), Gtk::ALIGN_START);
 	w->preferences.theme_combo = new Gtk::ComboBoxText;
 
 	// ------------------------------------------
@@ -395,9 +399,9 @@ bool Libre::PreferencesWindow::create(Libre::Widgets * w, SignalHandler * s) {
 
 	LOG(" * Init Tab \"Keybindings\"");
 
-	Gtk::Label * l2 = new Gtk::Label("Keybindings");
+	Gtk::Label * l2 = new Gtk::Label(_("Keybindings"));
 
-	note_book->append_page(*l2, "Keybindings");
+	note_book->append_page(*l2, _("Keybindings"));
 
 	// ------------------------------------------
 	// CREATE THE BOOKS MANAGER TAB
@@ -407,7 +411,7 @@ bool Libre::PreferencesWindow::create(Libre::Widgets * w, SignalHandler * s) {
 
 	Gtk::VBox * books_box = new Gtk::VBox;
 
-	Gtk::Label * books_page_title = new Gtk::Label("Book Manager");
+	Gtk::Label * books_page_title = new Gtk::Label(_("Book Manager"));
 
 	Gtk::ScrolledWindow * manager_container = new Gtk::ScrolledWindow;
 	manager_container->set_border_width(20);
@@ -417,13 +421,13 @@ bool Libre::PreferencesWindow::create(Libre::Widgets * w, SignalHandler * s) {
 	w->preferences.book_manager_box = new Gtk::VBox;
 	w->preferences.book_manager_box->set_spacing(5);
 
-	Gtk::Label * book_title = new Gtk::Label("Source");
+	Gtk::Label * book_title = new Gtk::Label(_("Source"));
 	Gtk::HBox * book_container = new Gtk::HBox;
 	book_container->set_border_width(20);
 	Gtk::CheckButton * enable_checkbutton;
 
 	book_container->pack_start(*book_title, Gtk::PACK_SHRINK, 0);
-	book_title = new Gtk::Label("Enabled");
+	book_title = new Gtk::Label(_("Enabled"));
 	book_container->pack_end(*book_title, Gtk::PACK_SHRINK, 0);
 	books_box->pack_start(*book_container, Gtk::PACK_SHRINK, 0);
 
@@ -470,7 +474,7 @@ bool Libre::PreferencesWindow::create(Libre::Widgets * w, SignalHandler * s) {
 	sep = new Gtk::Separator;
 	books_box->pack_end(*sep, Gtk::PACK_SHRINK, 0);
 
-	note_book->append_page(*books_box, "Book Manager");
+	note_book->append_page(*books_box, _("Book Manager"));
 
 	// ------------------------------------------
 	// CONNECT BUTTONS TO FUNCTIONS

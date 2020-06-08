@@ -15,11 +15,7 @@
 
 class Settings {
 public:
-	Settings () {
-		if (!std::experimental::filesystem::exists(HOME("settings.yml"))) {
-			std::experimental::filesystem::copy(DATA("settings.yml"), HOME("settings.yml"));
-		}
-	};
+	Settings () = default;
 	virtual ~Settings () = default;
 
 	// SETTINGS::GET<T> ----------------------------------------------------------

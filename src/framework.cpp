@@ -5,6 +5,25 @@ int Framework::init(int argc, char *argv[]) {
 	LOG("--------------------- LOG BEGIN ---------------------");
 
 	// ------------------------------------------
+	// CHECK IF THE ROOT DIRECTORY EXISTS
+	// ------------------------------------------
+
+	if (!std::experimental::filesystem::exists(HOME())) {
+		std::experimental::filesystem::create_directory(HOME());
+	}
+
+	// ------------------------------------------
+	// CREATE SETTINGS FILE IF IT DOES NOT EXIST
+	// ------------------------------------------
+
+	if (!std::experimental::filesystem::exists(HOME("settings.yml"))) {
+		std::experimental::filesystem::copy(DATA("settings.yml"), HOME("settings.yml"));
+	}
+
+	std::cout << "LC_ALL: " << setlocale(LC_ALL, NULL) << '\n';
+  std::cout << "LC_CTYPE: " << setlocale(LC_CTYPE, NULL) << '\n';
+
+	// ------------------------------------------
 	// CREATE BUILDER AND APPLICATION
 	// ------------------------------------------
 
@@ -29,8 +48,8 @@ int Framework::init(int argc, char *argv[]) {
 
 	Gtk::Label * title = new Gtk::Label;
 	title->set_markup("<span font='42'>LibreTextus</span>");
-	this->widgets.splash_screen.header_label = new Gtk::Label("Test");
-	this->widgets.splash_screen.info_label = new Gtk::Label("Test");
+	this->widgets.splash_screen.header_label = new Gtk::Label;
+	this->widgets.splash_screen.info_label = new Gtk::Label;
 	this->widgets.splash_screen.spinner = new Gtk::Spinner;
 	this->widgets.splash_screen.spinner->set_size_request(70, 70);
 
@@ -48,12 +67,12 @@ int Framework::init(int argc, char *argv[]) {
 	LOG("-- Load Css");
 
 	this->widgets.style.css = Gtk::CssProvider::create();
-	if(!this->widgets.style.css->load_from_path(DATA(this->settings.get<std::string>("theme-active") + ".css"))) {
+	if(!this->widgets.style.css->load_from_path(DATA(this->widgets.settings.get<std::string>("theme-active") + ".css"))) {
 			std::cerr << "Failed to load css\n";
 			return 1;
 	}
 
-	this->widgets.style.font_size = this->settings.get<int>("font_size");
+	this->widgets.style.font_size = this->widgets.settings.get<int>("font_size");
 	this->widgets.style.font_size_css = Gtk::CssProvider::create();
 	this->widgets.style.font_size_css->load_from_data(
 		"* { font-size: " + std::to_string(this->widgets.style.font_size) + "px; }"

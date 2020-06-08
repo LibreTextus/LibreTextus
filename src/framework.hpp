@@ -3,6 +3,7 @@
 
 #include <gtkmm.h>
 #include <iostream>
+#include <experimental/filesystem>
 
 #include "signal_handler.hpp"
 #include "widgets.hpp"
@@ -15,7 +16,6 @@ class Framework {
 private:
 	SignalHandler signal_handler;
 	Libre::Widgets widgets;
-	Settings settings;
 
 public:
 	Framework() {}

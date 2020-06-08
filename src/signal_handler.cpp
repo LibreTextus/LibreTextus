@@ -20,8 +20,8 @@ void SignalHandler::init(Libre::Widgets * w) {
 	this->widgets = w;
 
 	this->widgets->splash_screen.mutex.lock();
-	this->widgets->splash_screen.header_string = "Init SearchEngine";
-	this->widgets->splash_screen.info_string = "Load File";
+	this->widgets->splash_screen.header_string = _("Init SearchEngine");
+	this->widgets->splash_screen.info_string = _("Load File");
 	this->widgets->splash_screen.mutex.unlock();
 	this->widgets->splash_screen.text_dispatcher.emit();
 
@@ -39,7 +39,7 @@ void SignalHandler::init(Libre::Widgets * w) {
 	// ------------------------------------------
 
 	this->widgets->splash_screen.mutex.lock();
-	this->widgets->splash_screen.info_string = "Fetch mark color";
+	this->widgets->splash_screen.info_string = _("Fetch mark color");
 	this->widgets->splash_screen.mutex.unlock();
 	this->widgets->splash_screen.text_dispatcher.emit();
 
@@ -101,7 +101,7 @@ gboolean SignalHandler::search_request(GdkEventKey * event) {
 
 	if (event->keyval == 65293) {
 
-		this->widgets->main.number_results->set_text("Searching");
+		this->widgets->main.number_results->set_text(_("Searching"));
 
 		if (this->widgets->main.search_entry->get_text() == "") {
 			this->widgets->main.text_view->show_information();
@@ -254,7 +254,7 @@ void SignalHandler::delete_thread() {
 		this->widgets->main.search_entry->set_progress_fraction(0);
 	}
 
-	this->widgets->main.number_results->set_text(std::to_string(this->widgets->search_engine[0].get_last_search_results()->size()) + " Results");
+	this->widgets->main.number_results->set_text(std::to_string(this->widgets->search_engine[0].get_last_search_results()->size()) + " " + _("Results"));
 
 	this->widgets->main.text_view->show_if_results();
 
@@ -689,7 +689,7 @@ void SignalHandler::add_source_dir() {
 		delete this->widgets->dialog.window;
 	}
 	this->widgets->dialog.window = new Gtk::Window;
-	this->widgets->dialog.window->set_title("Add source directory");
+	this->widgets->dialog.window->set_title(_("Add source directory"));
 	this->widgets->dialog.window->set_default_size(500, 100);
 	this->widgets->dialog.window->set_keep_above(true);
 	this->widgets->dialog.window->set_resizable(false);
@@ -707,16 +707,16 @@ void SignalHandler::add_source_dir() {
 	// CREATE THE WIDGETS FOR THE DIALOG WINDOW
 	// ------------------------------------------
 
-	Gtk::Label * url_label = new Gtk::Label("Enter the url of your git source repository:");
+	Gtk::Label * url_label = new Gtk::Label(_("Enter the url of your git source repository:"));
 
 	Gtk::Entry * url_entry = new Gtk::Entry;
-	url_entry->set_placeholder_text("url: example.org/your/source.git");
+	url_entry->set_placeholder_text(_("url: example.org/your/source.git"));
 
 	Gtk::HBox * button_container = new Gtk::HBox;
 	button_container->set_spacing(10);
 
-	Gtk::Button * ok_button = new Gtk::Button("OK");
-	Gtk::Button * cancel_button = new Gtk::Button("Cancel");
+	Gtk::Button * ok_button = new Gtk::Button(_("Ok"));
+	Gtk::Button * cancel_button = new Gtk::Button(_("Cancel"));
 
 	button_container->pack_end(*ok_button, Gtk::PACK_SHRINK, 0);
 	button_container->pack_end(*cancel_button, Gtk::PACK_SHRINK, 0);
@@ -767,7 +767,7 @@ void SignalHandler::remove_source_dir() {
 	}
 
 	this->widgets->dialog.window = new Gtk::Window;
-	this->widgets->dialog.window->set_title("Add source directory");
+	this->widgets->dialog.window->set_title(_("Add source directory"));
 	this->widgets->dialog.window->set_default_size(300, 100);
 	this->widgets->dialog.window->set_keep_above(true);
 	this->widgets->dialog.window->set_resizable(false);
@@ -781,14 +781,14 @@ void SignalHandler::remove_source_dir() {
 	box->set_border_width(10);
 	box->set_spacing(10);
 
-	Gtk::Label * path_label = new Gtk::Label("Chose the repository you want to be removed:");
+	Gtk::Label * path_label = new Gtk::Label(_("Chose the repository you want to be removed:"));
 	Gtk::ComboBoxText * combo = new Gtk::ComboBoxText;
 
 	Gtk::HBox * button_container = new Gtk::HBox;
 	button_container->set_spacing(10);
 
-	Gtk::Button * ok_button = new Gtk::Button("OK");
-	Gtk::Button * cancel_button = new Gtk::Button("Cancel");
+	Gtk::Button * ok_button = new Gtk::Button(_("OK"));
+	Gtk::Button * cancel_button = new Gtk::Button(_("Cancel"));
 
 	// ------------------------------------------
 	// PACK WIDGETS TO THE DIALOG WINDOW
@@ -921,7 +921,7 @@ void SignalHandler::trigger_search(std::string text) {
 
 	this->widgets->main.search_entry->set_text(text);
 
-	this->widgets->main.number_results->set_text("Searching");
+	this->widgets->main.number_results->set_text(_("Searching"));
 
 	this->widgets->main.text_view->show_content();
 	this->widgets->main.text_view->grab_focus();

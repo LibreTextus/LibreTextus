@@ -10,6 +10,7 @@
 #include <gtkmm.h>
 #include <mutex>
 #include <iostream>
+#include <glibmm/i18n.h>
 #include "settings.hpp"
 #include "path.hpp"
 

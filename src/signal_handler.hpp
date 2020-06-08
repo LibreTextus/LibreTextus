@@ -6,6 +6,7 @@
 #include <yaml-cpp/yaml.h>
 #include <thread>
 #include <algorithm>
+#include <glibmm/i18n.h>
 #include "settings.hpp"
 #include "path.hpp"
 #include "widgets.hpp"

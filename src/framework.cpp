@@ -20,6 +20,9 @@ int Framework::init(int argc, char *argv[]) {
 		std::experimental::filesystem::copy(DATA("settings.yml"), HOME("settings.yml"));
 	}
 
+	std::cout << "LC_ALL: " << setlocale(LC_ALL, NULL) << '\n';
+  std::cout << "LC_CTYPE: " << setlocale(LC_CTYPE, NULL) << '\n';
+
 	// ------------------------------------------
 	// CREATE BUILDER AND APPLICATION
 	// ------------------------------------------

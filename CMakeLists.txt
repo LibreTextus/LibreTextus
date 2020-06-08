@@ -87,7 +87,6 @@ else()
 	# BUILD LOCALES
 
 	add_compile_definitions(GETTEXT_PACKAGE="libretextus")
-	add_compile_definitions(LIBRETEXTUS_LOCALEDIR="${CMAKE_BINARY_DIR}/locale")
 
 	if (NOT EXISTS "${CMAKE_BINARY_DIR}/locale")
 		execute_process(COMMAND "mkdir" "${CMAKE_BINARY_DIR}/locale")
@@ -137,10 +136,10 @@ else()
 
 
 	file(COPY data/ DESTINATION data/)
-	file(COPY libretextus.desktop DESTINATION ./)
 
 	install(TARGETS LibreTextus DESTINATION .)
-	install(DIRECTORY data DESTINATION .)
+	install(DIRECTORY ${CMAKE_BINARY_DIR}/data DESTINATION .)
+	install(DIRECTORY ${CMAKE_BINARY_DIR}/locale DESTINATION .)
 	install(TARGETS libre_textus DESTINATION .)
 	install(FILES libretextus.desktop DESTINATION .)
 endif()

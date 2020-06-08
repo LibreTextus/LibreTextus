@@ -288,7 +288,7 @@ void SearchEngine::interpret_string() {
 
 	this->search_argument_vector.clear();
 
-	e = boost::regex("&", boost::regex::icase);
+	e = boost::regex("(?<!\\\\)&", boost::regex::icase);
 	arg = this->search_argument;
 
 	while(boost::regex_search(arg, m, e)) {
@@ -321,6 +321,11 @@ void SearchEngine::interpret_argument(std::string * arg) {
 		*arg = arg->substr(1, std::string::npos);
 	}
 
+	boost::regex e("[\\+\\*\\?\\^\\$\\.\\(\\)\{\\}\[\\]&\\|\\\\]");
+	*arg = boost::regex_replace(*arg, e, "\\\\$&");
+
+
+
 	// ------------------------------------------
 	// IF THERE ARE QUOTED WORDS REPLACE IT WITH
 	// *&ç&€* AND AFTER EVERY MANIPULATION
@@ -330,9 +335,10 @@ void SearchEngine::interpret_argument(std::string * arg) {
 	// IN THE FOLLOWING PROCESS
 	// ------------------------------------------
 
-	boost::regex e("\".[^\"]*\"", boost::regex::icase);
+	e = boost::regex("\".[^\"]*\"", boost::regex::icase);
 
 	boost::smatch m;
+
 	std::vector<std::string> static_expressions;
 
 	std::string arg_copy = *arg;
@@ -348,13 +354,13 @@ void SearchEngine::interpret_argument(std::string * arg) {
 	// SELECT EVERY WORD AND LIST THEM IN
 	// PARANTHESES WITH *OR* OPERATORS
 	// ------------------------------------------
-	e = boost::regex("[\\w\u00C0-\u024f\\*]+", boost::regex::icase);
+	e = boost::regex("([\\w\u00C0-\u024f]|\\\\\\*)+", boost::regex::icase);
 	*arg = boost::regex_replace(*arg, e, "((?<=[^\\\\w\u00C0-\u024f])|\\\\A)$&(?=[^\\\\w\u00C0-\u024f]|$)");
 
-	e = "\\*";
+	e = "\\\\\\*";
 	*arg = boost::regex_replace(*arg, e, "[\\\\w\u00C0-\u024f]*");
 
-	e = " ";
+	e = "[ ]+";
 
 	if (boost::regex_search(*arg, e)) {
 		*arg = boost::regex_replace(*arg, e, "&");

@@ -35,6 +35,7 @@ parts:
       - libgtkmm-3.0-dev
       - git
       - libboost-regex-dev
+      - gettext
     stage-packages:
       - libgtkmm-3.0-1v5
       - git

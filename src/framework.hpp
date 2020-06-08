@@ -4,6 +4,8 @@
 #include <gtkmm.h>
 #include <iostream>
 #include <experimental/filesystem>
+#include <glibmm/i18n.h>
+#include <locale.h>
 
 #include "signal_handler.hpp"
 #include "widgets.hpp"
@@ -22,7 +24,7 @@ public:
 	virtual ~Framework() {}
 
 	int init(int argc, char *argv[]) ;
-	void run();
+	bool run();
 };
 
 #endif

@@ -7,3 +7,4 @@ theme:
     - dark
     - light
 font_size: 15
+locale: ""

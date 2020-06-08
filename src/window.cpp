@@ -51,7 +51,7 @@ bool Libre::MainWindow::create(Libre::Widgets * w, SignalHandler * s) {
 	w->ui.action_group->add(Gtk::Action::create("FileCloseTab", _("Close Tab")),
 			Gtk::AccelKey("<control>W"));
 	w->ui.action_group->add(Gtk::Action::create("FileQuit", _("Quit")),
-					sigc::mem_fun(s, &SignalHandler::quit));
+					Gtk::AccelKey("<control>Q"), sigc::mem_fun(s, &SignalHandler::quit));
 
 	// ------------------------------------------
 	// CREATE EDIT MENU
@@ -340,12 +340,10 @@ bool Libre::PreferencesWindow::create(Libre::Widgets * w, SignalHandler * s) {
 
 	LOG(" * Load Settings");
 
-	Settings settings;
+	for (int i = 0; i < w->settings.get("theme-themes").size(); i++) {
+		w->preferences.theme_combo->append(w->settings.get("theme-themes")[i].as<std::string>());
 
-	for (int i = 0; i < settings.get("theme-themes").size(); i++) {
-		w->preferences.theme_combo->append(settings.get("theme-themes")[i].as<std::string>());
-
-		if (settings.get("theme-themes")[i].as<std::string>() == settings.get("theme-active").as<std::string>()) {
+		if (w->settings.get("theme-themes")[i].as<std::string>() == w->settings.get("theme-active").as<std::string>()) {
 			w->preferences.theme_combo->set_active(i);
 		}
 	}
@@ -365,6 +363,69 @@ bool Libre::PreferencesWindow::create(Libre::Widgets * w, SignalHandler * s) {
 	user_interface_box->pack_start(*theme_box, Gtk::PACK_SHRINK, 0);
 
 	// ------------------------------------------
+	// GET LOCALES
+	// ------------------------------------------
+
+	Gtk::HBox * lang_box = new Gtk::HBox;
+	Gtk::Label * lang_label = new Gtk::Label(_("Language"), Gtk::ALIGN_START);
+	w->preferences.lang_combo = new Gtk::ComboBoxText;
+
+	w->preferences.lang_combo->append(_("System default"));
+
+	for (auto & i : std::experimental::filesystem::directory_iterator(DATA("../locale"))) {
+		w->preferences.lang_combo->append(i.path().filename().string());
+	}
+
+	w->preferences.lang_combo->set_active_text((w->settings.get<std::string>("locale").empty() ? _("System default") : w->settings.get<std::string>("locale")));
+
+	w->preferences.lang_combo->signal_changed().connect([w, s]() {
+
+		if (w->preferences.lang_combo->get_active_text() == _("System default")) {
+			w->settings.set("locale", "");
+		} else {
+			w->settings.set("locale", w->preferences.lang_combo->get_active_text());
+		}
+
+		w->dialog.window = new Gtk::Window;
+		w->dialog.window->set_title(_("Info"));
+		w->dialog.window->set_border_width(10);
+		w->dialog.window->set_keep_above(true);
+		w->dialog.window->set_resizable(false);
+		w->dialog.window->set_position(Gtk::WIN_POS_CENTER);
+
+		Gtk::Label * text = new Gtk::Label(_("This change only takes effect after a restart"));
+		Gtk::Button * restart_button = new Gtk::Button(_("Restart"));
+		Gtk::Button * cancel_button = new Gtk::Button(_("Cancel"));
+
+		Gtk::HBox * hbox = new Gtk::HBox;
+		Gtk::VBox * vbox = new Gtk::VBox;
+
+		hbox->pack_end(*cancel_button, Gtk::PACK_SHRINK, 10);
+		hbox->pack_end(*restart_button, Gtk::PACK_SHRINK, 10);
+
+		vbox->pack_start(*text, Gtk::PACK_SHRINK, 10);
+		vbox->pack_end(*hbox, Gtk::PACK_SHRINK, 10);
+
+		w->dialog.window->add(*vbox);
+
+		w->dialog.window->show_all();
+
+		restart_button->signal_clicked().connect([w, s]() {
+			w->dialog.window->hide();
+			w->processing.restart_application = true;
+			s->quit();
+		});
+
+		cancel_button->signal_clicked().connect([w]() {
+			w->dialog.window->hide();
+		});
+	});
+
+	lang_box->pack_start(*lang_label);
+	lang_box->pack_end(*w->preferences.lang_combo);
+	user_interface_box->pack_start(*lang_box, Gtk::PACK_SHRINK, 0);
+
+	// ------------------------------------------
 	// CREATE A CONTAINER, LABEL AND SPINBUTTON
 	// FOR SETTING THE APPLICATION FONT SIZE
 	// ------------------------------------------
@@ -372,7 +433,7 @@ bool Libre::PreferencesWindow::create(Libre::Widgets * w, SignalHandler * s) {
 	Gtk::HBox * font_size_box = new Gtk::HBox;
 	Gtk::Label * font_size_label = new Gtk::Label("Font size", Gtk::ALIGN_START);
 	Glib::RefPtr<Gtk::Adjustment> spinbutton_adjustment = Gtk::Adjustment::create(
-		settings.get<int>("font_size"), 1, 100
+		w->settings.get<int>("font_size"), 1, 100
 	);
 
 	w->preferences.font_size_spinbutton = new Gtk::SpinButton(spinbutton_adjustment, 1, 0);
@@ -391,7 +452,7 @@ bool Libre::PreferencesWindow::create(Libre::Widgets * w, SignalHandler * s) {
 
 	user_interface_box->pack_start(*font_size_box, Gtk::PACK_SHRINK, 0);
 
-	note_book->append_page(*user_interface_box, "User Interface");
+	note_book->append_page(*user_interface_box, _("Appearance"));
 
 	// ------------------------------------------
 	// CREATE THE KEYBINDINGS SETTINGS TAB

@@ -1,227 +1,227 @@
-# SOME DESCRIPTIVE TITLE.
-# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# English translations for PACKAGE package.
+# Copyright (C) 2020 THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
-# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+# Nathan Reiner <nathan.p.reiner@gmail.com>, 2020.
 #
-#, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: PACKAGE VERSION\n"
+"Project-Id-Version: 0.1\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2020-06-08 14:32+0200\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
-"Language-Team: LANGUAGE <LL@li.org>\n"
-"Language: \n"
+"PO-Revision-Date: 2020-06-08 10:46+0200\n"
+"Last-Translator: Nathan Reiner <nathan.p.reiner@gmail.com>\n"
+"Language-Team: English\n"
+"Language: en_US\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=CHARSET\n"
+"Content-Type: text/plain; charset=ASCII\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 #: ../src/notebook.cpp:151
 msgid "Note"
-msgstr ""
+msgstr "Note"
 
 #: ../src/package_manager.cpp:54
 msgid "Install"
-msgstr ""
+msgstr "Install"
 
 #: ../src/package_manager.cpp:55
 msgid "This could take a while..."
-msgstr ""
+msgstr "This could take a while..."
 
 #: ../src/package_manager.cpp:72
 msgid "Looking for sources..."
-msgstr ""
+msgstr "Looking for sources..."
 
 #: ../src/package_manager.cpp:95
 msgid "Found"
-msgstr ""
+msgstr "Found"
 
 #: ../src/package_manager.cpp:111 ../src/package_manager.cpp:157
 msgid "Update sources.yml"
-msgstr ""
+msgstr "Update sources.yml"
 
 #: ../src/package_manager.cpp:141
 msgid "Removing directory..."
-msgstr ""
+msgstr "Removing directory..."
 
 #: ../src/package_manager.cpp:171
 msgid "Removing"
-msgstr ""
+msgstr "Removing"
 
 #: ../src/package_manager.cpp:240
 msgid "Update Packages"
-msgstr ""
+msgstr "Update Packages"
 
 #: ../src/package_manager.cpp:248
 msgid "Updating"
-msgstr ""
+msgstr "Updating"
 
 #: ../src/signal_handler.cpp:23
 msgid "Init SearchEngine"
-msgstr ""
+msgstr "Init SearchEngine"
 
 #: ../src/signal_handler.cpp:24
 msgid "Load File"
-msgstr ""
+msgstr "Load File"
 
 #: ../src/signal_handler.cpp:42
 msgid "Fetch mark color"
-msgstr ""
+msgstr "Fetch mark color"
 
 #: ../src/signal_handler.cpp:104 ../src/signal_handler.cpp:924
 msgid "Searching"
-msgstr ""
+msgstr "Searching"
 
 #: ../src/signal_handler.cpp:257 ../src/window.cpp:192
 msgid "Results"
-msgstr ""
+msgstr "Results"
 
 #: ../src/signal_handler.cpp:692 ../src/signal_handler.cpp:770
 msgid "Add source directory"
-msgstr ""
+msgstr "Add source directory"
 
 #. ------------------------------------------
 #. CREATE THE WIDGETS FOR THE DIALOG WINDOW
 #. ------------------------------------------
 #: ../src/signal_handler.cpp:710
 msgid "Enter the url of your git source repository:"
-msgstr ""
+msgstr "Enter the url of your git source repository:"
 
 #: ../src/signal_handler.cpp:713
 msgid "url: example.org/your/source.git"
-msgstr ""
+msgstr "url: example.org/your/source.git"
 
 #: ../src/signal_handler.cpp:718
 msgid "Ok"
-msgstr ""
+msgstr "Ok"
 
 #: ../src/signal_handler.cpp:719 ../src/signal_handler.cpp:791
 #: ../src/window.cpp:398
 msgid "Cancel"
-msgstr ""
+msgstr "Cancel"
 
 #: ../src/signal_handler.cpp:784
 msgid "Chose the repository you want to be removed:"
-msgstr ""
+msgstr "Chose the repository you want to be removed:"
 
 #: ../src/signal_handler.cpp:790
 msgid "OK"
-msgstr ""
+msgstr "OK"
 
 #: ../src/text_view.cpp:16
 msgid "No Results"
-msgstr ""
+msgstr "No Results"
 
 #: ../src/text_view.cpp:315 ../src/window.cpp:64 ../src/window.cpp:185
 msgid "Search"
-msgstr ""
+msgstr "Search"
 
 #. ------------------------------------------
 #. CREATE FILE MENU
 #. ------------------------------------------
 #: ../src/window.cpp:43
 msgid "File"
-msgstr ""
+msgstr "File"
 
 #. ------------------------------------------
 #. CREATE QUIT MENU
 #. ------------------------------------------
 #: ../src/window.cpp:49
 msgid "New Tab"
-msgstr ""
+msgstr "New Tab"
 
 #: ../src/window.cpp:51
 msgid "Close Tab"
-msgstr ""
+msgstr "Close Tab"
 
 #: ../src/window.cpp:53
 msgid "Quit"
-msgstr ""
+msgstr "Quit"
 
 #. ------------------------------------------
 #. CREATE EDIT MENU
 #. ------------------------------------------
 #: ../src/window.cpp:60
 msgid "Edit"
-msgstr ""
+msgstr "Edit"
 
 #: ../src/window.cpp:61
 msgid "Cut"
-msgstr ""
+msgstr "Cut"
 
 #: ../src/window.cpp:62
 msgid "Copy"
-msgstr ""
+msgstr "Copy"
 
 #: ../src/window.cpp:63
 msgid "Paste"
-msgstr ""
+msgstr "Paste"
 
 #. ------------------------------------------
 #. CREATE VIEW MENU
 #. ------------------------------------------
 #: ../src/window.cpp:73
 msgid "View"
-msgstr ""
+msgstr "View"
 
 #: ../src/window.cpp:74
 msgid "Add Source"
-msgstr ""
+msgstr "Add Source"
 
 #: ../src/window.cpp:76
 msgid "Remove Source"
-msgstr ""
+msgstr "Remove Source"
 
 #: ../src/window.cpp:78
 msgid "Toggle Notes"
-msgstr ""
+msgstr "Toggle Notes"
 
 #: ../src/window.cpp:80
 msgid "Zoom in"
-msgstr ""
+msgstr "Zoom in"
 
 #: ../src/window.cpp:82
 msgid "Zoom out"
-msgstr ""
+msgstr "Zoom out"
 
 #: ../src/window.cpp:84
 msgid "Zoom reset"
-msgstr ""
+msgstr "Zoom reset"
 
 #: ../src/window.cpp:86
 msgid "Minimize"
-msgstr ""
+msgstr "Minimize"
 
 #: ../src/window.cpp:88
 msgid "Fullscreen"
-msgstr ""
+msgstr "Fullscreen"
 
 #. ------------------------------------------
 #. CREATE HISTORY MENU
 #. ------------------------------------------
 #: ../src/window.cpp:95
 msgid "History"
-msgstr ""
+msgstr "History"
 
 #: ../src/window.cpp:96
 msgid "Go back"
-msgstr ""
+msgstr "Go back"
 
 #: ../src/window.cpp:98
 msgid "Go forward"
-msgstr ""
+msgstr "Go forward"
 
 #. ------------------------------------------
 #. CREATE HELP MENU
 #. ------------------------------------------
 #: ../src/window.cpp:105 ../src/window.cpp:106
 msgid "Help"
-msgstr ""
+msgstr "Help"
 
 #: ../src/window.cpp:107
 msgid "About"
-msgstr ""
+msgstr "About"
 
 #: ../src/window.cpp:217
 msgid ""
@@ -234,51 +234,59 @@ msgid ""
 "1,1-10</i>\n"
 "<i>WORD@GEN 1</i> will give all <i>WORD</i> in <i>GEN 1</i>\n"
 msgstr ""
+"<big>Welcome to LibreTextus!</big>\n"
+"Here are some search syntax hints:\n"
+"<i>WORD WORD2</i> will give you all verses with <i>WORD</i> and <i>WORD2</i> "
+"in it, but not in this order.\n"
+"<i>\"WORD ANOTHER WORD\"</i> this means you want exactly what is quoted\n"
+"To get specific verses or chapters use the standart notation like: <i>GEN "
+"1,1-10</i>\n"
+"<i>WORD@GEN 1</i> will give all <i>WORD</i> in <i>GEN 1</i>\n"
 
 #: ../src/window.cpp:303
 msgid "Preferences"
-msgstr ""
+msgstr "Preferences"
 
 #: ../src/window.cpp:333
 msgid "Theme"
-msgstr ""
+msgstr "Theme"
 
 #: ../src/window.cpp:370
 msgid "Language"
-msgstr ""
+msgstr "Language"
 
 #: ../src/window.cpp:373 ../src/window.cpp:379 ../src/window.cpp:383
 msgid "System default"
-msgstr ""
+msgstr "System default"
 
 #: ../src/window.cpp:390
 msgid "Info"
-msgstr ""
+msgstr "Info"
 
 #: ../src/window.cpp:396
 msgid "This change only takes effect after a restart"
-msgstr ""
+msgstr "This change only takes effect after a restart"
 
 #: ../src/window.cpp:397
 msgid "Restart"
-msgstr ""
+msgstr "Restart"
 
 #: ../src/window.cpp:455
 msgid "Appearance"
-msgstr ""
+msgstr "Appearance"
 
 #: ../src/window.cpp:463 ../src/window.cpp:465
 msgid "Keybindings"
-msgstr ""
+msgstr "Keybindings"
 
 #: ../src/window.cpp:475 ../src/window.cpp:538
 msgid "Book Manager"
-msgstr ""
+msgstr "Book Manager"
 
 #: ../src/window.cpp:485
 msgid "Source"
-msgstr ""
+msgstr "Source"
 
 #: ../src/window.cpp:491
 msgid "Enabled"
-msgstr ""
+msgstr "Enabled"

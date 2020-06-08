@@ -62,6 +62,7 @@ namespace Libre {
 			Gtk::Window * window;
 			Gtk::SpinButton * font_size_spinbutton;
 			Gtk::ComboBoxText * theme_combo;
+			Gtk::ComboBoxText * lang_combo;
 			Gtk::VBox * book_manager_box;
 			tsl::ordered_map<std::string, Gtk::CheckButton *> sources_check;
 		} preferences;
@@ -98,6 +99,7 @@ namespace Libre {
 			int replace_id;
 			std::string found_position;
 			std::vector<std::string *> found_verses;
+			bool restart_application;
 		} processing;
 
 		Widgets() = default;

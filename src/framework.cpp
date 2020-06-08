@@ -4,6 +4,8 @@ int Framework::init(int argc, char *argv[]) {
 	LOG_RESET();
 	LOG("--------------------- LOG BEGIN ---------------------");
 
+	this->widgets.processing.restart_application = false;
+
 	// ------------------------------------------
 	// CHECK IF THE ROOT DIRECTORY EXISTS
 	// ------------------------------------------
@@ -20,8 +22,24 @@ int Framework::init(int argc, char *argv[]) {
 		std::experimental::filesystem::copy(DATA("settings.yml"), HOME("settings.yml"));
 	}
 
+	// ------------------------------------------
+	// INIT LOCALES
+	// ------------------------------------------
+
+	if (this->widgets.settings.get<std::string>("locale").empty()) {
+		setlocale(LC_ALL, "");
+		setenv("LANGUAGE", std::string(setlocale(LC_ALL, NULL)).substr(0, std::string(setlocale(LC_ALL, NULL)).find_last_of(".")).c_str(), 1);
+	} else {
+		setlocale(LC_ALL, (this->widgets.settings.get<std::string>("locale") + ".utf8").c_str());
+		setenv("LANGUAGE", this->widgets.settings.get<std::string>("locale").c_str(), 1);
+	}
+
+	bindtextdomain(GETTEXT_PACKAGE, DATA("../locale").c_str());
+	textdomain(GETTEXT_PACKAGE);
+
 	std::cout << "LC_ALL: " << setlocale(LC_ALL, NULL) << '\n';
   std::cout << "LC_CTYPE: " << setlocale(LC_CTYPE, NULL) << '\n';
+	std::cout << "LC_MESSAGES: " << setlocale(LC_MESSAGES, NULL) << '\n';
 
 	// ------------------------------------------
 	// CREATE BUILDER AND APPLICATION
@@ -214,7 +232,7 @@ int Framework::init(int argc, char *argv[]) {
 	return 0;
 }
 
-void Framework::run() {
+bool Framework::run() {
 
 	LOG("-- Run Application");
 
@@ -224,5 +242,9 @@ void Framework::run() {
 		std::cerr << "ERROR: UNABLE TO RUN APPLICATION" << '\n';
 	}
 
-	LOG("--------------------- LOG END ---------------------");
+	if (!this->widgets.processing.restart_application) {
+		LOG("--------------------- LOG END ---------------------");
+	}
+
+	return this->widgets.processing.restart_application;
 }

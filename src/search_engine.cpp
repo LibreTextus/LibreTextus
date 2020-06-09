@@ -9,7 +9,7 @@ SearchEngine::SearchEngine(std::string file_path, std::string names_path) {
 	this->names = this->source_handler.get_names(names_path);
 	this->active_verse = this->file->begin();
 
-	W = "\\w\u00C0-\u024f";
+	W = "\\w\u00C0-\uffff";
 }
 
 // SEARCHENGINE::SET_SEARCH_ARGUMENT -------------------------------------------
@@ -324,18 +324,16 @@ void SearchEngine::interpret_argument(std::string * arg) {
 	boost::regex e("[\\+\\*\\?\\^\\$\\.\\(\\)\{\\}\[\\]&\\|\\\\]");
 	*arg = boost::regex_replace(*arg, e, "\\\\$&");
 
-
-
 	// ------------------------------------------
 	// IF THERE ARE QUOTED WORDS REPLACE IT WITH
-	// *&ç&€* AND AFTER EVERY MANIPULATION
+	// *_INSERT_* AND AFTER EVERY MANIPULATION
 	// INSERT THE QUOTED WORDS IN ITS PLACE
 	// THE REPLACE STRING HAS TO BE NON-WORD
 	// CHARACTERS THAT THEY WONT BE SELECTED
 	// IN THE FOLLOWING PROCESS
 	// ------------------------------------------
 
-	e = boost::regex("\".[^\"]*\"", boost::regex::icase);
+	e = boost::regex("\"[^\"]*\"", boost::regex::icase);
 
 	boost::smatch m;
 
@@ -354,11 +352,11 @@ void SearchEngine::interpret_argument(std::string * arg) {
 	// SELECT EVERY WORD AND LIST THEM IN
 	// PARANTHESES WITH *OR* OPERATORS
 	// ------------------------------------------
-	e = boost::regex("([\\w\u00C0-\u024f]|\\\\\\*)+", boost::regex::icase);
-	*arg = boost::regex_replace(*arg, e, "((?<=[^\\\\w\u00C0-\u024f])|\\\\A)$&(?=[^\\\\w\u00C0-\u024f]|$)");
+	e = boost::regex("([\\w\u00C0-\uffff]|\\\\\\*)+", boost::regex::icase);
+	*arg = boost::regex_replace(*arg, e, "((?<=[^\\\\w\u00C0-\uffff])|\\\\A)$&(?=[^\\\\w\u00C0-\uffff]|$)");
 
 	e = "\\\\\\*";
-	*arg = boost::regex_replace(*arg, e, "[\\\\w\u00C0-\u024f]*");
+	*arg = boost::regex_replace(*arg, e, "[\\\\w\u00C0-\uffff]*");
 
 	e = "[ ]+";
 
@@ -372,8 +370,8 @@ void SearchEngine::interpret_argument(std::string * arg) {
 	// ------------------------------------------
 
 	for (std::vector<std::string>::iterator i = static_expressions.begin(); i != static_expressions.end(); i++) {
-		e = "((?<=[^\\\\w\u00C0-\u024f])|\\\\A)$&(?=[^\\\\w\u00C0-\u024f]|$)";
-		*i = boost::regex_replace(*i, e, "((?<=[^\\\\w\u00C0-\u024f])|\\\\A)$&(?=[^\\\\w\u00C0-\u024f]|$)");
+		e = "((?<=[^\\\\w\u00C0-\uffff])|\\\\A)$&(?=[^\\\\w\u00C0-\uffff]|$)";
+		*i = boost::regex_replace(*i, e, "((?<=[^\\\\w\u00C0-\uffff])|\\\\A)$&(?=[^\\\\w\u00C0-\uffff]|$)");
 
 		e = "\\*";
 		*i = boost::regex_replace(*i, e, "\\*");

@@ -1,11 +1,32 @@
 #include "text_view.hpp"
 
+// LIBRE::TEXTVIEW::TEXTVIEW ---------------------------------------------------
+// CONSTRUCTOR OF THE TEXTVIEW SETS THE DEFAULT SETTINGS OF THE CHILDREN
+// -----------------------------------------------------------------------------
+
 Libre::TextView::TextView(const std::string & info) {
+
+	// ------------------------------------------
+	// SET PROPERTIES OF THIS WIDGET AND OF ITS
+	// CHILDREN
+	// ------------------------------------------
+
 	this->set_name("text_view");
 	this->set_can_focus(true);
 	this->set_focus_on_click(true);
+
+	// ------------------------------------------
+	// SET PROPERTIES FOR THE FOLLOWING CHILDREN:
+	// 	* main -> CONTAINER FOR THE RESULTS
+	// 	* information_text -> TEXT DISPLAYED WHEN
+	//			PROGRAM STARTED OR SEARCHED EMPTY
+	// 	* no_result_label -> DISPLAYED IF THERE
+	//			ARE NO RESULTS
+	// ------------------------------------------
+
 	this->main.set_name("text_view");
 	this->main.set_homogeneous(true);
+
 	this->information_text.set_markup(info);
 	this->information_text.set_justify(Gtk::JUSTIFY_CENTER);
 	this->information_text.set_line_wrap(true);
@@ -21,68 +42,37 @@ Libre::TextView::TextView(const std::string & info) {
 	this->no_result_label.set_can_focus(false);
 	this->no_result_label.set_name("no_result_label");
 
+	// ------------------------------------------
+	// * ADD OVERLAY TO THIS SCROLLED_WINDOW
+	// * ADD THE information_text TO THE OVERLAY
+	// * HIDE THE VERTICAL SCROLLBAR
+	// ------------------------------------------
+
 	this->add(this->overlay);
-	this->get_vscrollbar()->hide();
 	this->overlay.add(this->information_text);
+	this->get_vscrollbar()->hide();
+
+	// ------------------------------------------
+	// SET PROPERTIES OF THIS TEXTVIEW
+	// AND ADD A TAB
+	// ------------------------------------------
 
 	this->padding_x = 10;
 	this->padding_y = 10;
 	this->max_verses = 20;
-	this->tabs = 1;
+	this->tabs = 0;
 	this->scroll_status = 0;
 	this->scroll_sensitivity = 0.5;
 
-	this->verses.push_back(Gtk::VBox());
-	this->v_labels.push_back({});
-	this->c_labels.push_back({});
-	this->verse_status.push_back({});
-
-	this->verses[this->tabs - 1].set_name("text_view");
-	this->verses[this->tabs - 1].set_border_width(5);
-
-	for (int i = 0; i < this->max_verses; i++) {
-		this->v_labels[this->tabs - 1].push_back(Gtk::Label());
-		this->v_labels[this->tabs - 1][i].set_name("text_view");
-		this->v_labels[this->tabs - 1][i].set_line_wrap(true);
-		this->v_labels[this->tabs - 1][i].set_alignment(Gtk::ALIGN_START);
-		this->v_labels[this->tabs - 1][i].set_line_wrap_mode(Pango::WRAP_WORD);
-		this->v_labels[this->tabs - 1][i].set_selectable(true);
-		this->v_labels[this->tabs - 1][i].set_can_focus(false);
-
-		this->v_labels[this->tabs - 1][i].signal_populate_popup().connect(
-			sigc::bind<int, int>(sigc::mem_fun(this, &Libre::TextView::label_populate_popup), this->tabs - 1, i)
-		);
-
-		this->c_labels[this->tabs - 1].push_back(Gtk::Label());
-		this->c_labels[this->tabs - 1][i].set_name("text_view");
-		this->c_labels[this->tabs - 1][i].set_line_wrap(true);
-		this->c_labels[this->tabs - 1][i].set_alignment(Gtk::ALIGN_START);
-		this->c_labels[this->tabs - 1][i].set_line_wrap_mode(Pango::WRAP_WORD);
-		this->c_labels[this->tabs - 1][i].set_selectable(true);
-		this->c_labels[this->tabs - 1][i].set_can_focus(false);
-
-		this->verse_status[this->tabs - 1].push_back(Gtk::CheckButton());
-		this->verse_status[this->tabs - 1][i].set_name("note_toggle");
-		this->verse_status[this->tabs - 1][i].set_can_focus(false);
-
-		Gtk::VBox * vbox = new Gtk::VBox;
-		vbox->set_name("verse_box");
-		Gtk::HBox * hbox = new Gtk::HBox;
-		hbox->set_name("text_view");
-
-		hbox->pack_start(this->c_labels[this->tabs - 1][i], Gtk::PACK_SHRINK, 0);
-		hbox->pack_start(this->verse_status[this->tabs - 1][i], Gtk::PACK_SHRINK, 5);
-
-		vbox->pack_start(*hbox, Gtk::PACK_SHRINK, 0);
-		vbox->pack_start(this->v_labels[this->tabs - 1][i], Gtk::PACK_EXPAND_WIDGET, 0);
-
-		this->verses[this->tabs - 1].pack_start(*vbox, Gtk::PACK_EXPAND_WIDGET, this->padding_x);
-	}
+	this->append_tab();
 
 	this->verses[0].get_children()[0]->set_name("active_verse");
-
-	this->main.pack_start(this->verses[0], Gtk::PACK_EXPAND_WIDGET, 5);
 }
+
+
+// LIBRE::TEXTVIEW::SHOW_INFORMATION -------------------------------------------
+// THIS FUNCTION DISPLAYES THE INFORMATION TEXT WICH WAS SET IN THE CONSTRUCTOR
+// -----------------------------------------------------------------------------
 
 void Libre::TextView::show_information() {
 	this->overlay.set_halign(Gtk::ALIGN_CENTER);
@@ -92,6 +82,10 @@ void Libre::TextView::show_information() {
 	this->show_all();
 }
 
+// LIBRE::TEXTVIEW::SHOW_CONTENT -----------------------------------------------
+// THIS FUNCTION DISPLAYES THE CONTENT OF THIS TEXTVIEW
+// -----------------------------------------------------------------------------
+
 void Libre::TextView::show_content() {
 	this->overlay.set_halign(Gtk::ALIGN_FILL);
 	this->overlay.set_valign(Gtk::ALIGN_FILL);
@@ -99,6 +93,10 @@ void Libre::TextView::show_content() {
 	this->overlay.add(this->main);
 	this->show_all();
 }
+
+// LIBRE::TEXTVIEW::SHOW_IF_RESULTS --------------------------------------------
+// THIS FUNCTION DISPLAYES THE NO_RESULT_LABEL IF THERE ARE NO RESULTS
+// -----------------------------------------------------------------------------
 
 void Libre::TextView::show_if_results() {
 	if (this->captions.size() == 0) {
@@ -110,6 +108,10 @@ void Libre::TextView::show_if_results() {
 	}
 }
 
+// LIBRE::TEXTVIEW::CLEAR ------------------------------------------------------
+// CLEARES THE CONTENT OF THE TEXTVIEW
+// -----------------------------------------------------------------------------
+
 void Libre::TextView::clear() {
 	this->content.clear();
 	this->captions.clear();
@@ -119,6 +121,9 @@ void Libre::TextView::clear() {
 	this->_display(0);
 }
 
+// LIBRE::TEXTVIEW::ADD_VERSE --------------------------------------------------
+// ADDS VERSES GIVEN WITH ITS CAPTION
+// -----------------------------------------------------------------------------
 
 void Libre::TextView::add_verse(const std::string & caption, const std::vector<std::string *> & verses_content) {
 	this->content.push_back({});
@@ -131,6 +136,10 @@ void Libre::TextView::add_verse(const std::string & caption, const std::vector<s
 	this->_display(this->captions.size() - 1);
 }
 
+// LIBRE::TEXTVIEW::REPLACE_VERSE ----------------------------------------------
+// REPLACE THE VERSE-VERSION GIVEN WITH THE CAPTION NAME
+// -----------------------------------------------------------------------------
+
 void Libre::TextView::replace_verse(const std::string & caption, const int & version, const std::string * verse_content) {
 	int verse_id = std::distance(this->captions.begin(), std::find(this->captions.begin(), this->captions.end(), caption));
 	this->content[verse_id][version] = (verse_content == nullptr ? "~~~" : *verse_content);
@@ -139,13 +148,26 @@ void Libre::TextView::replace_verse(const std::string & caption, const int & ver
 									verse_id - this->scroll_status : this->max_verses));
 }
 
+// LIBRE::TEXTVIEW::_DISPLAY ---------------------------------------------------
+// THIS FUNCTION DISPLAYS EVERY WIDGET WHICH IS MENT TO BE DISPLAYED
+// -----------------------------------------------------------------------------
+
 void Libre::TextView::_display(int begin) {
+
+	// ------------------------------------------
+	// IF THERE ARE NO VERSES DISPLAY : HIDE
+	// ------------------------------------------
 
 	if (this->captions.size() != 0) {
 		this->show_all();
 	} else {
 		this->main.hide();
 	}
+
+	// ------------------------------------------
+	// JUST DISPLAY THOSE VERSES WHICH CONATAIN
+	// SOMETHING
+	// ------------------------------------------
 
 	for (int i = begin; i < this->max_verses; i++) {
 		for (int x = 0; x < this->tabs; x++) {
@@ -167,6 +189,11 @@ void Libre::TextView::_display(int begin) {
 		}
 	}
 }
+
+// LIBRE::TEXTVIEW::ON_SCROLL_EVENT --------------------------------------------
+// IF THE USER SCROLLS IN THE TEXTVIEW AREA THIS FUNCTION WILL BE CALLED. IT
+// WILL JUMP TO THE TEXT OR THE LAST VERSE
+// -----------------------------------------------------------------------------
 
 bool Libre::TextView::on_scroll_event(GdkEventScroll * scroll_event) {
 
@@ -191,6 +218,11 @@ bool Libre::TextView::on_scroll_event(GdkEventScroll * scroll_event) {
 	return false;
 }
 
+// LIBRE::TEXTVIEW::ON_KEY_PRESS_EVENT -----------------------------------------
+// THIS FUNCTION IS CALLED WHEN A KEY IS PRESSED. IT IS ONLY USED TO SCOLL OR
+// TO OPEN THE NOTE FOR ACTIVE VERSE (THE ONE ON THE TOP) IF ENTER IS PRESSED
+// -----------------------------------------------------------------------------
+
 bool Libre::TextView::on_key_press_event(GdkEventKey * key) {
 
 	if (this->captions.size() == 0) {
@@ -203,7 +235,7 @@ bool Libre::TextView::on_key_press_event(GdkEventKey * key) {
 		case 65362: this->scroll_status -= 1; break;
 		case 65364: this->scroll_status += 1; break;
 		case 65293: this->m_signal_toggle_note.emit(this->captions[this->scroll_status]); break;
-		default: this->error_bell(); break;
+		default: break;
 	}
 
 	if (this->scroll_status < 0) {
@@ -221,6 +253,10 @@ bool Libre::TextView::on_key_press_event(GdkEventKey * key) {
 
 	return true;
 }
+
+// LIBRE::TEXTVIEW::REMOVE_TAB -------------------------------------------------
+// THIS FUNCTION REMOVES THE TAB AT THE *ID* PLACE
+// -----------------------------------------------------------------------------
 
 void Libre::TextView::remove_tab(const int & id) {
 	this->tabs--;
@@ -244,6 +280,10 @@ void Libre::TextView::remove_tab(const int & id) {
 
 	this->verses[0].get_children()[0]->set_name("active_verse");
 }
+
+// LIBRE::TEXTVIEW::APPEND_TAB -------------------------------------------------
+// THIS FUNCTION APPENDS A NEW TAB AT THE END OF THE TEXTVIEW
+// -----------------------------------------------------------------------------
 
 void Libre::TextView::append_tab() {
 	this->tabs++;
@@ -301,6 +341,11 @@ void Libre::TextView::append_tab() {
 		this->content[i].push_back("");
 	}
 }
+
+// LIBRE::TEXTVIEW::LABEL_POPULATE_POPUP ---------------------------------------
+// THIS FUNCTION IS CALLED IF RIGHTCLICKED ON THE VERSE. IT ADDS A *SEARCH*
+// LABEL TO THE MENU
+// -------------------------------------------------------------------------­­­­----
 
 void Libre::TextView::label_populate_popup(Gtk::Menu * menu, int tab, int version) {
 	int begin = 0;

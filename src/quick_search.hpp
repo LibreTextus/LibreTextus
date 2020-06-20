@@ -13,10 +13,13 @@
 namespace Libre {
 	void quick_search(const std::string & arg) {
 
+		if (!std::experimental::filesystem::exists(HOME())) {
+			std::experimental::filesystem::create_directory(HOME());
+		}
+		
 		if (!std::experimental::filesystem::exists(HOME("settings.xml"))) {
 			std::experimental::filesystem::copy(DATA("settings.xml"), HOME("settings.xml"));
 		}
-
 
 		Libre::PackageManager package_manager;
 		package_manager.init(true);

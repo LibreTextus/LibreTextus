@@ -3,6 +3,7 @@
 
 #include <string>
 #include <iostream>
+#include <experimental/filesystem>
 #include "package_manager.hpp"
 #include "settings.hpp"
 #include "source_handler.hpp"
@@ -11,10 +12,21 @@
 
 namespace Libre {
 	void quick_search(const std::string & arg) {
+
+		if (!std::experimental::filesystem::exists(HOME("settings.xml"))) {
+			std::experimental::filesystem::copy(DATA("settings.xml"), HOME("settings.xml"));
+		}
+
+
 		Libre::PackageManager package_manager;
 		package_manager.init(true);
 		
 		Settings settings;
+
+		if (settings.get_attribute("startupfile", "file").empty()) {
+			settings.set("startupfile", "file", package_manager.get_sources().front());
+		}
+
 
 		SourceHandler source_handler;
 		source_handler.set_names_path(HOME(settings.get_attribute("namesfile", "file")));

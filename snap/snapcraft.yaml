@@ -11,30 +11,16 @@ grade: devel # must be 'stable' to release into candidate/stable channels
 confinement: strict # use 'strict' once you have the right plugs and slots
 
 parts:
-  # cmake:
-    # plugin: cmake
-    # source: "https://github.com/Kitware/CMake.git"
-    # build-packages:
-      # - g++
-      # - make
-      # - libssl-dev
-    # override-build: |
-      # cp -R ../src/ ./
-      # cd src
-      # ./bootstrap
-      # make -j2
-      # make install
   libretextus:
     plugin: cmake
     source: .
-    # after:
-      # - cmake
     build-packages:
       - g++
       - make
       - libgtkmm-3.0-dev
       - git
       - libboost-regex-dev
+      - libboost-program-options-dev
       - gettext
       - librapidxml-dev
     stage-packages:
@@ -42,12 +28,9 @@ parts:
       - git
       - adwaita-icon-theme-full
       - libboost-regex-dev
+      - libboost-program-options-dev
       - librapidxml-dev
 
-    # override-build: |
-      # cmake ../src -DCMAKE_INSTALL_PREFIX=../install
-      # make -j2
-      # make install
 apps:
   libretextus:
     command: LibreTextus

@@ -4,10 +4,10 @@
 
 ## Dependencies
 
-You need to install *cmake*, *build-essential*, *gettext*, *boost-regex*, *rapidxml* and *gtkmm*.  
+You need to install *cmake*, *build-essential*, *gettext*, *boost-regex*, *boost-program-options* *rapidxml* and *gtkmm*.  
 
 ```
-sudo apt install cmake libgtkmm-3.0-dev build-essential libboost-regex-dev gettext librapidxml-dev
+sudo apt install cmake libgtkmm-3.0-dev build-essential libboost-regex-dev libboost-program-options-dev gettext librapidxml-dev
 ```
 
 ## How to Build

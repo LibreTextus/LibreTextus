@@ -11,7 +11,6 @@ void SignalHandler::init(Libre::Widgets * w) {
 	// ------------------------------------------
 	// CREATE THE SEARCH ENGINE FOR THE
 	// FIRST TEXT_VIEW WITH SCHACHTER AS SOUCE
-	// TODO: GET STARTUP SOURCE FROM SETTINGS
 	// ------------------------------------------
 
 
@@ -19,18 +18,24 @@ void SignalHandler::init(Libre::Widgets * w) {
 
 	this->widgets = w;
 
+	SourceHandler source_handler;
+	source_handler.set_names_path(HOME(this->widgets->settings.get_attribute("namesfile", "file")));
+
+
 	this->widgets->splash_screen.mutex.lock();
 	this->widgets->splash_screen.header_string = _("Init SearchEngine");
 	this->widgets->splash_screen.info_string = _("Load File");
 	this->widgets->splash_screen.mutex.unlock();
 	this->widgets->splash_screen.text_dispatcher.emit();
 
+	if (this->settings.get_attribute("startupfile", "file").empty()) {
+		this->settings.set("startupfile", "file", this->widgets->package_manager.get_sources().front());
+	}
+
 	this->widgets->search_engine.push_back(
-		SearchEngine(
-			this->widgets->package_manager.get_source_path(this->settings.get<std::string>("startup_file")),
-			HOME(this->settings.get<std::string>("names_file"))
-		)
+		SearchEngine(this->widgets->package_manager.get_source_path(this->settings.get_attribute("startupfile", "file")))
 	);
+
 	// ------------------------------------------
 	// GET HIGHLIGHT COLOR FROM THE CSS FILE
 	// HAVE TO CONVERT RGB FLOATING POINT
@@ -464,7 +469,7 @@ void SignalHandler::zoom_out() {
 
 void SignalHandler::zoom_reset() {
 	LOG("--> \"zoom_reset\" emmited");
-	this->widgets->style.font_size = settings.get<int>("font_size");
+	this->widgets->style.font_size = std::stoi(this->settings.get_attribute("font", "size"));
 	this->widgets->style.font_size_css->load_from_data("* { font-size: " + std::to_string(this->widgets->style.font_size) + "px; }");
 }
 
@@ -475,7 +480,7 @@ void SignalHandler::zoom_reset() {
 
 void SignalHandler::theme_changed() {
 	LOG("--> \"theme_changed\" emmited");
-	settings.set("theme-active", this->widgets->preferences.theme_combo->get_active_text());
+	this->settings.set("themes", "active", this->widgets->preferences.theme_combo->get_active_text());
 
 	if(!this->widgets->style.css->load_from_path(DATA(this->widgets->preferences.theme_combo->get_active_text() + ".css"))) {
 			std::cerr << "Failed to load css\n";
@@ -490,7 +495,7 @@ void SignalHandler::theme_changed() {
 void SignalHandler::default_font_size_changed() {
 	LOG("--> \"default_font_size_changed\" emmited");
 	this->widgets->style.font_size = this->widgets->preferences.font_size_spinbutton->get_value();
-	settings.set("font_size", std::to_string(this->widgets->style.font_size));
+	this->settings.set("font", "size", std::to_string(this->widgets->style.font_size));
 	this->widgets->style.font_size_css->load_from_data("* { font-size: " + std::to_string(this->widgets->style.font_size) + "px; }");
 }
 
@@ -508,9 +513,7 @@ void SignalHandler::add_source() {
 
 	this->widgets->search_engine.push_back(
 		SearchEngine(
-			this->widgets->package_manager.get_source_path(this->settings.get<std::string>("startup_file")),
-			HOME(this->settings.get<std::string>("names_file"))
-		)
+			this->widgets->package_manager.get_source_path(this->settings.get_attribute("startupfile", "file")))
 	);
 
 	this->widgets->search_engine.back().set_mark_argument(this->mark_argument);
@@ -869,8 +872,8 @@ void SignalHandler::sync_enabled_sources() {
 	// SYNC THE CHECKBUTTONS IN THE BOOK MANAGER
 	// ------------------------------------------
 
-	for (YAML::const_iterator i = this->widgets->package_manager.get_sources().begin(); i != this->widgets->package_manager.get_sources().end(); i++) {
-		delete this->widgets->preferences.sources_check[i->first.as<std::string>()];
+	for (std::vector<std::string>::iterator i = this->widgets->package_manager.get_sources().begin(); i != this->widgets->package_manager.get_sources().end(); i++) {
+		delete this->widgets->preferences.sources_check[*i];
 	}
 
 	this->widgets->preferences.sources_check.clear();
@@ -881,22 +884,22 @@ void SignalHandler::sync_enabled_sources() {
 		this->widgets->preferences.book_manager_box->remove(*(*i));
 	}
 
-	for (YAML::const_iterator i = this->widgets->package_manager.get_sources().begin(); i != this->widgets->package_manager.get_sources().end(); i++) {
+	for (std::vector<std::string>::iterator i = this->widgets->package_manager.get_sources().begin(); i != this->widgets->package_manager.get_sources().end(); i++) {
 		Gtk::HBox * book_container = new Gtk::HBox;
-		Gtk::Label * book_title = new Gtk::Label(i->first.as<std::string>(), Gtk::ALIGN_START);
-		this->widgets->preferences.sources_check[i->first.as<std::string>()] = new Gtk::CheckButton;
+		Gtk::Label * book_title = new Gtk::Label(*i, Gtk::ALIGN_START);
+		this->widgets->preferences.sources_check[*i] = new Gtk::CheckButton;
 
-		this->widgets->preferences.sources_check[i->first.as<std::string>()]->set_active(this->widgets->package_manager.is_enabled(i->first.as<std::string>()));
+		this->widgets->preferences.sources_check[*i]->set_active(this->widgets->package_manager.is_enabled(*i));
 
 		book_container->pack_start(*book_title, Gtk::PACK_SHRINK, 0);
-		book_container->pack_end(*this->widgets->preferences.sources_check[i->first.as<std::string>()], Gtk::PACK_SHRINK, 0);
+		book_container->pack_end(*this->widgets->preferences.sources_check[*i], Gtk::PACK_SHRINK, 0);
 		this->widgets->preferences.book_manager_box->pack_start(*book_container, Gtk::PACK_SHRINK, 0);
 
 		this->widgets->preferences.book_manager_box->show_all();
 
-		this->widgets->preferences.sources_check[i->first.as<std::string>()]->signal_clicked().connect([this, i]() {
-			(this->widgets->preferences.sources_check[i->first.as<std::string>()]->get_active() ?
-				this->widgets->package_manager.enable(i->first.as<std::string>()) : this->widgets->package_manager.disable(i->first.as<std::string>()));
+		this->widgets->preferences.sources_check[*i]->signal_clicked().connect([this, i]() {
+			(this->widgets->preferences.sources_check[*i]->get_active() ?
+				this->widgets->package_manager.enable(*i) : this->widgets->package_manager.disable(*i));
 				this->sync_enabled_sources();
 		});
 	}

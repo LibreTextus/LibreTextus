@@ -1,4 +1,6 @@
 #include "framework.hpp"
+#include <cmath>
+#include <rapidxml/rapidxml.hpp>
 
 int Framework::init(int argc, char *argv[]) {
 	LOG_RESET();
@@ -18,28 +20,26 @@ int Framework::init(int argc, char *argv[]) {
 	// CREATE SETTINGS FILE IF IT DOES NOT EXIST
 	// ------------------------------------------
 
-	if (!std::experimental::filesystem::exists(HOME("settings.yml"))) {
-		std::experimental::filesystem::copy(DATA("settings.yml"), HOME("settings.yml"));
+	if (!std::experimental::filesystem::exists(HOME("settings.xml"))) {
+		std::experimental::filesystem::copy(DATA("settings.xml"), HOME("settings.xml"));
 	}
 
 	// ------------------------------------------
 	// INIT LOCALES
 	// ------------------------------------------
 
-	if (this->widgets.settings.get<std::string>("locale").empty()) {
+	if (this->widgets.settings.get_attribute("locale", "locale").empty()) {
 		setlocale(LC_ALL, "");
 		setenv("LANGUAGE", std::string(setlocale(LC_ALL, NULL)).substr(0, std::string(setlocale(LC_ALL, NULL)).find_last_of(".")).c_str(), 1);
 	} else {
-		setlocale(LC_ALL, (this->widgets.settings.get<std::string>("locale") + ".utf8").c_str());
-		setenv("LANGUAGE", this->widgets.settings.get<std::string>("locale").c_str(), 1);
+		setlocale(LC_ALL, (this->widgets.settings.get_attribute("locale", "locale") + ".utf8").c_str());
+		setenv("LANGUAGE", this->widgets.settings.get_attribute("locale", "locale").c_str(), 1);
 	}
 
 	bindtextdomain(GETTEXT_PACKAGE, DATA("../locale").c_str());
 	textdomain(GETTEXT_PACKAGE);
 
 	std::cout << "LC_ALL: " << setlocale(LC_ALL, NULL) << '\n';
-  std::cout << "LC_CTYPE: " << setlocale(LC_CTYPE, NULL) << '\n';
-	std::cout << "LC_MESSAGES: " << setlocale(LC_MESSAGES, NULL) << '\n';
 
 	// ------------------------------------------
 	// CREATE BUILDER AND APPLICATION
@@ -83,14 +83,13 @@ int Framework::init(int argc, char *argv[]) {
 	// ------------------------------------------
 
 	LOG("-- Load Css");
-
 	this->widgets.style.css = Gtk::CssProvider::create();
-	if(!this->widgets.style.css->load_from_path(DATA(this->widgets.settings.get<std::string>("theme-active") + ".css"))) {
+	if(!this->widgets.style.css->load_from_path(DATA(this->widgets.settings.get_attribute("themes", "active") + ".css"))) {
 			std::cerr << "Failed to load css\n";
 			return 1;
 	}
 
-	this->widgets.style.font_size = this->widgets.settings.get<int>("font_size");
+	this->widgets.style.font_size = std::stoi(this->widgets.settings.get_attribute("font", "size"));
 	this->widgets.style.font_size_css = Gtk::CssProvider::create();
 	this->widgets.style.font_size_css->load_from_data(
 		"* { font-size: " + std::to_string(this->widgets.style.font_size) + "px; }"
@@ -191,19 +190,11 @@ int Framework::init(int argc, char *argv[]) {
 		// LOAD NOTEBOOK FILE
 		// ------------------------------------------
 
-		if (!std::experimental::filesystem::exists(HOME(this->widgets.settings.get<std::string>("notebook")))) {
-			std::ofstream fout(HOME(this->widgets.settings.get<std::string>("notebook")));
-			fout << "# LibreTextus Notes\n---" << std::endl;
-			fout.close();
-		}
 
-		YAML::Node n = YAML::LoadFile(HOME(this->widgets.settings.get<std::string>("notebook")));
+		this->widgets.main.note_book->set_file(HOME(this->widgets.settings.get_attribute("notebook", "file")));
 
-		this->widgets.main.text_view->set_note_book(n);
-		this->widgets.main.note_book->set_file(n,
-			HOME(this->widgets.settings.get<std::string>("notebook"))
-		);
-
+		this->widgets.main.text_view->set_note_book(this->widgets.main.note_book->get_xml_root());
+		
 		this->widgets.app->add_window(*this->widgets.main.window);
 		this->widgets.app->remove_window(*this->widgets.splash_screen.window);
 		this->widgets.main.window->show_all();

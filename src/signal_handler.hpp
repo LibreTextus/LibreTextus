@@ -3,7 +3,6 @@
 
 #include <gtkmm.h>
 #include <iostream>
-#include <yaml-cpp/yaml.h>
 #include <thread>
 #include <algorithm>
 #include <glibmm/i18n.h>
@@ -11,6 +10,7 @@
 #include "path.hpp"
 #include "widgets.hpp"
 #include "log.hpp"
+#include "source_handler.hpp"
 
 class SignalHandler {
 private:

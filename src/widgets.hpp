@@ -6,7 +6,6 @@
 #include <gtkmm.h>
 #include <iostream>
 #include <mutex>
-#include <yaml-cpp/yaml.h>
 #include <tsl/ordered_map.h>
 
 #include "text_view.hpp"
@@ -125,8 +124,8 @@ namespace Libre {
 				delete this->main.combo_boxes[i];
 			}
 
-			delete this->main.text_view;
 			delete this->main.note_book;
+			delete this->main.text_view;
 			delete this->main.note_paned;
 
 			delete this->preferences.font_size_spinbutton;
@@ -134,23 +133,17 @@ namespace Libre {
 			delete this->preferences.book_manager_box;
 		}
 
-		void destroy_with_children(Gtk::Window * w) {
-			this->app->remove_window(*w);
-
-			delete w;
-		}
-
 		// LIBRE::WIDGETS::APPENDS_SOURCES -----------------------------------------
 		// THIS FUNCTION APPENDS ALL ENABLED SOURCES TO AN COMBOBOXTEXT
 		// -------------------------------------------------------------------------
 
 		void append_sources(Gtk::ComboBoxText * combo_box) {
-			for (YAML::const_iterator i = this->package_manager.get_sources().begin(); i != this->package_manager.get_sources().end(); i++) {
-				if (this->package_manager.is_enabled(i->first.as<std::string>())) {
-					combo_box->append(i->first.as<std::string>());
+			for (std::vector<std::string>::iterator i = this->package_manager.get_sources().begin(); i != this->package_manager.get_sources().end(); i++) {
+				if (this->package_manager.is_enabled(*i)) {
+					combo_box->append(*i);
 				}
 			}
-			combo_box->set_active_text(this->settings.get<std::string>("startup_file"));
+			combo_box->set_active_text(this->settings.get_attribute("startupfile", "file"));
 		}
 
 		// LIBRE::WIDGETS::ADD_PANEL -----------------------------------------------

@@ -4,9 +4,9 @@
 // THIS IS THE CONSTRUCTOR OF THE SEARCHENGINE. IT LOADS THE SOURCE + NAMESFILE
 // -----------------------------------------------------------------------------
 
-SearchEngine::SearchEngine(std::string file_path, std::string names_path) {
+SearchEngine::SearchEngine(std::string file_path) {
 	this->file = this->source_handler.get_source(file_path);
-	this->names = this->source_handler.get_names(names_path);
+	this->names = this->source_handler.get_names();
 	this->active_verse = this->file->begin();
 
 	W = "\\w\u00C0-\uffff";

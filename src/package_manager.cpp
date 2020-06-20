@@ -1,4 +1,6 @@
 #include "package_manager.hpp"
+#include <rapidxml/rapidxml.hpp>
+#include <string>
 
 // LIBRE::PACKAGEMANAGER::INIT -------------------------------------------------
 // THIS FUNCTION INITIALIZES THE PACKAGEMANAGER. IF THERE IS NO PACKAGE
@@ -6,28 +8,26 @@
 // -----------------------------------------------------------------------------
 
 void Libre::PackageManager::init() {
-	this->dummy_path = DATA("dummy.yml");
-
 	// ------------------------------------------
 	// CHECK IF THE ROOT DIRECTORY IS EMPTY
 	// ------------------------------------------
 
-	if (!std::experimental::filesystem::exists(HOME("sources.yml"))) {
-		std::experimental::filesystem::copy(DATA("sources.yml"), HOME("sources.yml"));
-		this->sources = YAML::LoadFile(DATA("sources.yml"));
+	if (!std::experimental::filesystem::exists(HOME("sources.xml"))) {
+		rapidxml::xml_node<> * root = this->sources_doc.allocate_node(rapidxml::node_element, "sources");
+		this->sources_doc.append_node(root);
+
 		this->install("git://github.com/LibreTextus/BibleEditions");
-		std::experimental::filesystem::rename(HOME("BibleEditions/biblebooks.yml"),
-																					HOME("biblebooks.yml"));
 	} else {
-		this->sources = YAML::LoadFile(HOME("sources.yml"));
+		rapidxml::file<> xml_file(HOME("sources.xml").c_str());
+		char * content = this->sources_doc.allocate_string(xml_file.data());
+		this->sources_doc.parse<rapidxml::parse_no_data_nodes>(content);
 	}
 
-	for (YAML::const_iterator i = this->sources.begin(); i != this->sources.end(); i++) {
-		if (std::find(this->packages.begin(), this->packages.end(), i->second["package"].as<std::string>()) == this->packages.end()) {
-			this->packages.push_back(i->second["package"].as<std::string>());
-		}
+	if (!std::experimental::filesystem::exists(HOME("biblebooks.xml"))) {
+		std::experimental::filesystem::copy(DATA("biblebooks.xml"), HOME("biblebooks.xml"));
 	}
 
+	this->refresh_lists();
 	this->update();
 }
 
@@ -80,35 +80,15 @@ void Libre::PackageManager::install(std::string url) {
 	// SOURCE YAML FILES
 	// ------------------------------------------
 
-	for (auto & i : std::experimental::filesystem::directory_iterator(HOME(name))) {
-		if (std::experimental::filesystem::is_directory(i.path())) {
-			for (auto & f : std::experimental::filesystem::directory_iterator(i.path().string())) {
-				if (f.path().extension() == ".yml" || f.path().extension() == ".yaml") {
-					std::regex e("[_-]");
-					std::string file = std::regex_replace(f.path().stem().string(), e, " ");
-					YAML::Node f_info;
-					f_info["path"] = f.path().string();
-					f_info["package"] = name;
-					f_info["enabled"] = true;
-
-					this->mtx.lock();
-					this->info_string = std::string(_("Found")) + " : " + file;
-					this->mtx.unlock();
-					this->update_text.emit();
-
-					this->sources[file] = f_info;
-				}
-			}
-		}
-	}
+	this->refresh_db(name);
 
 	// ------------------------------------------
 	// DISPLAY FOLLOWING INFORMATION:
-	// 		Update sources.yml
+	// 		Update sources.xml
 	// ------------------------------------------
 
 	this->mtx.lock();
-	this->header_string = _("Update sources.yml");
+	this->header_string = _("Update sources.xml");
 	this->info_string = "";
 	this->mtx.unlock();
 	this->update_text.emit();
@@ -117,14 +97,13 @@ void Libre::PackageManager::install(std::string url) {
 	// WRITE EVERYTHING TO THE SOURCES FILE
 	// ------------------------------------------
 
-	YAML::Emitter emitter;
-	emitter << this->sources;
-
-	std::ofstream fout(HOME("sources.yml"));
+	std::ofstream fout(HOME("sources.xml"));
 	if (fout.is_open()) {
-		fout << emitter.c_str();
+		fout << this->sources_doc;
 		fout.close();
-	}
+	} 
+
+	this->refresh_lists();
 }
 
 // LIBRE::PACKAGEMANAGER::REMOVE -----------------------------------------------
@@ -154,7 +133,7 @@ void Libre::PackageManager::remove(std::string package) {
 	// ------------------------------------------
 
 	this->mtx.lock();
-	this->header_string = _("Update sources.yml");
+	this->header_string = _("Update sources.xml");
 	this->info_string = "";
 	this->mtx.unlock();
 	this->update_text.emit();
@@ -164,16 +143,17 @@ void Libre::PackageManager::remove(std::string package) {
 	// YAML NODE
 	// ------------------------------------------
 
-	for (YAML::const_iterator i = this->sources.begin(); i != this->sources.end();) {
-		if (i->second["package"].as<std::string>() == package) {
-			this->sources.remove(i->first);
+	for (rapidxml::xml_node<> * i = this->sources_doc.first_node("sources")->first_node(); i;) {
+		if (i->first_node("package")->value() == package) {
+			this->sources_doc.first_node("sources")->remove_node(i);
 			this->mtx.lock();
-			this->info_string = std::string(_("Removing")) + " " + i->first.as<std::string>();
+			this->info_string = std::string(_("Removing")) + " " + i->name();
 			this->mtx.unlock();
 			this->update_text.emit();
+			i = this->sources_doc.first_node("sources")->first_node();
 			continue;
 		}
-		i++;
+		i = i->next_sibling();
 	}
 
 	// ------------------------------------------
@@ -185,14 +165,14 @@ void Libre::PackageManager::remove(std::string package) {
 	this->mtx.unlock();
 	this->update_text.emit();
 
-	YAML::Emitter emitter;
-	emitter << this->sources;
 
-	std::ofstream fout(HOME("sources.yml"));
+	std::ofstream fout(HOME("sources.xml"));
 	if (fout.is_open()) {
-		fout << emitter.c_str();
+		fout << this->sources_doc;
 		fout.close();
 	}
+
+	this->refresh_lists();
 }
 
 // LIBRE::PACKAGEMANAGER::DISABLE ----------------------------------------------
@@ -200,15 +180,15 @@ void Libre::PackageManager::remove(std::string package) {
 // LISTED ON THE COMBOBOXTEXT
 // -----------------------------------------------------------------------------
 
-void Libre::PackageManager::disable(std::string package) {
-	this->sources[package]["enabled"] = false;
+void Libre::PackageManager::disable(std::string name) {
+	rapidxml::xml_node<> * n = this->sources_doc.first_node("sources")->first_node();
+	for (;n && std::string(n->first_attribute("name")->value()) != name; n = n->next_sibling()) {}
 
-	YAML::Emitter emitter;
-	emitter << this->sources;
+	n->first_node("enabled")->value("false");
 
-	std::ofstream fout(HOME("sources.yml"));
+	std::ofstream fout(HOME("sources.xml"));
 	if (fout.is_open()) {
-		fout << emitter.c_str();
+		fout << this->sources_doc;
 		fout.close();
 	}
 }
@@ -217,15 +197,15 @@ void Libre::PackageManager::disable(std::string package) {
 // THIS FUNCTION ADDS THE SOURCE TO THE COMBOBOXTEXT SO YOU CAN SELECT IT
 // -----------------------------------------------------------------------------
 
-void Libre::PackageManager::enable(std::string package) {
-	this->sources[package]["enabled"] = true;
+void Libre::PackageManager::enable(std::string name) {
+	rapidxml::xml_node<> * n = this->sources_doc.first_node("sources")->first_node();
+	for (;n && std::string(n->first_attribute("name")->value()) != name; n = n->next_sibling()) {}
 
-	YAML::Emitter emitter;
-	emitter << this->sources;
+	n->first_node("enabled")->value("true");
 
-	std::ofstream fout(HOME("sources.yml"));
+	std::ofstream fout(HOME("sources.xml"));
 	if (fout.is_open()) {
-		fout << emitter.c_str();
+		fout << this->sources_doc;
 		fout.close();
 	}
 }
@@ -251,10 +231,71 @@ void Libre::PackageManager::update() {
 	}
 }
 
-// LIBRE::PACKAGEMANAGER::GET_PACKAGES -----------------------------------------
-// RETURN NAMES OF THE INSTALLED PACKAGES
-// -----------------------------------------------------------------------------
+void Libre::PackageManager::refresh_lists() {
+	this->sources.clear();
+	this->packages.clear();
+	
+	for (rapidxml::xml_node<> * i = this->sources_doc.first_node("sources")->first_node("file"); i; i = i->next_sibling()) {
+		this->sources.push_back(i->first_attribute("name")->value());
 
-std::vector<std::string> & Libre::PackageManager::get_packages() {
-	return this->packages;
+		if (std::find(this->packages.begin(), this->packages.end(), i->first_node("package")->value()) == this->packages.end()) {
+			this->packages.push_back(i->first_node("package")->value());
+		}
+	}
+}
+
+void Libre::PackageManager::refresh_db(const std::string & name) {
+	for (auto & i : std::experimental::filesystem::directory_iterator(HOME(name))) {
+		if (std::experimental::filesystem::is_directory(i.path())) {
+			for (auto & f : std::experimental::filesystem::directory_iterator(i.path().string())) {
+				if (f.path().extension() == ".xml") {
+					rapidxml::file<> file(f.path().c_str());
+					rapidxml::xml_document<> doc;
+					doc.parse<0>(file.data());
+
+					std::string f_name = doc.first_node("XMLBIBLE")->first_node("INFORMATION")->first_node("title")->value();
+
+					int id = 0;
+					rapidxml::xml_node<> * xf = this->sources_doc.first_node("sources")->first_node("file");
+					while (xf) {
+						if (xf->first_attribute("name")->value() == f_name + (id ? "(" + std::to_string(id) + ")" : "")) {
+							id++;
+							xf = this->sources_doc.first_node("sources")->first_node("file");
+							continue;
+						}
+
+						xf = xf->next_sibling();
+					}
+
+					if (id != 0) {
+						f_name += "(" + std::to_string(id) + ")";
+					}
+
+					char * file_name = this->sources_doc.allocate_string(f_name.c_str());
+					char * path = this->sources_doc.allocate_string(f.path().c_str());
+					char * package = this->sources_doc.allocate_string(name.c_str());
+
+					rapidxml::xml_node<> * f_info = this->sources_doc.allocate_node(rapidxml::node_element, "file");
+					rapidxml::xml_attribute<> * info_attr = this->sources_doc.allocate_attribute("name", file_name);
+					f_info->append_attribute(info_attr);
+
+					rapidxml::xml_node<> * f_path = this->sources_doc.allocate_node(rapidxml::node_element, "path", path);
+					rapidxml::xml_node<> * f_package = this->sources_doc.allocate_node(rapidxml::node_element, "package", package);
+					rapidxml::xml_node<> * f_enabled = this->sources_doc.allocate_node(rapidxml::node_element, "enabled", "true");
+
+					f_info->append_node(f_path);
+					f_info->append_node(f_package);
+					f_info->append_node(f_enabled);
+
+					this->mtx.lock();
+					this->info_string = std::string(_("Found")) + " : " + file_name;
+					this->mtx.unlock();
+					this->update_text.emit();
+
+					this->sources_doc.first_node("sources")->append_node(f_info);
+
+				}
+			}
+		}
+	}
 }

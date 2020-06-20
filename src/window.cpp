@@ -207,7 +207,7 @@ bool Libre::MainWindow::create(Libre::Widgets * w, SignalHandler * s) {
 	// ------------------------------------------
 
 	LOG(" * Create TextView and NoteBook");
-
+	
 	w->main.panels = new Gtk::HBox(false, 0);
 	w->main.panels->set_spacing(5);
 	w->main.panels->set_border_width(5);
@@ -227,7 +227,7 @@ bool Libre::MainWindow::create(Libre::Widgets * w, SignalHandler * s) {
 
 	w->main.note_book = new Libre::NoteBook;
 	w->main.note_book->get_close_button()->signal_clicked().connect(sigc::bind<std::string>(sigc::mem_fun(s, &SignalHandler::toggle_note), ""));
-
+	
 	w->main.note_book->signal_key_press_event().connect([s](GdkEventKey * key) -> bool {
 		if (key->keyval == 65307) {
 			s->toggle_note("");
@@ -340,13 +340,16 @@ bool Libre::PreferencesWindow::create(Libre::Widgets * w, SignalHandler * s) {
 
 	LOG(" * Load Settings");
 
-	for (int i = 0; i < w->settings.get("theme-themes").size(); i++) {
-		w->preferences.theme_combo->append(w->settings.get("theme-themes")[i].as<std::string>());
+	std::vector<std::string> v = w->settings.get_children("themes", "name");
 
-		if (w->settings.get("theme-themes")[i].as<std::string>() == w->settings.get("theme-active").as<std::string>()) {
-			w->preferences.theme_combo->set_active(i);
+	for (std::vector<std::string>::iterator i = v.begin(); i != v.end(); i++) {
+		w->preferences.theme_combo->append(*i);
+
+		if (*i == w->settings.get_attribute("themes", "active")) {
+			w->preferences.theme_combo->set_active_text(*i);
 		}
 	}
+
 
 	w->preferences.theme_combo->signal_changed().connect(
 		sigc::mem_fun(s, &SignalHandler::theme_changed),
@@ -376,14 +379,14 @@ bool Libre::PreferencesWindow::create(Libre::Widgets * w, SignalHandler * s) {
 		w->preferences.lang_combo->append(i.path().filename().string());
 	}
 
-	w->preferences.lang_combo->set_active_text((w->settings.get<std::string>("locale").empty() ? _("System default") : w->settings.get<std::string>("locale")));
+	w->preferences.lang_combo->set_active_text((w->settings.get_attribute("locale", "locale").empty() ? _("System default") : w->settings.get_attribute("locale", "locale")));
 
 	w->preferences.lang_combo->signal_changed().connect([w, s]() {
 
 		if (w->preferences.lang_combo->get_active_text() == _("System default")) {
-			w->settings.set("locale", "");
+			w->settings.set("locale", "locale", "");
 		} else {
-			w->settings.set("locale", w->preferences.lang_combo->get_active_text());
+			w->settings.set("locale", "locale", w->preferences.lang_combo->get_active_text());
 		}
 
 		w->dialog.window = new Gtk::Window;
@@ -433,7 +436,7 @@ bool Libre::PreferencesWindow::create(Libre::Widgets * w, SignalHandler * s) {
 	Gtk::HBox * font_size_box = new Gtk::HBox;
 	Gtk::Label * font_size_label = new Gtk::Label("Font size", Gtk::ALIGN_START);
 	Glib::RefPtr<Gtk::Adjustment> spinbutton_adjustment = Gtk::Adjustment::create(
-		w->settings.get<int>("font_size"), 1, 100
+		std::stoi(w->settings.get_attribute("font", "size")), 1, 100
 	);
 
 	w->preferences.font_size_spinbutton = new Gtk::SpinButton(spinbutton_adjustment, 1, 0);
@@ -500,18 +503,18 @@ bool Libre::PreferencesWindow::create(Libre::Widgets * w, SignalHandler * s) {
 
 	LOG(" * Get Sources");
 
-	for (YAML::const_iterator i = w->package_manager.get_sources().begin(); i != w->package_manager.get_sources().end(); i++) {
+	for (std::vector<std::string>::iterator i = w->package_manager.get_sources().begin(); i != w->package_manager.get_sources().end(); i++) {
 		book_container = new Gtk::HBox;
-		book_title = new Gtk::Label(i->first.as<std::string>(), Gtk::ALIGN_START);
-		w->preferences.sources_check[i->first.as<std::string>()] = new Gtk::CheckButton;
+		book_title = new Gtk::Label(*i, Gtk::ALIGN_START);
+		w->preferences.sources_check[*i] = new Gtk::CheckButton;
 
 		book_container->pack_start(*book_title, Gtk::PACK_SHRINK, 0);
-		book_container->pack_end(*w->preferences.sources_check[i->first.as<std::string>()], Gtk::PACK_SHRINK, 0);
+		book_container->pack_end(*w->preferences.sources_check[*i], Gtk::PACK_SHRINK, 0);
 		w->preferences.book_manager_box->pack_start(*book_container, Gtk::PACK_SHRINK, 0);
 
-		w->preferences.sources_check[i->first.as<std::string>()]->signal_clicked().connect([s, w, i]() {
-			(w->preferences.sources_check[i->first.as<std::string>()]->get_active() ?
-				w->package_manager.enable(i->first.as<std::string>()) : w->package_manager.disable(i->first.as<std::string>()));
+		w->preferences.sources_check[*i]->signal_clicked().connect([s, w, i]() {
+			(w->preferences.sources_check[*i]->get_active() ?
+				w->package_manager.enable(*i) : w->package_manager.disable(*i));
 				s->sync_enabled_sources();
 		});
 	}

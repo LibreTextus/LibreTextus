@@ -3,7 +3,6 @@
 
 #include <gtkmm.h>
 #include <vector>
-#include <yaml-cpp/yaml.h>
 #include <fstream>
 #include <experimental/filesystem>
 #include <glibmm/i18n.h>

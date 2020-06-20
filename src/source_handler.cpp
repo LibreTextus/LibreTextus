@@ -1,8 +1,10 @@
 #include "source_handler.hpp"
+#include <rapidxml/rapidxml.hpp>
+#include <rapidxml/rapidxml_utils.hpp>
 
 std::map<std::string, Libre::BookMap> SourceHandler::sources;
 Libre::NameMap SourceHandler::names;
-std::vector<std::string> SourceHandler::compare_v;
+std::string SourceHandler::names_path;
 
 // SOURCEHANDLER::GET_SOURCE ---------------------------------------------------
 // THIS FUNCTION RETURNS THE SOURCE. THE SOURCE MAP HAS THE FOLLOWING CONTENTS:
@@ -13,15 +15,11 @@ std::vector<std::string> SourceHandler::compare_v;
 Libre::BookMap * SourceHandler::get_source(std::string s) {
 
 	if (this->sources.find(s) == this->sources.end()) {
-		auto start = std::chrono::high_resolution_clock::now();
-		YAML::Node v = YAML::LoadFile(s);
-		auto stop = std::chrono::high_resolution_clock::now();
-		std::cout << "LOAD FILE: " << std::chrono::duration_cast<std::chrono::seconds>(stop - start).count() << '\n';
+		rapidxml::file<> file(s.c_str());
+		rapidxml::xml_document<> doc;
+		doc.parse<0>(file.data());
 
-		start = std::chrono::high_resolution_clock::now();
-		this->sources[s] = this->to_map(v);
-		stop = std::chrono::high_resolution_clock::now();
-		std::cout << "CONVERT TO MAP: " << std::chrono::duration_cast<std::chrono::seconds>(stop - start).count() << '\n';
+		this->sources[s] = this->to_map(&doc);
 	}
 
 	return &this->sources[s];
@@ -31,16 +29,21 @@ Libre::BookMap * SourceHandler::get_source(std::string s) {
 // THIS FUNCTION TURNS A SOURCE NODE INTO A LIBRE::BOOKMAP
 // -----------------------------------------------------------------------------
 
-Libre::BookMap SourceHandler::to_map(YAML::Node n) {
+Libre::BookMap SourceHandler::to_map(rapidxml::xml_document<> * doc) {
 	Libre::BookMap output;
 
-	for (int b = 0; b < n.size(); b++) {
-		for (int c = 0; c < n[b].begin()->second.size(); c++) {
-			for (int v = 0; v < n[b].begin()->second[c].begin()->second.size(); v++) {
-				std::string v_pos = n[b].begin()->first.as<std::string>();
-				v_pos += " " + n[b].begin()->second[c].begin()->first.as<std::string>();
-				v_pos	+= "," + n[b].begin()->second[c].begin()->second[v].begin()->first.as<std::string>();
-				output[v_pos] = n[b].begin()->second[c].begin()->second[v].begin()->second.as<std::string>();
+	for (rapidxml::xml_node<> * b = doc->first_node("XMLBIBLE")->first_node("BIBLEBOOK"); b; b = b->next_sibling()) {
+		for (rapidxml::xml_node<> * c = b->first_node("CHAPTER"); c; c = c->next_sibling()) {
+			for (rapidxml::xml_node<> * v = c->first_node("VERS"); v; v = v->next_sibling()) {
+				std::string v_pos = (this->names.begin() + std::stoi(b->first_attribute("bnumber")->value()) - 1)->first;
+
+				v_pos += " " + std::string(c->first_attribute("cnumber")->value());
+				v_pos	+= "," + std::string(v->first_attribute("vnumber")->value());
+				output[v_pos] = "";
+
+				for (rapidxml::xml_node<> * v_part = v->first_node(); v_part; v_part = v_part->next_sibling()) {
+					output[v_pos] += (v_part->name() == "DIV" ? "" : v_part->value());
+				}
 			}
 		}
 	}
@@ -52,13 +55,7 @@ Libre::BookMap SourceHandler::to_map(YAML::Node n) {
 // THIS FUNCTION RETURNS THE DEMANDED NAMES FILE
 // -----------------------------------------------------------------------------
 
-Libre::NameMap * SourceHandler::get_names(std::string s) {
-
-	if (this->sources.find(s) == this->sources.end()) {
-		YAML::Node v = YAML::LoadFile(s);
-		this->names = this->to_names(v);
-	}
-
+Libre::NameMap * SourceHandler::get_names() {
 	return &this->names;
 }
 
@@ -66,18 +63,25 @@ Libre::NameMap * SourceHandler::get_names(std::string s) {
 // THIS FUNCTION TURNS A NAMES NODE TO A LIBRE::NAMEMAP
 // -----------------------------------------------------------------------------
 
-Libre::NameMap SourceHandler::to_names(YAML::Node n) {
+Libre::NameMap SourceHandler::to_names(rapidxml::xml_document<> * doc) {
 	Libre::NameMap output;
 
-	for (YAML::const_iterator b = n.begin(); b != n.end(); b++) {
+	for (rapidxml::xml_node<> * b = doc->first_node("BIBLEBOOKS")->first_node(); b; b = b->next_sibling()) {
 		std::vector<std::string> v;
 
-		for (YAML::const_iterator i = b->second.begin(); i != b->second.end(); i++) {
-			v.push_back(i->as<std::string>());
+		for (rapidxml::xml_node<> * i = b->first_node(); i; i = i->next_sibling()) {
+			v.push_back(i->first_attribute("name")->value());
 		}
 
-		output[b->first.as<std::string>()] = v;
+		output[b->first_attribute("name")->value()] = v;
 	}
 
 	return output;
+}
+
+void SourceHandler::set_names_path(std::string s) {
+	rapidxml::file<> file(s.c_str());
+	rapidxml::xml_document<> doc;
+	doc.parse<0>(file.data());
+	this->names = this->to_names(&doc);
 }

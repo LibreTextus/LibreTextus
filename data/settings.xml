@@ -1,0 +1,12 @@
+<settings>
+	<startupfile file=""/>
+	<namesfile file="biblebooks.xml"/>
+	<notebook file="notes.xml"/>
+
+	<themes active="light">
+		<theme name="light"/>
+		<theme name="dark"/>
+	</themes>
+	<font size="15"/>
+	<locale locale=""/>
+</settings>

@@ -87,10 +87,12 @@ namespace MD {
 		};
 
 		virtual ~String() {
-			for (size_t i = 0; i < this->size_; i++) {
-				this->alloc.destroy(this->tagged_chars + i);
+			if (this->size_ > 0) {
+				for (size_t i = 0; i < this->size_; i++) {
+					this->alloc.destroy(this->tagged_chars + i);
+				}
+				this->alloc.deallocate(this->tagged_chars, this->size_);
 			}
-			this->alloc.deallocate(this->tagged_chars, this->size_);
 		}
 
 		void set_text(std::string text) {

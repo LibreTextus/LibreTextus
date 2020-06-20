@@ -1,0 +1,454 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- BIBLEBOOKS LIST -->
+<BIBLEBOOKS>
+<BOOK name="GEN">
+	<ITEM name="1. Mose"/>
+	<ITEM name="1.Mose"/>
+	<ITEM name="1Mo"/>
+	<ITEM name="1.Mo"/>
+	<ITEM name="Gn"/>
+	<ITEM name="Gen"/>
+	<ITEM name="Genesis"/>
+</BOOK>
+<BOOK name="EXO">
+	<ITEM name="2. Mose"/>
+	<ITEM name="2.Mose"/>
+	<ITEM name="2Mo"/>
+	<ITEM name="2.Mo"/>
+	<ITEM name="Ex"/>
+	<ITEM name="Exodus"/>
+</BOOK>
+<BOOK name="LEV">
+	<ITEM name="3. Mose"/>
+	<ITEM name="3.Mose"/>
+	<ITEM name="3Mo"/>
+	<ITEM name="3.Mo"/>
+	<ITEM name="Lev"/>
+	<ITEM name="Leviticus"/>
+</BOOK>
+<BOOK name="NUM">
+	<ITEM name="4. Mose"/>
+	<ITEM name="4.Mose"/>
+	<ITEM name="4Mo"/>
+	<ITEM name="4.Mo"/>
+	<ITEM name="Num"/>
+	<ITEM name="Numeri"/>
+</BOOK>
+<BOOK name="DEU">
+	<ITEM name="5. Mose"/>
+	<ITEM name="5.Mose"/>
+	<ITEM name="5Mo"/>
+	<ITEM name="5.Mo"/>
+	<ITEM name="Deu"/>
+	<ITEM name="Dtn"/>
+	<ITEM name="Deut"/>
+	<ITEM name="Deuteronomium"/>
+</BOOK>
+<BOOK name="JOS">
+	<ITEM name="Jos"/>
+	<ITEM name="Josua"/>
+</BOOK>
+<BOOK name="JDG">
+	<ITEM name="Ri"/>
+	<ITEM name="Richter"/>
+</BOOK>
+<BOOK name="RUT">
+	<ITEM name="Rt"/>
+	<ITEM name="Rut"/>
+	<ITEM name="Rth"/>
+	<ITEM name="Ruth"/>
+</BOOK>
+<BOOK name="1SA">
+	<ITEM name="1Sa"/>
+	<ITEM name="1Sam"/>
+	<ITEM name="1 Sam"/>
+	<ITEM name="1.Sa"/>
+	<ITEM name="1. Sa"/>
+	<ITEM name="1.Sam"/>
+	<ITEM name="1. Sam"/>
+	<ITEM name="1.Samuel"/>
+	<ITEM name="1. Samuel"/>
+</BOOK>
+<BOOK name="2SA">
+	<ITEM name="2Sa"/>
+	<ITEM name="2Sam"/>
+	<ITEM name="2 Sam"/>
+	<ITEM name="2.Sa"/>
+	<ITEM name="2. Sa"/>
+	<ITEM name="2.Sam"/>
+	<ITEM name="2. Sam"/>
+	<ITEM name="2.Samuel"/>
+	<ITEM name="2. Samuel"/>
+</BOOK>
+<BOOK name="1KI">
+	<ITEM name="1Kö"/>
+	<ITEM name="1.Kö"/>
+	<ITEM name="1. Kö"/>
+	<ITEM name="1Kön"/>
+	<ITEM name="1 Kön"/>
+	<ITEM name="1.Kön"/>
+	<ITEM name="1. Kön"/>
+	<ITEM name="1.Könige"/>
+	<ITEM name="1. Könige"/>
+</BOOK>
+<BOOK name="2KI">
+	<ITEM name="2Kö"/>
+	<ITEM name="2.Kö"/>
+	<ITEM name="2. Kö"/>
+	<ITEM name="2Kön"/>
+	<ITEM name="2 Kön"/>
+	<ITEM name="2.Kön"/>
+	<ITEM name="2. Kön"/>
+	<ITEM name="2.Könige"/>
+	<ITEM name="2. Könige"/>
+</BOOK>
+<BOOK name="1CH">
+	<ITEM name="1Ch"/>
+	<ITEM name="1.Ch"/>
+	<ITEM name="1. Ch"/>
+	<ITEM name="1Chr"/>
+	<ITEM name="1 Chr"/>
+	<ITEM name="1.Chr"/>
+	<ITEM name="1. Chr"/>
+	<ITEM name="1.Chronik"/>
+	<ITEM name="1. Chronik"/>
+</BOOK>
+<BOOK name="2CH">
+	<ITEM name="2Ch"/>
+	<ITEM name="2.Ch"/>
+	<ITEM name="2. Ch"/>
+	<ITEM name="2Chr"/>
+	<ITEM name="2 Chr"/>
+	<ITEM name="2.Chr"/>
+	<ITEM name="2. Chr"/>
+	<ITEM name="2.Chronik"/>
+	<ITEM name="2. Chronik"/>
+</BOOK>
+<BOOK name="EZR">
+	<ITEM name="Es"/>
+	<ITEM name="Esr"/>
+	<ITEM name="Esra"/>
+</BOOK>
+<BOOK name="NEH">
+	<ITEM name="Neh"/>
+	<ITEM name="Nehemia"/>
+</BOOK>
+<BOOK name="EST">
+	<ITEM name="Est"/>
+	<ITEM name="Ester"/>
+	<ITEM name="Esther"/>
+</BOOK>
+<BOOK name="JOB">
+	<ITEM name="Hi"/>
+	<ITEM name="Hiob"/>
+	<ITEM name="Ijob"/>
+</BOOK>
+<BOOK name="PSA">
+	<ITEM name="Ps"/>
+	<ITEM name="Psa"/>
+	<ITEM name="Psalm"/>
+</BOOK>
+<BOOK name="PRO">
+	<ITEM name="Spr"/>
+	<ITEM name="Sprüche"/>
+</BOOK>
+<BOOK name="ECC">
+	<ITEM name="Pred"/>
+	<ITEM name="Prediger"/>
+	<ITEM name="Koh"/>
+	<ITEM name="Kohelet"/>
+</BOOK>
+<BOOK name="SNG">
+	<ITEM name="Hl"/>
+	<ITEM name="Hld"/>
+	<ITEM name="Hohelied"/>
+	<ITEM name="Hoheslied"/>
+</BOOK>
+<BOOK name="ISA">
+	<ITEM name="Is"/>
+	<ITEM name="Isa"/>
+	<ITEM name="Jes"/>
+	<ITEM name="Jesaja"/>
+</BOOK>
+<BOOK name="JER">
+	<ITEM name="Jer"/>
+	<ITEM name="Jeremia"/>
+</BOOK>
+<BOOK name="LAM">
+	<ITEM name="Kla"/>
+	<ITEM name="Klgl"/>
+	<ITEM name="Klagelieder"/>
+</BOOK>
+<BOOK name="EZK">
+	<ITEM name="Hes"/>
+	<ITEM name="Hesekiel"/>
+	<ITEM name="Ezechiel"/>
+</BOOK>
+<BOOK name="DAN">
+	<ITEM name="Dan"/>
+	<ITEM name="Daniel"/>
+</BOOK>
+<BOOK name="HOS">
+	<ITEM name="Ho"/>
+	<ITEM name="Hos"/>
+	<ITEM name="Hosea"/>
+</BOOK>
+<BOOK name="JOL">
+	<ITEM name="Jol"/>
+	<ITEM name="Joel"/>
+</BOOK>
+<BOOK name="AMO">
+	<ITEM name="Am"/>
+	<ITEM name="Amo"/>
+	<ITEM name="Amos"/>
+</BOOK>
+<BOOK name="OBA">
+	<ITEM name="Ob"/>
+	<ITEM name="Obd"/>
+	<ITEM name="Obadja"/>
+</BOOK>
+<BOOK name="JON">
+	<ITEM name="Jon"/>
+	<ITEM name="Jona"/>
+</BOOK>
+<BOOK name="MIC">
+	<ITEM name="Mi"/>
+	<ITEM name="Mic"/>
+	<ITEM name="Micha"/>
+</BOOK>
+<BOOK name="NAM">
+	<ITEM name="Nah"/>
+	<ITEM name="Nam"/>
+	<ITEM name="Nahum"/>
+</BOOK>
+<BOOK name="HAB">
+	<ITEM name="Hab"/>
+	<ITEM name="Hbk"/>
+	<ITEM name="Habakuk"/>
+</BOOK>
+<BOOK name="ZEP">
+	<ITEM name="Zef"/>
+	<ITEM name="Zefanja"/>
+	<ITEM name="Zeph"/>
+	<ITEM name="Zephanja"/>
+</BOOK>
+<BOOK name="HAG">
+	<ITEM name="Hag"/>
+	<ITEM name="Haggai"/>
+</BOOK>
+<BOOK name="ZEC">
+	<ITEM name="Sach"/>
+	<ITEM name="Sacharja"/>
+</BOOK>
+<BOOK name="MAL">
+	<ITEM name="Mal"/>
+	<ITEM name="Maleachi"/>
+</BOOK>
+<BOOK name="MAT">
+	<ITEM name="Mt"/>
+	<ITEM name="Mat"/>
+	<ITEM name="Matth"/>
+	<ITEM name="Matthäus"/>
+</BOOK>
+<BOOK name="MRK">
+	<ITEM name="Mk"/>
+	<ITEM name="Mrk"/>
+	<ITEM name="Mar"/>
+	<ITEM name="Mark"/>
+	<ITEM name="Markus"/>
+</BOOK>
+<BOOK name="LUK">
+	<ITEM name="Lk"/>
+	<ITEM name="Luk"/>
+	<ITEM name="Lukas"/>
+</BOOK>
+<BOOK name="JHN">
+	<ITEM name="Jh"/>
+	<ITEM name="Joh"/>
+	<ITEM name="Jhn"/>
+	<ITEM name="Johannes"/>
+</BOOK>
+<BOOK name="ACT">
+	<ITEM name="Apg"/>
+	<ITEM name="Apostelgeschichte"/>
+</BOOK>
+<BOOK name="ROM">
+	<ITEM name="Röm"/>
+	<ITEM name="Römer"/>
+</BOOK>
+<BOOK name="1CO">
+	<ITEM name="1Ko"/>
+	<ITEM name="1.Ko"/>
+	<ITEM name="1. Ko"/>
+	<ITEM name="1Kor"/>
+	<ITEM name="1 Kor"/>
+	<ITEM name="1.Kor"/>
+	<ITEM name="1. Kor"/>
+	<ITEM name="1.Korinther"/>
+	<ITEM name="1. Korinther"/>
+</BOOK>
+<BOOK name="2CO">
+	<ITEM name="2Ko"/>
+	<ITEM name="2.Ko"/>
+	<ITEM name="2. Ko"/>
+	<ITEM name="2Kor"/>
+	<ITEM name="2 Kor"/>
+	<ITEM name="2.Kor"/>
+	<ITEM name="2. Kor"/>
+	<ITEM name="2.Korinther"/>
+	<ITEM name="2. Korinther"/>
+</BOOK>
+<BOOK name="GAL">
+	<ITEM name="Gal"/>
+	<ITEM name="Galater"/>
+</BOOK>
+<BOOK name="EPH">
+	<ITEM name="Eph"/>
+	<ITEM name="Epheser"/>
+</BOOK>
+<BOOK name="PHP">
+	<ITEM name="Phil"/>
+	<ITEM name="Philipper"/>
+</BOOK>
+<BOOK name="COL">
+	<ITEM name="Kol"/>
+	<ITEM name="Kolosser"/>
+</BOOK>
+<BOOK name="1TH">
+	<ITEM name="1Th"/>
+	<ITEM name="1.Th"/>
+	<ITEM name="1. Th"/>
+	<ITEM name="1Thess"/>
+	<ITEM name="1 Thess"/>
+	<ITEM name="1.Thess"/>
+	<ITEM name="1. Thess"/>
+	<ITEM name="1.Thessalonicher"/>
+	<ITEM name="1. Thessalonicher"/>
+</BOOK>
+<BOOK name="2TH">
+	<ITEM name="2Th"/>
+	<ITEM name="2.Th"/>
+	<ITEM name="2. Th"/>
+	<ITEM name="2Thess"/>
+	<ITEM name="2 Thess"/>
+	<ITEM name="2.Thess"/>
+	<ITEM name="2. Thess"/>
+	<ITEM name="2.Thessalonicher"/>
+	<ITEM name="2. Thessalonicher"/>
+</BOOK>
+<BOOK name="1TI">
+	<ITEM name="1Ti"/>
+	<ITEM name="1.Ti"/>
+	<ITEM name="1. Ti"/>
+	<ITEM name="1Tim"/>
+	<ITEM name="1 Tim"/>
+	<ITEM name="1.Tim"/>
+	<ITEM name="1. Tim"/>
+	<ITEM name="1.Timotheus"/>
+	<ITEM name="1. Timotheus"/>
+</BOOK>
+<BOOK name="2TI">
+	<ITEM name="2Ti"/>
+	<ITEM name="2.Ti"/>
+	<ITEM name="2. Ti"/>
+	<ITEM name="2Tim"/>
+	<ITEM name="2 Tim"/>
+	<ITEM name="2.Tim"/>
+	<ITEM name="2. Tim"/>
+	<ITEM name="2.Timotheus"/>
+	<ITEM name="2. Timotheus"/>
+</BOOK>
+<BOOK name="TIT">
+	<ITEM name="Ti"/>
+	<ITEM name="Tit"/>
+	<ITEM name="Titus"/>
+</BOOK>
+<BOOK name="PHM">
+	<ITEM name="Phm"/>
+	<ITEM name="Phlm"/>
+	<ITEM name="Philemon"/>
+</BOOK>
+<BOOK name="HEB">
+	<ITEM name="Heb"/>
+	<ITEM name="Hebr"/>
+	<ITEM name="Hebräer"/>
+</BOOK>
+<BOOK name="JAS">
+	<ITEM name="Jak"/>
+	<ITEM name="Jakobus"/>
+</BOOK>
+<BOOK name="1PE">
+	<ITEM name="1Pe"/>
+	<ITEM name="1.Pe"/>
+	<ITEM name="1. Pe"/>
+	<ITEM name="1Pt"/>
+	<ITEM name="1 Pt"/>
+	<ITEM name="1.Pt"/>
+	<ITEM name="1. Pt"/>
+	<ITEM name="1Petr"/>
+	<ITEM name="1 Petr"/>
+	<ITEM name="1.Petr"/>
+	<ITEM name="1. Petr"/>
+	<ITEM name="1.Petrus"/>
+	<ITEM name="1. Petrus"/>
+</BOOK>
+<BOOK name="2PE">
+	<ITEM name="2Pe"/>
+	<ITEM name="2.Pe"/>
+	<ITEM name="2. Pe"/>
+	<ITEM name="2Pt"/>
+	<ITEM name="2 Pt"/>
+	<ITEM name="2.Pt"/>
+	<ITEM name="2. Pt"/>
+	<ITEM name="2Petr"/>
+	<ITEM name="2 Petr"/>
+	<ITEM name="2.Petr"/>
+	<ITEM name="2. Petr"/>
+	<ITEM name="2.Petrus"/>
+	<ITEM name="2. Petrus"/>
+</BOOK>
+<BOOK name="1JN">
+	<ITEM name="1Jo"/>
+	<ITEM name="1 Jo"/>
+	<ITEM name="1.Jo"/>
+	<ITEM name="1. Jo"/>
+	<ITEM name="1Joh"/>
+	<ITEM name="1 Joh"/>
+	<ITEM name="1.Joh"/>
+	<ITEM name="1. Joh"/>
+	<ITEM name="1.Johannes"/>
+	<ITEM name="1. Johannes"/>
+</BOOK>
+<BOOK name="2JN">
+	<ITEM name="2Jo"/>
+	<ITEM name="2 Jo"/>
+	<ITEM name="2.Jo"/>
+	<ITEM name="2. Jo"/>
+	<ITEM name="2Joh"/>
+	<ITEM name="2 Joh"/>
+	<ITEM name="2.Joh"/>
+	<ITEM name="2. Joh"/>
+	<ITEM name="2.Johannes"/>
+	<ITEM name="2. Johannes"/>
+</BOOK>
+<BOOK name="3JN">
+	<ITEM name="3Jo"/>
+	<ITEM name="3 Jo"/>
+	<ITEM name="3.Jo"/>
+	<ITEM name="3. Jo"/>
+	<ITEM name="3Joh"/>
+	<ITEM name="3 Joh"/>
+	<ITEM name="3.Joh"/>
+	<ITEM name="3. Joh"/>
+	<ITEM name="3.Johannes"/>
+	<ITEM name="3. Johannes"/>
+</BOOK>
+<BOOK name="JUD">
+	<ITEM name="Jud"/>
+	<ITEM name="Judas"/>
+</BOOK>
+<BOOK name="REV">
+	<ITEM name="Offb"/>
+	<ITEM name="Offenbarung"/>
+</BOOK>
+</BIBLEBOOKS>

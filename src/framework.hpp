@@ -6,6 +6,7 @@
 #include <experimental/filesystem>
 #include <glibmm/i18n.h>
 #include <locale.h>
+#include <string>
 
 #include "signal_handler.hpp"
 #include "widgets.hpp"
@@ -13,6 +14,7 @@
 #include "window.hpp"
 #include "path.hpp"
 #include "log.hpp"
+#include "source_handler.hpp"
 
 class Framework {
 private:

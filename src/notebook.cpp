@@ -1,4 +1,5 @@
 #include "notebook.hpp"
+#include <rapidxml/rapidxml.hpp>
 
 // LIBRE::NOTEBOOX::NOTEBOOX ---------------------------------------------------
 // CUNSTRUCTOR FOR THE NOTEBOOK WIDGET
@@ -16,6 +17,7 @@ Libre::NoteBook::NoteBook() {
 	this->text_view.set_buffer(this->content_buffer);
 	this->text_view.set_name("text_view");
 	this->text_view.set_wrap_mode(Gtk::WRAP_WORD);
+	this->text_view.set_sensitive(false);
 
 	this->scrolled_window.add(this->text_view);
 
@@ -64,9 +66,9 @@ Libre::NoteBook::NoteBook() {
 	// ------------------------------------------
 	// CREATE HEADER TITLE
 	// ------------------------------------------
-	this->active_position = "Startup Note";
+	this->active_position = nullptr;
 
-	this->title.set_text(this->active_position);
+	this->title.set_text("");
 	this->title.set_name("note_header_title");
 
 	// ------------------------------------------
@@ -109,26 +111,23 @@ Libre::NoteBook::~NoteBook() {
 
 void Libre::NoteBook::save_note() {
 
-	std::vector<YAML::const_iterator> v;
-
-	for (YAML::const_iterator i = this->notes_file.begin(); i != this->notes_file.end(); i++) {
-		if (i->second.as<std::string>().empty()) {
+	std::vector<rapidxml::xml_node<> *> v;
+	
+	for (rapidxml::xml_node<> * i = this->notes_file.first_node("notebook")->first_node(); i; i = i->next_sibling()) {
+		if (std::string(i->value()).empty()) {
 			v.push_back(i);
 		}
 	}
 
-	for (size_t i = 0; i < v.size(); i++) {
-		this->notes_file.remove(v[i]->first);
+	for (int i = 0; i < v.size(); i++) {
+		this->notes_file.first_node("notebook")->remove_node(v[i]);
 	}
-
+	
 	this->m_signal_refresh.emit(0);
-
-	YAML::Emitter emitter;
-	emitter << this->notes_file;
 
 	std::ofstream fout(this->path);
 	if (fout.is_open()) {
-		fout << emitter.c_str();
+		fout << this->notes_file;
 		fout.close();
 	}
 }
@@ -138,16 +137,29 @@ void Libre::NoteBook::save_note() {
 // -----------------------------------------------------------------------------
 
 void Libre::NoteBook::open_note(const std::string & position) {
+	this->text_view.set_sensitive(true);
+
 	this->save_note();
 
-	if (this->notes_file[position]) {
-		this->content_buffer->set_text(this->notes_file[position].as<std::string>());
+	rapidxml::xml_node<> * note;
+
+	if (this->note_exists(position)) {
+
+		note = this->notes_file.first_node("notebook")->first_node();
+
+		for (; note && note->first_attribute("name")->value() != position; note = note->next_sibling()) {}
+
+		this->content_buffer->set_text(note->value());
 	} else {
-		this->notes_file[position] = "";
+		note = this->notes_file.allocate_node(rapidxml::node_element, "note");
+		char * name = this->notes_file.allocate_string(position.c_str());
+		rapidxml::xml_attribute<> * attr = this->notes_file.allocate_attribute("name", name);
+		note->append_attribute(attr);
+		this->notes_file.first_node("notebook")->append_node(note);
 		this->content_buffer->set_text("");
 	}
 
-	this->active_position = position;
+	this->active_position = note;
 	this->title.set_text(std::string(_("Note")) + " - " + position);
 
 	this->on_content_change();
@@ -158,7 +170,8 @@ void Libre::NoteBook::open_note(const std::string & position) {
 // -----------------------------------------------------------------------------
 
 void Libre::NoteBook::on_content_change() {
-	this->notes_file[this->active_position] = std::string(this->content_buffer->get_text());
+	char * content = this->notes_file.allocate_string(this->content_buffer->get_text().c_str());
+	this->active_position->value(content);
 
 	this->markdown_text.set_text(std::string(this->content_buffer->get_text()));
 

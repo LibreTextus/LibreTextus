@@ -1,7 +1,6 @@
 #ifndef SEARCH_ENGINE_HPP
 #define SEARCH_ENGINE_HPP
 
-#include <yaml-cpp/yaml.h>
 #include <string>
 #include <iostream>
 #include <boost/regex.hpp>
@@ -33,7 +32,7 @@ private:
 	void mark_result(std::string * text);
 
 public:
-	SearchEngine (std::string path, std::string names);
+	SearchEngine (std::string path);
 	virtual ~SearchEngine() {}
 
 	bool search(std::string * arg); // SEARCH FUNCTION FOR PUBLIC USE

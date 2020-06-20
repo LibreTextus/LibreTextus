@@ -1,11 +1,12 @@
 #ifndef SETTINGS_HPP
 #define SETTINGS_HPP
 
-#include <yaml-cpp/yaml.h>
-#include <regex>
+#include <rapidxml/rapidxml.hpp>
+#include <rapidxml/rapidxml_print.hpp>
+#include <rapidxml/rapidxml_utils.hpp>
 #include <iostream>
 #include <fstream>
-#include <experimental/filesystem>
+#include <vector>
 
 #include "path.hpp"
 
@@ -23,76 +24,46 @@ public:
 	// TYPE
 	// ---------------------------------------------------------------------------
 
-	template <typename T>
-	T get(std::string arg) {
-		YAML::Node output = YAML::LoadFile(HOME("settings.yml"));
+	std::string get_attribute(const std::string & arg, const std::string & attr) {
+		rapidxml::file<> file(HOME("settings.xml").c_str());
+		rapidxml::xml_document<> doc;
+		doc.parse<0>(file.data());
 
-		std::regex e("-");
-		std::smatch m;
+		rapidxml::xml_node<> * n = doc.first_node("settings")->first_node(arg.c_str());
 
-		while (std::regex_search(arg, m, e)) {
-			output = output[m.prefix().str()];
-			arg = m.suffix().str();
-		}
-
-		if (!output[arg]) {
-			output[arg] = "";
-		}
-
-		return output[arg].as<T>();
+		return (n ? n->first_attribute(attr.c_str())->value() : "");
 	}
 
 	// SETTINGS::GET -------------------------------------------------------------
 	// THIS FUNCTION RETURNS THE VALUE STORED IN THE SETTINGS AS YAML::NODE
 	// ---------------------------------------------------------------------------
 
-	YAML::Node get(std::string arg) {
-		YAML::Node output = YAML::LoadFile(HOME("settings.yml"));
+	std::vector<std::string> get_children(const std::string & arg, const std::string & attr) {
+		rapidxml::file<> file(HOME("settings.xml").c_str());
+		rapidxml::xml_document<> doc;
+		doc.parse<0>(file.data());
 
-		std::regex e("-");
-		std::smatch m;
+		std::vector<std::string> output;
 
-		while (std::regex_search(arg, m, e)) {
-			output = output[m.prefix().str()];
-			arg = m.suffix().str();
-		}
+		for (rapidxml::xml_node<> * n = doc.first_node("settings")->first_node(arg.c_str())->first_node(); n; n = n->next_sibling()) { output.push_back(n->first_attribute(attr.c_str())->value()); }
 
-		return output[arg];
+		return output;
 	}
 
 	// SETTINGS::SET -------------------------------------------------------------
 	// THIS FUNCTION SAVES THE SETTNGS IN THE SETTINGS FILE
 	// ---------------------------------------------------------------------------
 
-	void set(std::string tag, std::string arg) {
-		YAML::Node node = YAML::LoadFile(HOME("settings.yml"));
+	void set(const std::string & tag, const std::string & attr, const std::string & value) {
+		rapidxml::file<> file(HOME("settings.xml").c_str());
+		rapidxml::xml_document<> doc;
+		doc.parse<rapidxml::parse_no_element_values>(file.data());
 
-		YAML::iterator i = node.begin();
-
-		std::regex e("-");
-		std::smatch m;
-		std::regex_search(tag, m, e);
-
-		for (; i != node.end() && m.empty() && i->first.as<std::string>() != tag; i++) {}
-
-		while (std::regex_search(tag, m, e)) {
-			for (; i != node.end(); i++) {
-				if (i->first.as<std::string>() == m.prefix().str()) {
-					i = i->second.begin();
-					break;
-				}
-			}
-			tag = m.suffix().str();
-		}
-
-		i->second = arg;
-
-		YAML::Emitter emitter;
-		emitter << node;
-
-		std::ofstream fout(HOME("settings.yml"));
+		doc.first_node("settings")->first_node(tag.c_str())->first_attribute(attr.c_str())->value(value.c_str());
+		
+		std::ofstream fout(HOME("settings.xml"));
 		if (fout.is_open()) {
-			fout << emitter.c_str();
+			fout << doc;
 			fout.close();
 		}
 	}

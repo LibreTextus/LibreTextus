@@ -174,7 +174,7 @@ void Libre::TextView::_display(int begin) {
 			if (i < this->captions.size() - this->scroll_status) {
 				this->c_labels[x][i].set_text(this->captions[i + this->scroll_status]);
 				this->v_labels[x][i].set_markup(this->content[i + this->scroll_status][x]);
-				this->verse_status[x][i].set_active((this->note_book_file[this->captions[i + this->scroll_status]] ? true : false));
+				this->verse_status[x][i].set_active((this->note_exists(this->captions[i + this->scroll_status]) ? true : false));
 				this->verse_status[x][i].signal_released().connect([this, i]() {
 					this->m_signal_toggle_note.emit(this->captions[i + this->scroll_status]);
 					for (int x = 0; x < this->tabs; x++) {

@@ -265,14 +265,14 @@ void SearchEngine::interpret_string() {
 
 	bool valid_position = (pos.size() != 0);
 
-	for (int i = 0; i < pos.size(); i++) {
-		std::cout << "[" + std::to_string(i) + "][0]: " << pos[i][0] << (this->file->find(pos[i][0]) == this->file->end() ? " x" : " √") << '\n';
-		std::cout << "[" + std::to_string(i) + "][1]: " << pos[i][1] << (this->file->find(pos[i][1]) == this->file->end() ? " x" : " √") << '\n';
-		if (this->file->find(pos[i][0]) == this->file->end() || this->file->find(pos[i][1]) == this->file->end()) {
-			valid_position = false;
-			break;
-		}
-	}
+	// for (int i = 0; i < pos.size(); i++) {
+		// std::cout << "[" + std::to_string(i) + "][0]: " << pos[i][0] << (this->file->find(pos[i][0]) == this->file->end() ? " x" : " √") << '\n';
+		// std::cout << "[" + std::to_string(i) + "][1]: " << pos[i][1] << (this->file->find(pos[i][1]) == this->file->end() ? " x" : " √") << '\n';
+		// if (this->file->find(pos[i][0]) == this->file->end() || this->file->find(pos[i][1]) == this->file->end()) {
+			// valid_position = false;
+			// break;
+		// }
+	// }
 	this->positions.clear();
 
 	if (valid_position) {
@@ -298,13 +298,13 @@ void SearchEngine::interpret_string() {
 
 	this->search_argument_vector.push_back(arg);
 
-	std::cout << "REGEX ARGS: ";
+	// std::cout << "REGEX ARGS: ";
 
-	for (int i = 0; i < this->search_argument_vector.size(); i++) {
-		std::cout << this->search_argument_vector[i] << " AND ";
-	}
+	// for (int i = 0; i < this->search_argument_vector.size(); i++) {
+		// std::cout << this->search_argument_vector[i] << " AND ";
+	// }
 
-	std::cout << "(" << this->search_argument_vector.size() << ")" << '\n';
+	// std::cout << "(" << this->search_argument_vector.size() << ")" << '\n';
 }
 
 // SEARCHENGINE::INTERPRET_ARGUMENT --------------------------------------------

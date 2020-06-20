@@ -2,7 +2,7 @@
 #include <cmath>
 #include <rapidxml/rapidxml.hpp>
 
-int Framework::init(int argc, char *argv[]) {
+int Framework::init(const std::string & arg) {
 	LOG_RESET();
 	LOG("--------------------- LOG BEGIN ---------------------");
 
@@ -39,15 +39,13 @@ int Framework::init(int argc, char *argv[]) {
 	bindtextdomain(GETTEXT_PACKAGE, DATA("../locale").c_str());
 	textdomain(GETTEXT_PACKAGE);
 
-	std::cout << "LC_ALL: " << setlocale(LC_ALL, NULL) << '\n';
-
 	// ------------------------------------------
 	// CREATE BUILDER AND APPLICATION
 	// ------------------------------------------
 
 	LOG("-- Create Application");
 
-	this->widgets.app = Gtk::Application::create(argc, argv);
+	this->widgets.app = Gtk::Application::create();
 
 	// ------------------------------------------
 	// CREATE WINDOW FOR THE PACKAGEMANAGER
@@ -164,7 +162,7 @@ int Framework::init(int argc, char *argv[]) {
 	// UPDATE THREAD HAS DONE HIS WORK
 	// ------------------------------------------
 
-	this->widgets.processing.start_session.connect([this]() {
+	this->widgets.processing.start_session.connect([this, arg]() {
 
 		if (this->widgets.processing.update_thread->joinable()) {
 			this->widgets.processing.update_thread->join();
@@ -205,6 +203,48 @@ int Framework::init(int argc, char *argv[]) {
 		this->widgets.main.text_view->show_information();
 		this->signal_handler.sync_enabled_sources();
 		this->widgets.main.search_entry->grab_focus();
+
+		// ------------------------------------------
+		// IF A SEARCH ARGUMENT IS GIVEN
+		// ------------------------------------------
+		
+		if (!arg.empty()) {
+			this->widgets.main.number_results->set_text(_("Searching"));
+
+			this->widgets.main.search_entry->set_text(arg);
+
+			this->widgets.main.history_button->add_to_history(this->widgets.main.search_entry->get_text());
+
+			this->widgets.main.text_view->show_content();
+			this->widgets.main.text_view->grab_focus();
+
+			// ------------------------------------------
+			// DISABLE ALL WIDGETS
+			// ------------------------------------------
+
+			for (int i = 0; i < this->widgets.main.combo_boxes.size(); i++) {
+				this->widgets.main.combo_boxes[i]->set_button_sensitivity(Gtk::SENSITIVITY_OFF);
+				this->widgets.main.close_buttons[i]->set_sensitive(false);
+			}
+
+			this->widgets.main.text_view->clear();
+
+			this->widgets.main.add_button->set_sensitive(false);
+
+			this->widgets.main.search_entry->set_sensitive(false);
+			this->widgets.main.history_button->set_sensitive(false);
+			this->widgets.ui.action_group->set_sensitive(false);
+
+			this->widgets.processing.replace_id = -1;
+
+			// ------------------------------------------
+			// CREATE A NEW PROCESS_THREAD
+			// ------------------------------------------
+
+			this->widgets.processing.process_thread = Glib::Thread::create(
+					sigc::mem_fun(&this->signal_handler, &SignalHandler::do_search), true
+			);
+		}
 	});
 
 	// ------------------------------------------

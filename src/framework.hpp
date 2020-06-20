@@ -25,7 +25,7 @@ public:
 	Framework() {}
 	virtual ~Framework() {}
 
-	int init(int argc, char *argv[]) ;
+	int init(const std::string &) ;
 	bool run();
 };
 

@@ -36,7 +36,7 @@ namespace Libre {
     virtual ~PackageManager() = default;
 
 
-    void init();
+    void init(bool without_update = false);
     void remove(std::string);
     void install(std::string);
     void disable(std::string);

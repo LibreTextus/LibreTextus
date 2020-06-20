@@ -62,7 +62,7 @@ include_directories(${X11_INCLUDE_DIR})
 set(Boost_USE_STATIC_LIBS OFF)
 set(Boost_USE_MULTITHREADED ON)
 set(Boost_USE_STATIC_RUNTIME OFF)
-find_package(Boost COMPONENTS regex)
+find_package(Boost COMPONENTS regex program_options)
 
 include_directories(${Boost_INCLUDE_DIRS})
 

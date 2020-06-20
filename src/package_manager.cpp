@@ -7,7 +7,7 @@
 // INSTALLED IN THE PACKAGE_DIRECTORY IT WILL INSTALL THE DEFAULT
 // -----------------------------------------------------------------------------
 
-void Libre::PackageManager::init() {
+void Libre::PackageManager::init(bool without_update) {
 	// ------------------------------------------
 	// CHECK IF THE ROOT DIRECTORY IS EMPTY
 	// ------------------------------------------
@@ -28,7 +28,10 @@ void Libre::PackageManager::init() {
 	}
 
 	this->refresh_lists();
-	this->update();
+
+	if (!without_update) {
+		this->update();
+	}
 }
 
 // LIBRE::PACKAGEMANAGER::INSTALL ----------------------------------------------

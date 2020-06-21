@@ -133,7 +133,7 @@ void SearchEngine::interpret_string() {
 
 	for (Libre::NameMap::iterator i = this->names->begin(); i != this->names->end(); i++) {
 		for (std::vector<std::string>::iterator x = i.value().begin(); x != i.value().end(); x++) {
-			e = boost::regex(*x, boost::regex::icase);
+			e = boost::regex(*x);
 			arg = boost::regex_replace(arg, e, i->first);
 		}
 	}
@@ -196,12 +196,25 @@ void SearchEngine::interpret_string() {
 				pos.back()[1] = arg.substr(0, 3);
 				arg.erase(0, 3);
 
-				boost::regex_search(arg, m, e);
-				pos.back()[1] += m.str() + ",";
-				arg = m.suffix().str();
+				if (!arg.empty()) {
+					boost::regex_search(arg, m, e);
+					pos.back()[1] += m.str() + ",";
+					arg = m.suffix().str();
 
-				pos.back()[0] += "1";
-				pos.back()[1] += "1";
+					pos.back()[0] += "1";
+					pos.back()[1] += "1";
+
+				} else {
+					pos.back()[0] += "1,1";
+					pos.back()[1] += " 1,1";
+
+					Libre::BookMap::iterator i = this->file->find(pos.back()[1]);
+
+					for (;i->first.substr(0, i->first.find(" ")) == pos.back()[1].substr(0, pos.back()[1].find(" ")); i++) {}
+					i--;
+					pos.back()[1] = i->first;
+				}
+
 			} else {
 
 				pos.back()[0] += "1";
@@ -258,7 +271,7 @@ void SearchEngine::interpret_string() {
 			}
 		}
 
-		if (arg == "") {
+		if (arg.empty()) {
 			run = false;
 		}
 	}

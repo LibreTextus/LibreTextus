@@ -65,6 +65,8 @@ void Libre::PackageManager::install(std::string url) {
 
 	system(("git clone " + url + " " + HOME(name)).c_str());
 
+	this->refresh_db(name);
+
 	// ------------------------------------------
 	// DISPLAY FOLLOWING INFORMATION:
 	// 		Looking for sources...
@@ -76,14 +78,6 @@ void Libre::PackageManager::install(std::string url) {
 	this->info_string = "";
 	this->mtx.unlock();
 	this->update_text.emit();
-
-	// ------------------------------------------
-	// GO THROUGH EVERY DIRECTORY IN THE PACKAGE
-	// ROOT DIRECTORY AND LOOK IF THERE ARE
-	// SOURCE YAML FILES
-	// ------------------------------------------
-
-	this->refresh_db(name);
 
 	// ------------------------------------------
 	// DISPLAY FOLLOWING INFORMATION:
@@ -231,7 +225,10 @@ void Libre::PackageManager::update() {
 		this->info_string = std::string(_("Updating")) + " " + this->packages[i];
 		this->mtx.unlock();
 		this->update_text.emit();
+		this->refresh_db(this->packages[i]);
 	}
+
+	this->refresh_lists();
 }
 
 void Libre::PackageManager::refresh_lists() {
@@ -248,6 +245,15 @@ void Libre::PackageManager::refresh_lists() {
 }
 
 void Libre::PackageManager::refresh_db(const std::string & name) {
+
+	for (rapidxml::xml_node<> * i = this->sources_doc.first_node("sources")->first_node("file"); i; i = i->next_sibling()) {
+		if (!std::experimental::filesystem::exists(i->first_node("path")->value())) {
+			rapidxml::xml_node<> * tmp = i->next_sibling();
+			this->sources_doc.first_node("sources")->remove_node(i);
+			i = tmp;
+		}
+	}
+
 	for (auto & i : std::experimental::filesystem::directory_iterator(HOME(name))) {
 		if (std::experimental::filesystem::is_directory(i.path())) {
 			for (auto & f : std::experimental::filesystem::directory_iterator(i.path().string())) {
@@ -261,7 +267,11 @@ void Libre::PackageManager::refresh_db(const std::string & name) {
 					int id = 0;
 					rapidxml::xml_node<> * xf = this->sources_doc.first_node("sources")->first_node("file");
 					while (xf) {
-						if (xf->first_attribute("name")->value() == f_name + (id ? "(" + std::to_string(id) + ")" : "")) {
+						if (std::string(xf->first_node("path")->value()) == f.path().string()) {
+							break;
+						}
+
+						if (xf->first_attribute("name")->value() == f_name + (id ? " (" + std::to_string(id + 1) + ")" : "")) {
 							id++;
 							xf = this->sources_doc.first_node("sources")->first_node("file");
 							continue;
@@ -271,34 +281,48 @@ void Libre::PackageManager::refresh_db(const std::string & name) {
 					}
 
 					if (id != 0) {
-						f_name += "(" + std::to_string(id) + ")";
+						f_name += " (" + std::to_string(id + 1) + ")";
 					}
 
 					char * file_name = this->sources_doc.allocate_string(f_name.c_str());
 					char * path = this->sources_doc.allocate_string(f.path().c_str());
 					char * package = this->sources_doc.allocate_string(name.c_str());
 
-					rapidxml::xml_node<> * f_info = this->sources_doc.allocate_node(rapidxml::node_element, "file");
-					rapidxml::xml_attribute<> * info_attr = this->sources_doc.allocate_attribute("name", file_name);
-					f_info->append_attribute(info_attr);
+					rapidxml::xml_node<> * f_info;
+					rapidxml::xml_attribute<> * info_attr;
+					rapidxml::xml_node<> * f_path;
+					rapidxml::xml_node<> * f_package;
+					rapidxml::xml_node<> * f_enabled;
 
-					rapidxml::xml_node<> * f_path = this->sources_doc.allocate_node(rapidxml::node_element, "path", path);
-					rapidxml::xml_node<> * f_package = this->sources_doc.allocate_node(rapidxml::node_element, "package", package);
-					rapidxml::xml_node<> * f_enabled = this->sources_doc.allocate_node(rapidxml::node_element, "enabled", "true");
+					
+					if (!xf) {
+						f_info = this->sources_doc.allocate_node(rapidxml::node_element, "file");
+						info_attr = this->sources_doc.allocate_attribute("name", file_name);
+						f_info->append_attribute(info_attr);
 
-					f_info->append_node(f_path);
-					f_info->append_node(f_package);
-					f_info->append_node(f_enabled);
+						f_path = this->sources_doc.allocate_node(rapidxml::node_element, "path", path);
+						f_package = this->sources_doc.allocate_node(rapidxml::node_element, "package", package);
+						f_enabled = this->sources_doc.allocate_node(rapidxml::node_element, "enabled", "true");
 
+						f_info->append_node(f_path);
+						f_info->append_node(f_package);
+						f_info->append_node(f_enabled);
+
+						this->sources_doc.first_node("sources")->append_node(f_info);
+					}
+					
 					this->mtx.lock();
 					this->info_string = std::string(_("Found")) + " : " + file_name;
 					this->mtx.unlock();
 					this->update_text.emit();
-
-					this->sources_doc.first_node("sources")->append_node(f_info);
-
 				}
 			}
 		}
+	}
+
+	std::ofstream fout(HOME("sources.xml"));
+	if (fout.is_open()) {
+		fout << this->sources_doc;
+		fout.close();
 	}
 }

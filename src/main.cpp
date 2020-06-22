@@ -13,15 +13,24 @@ int main(int argc, char *argv[]) {
 		desc.add_options()
 			("help", "Show this help screen")
 			("search,s", boost::program_options::value<std::string>()->default_value(""), "Search for the following argument")
-			("print,p", "Print results without open a window");
+			("print,p", "Print results without open a window")
+			("output,o", boost::program_options::value<std::string>()->default_value(""), "Write output to file")
+			("no-marks", "Do not hightlight results (Only with -p)")
+			("show-amount", "Print the amount of results (Only with -p)")
+			("list-sources,l", "List installed sources")
+			("source,S", boost::program_options::value<std::string>()->default_value(""), "Search in this source (Only with -p)");
 
 		boost::program_options::variables_map vm;
 		boost::program_options::store(boost::program_options::parse_command_line(argc, argv, desc), vm);
 
 		if (vm.count("help")) {
 			std::cout << desc << '\n';
+
 		} else if (vm.count("print")) {
-			Libre::quick_search(vm["search"].as<std::string>());
+			Libre::quick_search(vm["search"].as<std::string>(), vm["output"].as<std::string>(), vm["source"].as<std::string>(),!vm.count("no-marks"), !vm.count("show-amount"));
+
+		} else if (vm.count("list-sources")) {
+			Libre::list_sources();
 		} else {
 			XInitThreads();
 

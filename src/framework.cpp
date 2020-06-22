@@ -1,6 +1,5 @@
 #include "framework.hpp"
-#include <cmath>
-#include <rapidxml/rapidxml.hpp>
+#include <exception>
 
 int Framework::init(const std::string & arg) {
 	LOG_RESET();
@@ -267,10 +266,10 @@ bool Framework::run() {
 
 	LOG("-- Run Application");
 
-	if (this->widgets.main.window) {
+	try {
 		this->widgets.app->run();
-	} else {
-		std::cerr << "ERROR: UNABLE TO RUN APPLICATION" << '\n';
+	} catch (std::exception & ex) {
+		std::cerr << "Error cannot run Application: " << ex.what() << '\n';
 	}
 
 	if (!this->widgets.processing.restart_application) {

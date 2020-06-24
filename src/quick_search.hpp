@@ -2,6 +2,7 @@
 #define QUICK_SEARCH_HPP
 
 #include <fstream>
+#include <stdexcept>
 #include <string>
 #include <iostream>
 #include <experimental/filesystem>
@@ -44,7 +45,7 @@ namespace Libre {
 	}
 
 
-	void quick_search(const std::string & arg, const std::string & file, const std::string & source, bool highlight, bool show_amount) {
+	int quick_search(const std::string & arg, const std::string & file, const std::string & source, bool highlight, bool show_amount) {
 
 		Libre::PackageManager package_manager;
 		Settings settings;
@@ -53,13 +54,20 @@ namespace Libre {
 
 		SourceHandler source_handler;
 		source_handler.set_names_path(HOME(settings.get_attribute("namesfile", "file")));
+		
+		SearchEngine search_engine(package_manager.get_source_path(settings.get_attribute("startupfile", "file")));
 
-		SearchEngine search_engine(package_manager.get_source_path((source.empty() ? settings.get_attribute("startupfile", "file") : source)));
+		if (!package_manager.get_source_path(source).empty()) {
+			search_engine.set_source(package_manager.get_source_path(source));
+		} else if (!source.empty()) {
+			std::cerr << "Could not find source: " + source << '\n';
+			return -1;
+		}
 
 		std::string result("");
 
 		search_engine.set_search_argument(arg);
-		search_engine.set_mark_argument(( highlight ? (file.empty() ? "\033[1;31m$&\033[0m" : "*$&*") : "$&"));
+		search_engine.set_mark_argument((highlight ? (file.empty() ? "\033[1;31m$&\033[0m" : "*$&*") : "$&"));
 
 		std::ofstream ifile;
 		if (!file.empty()) {
@@ -93,6 +101,8 @@ namespace Libre {
 		if (!file.empty()) {
 			ifile.close();
 		}
+
+		return 0;
 	}
 
 	void list_sources() {

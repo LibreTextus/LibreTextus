@@ -1,6 +1,6 @@
-project(LibreTextus)
-
 cmake_policy(SET CMP0048 NEW)
+
+project(LibreTextus)
 
 cmake_minimum_required(VERSION 3.7)
 

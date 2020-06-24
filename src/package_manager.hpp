@@ -57,9 +57,12 @@ namespace Libre {
 			rapidxml::xml_node<> * n = this->sources_doc.first_node("sources")->first_node();
 			
 			for (;n && std::string(n->first_attribute("name")->value()) != name; n = n->next_sibling()) {}
-
+			
+			if (!n) {
+				return "";
+			}
+			
 			n = n->first_node("path");
-
 			return (n ? n->value() : "");
 		}
 

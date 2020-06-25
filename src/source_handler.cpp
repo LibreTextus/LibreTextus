@@ -66,10 +66,10 @@ Libre::NameMap * SourceHandler::get_names() {
 Libre::NameMap SourceHandler::to_names(rapidxml::xml_document<> * doc) {
 	Libre::NameMap output;
 
-	for (rapidxml::xml_node<> * b = doc->first_node("BIBLEBOOKS")->first_node(); b; b = b->next_sibling()) {
+	for (rapidxml::xml_node<> * b = doc->first_node("BIBLEBOOKS")->first_node("BOOK"); b; b = b->next_sibling()) {
 		std::vector<std::string> v;
 
-		for (rapidxml::xml_node<> * i = b->first_node(); i; i = i->next_sibling()) {
+		for (rapidxml::xml_node<> * i = b->first_node("ITEM"); i; i = i->next_sibling()) {
 			v.push_back(i->first_attribute("name")->value());
 		}
 

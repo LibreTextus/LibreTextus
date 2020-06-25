@@ -106,8 +106,6 @@ gboolean SignalHandler::search_request(GdkEventKey * event) {
 
 	if (event->keyval == 65293) {
 
-		this->widgets->main.number_results->set_text(_("Searching"));
-
 		if (this->widgets->main.search_entry->get_text() == "") {
 			this->widgets->main.text_view->show_information();
 			this->widgets->main.text_view->clear();
@@ -115,38 +113,7 @@ gboolean SignalHandler::search_request(GdkEventKey * event) {
 			return false;
 		}
 
-		this->widgets->main.history_button->add_to_history(this->widgets->main.search_entry->get_text());
-
-		this->widgets->main.text_view->show_content();
-		this->widgets->main.text_view->grab_focus();
-
-		// ------------------------------------------
-		// DISABLE ALL WIDGETS
-		// ------------------------------------------
-
-		for (int i = 0; i < this->widgets->main.combo_boxes.size(); i++) {
-			this->widgets->main.combo_boxes[i]->set_button_sensitivity(Gtk::SENSITIVITY_OFF);
-			this->widgets->main.close_buttons[i]->set_sensitive(false);
-		}
-
-		this->widgets->main.text_view->clear();
-
-		this->widgets->main.add_button->set_sensitive(false);
-
-		this->widgets->main.search_entry->set_sensitive(false);
-		this->widgets->main.history_button->set_sensitive(false);
-		this->widgets->ui.action_group->set_sensitive(false);
-
-		this->widgets->processing.replace_id = -1;
-
-		// ------------------------------------------
-		// CREATE A NEW PROCESS_THREAD
-		// ------------------------------------------
-
-		this->widgets->processing.process_thread = Glib::Thread::create(
-			sigc::mem_fun(*this, &SignalHandler::do_search), true
-		);
-		LOG("--> \"do_search\" emmited");
+		this->trigger_search(this->widgets->main.search_entry->get_text());
 
 	} else if (event->keyval == 65307) {
 		this->widgets->main.text_view->grab_focus();

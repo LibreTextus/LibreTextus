@@ -844,6 +844,9 @@ void SignalHandler::sync_enabled_sources() {
 	// SYNC THE COMBO BOXES
 	// ------------------------------------------
 
+	this->widgets->preferences.default_source_combo->remove_all();
+	this->widgets->append_sources(this->widgets->preferences.default_source_combo);
+
 	for (int i = 0; i < this->widgets->main.combo_boxes.size(); i++) {
 		Gtk::HBox * parent = this->widgets->main.headers[i];
 		std::vector<Gtk::Widget *> v = parent->get_children();
@@ -866,6 +869,7 @@ void SignalHandler::sync_enabled_sources() {
 			this->widgets->main.combo_boxes[i]),
 			false
 		);
+
 	}
 
 	// ------------------------------------------

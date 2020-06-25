@@ -1,4 +1,5 @@
 #include "window.hpp"
+#include "gtkmm/box.h"
 
 // LIBRE::MAINWINDOW::CREATE ---------------------------------------------------
 // THIS FUNCTION CREATES THE MAIN WINDOW
@@ -475,12 +476,24 @@ bool Libre::PreferencesWindow::create(Libre::Widgets * w, SignalHandler * s) {
 
 	Gtk::VBox * books_box = new Gtk::VBox;
 
-	Gtk::Label * books_page_title = new Gtk::Label(_("Book Manager"));
+	Gtk::HBox * default_source_box = new Gtk::HBox;
+	Gtk::Label * default_source_label = new Gtk::Label(_("Default:"));
+	w->preferences.default_source_combo = new Gtk::ComboBoxText;
+
+	w->preferences.default_source_combo->signal_changed().connect([w]() {
+		if (!w->preferences.default_source_combo->get_active_text().empty()) {
+			Settings settings;	
+			settings.set("startupfile", "file", w->preferences.default_source_combo->get_active_text());
+		}
+	});
+
+	default_source_box->pack_start(*default_source_label, Gtk::PACK_SHRINK, 0);
+	default_source_box->pack_end(*w->preferences.default_source_combo, Gtk::PACK_SHRINK, 0);
+
+	books_box->pack_start(*default_source_box, Gtk::PACK_SHRINK, 0);
 
 	Gtk::ScrolledWindow * manager_container = new Gtk::ScrolledWindow;
 	manager_container->set_border_width(20);
-
-	books_box->pack_start(*books_page_title, Gtk::PACK_SHRINK, 0);
 
 	w->preferences.book_manager_box = new Gtk::VBox;
 	w->preferences.book_manager_box->set_spacing(5);

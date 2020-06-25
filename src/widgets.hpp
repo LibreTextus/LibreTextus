@@ -8,6 +8,7 @@
 #include <mutex>
 #include <tsl/ordered_map.h>
 
+#include "gtkmm/comboboxtext.h"
 #include "text_view.hpp"
 #include "notebook.hpp"
 #include "history_button.hpp"
@@ -62,6 +63,7 @@ namespace Libre {
 			Gtk::SpinButton * font_size_spinbutton;
 			Gtk::ComboBoxText * theme_combo;
 			Gtk::ComboBoxText * lang_combo;
+			Gtk::ComboBoxText * default_source_combo;
 			Gtk::VBox * book_manager_box;
 			tsl::ordered_map<std::string, Gtk::CheckButton *> sources_check;
 		} preferences;
@@ -131,6 +133,7 @@ namespace Libre {
 			delete this->preferences.font_size_spinbutton;
 			delete this->preferences.theme_combo;
 			delete this->preferences.book_manager_box;
+			delete this->preferences.default_source_combo;
 		}
 
 		// LIBRE::WIDGETS::APPENDS_SOURCES -----------------------------------------

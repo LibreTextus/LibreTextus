@@ -893,7 +893,7 @@ void SignalHandler::toggle_note(std::string position) {
 
 void SignalHandler::trigger_search(const std::string & text) {
 
-	this->widgets->main.history_button->add_to_history(this->widgets->main.search_entry->get_text());
+	this->widgets->main.history_button->add_to_history(text);
 	this->widgets->main.search_entry->set_text(text);
 
 	this->widgets->main.number_results->set_text(_("Searching"));

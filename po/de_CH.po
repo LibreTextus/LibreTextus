@@ -35,9 +35,8 @@ msgid "Looking for sources..."
 msgstr "Suche nach Quellen..."
 
 #: ../src/package_manager.cpp:88 ../src/package_manager.cpp:133
-#, fuzzy
 msgid "Update sources.xml"
-msgstr "Aktualisiere sources.yml"
+msgstr "Aktualisiere sources.xml"
 
 #: ../src/package_manager.cpp:117
 msgid "Removing directory..."

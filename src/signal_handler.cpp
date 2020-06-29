@@ -80,7 +80,7 @@ void SignalHandler::init(Libre::Widgets * w) {
 	// SET STYLES FOR THE MARK AND HEADER
 	// ------------------------------------------
 
-	this->mark_argument = "<span background=\"#" + r + g + b + "\">$&</span>";
+	this->mark_argument = "<span font_weight=\"bold\" underline=\"single\" underline_color=\"#" + r + g + b + "\">$&</span>";
 	this->header_argument = "<span font_weight=\"ultralight\">$&</span>";
 
 	// ------------------------------------------

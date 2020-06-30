@@ -11,6 +11,8 @@
 #include <rapidxml/rapidxml_print.hpp>
 #include <glibmm/i18n.h>
 
+#include "source_handler.hpp"
+
 namespace Libre {
 	class TextView : public Gtk::ScrolledWindow {
 	private:
@@ -23,6 +25,7 @@ namespace Libre {
 		std::vector<std::vector<Gtk::Label>> c_labels;
 		std::vector<std::vector<Gtk::CheckButton>> verse_status;
 		std::vector<std::string> captions;
+		std::vector<std::string> source_paths;
 		std::vector<std::vector<std::string>> content;
 		int scroll_status;
 		int padding_x;
@@ -45,7 +48,7 @@ namespace Libre {
 		}
 
 	public:
-		TextView(const std::string & info_text);
+		TextView(const std::string &, const std::string &);
 		virtual ~TextView() = default;
 
 		void clear();
@@ -58,7 +61,7 @@ namespace Libre {
 		void show_content();
 		void show_if_results();
 		void remove_tab(const int & id);
-		void append_tab();
+		void append_tab(const std::string & path);
 		void label_populate_popup(Gtk::Menu * menu, int tab, int version);
 		void set_note_book(rapidxml::xml_node<> * root) {
 			this->note_book_file = root;
@@ -75,6 +78,10 @@ namespace Libre {
 		bool on_button_release_event(GdkEventButton * button_event) {
 				this->grab_focus();
 				return false;
+		}
+
+		void change_source(const int & id, const std::string & path) {
+			this->source_paths[id] = path;
 		}
 
 	};

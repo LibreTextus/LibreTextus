@@ -1,11 +1,13 @@
 #include "search_engine.hpp"
+#include "source_handler.hpp"
 
 // SEARCHENGINE::SEARCHENGINE --------------------------------------------------
 // THIS IS THE CONSTRUCTOR OF THE SEARCHENGINE. IT LOADS THE SOURCE + NAMESFILE
 // -----------------------------------------------------------------------------
 
-SearchEngine::SearchEngine(std::string file_path) {
-	this->file = this->source_handler.get_source(file_path);
+SearchEngine::SearchEngine(const std::string & f) {
+	this->file_path = f;
+	this->file = this->source_handler.get_source(f);
 	this->names = this->source_handler.get_names();
 	this->active_verse = this->file->begin();
 
@@ -40,6 +42,7 @@ void SearchEngine::set_mark_argument(std::string arg) {
 
 void SearchEngine::set_source(std::string path) {
 	this->file = this->source_handler.get_source(path);
+	this->file_path = path;
 
 	this->active_verse = this->file->begin();
 }
@@ -85,9 +88,24 @@ bool SearchEngine::search(std::string * text) {
 
 		bool found = true;
 
-		for(int i = 0; i < this->search_argument_vector.size(); i++) { // this->active_verse.value()
-			e = boost::regex(this->search_argument_vector[i], boost::regex::icase);
-			found &= boost::regex_search(this->active_verse.value(), e);
+		for(int i = 0; i < this->search_argument_vector.size(); i++) {
+			if (this->search_argument_vector[i].front() == '[' && this->search_argument_vector[i].back() == ']') {
+				Libre::StrongMap * s_m = this->source_handler.get_strongs(this->file_path);
+				bool found_str = false;
+
+				for (tsl::ordered_map<std::string, std::string>::iterator it = (*s_m)[this->active_verse.key()].begin(); it != (*s_m)[this->active_verse.key()].end(); it++) {
+					if(this->search_argument_vector[i].substr(1, this->search_argument_vector[i].size() - 2) == it->second) {
+						found_str = true;
+						break;
+					}
+				}
+
+				found &= found_str;
+
+			} else {
+				e = boost::regex(this->search_argument_vector[i], boost::regex::icase);
+				found &= boost::regex_search(this->active_verse.value(), e);
+			}
 		}
 
 		if (found || this->search_argument == "") {
@@ -335,8 +353,14 @@ void SearchEngine::interpret_argument(std::string * arg) {
 		*arg = arg->substr(1, std::string::npos);
 	}
 
-	boost::regex e("[\\+\\*\\?\\^\\$\\.\\(\\)\{\\}\[\\]&\\|\\\\]");
+	boost::regex e("[\\+\\*\\?\\^\\$\\.\\(\\)\\[\\]\{\\}&\\|\\\\]");
+	boost::smatch m;
 	*arg = boost::regex_replace(*arg, e, "\\\\$&");
+
+	e = "\\\\\\[str.*\\\\\\]";
+	while(boost::regex_search(*arg, m, e)) {
+		*arg = m.prefix().str() + "[" + m.str().substr(6, m.str().size() - 8) + "]" + m.suffix().str();
+	}
 
 	// ------------------------------------------
 	// IF THERE ARE QUOTED WORDS REPLACE IT WITH
@@ -347,9 +371,8 @@ void SearchEngine::interpret_argument(std::string * arg) {
 	// IN THE FOLLOWING PROCESS
 	// ------------------------------------------
 
-	e = boost::regex("\"[^\"]*\"", boost::regex::icase);
+	e = boost::regex("(\"|\\[)[^\"]*(\"|\\])", boost::regex::icase);
 
-	boost::smatch m;
 
 	std::vector<std::string> static_expressions;
 
@@ -367,7 +390,20 @@ void SearchEngine::interpret_argument(std::string * arg) {
 	// PARANTHESES WITH *OR* OPERATORS
 	// ------------------------------------------
 	e = boost::regex("([\\w\u00C0-\uffff]|\\\\\\*)+", boost::regex::icase);
-	*arg = boost::regex_replace(*arg, e, "((?<=[^\\\\w\u00C0-\uffff])|\\\\A)$&(?=[^\\\\w\u00C0-\uffff]|$)");
+
+	arg_copy = *arg;
+	arg->clear();
+	while (boost::regex_search(arg_copy, m, e)) {
+		*arg += m.prefix();
+
+		if (m.str() != "_INSERT_") {
+			*arg += "((?<=[^\\w\u00C0-\uffff])|\\A)" + m.str() + "(?=[^\\w\u00C0-\uffff]|$)";
+		} else {
+			*arg += m.str();
+		}
+
+		arg_copy = m.suffix().str();
+	}
 
 	e = "\\\\\\*";
 	*arg = boost::regex_replace(*arg, e, "[\\\\w\u00C0-\uffff]*");
@@ -384,11 +420,13 @@ void SearchEngine::interpret_argument(std::string * arg) {
 	// ------------------------------------------
 
 	for (std::vector<std::string>::iterator i = static_expressions.begin(); i != static_expressions.end(); i++) {
-		e = "((?<=[^\\\\w\u00C0-\uffff])|\\\\A)$&(?=[^\\\\w\u00C0-\uffff]|$)";
-		*i = boost::regex_replace(*i, e, "((?<=[^\\\\w\u00C0-\uffff])|\\\\A)$&(?=[^\\\\w\u00C0-\uffff]|$)");
+		if (i->front() != '[' && i->back() != ']') {
+			e = "((?<=[^\\\\w\u00C0-\uffff])|\\\\A)$&(?=[^\\\\w\u00C0-\uffff]|$)";
+			*i = boost::regex_replace(*i, e, "((?<=[^\\\\w\u00C0-\uffff])|\\\\A)$&(?=[^\\\\w\u00C0-\uffff]|$)");
 
-		e = "\\*";
-		*i = boost::regex_replace(*i, e, "\\*");
+			e = "\\*";
+			*i = boost::regex_replace(*i, e, "\\*");
+		}
 
 		e = "_INSERT_";
 
@@ -406,7 +444,22 @@ void SearchEngine::interpret_argument(std::string * arg) {
 // -----------------------------------------------------------------------------
 
 void SearchEngine::mark_result(std::string * text) {
-	boost::regex e("&");
-	e = boost::regex(boost::regex_replace(this->search_argument, e, "|"), boost::regex::icase);
-	*text = boost::regex_replace(*text, e, this->mark_argument);
+	boost::regex e;
+	Libre::StrongMap * s_m = this->source_handler.get_strongs(this->file_path);
+	
+	for(int i = 0; i < this->search_argument_vector.size(); i++) {
+		
+		if (this->search_argument_vector[i].front() == '[' && this->search_argument_vector[i].back() == ']') {
+			for (tsl::ordered_map<std::string, std::string>::iterator it = (*s_m)[this->active_verse.key()].begin(); it != (*s_m)[this->active_verse.key()].end(); it++) {
+				if (this->search_argument_vector[i].substr(1, this->search_argument_vector[i].size() - 2) == it.value()) {
+					e = boost::regex("((?<=[^\\w\u00C0-\uffff])|\\A)" + it.key() + "(?=[^\\w\u00C0-\uffff]|$)", boost::regex::icase);
+					break;
+				}
+			}
+		} else {
+			e = boost::regex(this->search_argument_vector[i], boost::regex::icase);
+		}
+
+		*text = boost::regex_replace(*text, e, this->mark_argument);
+	}
 }

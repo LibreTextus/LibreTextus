@@ -15,6 +15,7 @@
 class SearchEngine {
 private:
 	Libre::BookMap * file;
+	std::string file_path;
 	Libre::NameMap * names;
 	Libre::BookMap::iterator active_verse;
 	int active_verse_index;
@@ -32,7 +33,7 @@ private:
 	void mark_result(std::string * text);
 
 public:
-	SearchEngine (std::string path);
+	SearchEngine (const std::string & path);
 	virtual ~SearchEngine() {}
 
 	bool search(std::string * arg); // SEARCH FUNCTION FOR PUBLIC USE

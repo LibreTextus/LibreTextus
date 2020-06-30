@@ -324,6 +324,13 @@ void SignalHandler::do_replacement() {
 		)
 	);
 
+	this->widgets->main.text_view->change_source(
+		this->widgets->processing.replace_id,
+		this->widgets->package_manager.get_source_path(
+			std::string(this->widgets->main.combo_boxes[this->widgets->processing.replace_id]->get_active_text())
+		)
+	);
+
 	std::vector<std::string> * v = this->widgets->search_engine[0].get_last_search_results();
 
 	int x = 0;
@@ -490,7 +497,7 @@ void SignalHandler::add_source() {
 	// ------------------------------------------
 
 	this->widgets->add_panel();
-	this->widgets->main.text_view->append_tab();
+	this->widgets->main.text_view->append_tab(this->widgets->package_manager.get_source_path(this->settings.get_attribute("startupfile", "file")));
 
 	this->widgets->main.combo_boxes.back()->signal_changed().connect(
 		sigc::bind<Gtk::ComboBoxText *>(

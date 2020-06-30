@@ -1,10 +1,12 @@
 #include "text_view.hpp"
+#include "source_handler.hpp"
+#include <iterator>
 
 // LIBRE::TEXTVIEW::TEXTVIEW ---------------------------------------------------
 // CONSTRUCTOR OF THE TEXTVIEW SETS THE DEFAULT SETTINGS OF THE CHILDREN
 // -----------------------------------------------------------------------------
 
-Libre::TextView::TextView(const std::string & info) {
+Libre::TextView::TextView(const std::string & info, const std::string & path) {
 
 	// ------------------------------------------
 	// SET PROPERTIES OF THIS WIDGET AND OF ITS
@@ -64,7 +66,7 @@ Libre::TextView::TextView(const std::string & info) {
 	this->scroll_status = 0;
 	this->scroll_sensitivity = 0.5;
 
-	this->append_tab();
+	this->append_tab(path);
 
 	this->verses[0].get_children()[0]->set_name("active_verse");
 }
@@ -259,6 +261,7 @@ bool Libre::TextView::on_key_press_event(GdkEventKey * key) {
 // -----------------------------------------------------------------------------
 
 void Libre::TextView::remove_tab(const int & id) {
+	this->source_paths.erase(this->source_paths.begin() + id);
 	this->tabs--;
 
 	this->verses[id].get_parent()->remove(this->verses[id]);
@@ -285,7 +288,10 @@ void Libre::TextView::remove_tab(const int & id) {
 // THIS FUNCTION APPENDS A NEW TAB AT THE END OF THE TEXTVIEW
 // -----------------------------------------------------------------------------
 
-void Libre::TextView::append_tab() {
+void Libre::TextView::append_tab(const std::string & path) {
+
+	this->source_paths.push_back(path);
+
 	this->tabs++;
 
 	this->verses.push_back(Gtk::VBox());
@@ -354,8 +360,6 @@ void Libre::TextView::label_populate_popup(Gtk::Menu * menu, int tab, int versio
 
 	std::string selection = this->v_labels[tab][version].get_text().substr(begin, end - begin);
 
-	std::cout << "SELECTION: " << selection << '\n';
-
 	if (!selection.empty()) {
 		Gtk::MenuItem * search_item = new Gtk::MenuItem(std::string(_("Search")) + " \"" + selection + "\"");
 		search_item->signal_button_release_event().connect([this, selection](GdkEventButton * b) -> bool {
@@ -363,8 +367,25 @@ void Libre::TextView::label_populate_popup(Gtk::Menu * menu, int tab, int versio
 			return false;
 		});
 
+		SourceHandler source_handler;
+		Libre::StrongMap * s_m = source_handler.get_strongs(this->source_paths[tab]);
+
 		Gtk::SeparatorMenuItem * sep = new Gtk::SeparatorMenuItem;
 		menu->prepend(*sep);
+
+		std::string strong = (*s_m)[this->captions[version]][selection];
+
+		if (!strong.empty()) {
+			Gtk::MenuItem * strong_search_item = new Gtk::MenuItem(std::string("Search Strong") + " \"" + strong + "\"");
+
+			strong_search_item->signal_button_release_event().connect([this, strong](GdkEventButton * b) {
+				this->m_signal_right_click_search("[str " + strong + "]");
+				return false;
+			});
+
+			menu->prepend(*strong_search_item);
+		}
+
 		menu->prepend(*search_item);
 		menu->show_all();
 	}

@@ -1,8 +1,7 @@
 #include "source_handler.hpp"
-#include <rapidxml/rapidxml.hpp>
-#include <rapidxml/rapidxml_utils.hpp>
 
-std::map<std::string, Libre::BookMap> SourceHandler::sources;
+tsl::ordered_map<std::string, Libre::BookMap> SourceHandler::sources;
+tsl::ordered_map<std::string, Libre::StrongMap> SourceHandler::strongs;
 Libre::NameMap SourceHandler::names;
 std::string SourceHandler::names_path;
 
@@ -12,14 +11,14 @@ std::string SourceHandler::names_path;
 // -----------------------------------------------------------------------------
 
 
-Libre::BookMap * SourceHandler::get_source(std::string s) {
+Libre::BookMap * SourceHandler::get_source(const std::string & s) {
 
 	if (this->sources.find(s) == this->sources.end()) {
 		rapidxml::file<> file(s.c_str());
 		rapidxml::xml_document<> doc;
 		doc.parse<0>(file.data());
 
-		this->sources[s] = this->to_map(&doc);
+		this->sources[s] = this->to_map(&doc, s);
 	}
 
 	return &this->sources[s];
@@ -29,8 +28,11 @@ Libre::BookMap * SourceHandler::get_source(std::string s) {
 // THIS FUNCTION TURNS A SOURCE NODE INTO A LIBRE::BOOKMAP
 // -----------------------------------------------------------------------------
 
-Libre::BookMap SourceHandler::to_map(rapidxml::xml_document<> * doc) {
+Libre::BookMap SourceHandler::to_map(rapidxml::xml_document<> * doc, const std::string & s) {
 	Libre::BookMap output;
+	Libre::StrongMap str_num;
+
+	boost::regex e("\\s");
 
 	for (rapidxml::xml_node<> * b = doc->first_node("XMLBIBLE")->first_node("BIBLEBOOK"); b; b = b->next_sibling()) {
 		for (rapidxml::xml_node<> * c = b->first_node("CHAPTER"); c; c = c->next_sibling()) {
@@ -42,11 +44,19 @@ Libre::BookMap SourceHandler::to_map(rapidxml::xml_document<> * doc) {
 				output[v_pos] = "";
 
 				for (rapidxml::xml_node<> * v_part = v->first_node(); v_part; v_part = v_part->next_sibling()) {
-					output[v_pos] += (v_part->name() == "DIV" ? "" : v_part->value());
+					if (std::string(v_part->name()) != "DIV") {
+						output[v_pos] += v_part->value();
+
+						if (std::string(v_part->name()) == "gr") {
+							str_num[v_pos].insert({boost::regex_replace(std::string(v_part->value()), e, ""), std::string("g") + v_part->first_attribute("str")->value()});
+						} 
+					}
 				}
 			}
 		}
 	}
+
+	this->strongs[s] = str_num;
 
 	return output;
 }
@@ -63,7 +73,7 @@ Libre::NameMap * SourceHandler::get_names() {
 // THIS FUNCTION TURNS A NAMES NODE TO A LIBRE::NAMEMAP
 // -----------------------------------------------------------------------------
 
-Libre::NameMap SourceHandler::to_names(rapidxml::xml_document<> * doc) {
+inline Libre::NameMap SourceHandler::to_names(rapidxml::xml_document<> * doc) {
 	Libre::NameMap output;
 
 	for (rapidxml::xml_node<> * b = doc->first_node("BIBLEBOOKS")->first_node("BOOK"); b; b = b->next_sibling()) {
@@ -79,9 +89,17 @@ Libre::NameMap SourceHandler::to_names(rapidxml::xml_document<> * doc) {
 	return output;
 }
 
-void SourceHandler::set_names_path(std::string s) {
+void SourceHandler::set_names_path(const std::string & s) {
 	rapidxml::file<> file(s.c_str());
 	rapidxml::xml_document<> doc;
 	doc.parse<0>(file.data());
 	this->names = this->to_names(&doc);
+}
+
+// SOURCEHANDLER::GET_STRONGS -------------------------------------------------
+// THIS FUNCTION RETURNS THE STRONGS OF A DEMANDED FILE
+// ----------------------------------------------------------------------------
+
+Libre::StrongMap * SourceHandler::get_strongs(const std::string & s) {
+	return &this->strongs[s];
 }

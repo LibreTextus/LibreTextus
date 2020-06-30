@@ -376,7 +376,7 @@ void Libre::TextView::label_populate_popup(Gtk::Menu * menu, int tab, int versio
 		std::string strong = (*s_m)[this->captions[version]][selection];
 
 		if (!strong.empty()) {
-			Gtk::MenuItem * strong_search_item = new Gtk::MenuItem(std::string("Search Strong") + " \"" + strong + "\"");
+			Gtk::MenuItem * strong_search_item = new Gtk::MenuItem(std::string(_("Search Strong")) + " \"" + strong + "\"");
 
 			strong_search_item->signal_button_release_event().connect([this, strong](GdkEventButton * b) {
 				this->m_signal_right_click_search("[str " + strong + "]");

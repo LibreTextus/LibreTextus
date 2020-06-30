@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 0.1\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-06-29 16:23+0200\n"
+"POT-Creation-Date: 2020-06-30 11:45+0200\n"
 "PO-Revision-Date: 2020-06-07 14:55+0200\n"
 "Last-Translator: Nathan Reiner <nathan.p.reiner@gmail.com>\n"
 "Language-Team: German\n"
@@ -74,49 +74,53 @@ msgstr "Rufe Markierungsfarbe ab"
 msgid "Results"
 msgstr "Ergebnisse"
 
-#: ../src/signal_handler.cpp:662 ../src/signal_handler.cpp:740
+#: ../src/signal_handler.cpp:669 ../src/signal_handler.cpp:747
 msgid "Add source directory"
 msgstr "Quellenverzeichnis hinzufügen"
 
 #. ------------------------------------------
 #. CREATE THE WIDGETS FOR THE DIALOG WINDOW
 #. ------------------------------------------
-#: ../src/signal_handler.cpp:680
+#: ../src/signal_handler.cpp:687
 msgid "Enter the url of your git source repository:"
 msgstr "Geben Sie die Url von ihrem Quellen-Git-Repository ein."
 
-#: ../src/signal_handler.cpp:683
+#: ../src/signal_handler.cpp:690
 msgid "url: example.org/your/source.git"
 msgstr "Url: beispiel.org/ihre/quelle.git"
 
-#: ../src/signal_handler.cpp:688
+#: ../src/signal_handler.cpp:695
 msgid "Ok"
 msgstr "Ok"
 
-#: ../src/signal_handler.cpp:689 ../src/signal_handler.cpp:761
-#: ../src/window.cpp:402
+#: ../src/signal_handler.cpp:696 ../src/signal_handler.cpp:768
+#: ../src/window.cpp:403
 msgid "Cancel"
 msgstr "Abbrechen"
 
-#: ../src/signal_handler.cpp:754
+#: ../src/signal_handler.cpp:761
 msgid "Chose the repository you want to be removed:"
 msgstr "Wählen sie das Repository aus, welches entfernt werden soll:"
 
-#: ../src/signal_handler.cpp:760
+#: ../src/signal_handler.cpp:767
 msgid "OK"
 msgstr "OK"
 
-#: ../src/signal_handler.cpp:899
+#: ../src/signal_handler.cpp:906
 msgid "Searching"
 msgstr "Suche"
 
-#: ../src/text_view.cpp:37
+#: ../src/text_view.cpp:39
 msgid "No Results"
 msgstr "Keine Ergebnisse"
 
-#: ../src/text_view.cpp:360 ../src/window.cpp:65 ../src/window.cpp:186
+#: ../src/text_view.cpp:364 ../src/window.cpp:65 ../src/window.cpp:186
 msgid "Search"
 msgstr "Suche"
+
+#: ../src/text_view.cpp:379
+msgid "Search Strong"
+msgstr "Suche Strong"
 
 #. ------------------------------------------
 #. CREATE FILE MENU
@@ -245,54 +249,54 @@ msgstr ""
 "1-10</i>\n"
 "<i>Wort@GEN 1</i> zeigt alle <i>Wort</i> in <i>GEN 1</i>\n"
 
-#: ../src/window.cpp:304
+#: ../src/window.cpp:305
 msgid "Preferences"
 msgstr "Einstellungen"
 
-#: ../src/window.cpp:334
+#: ../src/window.cpp:335
 msgid "Theme"
 msgstr "Thema"
 
-#: ../src/window.cpp:374
+#: ../src/window.cpp:375
 msgid "Language"
 msgstr "Sprache"
 
-#: ../src/window.cpp:377 ../src/window.cpp:383 ../src/window.cpp:387
+#: ../src/window.cpp:378 ../src/window.cpp:384 ../src/window.cpp:388
 msgid "System default"
 msgstr "Systemvorgabe"
 
-#: ../src/window.cpp:394
+#: ../src/window.cpp:395
 msgid "Info"
 msgstr "Info"
 
-#: ../src/window.cpp:400
+#: ../src/window.cpp:401
 msgid "This change only takes effect after a restart"
 msgstr "Diese Änderung wird erst in Kraft treten nach einem Neustart"
 
-#: ../src/window.cpp:401
+#: ../src/window.cpp:402
 msgid "Restart"
 msgstr "Neustarten"
 
-#: ../src/window.cpp:459
+#: ../src/window.cpp:460
 msgid "Appearance"
 msgstr "Aussehen"
 
-#: ../src/window.cpp:467 ../src/window.cpp:469
+#: ../src/window.cpp:468 ../src/window.cpp:470
 msgid "Keybindings"
 msgstr "Tastenbelegungen"
 
-#: ../src/window.cpp:480
+#: ../src/window.cpp:481
 msgid "Default:"
 msgstr "Standard"
 
-#: ../src/window.cpp:501
+#: ../src/window.cpp:502
 msgid "Source"
 msgstr "Quelle"
 
-#: ../src/window.cpp:507
+#: ../src/window.cpp:508
 msgid "Enabled"
 msgstr "Aktiviert"
 
-#: ../src/window.cpp:554
+#: ../src/window.cpp:555
 msgid "Book Manager"
 msgstr "Bücher Verwaltung"

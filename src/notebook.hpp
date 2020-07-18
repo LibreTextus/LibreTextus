@@ -13,6 +13,7 @@
 #include <glibmm/i18n.h>
 
 #include "path.hpp"
+#include "exporter.hpp"
 
 
 namespace Libre {
@@ -61,6 +62,7 @@ namespace Libre {
 
 		void open_note(const std::string & verse);
 		void save_note();
+		void export_note(std::string &, std::string &, std::string &);
 
 		void change_style_of_selection();
 		void on_content_change();

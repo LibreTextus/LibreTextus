@@ -94,7 +94,6 @@ Libre::NoteBook::NoteBook() {
 	// ------------------------------------------
 	this->pack_start(this->header, Gtk::PACK_SHRINK, 0);
 	this->pack_start(this->scrolled_window, Gtk::PACK_EXPAND_WIDGET, 0);
-
 }
 
 // LIBRE::NOTEBOOK:~NOTEBOOK ---------------------------------------------------
@@ -229,4 +228,9 @@ void Libre::NoteBook::on_content_change() {
 		p_b++;
 		p_e++;
 	}
+}
+
+void Libre::NoteBook::export_note(std::string & position, std::string & path, std::string & source) {
+	Libre::Exporter exporter(&this->notes_file, path, source, position);
+	exporter.export_note();
 }

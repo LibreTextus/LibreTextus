@@ -58,6 +58,7 @@ public:
 	void default_font_size_changed();
 
 	void toggle_note(std::string position);
+	void export_notes();
 	void trigger_search(const std::string & text);
 };
 

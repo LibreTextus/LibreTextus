@@ -51,6 +51,8 @@ bool Libre::MainWindow::create(Libre::Widgets * w, SignalHandler * s) {
 			Gtk::AccelKey("<control>T"));
 	w->ui.action_group->add(Gtk::Action::create("FileCloseTab", _("Close Tab")),
 			Gtk::AccelKey("<control>W"));
+	w->ui.action_group->add(Gtk::Action::create("FileExportNotes", _("Export Notes")),
+			Gtk::AccelKey("<control>E"), sigc::mem_fun(s, &SignalHandler::export_notes));
 	w->ui.action_group->add(Gtk::Action::create("FileQuit", _("Quit")),
 					Gtk::AccelKey("<control>Q"), sigc::mem_fun(s, &SignalHandler::quit));
 
@@ -122,6 +124,8 @@ bool Libre::MainWindow::create(Libre::Widgets * w, SignalHandler * s) {
 				"		<menu action='FileMenu'>"
 				"			<menuitem action='FileNewTab'/>"
 				"			<menuitem action='FileCloseTab'/>"
+				"			<separator/>"
+				"			<menuitem action='FileExportNotes'/>"
 				"			<separator/>"
 				"			<menuitem action='FileQuit'/>"
 				"		</menu>"

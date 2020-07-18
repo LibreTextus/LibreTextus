@@ -33,6 +33,8 @@ add_library(libre_textus STATIC
 	src/log.cpp
 	src/history_button.hpp
 	src/history_button.cpp
+	src/exporter.hpp
+	src/exporter.cpp
 	)
 
 # BUILD LOCALES

@@ -1,6 +1,6 @@
 [Desktop Entry]
 Name=LibreTextus
-Icon=${SNAP}/data/icon.svg
+Icon=${SNAP}/share/LibreTextus/data/icon.svg
 Type=Application
-Exec=LibreTextus
+Exec=${SNAP}/share/LibreTextus/LibreTextus
 Terminal=false

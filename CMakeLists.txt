@@ -86,8 +86,13 @@ add_custom_target(check COMMAND ${CMAKE_CTEST_COMMAND} DEPENDS md_test)
 
 file(COPY data/ DESTINATION data/)
 
-install(TARGETS LibreTextus DESTINATION .)
-install(DIRECTORY ${CMAKE_BINARY_DIR}/data DESTINATION .)
-install(DIRECTORY ${CMAKE_BINARY_DIR}/locale DESTINATION .)
-install(TARGETS libre_textus DESTINATION .)
-install(FILES libretextus.desktop DESTINATION .)
+install(TARGETS LibreTextus DESTINATION ${CMAKE_INSTALL_PREFIX}/share/LibreTextus/)
+install(DIRECTORY ${CMAKE_BINARY_DIR}/data DESTINATION ${CMAKE_INSTALL_PREFIX}/share/LibreTextus)
+install(DIRECTORY ${CMAKE_BINARY_DIR}/locale DESTINATION ${CMAKE_INSTALL_PREFIX}/share/LibreTextus)
+install(FILES libretextus.desktop DESTINATION ${CMAKE_INSTALL_PREFIX}/share/LibreTextus/)
+install(CODE "execute_process( \
+	COMMAND ${CMAKE_COMMAND} -E create_symlink \
+	${CMAKE_INSTALL_PREFIX}/share/LibreTextus/LibreTextus \
+	${CMAKE_INSTALL_PREFIX}/bin/LibreTextus \
+	)"
+)

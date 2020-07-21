@@ -33,9 +33,9 @@ parts:
 
 apps:
   libretextus:
-    command: LibreTextus
+    command: share/LibreTextus/LibreTextus
     extensions: [gnome-3-28]
-    desktop: libretextus.desktop
+    desktop: share/LibreTextus/libretextus.desktop
     plugs:
       - desktop
       - desktop-legacy

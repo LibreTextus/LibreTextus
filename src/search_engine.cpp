@@ -353,14 +353,10 @@ void SearchEngine::interpret_argument(std::string * arg) {
 		*arg = arg->substr(1, std::string::npos);
 	}
 
-	boost::regex e("[\\+\\*\\?\\^\\$\\.\\(\\)\\[\\]\{\\}&\\|\\\\]");
+	boost::regex e("[\\+\\*\\?\\^\\$\\.\\(\\)\\[\\]\\{\\}&\\|\\\\]");
 	boost::smatch m;
 	*arg = boost::regex_replace(*arg, e, "\\\\$&");
 
-	e = "\\\\\\[str.*\\\\\\]";
-	while(boost::regex_search(*arg, m, e)) {
-		*arg = m.prefix().str() + "[" + m.str().substr(6, m.str().size() - 8) + "]" + m.suffix().str();
-	}
 
 	// ------------------------------------------
 	// IF THERE ARE QUOTED WORDS REPLACE IT WITH
@@ -371,7 +367,7 @@ void SearchEngine::interpret_argument(std::string * arg) {
 	// IN THE FOLLOWING PROCESS
 	// ------------------------------------------
 
-	e = boost::regex("(\"|\\[)[^\"]*(\"|\\])", boost::regex::icase);
+	e = boost::regex("(\"|\\[str.*)[^\"]*(\"|\\])", boost::regex::icase);
 
 
 	std::vector<std::string> static_expressions;
@@ -433,6 +429,11 @@ void SearchEngine::interpret_argument(std::string * arg) {
 		if (boost::regex_search(*arg, m, e))	{
 			*arg = m.prefix().str() + *i + m.suffix().str();
 		}
+	}
+
+	e = "\\\\\\[str.*\\\\\\]";
+	while(boost::regex_search(*arg, m, e)) {
+		*arg = m.prefix().str() + "[" + m.str().substr(6, m.str().size() - 8) + "]" + m.suffix().str();
 	}
 
 	e = "\"";

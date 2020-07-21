@@ -96,3 +96,4 @@ install(CODE "execute_process( \
 	${CMAKE_INSTALL_PREFIX}/bin/LibreTextus \
 	)"
 )
+install(FILES ${CMAKE_SOURCE_DIR}/doc/LibreTextus.1 DESTINATION /usr/local/man/man1/)

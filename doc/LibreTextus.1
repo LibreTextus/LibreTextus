@@ -1,0 +1,41 @@
+.Dd 2020-07-29
+.Dt LibreTextus
+.Sh NAME
+.Nm LibreTextus
+.Nd Simple Bible Analyzing
+.Sh SYNOPSIS
+.Nm
+.Op -s arg
+.Op -o file path
+.Op --no-marks
+.Op --show-amount
+.Op -l
+.Op -S source
+.Op -p
+.Sh DESCRIPTION
+.Nm
+is a simple tool for analyzing the bible, writing notes and manage your sources in a easy application.
+.Sh OPTIONS
+.Bl -tag -width Ds
+.It Fl s
+Search for the following argument.
+.It Fl o
+Write results to file. Works only in prompt mode.
+.It Fl -no-marks
+Disables marking results for this search. Only in prompt mode.
+.It Fl -show-amount
+Displays amount of results. Only in prompt mode.
+.It Fl l
+List all sources installed.
+.It Fl S
+Use the following source instead of the default source.
+.It Fl p
+Prompt mode, print results into the command line and exit.
+.Sh SEARCHING
+You can search easily by enter your search argument into the search entry. If you want to search for a part of a word you can just put a '*' where it does not matter what follows. By typing more than one words without quotation marks every verse containing this words in any order with optionally words in between. If you put quotation marks around the words it will display only those verses which contain exactly this passage.
+.Sh WRITING NOTES
+You can write notes by clicking on the blue or grey circle next to the passage name. This will trigger the Notebook pane and you can write there your notes with markdown syntax.
+You can see if a passage has already a note when the circle next to the passage name is blue.
+.Sh PACKAGE MANAGER
+The package manager just manages git-repositories and clones them when asked for installation. You can make your own git-repositories everything you have to now is, that the package manager searches through the subdirectories of your git-repositories. So you can make a directory for every language you have. eg. 'eng' for the English sources.
+If you do not want uninstall the sources but not want to see some of them, you can disable sources in the preferences under 'Book Manager'. In this section of the preferences you can also set your default source.

@@ -30,6 +30,11 @@ parts:
       - libboost-regex-dev
       - libboost-program-options-dev
       - librapidxml-dev
+    override-build: |
+      make -j2
+      make install DESTDIR=../install
+      rm ../install/bin/LibreTextus
+
 apps:
   libretextus:
     command: share/LibreTextus/LibreTextus

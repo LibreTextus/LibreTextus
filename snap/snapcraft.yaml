@@ -12,7 +12,7 @@ confinement: strict # use 'strict' once you have the right plugs and slots
 
 parts:
   libretextus:
-    plugin: cmake
+    plugin: make
     source: .
     build-packages:
       - g++
@@ -30,7 +30,6 @@ parts:
       - libboost-regex-dev
       - libboost-program-options-dev
       - librapidxml-dev
-
 apps:
   libretextus:
     command: share/LibreTextus/LibreTextus

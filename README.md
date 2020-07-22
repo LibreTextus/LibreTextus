@@ -4,22 +4,17 @@
 
 ## Dependencies
 
-You need to install *cmake*, *build-essential*, *gettext*, *boost-regex*, *boost-program-options* *rapidxml* and *gtkmm*.  
+You need to install *build-essential*, *gettext*, *boost-regex*, *boost-program-options* *rapidxml* and *gtkmm*.  
 
 ```
-sudo apt install cmake libgtkmm-3.0-dev build-essential libboost-regex-dev libboost-program-options-dev gettext librapidxml-dev
+sudo apt install libgtkmm-3.0-dev build-essential libboost-regex-dev libboost-program-options-dev gettext librapidxml-dev
 ```
 
 ## How to Build
 
 ```bash
-mkdir build
-cd build
-
-cmake ..
-make
-
-./LibreTextus
+make -j$(nproc)
+./build/LibreTextus
 ```
 
 ## Get Involved

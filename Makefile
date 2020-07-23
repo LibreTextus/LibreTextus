@@ -32,13 +32,16 @@ locales: $(ODIR)
 		msgfmt --check --output-file $(ODIR)/locale/$${locale_name}/LC_MESSAGES/libretextus.mo $$po_file; \
 	done
 
-$(ODIR)/%.o: src/%.cpp 
+
+-include $(DEPS)
+
+$(ODIR)/%.o: src/%.cpp Makefile
 	@if [ ! -d $$(dirname $@) ]; then \
 		printf "Create directory $(green)$$(dirname $@)$(sgr0)\n"; \
 		mkdir -p $$(dirname $@); \
 	fi
-	@printf "Build $(green)$^$(sgr0)\n"
-	@$(CC) -c $^ -o $@ $(CPPFLAGS)
+	@printf "Build $(green)$<$(sgr0)\n"
+	@$(CC) $(CPPFLAGS) -MMD -MP -c $< -o $@ 
 
 $(OBJ): | $(ODIR)
 

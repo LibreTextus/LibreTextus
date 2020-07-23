@@ -19,6 +19,7 @@ LIBRE_TEXTUS:=$(wildcard src/*.cpp)
 LIBRE_TEXTUS+=$(wildcard src/*/*.cpp)
 
 OBJ=$(LIBRE_TEXTUS:src/%.cpp=$(ODIR)/%.o)
+DEPS:=$(LIBRE_TEXTUS:src/%.cpp=$(ODIR)/%.d)
 
 CPPFLAGS=-DGETTEXT_PACKAGE=\"libretextus\" -DVERSION=\"$(VERSION)\" $(GTKMMFLAGS) -Iinclude/
 

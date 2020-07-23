@@ -32,6 +32,8 @@ int Framework::init(std::string a) {
 	this->connect_app_startup_signal();
 	
 	this->connect_session_init_success_signal();
+
+	this->connect_processing_signals();
 	
 	return 0;
 }

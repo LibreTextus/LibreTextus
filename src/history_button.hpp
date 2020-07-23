@@ -15,7 +15,15 @@ namespace Libre {
 		std::vector<std::string> search_history;
 		std::vector<Gtk::CheckMenuItem> check_buttons;
 		int active_search;
+		int display_begin;
+		int display_end;
 		sigc::signal<void, std::string> m_trigger_search;
+
+		void remove_words_after_active_search();
+		void get_display_range();
+		void add_history_to_popup();
+		void add_new_history_popup_button(const int &);
+		void last_check_button_connect_button_signal(const int &);
 
 	public:
 		HistoryButton();

@@ -26,14 +26,10 @@ std::string DATA(const std::string & object) {
 
 std::string HOME(const std::string & object) {
 	std::string output;
-	#ifndef __LINUX__
+	#ifdef __linux__
 	output = (getenv("SNAP_USER_COMMON") == NULL ? getenv("HOME") : getenv("SNAP_USER_COMMON"));
 	output += "/.libre_textus/" + object;
 	#endif
 
 	return output;
-}
-
-std::string HOME() {
-	return HOME("");
 }

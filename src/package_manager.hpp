@@ -32,6 +32,8 @@ namespace Libre {
 		std::string info_string;
 		std::mutex mtx;
 
+		void connect_dispatcher_signal(Gtk::Label *, Gtk::Label *);
+
     PackageManager() = default;
     virtual ~PackageManager() = default;
 

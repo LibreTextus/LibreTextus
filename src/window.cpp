@@ -1,5 +1,4 @@
 #include "window.hpp"
-#include "gtkmm/box.h"
 
 // LIBRE::MAINWINDOW::CREATE ---------------------------------------------------
 // THIS FUNCTION CREATES THE MAIN WINDOW
@@ -243,6 +242,9 @@ bool Libre::MainWindow::create(Libre::Widgets * w, SignalHandler * s) {
 
 	w->main.note_book->signal_refresh().connect(sigc::mem_fun(w->main.text_view, &Libre::TextView::_display));
 	w->main.is_note_book_open = false;
+
+	w->main.note_book->set_file(HOME(w->settings.get_attribute("notebook", "file")));
+	w->main.text_view->set_note_book(w->main.note_book->get_xml_root());
 
  	w->main.note_paned = new Gtk::Paned;
 
@@ -581,6 +583,35 @@ bool Libre::PreferencesWindow::create(Libre::Widgets * w, SignalHandler * s) {
 	// ------------------------------------------
 
 	w->preferences.window->add(*note_book);
+
+	return true;
+}
+
+bool Libre::SplashScreen::create(Libre::Widgets::SplashScreen * sp, SignalHandler * s) {
+	LOG("-- Init SplashScreen");
+
+	sp->window = new Gtk::Window;
+	sp->window->set_default_size(640, 315);
+	sp->window->set_icon_from_file(DATA("icon.svg"));
+	sp->window->set_type_hint(Gdk::WINDOW_TYPE_HINT_SPLASHSCREEN);
+	sp->window->set_name("splash_screen");
+
+	Gtk::VBox * box = new Gtk::VBox;
+	box->set_border_width(10);
+
+	Gtk::Label * title = new Gtk::Label;
+	title->set_markup("<span font='42'>LibreTextus</span>");
+	sp->header_label = new Gtk::Label;
+	sp->info_label = new Gtk::Label;
+	sp->spinner = new Gtk::Spinner;
+	sp->spinner->set_size_request(70, 70);
+
+	box->pack_start(*title, Gtk::PACK_EXPAND_WIDGET, 0);
+	box->pack_start(*sp->header_label, Gtk::PACK_SHRINK, 5);
+	box->pack_start(*sp->info_label, Gtk::PACK_SHRINK, 0);
+	box->pack_start(*sp->spinner, Gtk::PACK_SHRINK, 10);
+
+	sp->window->add(*box);
 
 	return true;
 }

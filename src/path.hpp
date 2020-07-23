@@ -6,8 +6,7 @@
 #include <vector>
 #include <string>
 
-std::string DATA(const std::string & object);
-std::string HOME(const std::string & object);
-std::string HOME();
+std::string DATA(const std::string & = "");
+std::string HOME(const std::string & = "");
 
 #endif

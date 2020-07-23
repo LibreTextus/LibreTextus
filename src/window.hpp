@@ -16,11 +16,15 @@
 
 namespace Libre {
 	namespace MainWindow {
-		bool create(Libre::Widgets * w, SignalHandler * s);
+		bool create(Libre::Widgets *, SignalHandler *);
 	}
 
 	namespace PreferencesWindow {
-		bool create(Libre::Widgets * w, SignalHandler * s);
+		bool create(Libre::Widgets *, SignalHandler *);
+	}
+
+	namespace SplashScreen {
+		bool create(Libre::Widgets::SplashScreen *, SignalHandler *);
 	}
 }
 

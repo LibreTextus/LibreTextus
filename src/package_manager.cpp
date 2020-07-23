@@ -1,6 +1,4 @@
 #include "package_manager.hpp"
-#include <rapidxml/rapidxml.hpp>
-#include <string>
 
 // LIBRE::PACKAGEMANAGER::INIT -------------------------------------------------
 // THIS FUNCTION INITIALIZES THE PACKAGEMANAGER. IF THERE IS NO PACKAGE
@@ -325,4 +323,13 @@ void Libre::PackageManager::refresh_db(const std::string & name) {
 		fout << this->sources_doc;
 		fout.close();
 	}
+}
+
+void Libre::PackageManager::connect_dispatcher_signal(Gtk::Label * header, Gtk::Label * info) {
+	this->update_text.connect([this, header, info]() {
+		this->mtx.lock();
+		header->set_text(this->header_string);
+		info->set_text(this->info_string);
+		this->mtx.unlock();
+	});
 }

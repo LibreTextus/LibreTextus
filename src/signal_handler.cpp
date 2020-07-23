@@ -1,10 +1,4 @@
 #include "signal_handler.hpp"
-#include "gdkmm/device.h"
-#include "gdkmm/event.h"
-#include "gtkmm/dialog.h"
-#include "gtkmm/enums.h"
-#include "gtkmm/filechooser.h"
-#include "gtkmm/filechooserdialog.h"
 
 // SIGNALHANDLER::INIT ---------------------------------------------------------
 // THIS FUNCTION WILL BE CALLED TO INITIALIZE THE FUNCTION.
@@ -28,11 +22,11 @@ void SignalHandler::init(Libre::Widgets * w) {
 	source_handler.set_names_path(HOME(this->widgets->settings.get_attribute("namesfile", "file")));
 
 
-	this->widgets->splash_screen.mutex.lock();
-	this->widgets->splash_screen.header_string = _("Init SearchEngine");
-	this->widgets->splash_screen.info_string = _("Load File");
-	this->widgets->splash_screen.mutex.unlock();
-	this->widgets->splash_screen.text_dispatcher.emit();
+	this->widgets->package_manager.mtx.lock();
+	this->widgets->package_manager.header_string = _("Init SearchEngine");
+	this->widgets->package_manager.info_string = _("Load File");
+	this->widgets->package_manager.mtx.unlock();
+	this->widgets->package_manager.update_text.emit();
 
 	if (this->settings.get_attribute("startupfile", "file").empty()) {
 		this->settings.set("startupfile", "file", this->widgets->package_manager.get_sources().front());
@@ -49,10 +43,10 @@ void SignalHandler::init(Libre::Widgets * w) {
 	// TO HEX COLOR (#BD8188)
 	// ------------------------------------------
 
-	this->widgets->splash_screen.mutex.lock();
-	this->widgets->splash_screen.info_string = _("Fetch mark color");
-	this->widgets->splash_screen.mutex.unlock();
-	this->widgets->splash_screen.text_dispatcher.emit();
+	this->widgets->package_manager.mtx.lock();
+	this->widgets->package_manager.info_string = _("Fetch mark color");
+	this->widgets->package_manager.mtx.unlock();
+	this->widgets->package_manager.update_text.emit();
 
 	Gdk::RGBA rgba;
 	this->widgets->style.style->lookup_color("theme_highlight_color", rgba);

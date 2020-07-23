@@ -1,4 +1,4 @@
-#include "exporter.hpp"
+#include "../exporter.hpp"
 
 Libre::Exporter::Exporter(rapidxml::xml_document<> * doc, std::string & p, std::string & s, std::string & pos) : search_engine(s) {
 	
@@ -6,7 +6,9 @@ Libre::Exporter::Exporter(rapidxml::xml_document<> * doc, std::string & p, std::
 	this->path = p;
 	this->position = pos;
 	this->source = s;
+	
 	fout.open(this->path + ".tmp");
+
 	search_engine.set_search_argument(this->position);
 }
 
@@ -16,7 +18,7 @@ int Libre::Exporter::export_note() {
 
 	fout.close();	
 
-	return system(("mv " + path + ".tmp " + this->path).c_str());
+	return system(("mv " + this->path + ".tmp " + this->path).c_str());
 }
 
 void Libre::Exporter::get_position_from_default_source() {

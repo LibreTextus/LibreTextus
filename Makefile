@@ -1,27 +1,26 @@
 include config.mk
-
-default_target: LibreTextus
+default_target: all
 
 options:
 	@echo LibreTextus build options:
-	@echo "CPPFLAGS		= $(CPPFLAGS)"
-	@echo "LDFLAGS		= $(LDFLAGS)"
-	@echo "CC					= $(CC)"
+	@echo "CPPFLAGS			= $(CPPFLAGS)"
+	@echo "LDFLAGS			= $(LDFLAGS)"
+	@echo "CC						= $(CC)"
+	@echo "LIBRETEXTUS	= $(LIBRE_TEXTUS)"
+	@echo "OBJ					= $(OBJ)"
 
-build_dir:
-	@if [ ! -d "$(ODIR)" ]; then \
-		printf "Create directory $(green)$(ODIR)$(sgr0)\n"; \
-		mkdir $(ODIR); \
-	fi
+$(ODIR):
+	@printf "Create directory $(green)$(ODIR)$(sgr0)\n";
+	@mkdir $(ODIR);
 
-data_dir: build_dir
-	@printf "Copy directory $(green)data$(sgr0) to $(green)$(ODIR)$(sgr0)\n"
-	@cp -r data build
+data: $(ODIR)
+	@printf "Copy directory $(green)$@$(sgr0) to $(green)$(ODIR)$(sgr0)\n"
+	@cp -r $@ $(ODIR)
 
-locales: build_dir
+locales: $(ODIR)
 	@if [ ! -d "$(ODIR)/locale/" ]; then \
 		printf "Create directory $(green)$(ODIR)/locale$(sgr0)\n"; \
-		mkdir $(ODIR)/locale; \
+		mkdir -p $(ODIR)/locale; \
 	fi
 	@for po_file in po/*.po ; do \
 		locale_name=$$(basename $$po_file .po); \
@@ -33,13 +32,21 @@ locales: build_dir
 		msgfmt --check --output-file $(ODIR)/locale/$${locale_name}/LC_MESSAGES/libretextus.mo $$po_file; \
 	done
 
-$(ODIR)/%.o: src/%.cpp
+$(ODIR)/%.o: src/%.cpp 
+	@if [ ! -d $$(dirname $@) ]; then \
+		printf "Create directory $(green)$$(dirname $@)$(sgr0)\n"; \
+		mkdir -p $$(dirname $@); \
+	fi
 	@printf "Build $(green)$^$(sgr0)\n"
 	@$(CC) -c $^ -o $@ $(CPPFLAGS)
 
-LibreTextus: build_dir data_dir locales $(OBJ)
+$(OBJ): | $(ODIR)
+
+LibreTextus: $(OBJ)
 	@printf "Build $(green)$@$(sgr0)\n"
-	@$(CC) -o $(ODIR)/$@ src/main.cpp $(OBJ) $(LDFLAGS) $(CPPFLAGS)
+	@$(CC) -o $(ODIR)/$@ $(OBJ) $(LDFLAGS) $(CPPFLAGS)
+
+all: | $(ODIR) data locales LibreTextus
 	@printf "Build Finished!\n"
 
 clean:
@@ -72,4 +79,4 @@ uninstall:
 	@printf "Remove manpage $(green)$(MANPREFIX)/LibreTextus.1$(sgr0)\n"
 	@rm $(MANPREFIX)/LibreTextus.1
 
-.PHONY: options libretextus LibreTextus data_dir locales clean install
+.PHONY: options libretextus LibreTextus locales clean install all

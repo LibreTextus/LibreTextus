@@ -15,20 +15,10 @@ BOOSTLIBS=-lboost_regex -lboost_program_options
 
 X11LIBS=-lX11
 
-LIBRE_TEXTUS=framework.cpp
-LIBRE_TEXTUS+=signal_handler.cpp
-LIBRE_TEXTUS+=search_engine.cpp
-LIBRE_TEXTUS+=window.cpp
-LIBRE_TEXTUS+=source_handler.cpp
-LIBRE_TEXTUS+=package_manager.cpp
-LIBRE_TEXTUS+=text_view.cpp
-LIBRE_TEXTUS+=path.cpp
-LIBRE_TEXTUS+=notebook.cpp
-LIBRE_TEXTUS+=log.cpp
-LIBRE_TEXTUS+=history_button.cpp
-LIBRE_TEXTUS+=exporter.cpp
+LIBRE_TEXTUS:=$(wildcard src/*.cpp)
+LIBRE_TEXTUS+=$(wildcard src/*/*.cpp)
 
-OBJ=$(LIBRE_TEXTUS:%.cpp=$(ODIR)/%.o)
+OBJ=$(LIBRE_TEXTUS:src/%.cpp=$(ODIR)/%.o)
 
 CPPFLAGS=-DGETTEXT_PACKAGE=\"libretextus\" -DVERSION=\"$(VERSION)\" $(GTKMMFLAGS) -Iinclude/
 

@@ -1,4 +1,4 @@
-#include "log.hpp"
+#include "../log.hpp"
 
 void LOG(const std::string & message) {
 	std::ofstream log_file;

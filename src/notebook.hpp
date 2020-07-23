@@ -42,20 +42,26 @@ namespace Libre {
 		MD::String markdown_text;
 		typedef sigc::signal<void, int> type_signal_refresh;
 		type_signal_refresh m_signal_refresh;
+		
+		bool note_exists(const std::string & pos);
+		void set_active_position_and_get_content(const std::string &);
+		void get_content_from_existing_note(const std::string &);
+		void create_new_note_at_position(const std::string &);
+		void remove_empty_notes();
 
-		bool note_exists(const std::string & pos) {
-			rapidxml::xml_node<> * notebook = this->notes_file.first_node("notebook");
+		void set_text_view_properties();
+		void set_title_properties();
+		void set_button_properties();
+		void set_header_properties();
+		void create_markdown_tags();
+		void pack_children();
 
-			for (rapidxml::xml_node<> * note = notebook->first_node("note"); note; note = note->next_sibling()) {
-				if (note->first_attribute("name")->value() == pos) {
-					return true;
-				}
-			}
+		void write_to_file();
+		void read_from_file(const std::string &);
+		void create_new_note_book_node();
 
-			return false;
-		}
-
-
+		void write_changes_to_node();
+		
 	public:
 		NoteBook();
 		virtual ~NoteBook();
@@ -66,26 +72,9 @@ namespace Libre {
 
 		void change_style_of_selection();
 		void on_content_change();
-		void on_new_selection(const Gtk::TextBuffer::iterator & i, const Glib::RefPtr<Gtk::TextBuffer::Mark> & m);
+		void on_new_selection(const Gtk::TextBuffer::iterator, const Glib::RefPtr<Gtk::TextBuffer::Mark>);
 
-		void set_file(const std::string & p) {
-			if (std::experimental::filesystem::exists(p)) {
-				rapidxml::file<> file(p.c_str());
-				char * content = this->notes_file.allocate_string(file.data());
-				this->notes_file.parse<rapidxml::parse_no_data_nodes>(content);
-			} else {
-				rapidxml::xml_node<> * notebook = this->notes_file.allocate_node(rapidxml::node_element, "notebook");
-				this->notes_file.append_node(notebook);
-			}
-
-			this->path = p;
-
-			if (this->active_position != nullptr) {
-				this->open_note(this->active_position->first_attribute("name")->value());
-			} else {
-				this->save_note();
-			}
-		}
+		void set_file(const std::string & p);
 
 		rapidxml::xml_node<> * get_xml_root() {
 			return this->notes_file.first_node("notebook");
@@ -103,6 +92,6 @@ namespace Libre {
 			this->text_view.grab_focus();
 		}
 	};
-} /* Libre */
+};
 
 #endif

@@ -21,7 +21,6 @@ void SignalHandler::init(Libre::Widgets * w) {
 	SourceHandler source_handler;
 	source_handler.set_names_path(HOME(this->widgets->settings.get_attribute("namesfile", "file")));
 
-
 	this->widgets->package_manager.mtx.lock();
 	this->widgets->package_manager.header_string = _("Init SearchEngine");
 	this->widgets->package_manager.info_string = _("Load File");
@@ -113,7 +112,9 @@ gboolean SignalHandler::search_request(GdkEventKey * event) {
 			return false;
 		}
 
-		this->trigger_search(this->widgets->main.search_entry->get_text());
+		std::string text = this->widgets->main.search_entry->get_text();
+		this->widgets->main.history_button->add_to_history(text);
+		this->trigger_search(text);
 
 	} else if (event->keyval == 65307) {
 		this->widgets->main.text_view->grab_focus();
@@ -900,7 +901,6 @@ void SignalHandler::toggle_note(std::string position) {
 
 void SignalHandler::trigger_search(const std::string & text) {
 
-	this->widgets->main.history_button->add_to_history(text);
 	this->widgets->main.search_entry->set_text(text);
 
 	this->widgets->main.number_results->set_text(_("Searching"));

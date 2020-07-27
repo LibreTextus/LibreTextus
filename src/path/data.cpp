@@ -1,9 +1,9 @@
-#include "path.hpp"
+#include "../path.hpp"
 
+#ifdef __linux__
 std::string DATA(const std::string & object) {
 	std::string output;
 
-#ifdef __linux__
 	std::vector<char> buf(400);
 	ssize_t len;
 	
@@ -17,19 +17,12 @@ std::string DATA(const std::string & object) {
 
 	output = output.substr(0, output.find_last_of("/") + 1);
 	output += "data/" + object;
-#else	
-	output = "data/" + object;
+
+	return output;
+}
+
+#else
+std::string DATA(const std::string & object) {
+	return "data/" + object;
+}
 #endif
-
-	return output;
-}
-
-std::string HOME(const std::string & object) {
-	std::string output;
-	#ifdef __linux__
-	output = (getenv("SNAP_USER_COMMON") == NULL ? getenv("HOME") : getenv("SNAP_USER_COMMON"));
-	output += "/.libre_textus/" + object;
-	#endif
-
-	return output;
-}

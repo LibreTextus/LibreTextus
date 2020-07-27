@@ -26,6 +26,23 @@ namespace Libre {
 		std::vector<std::string> packages;
 		std::vector<std::string> sources;
 
+		void create_empty_node();
+		void install_default_sources();
+		void read_sources_file();
+		void install_books_file();
+
+		void write_to_file();
+
+		rapidxml::xml_node<> * get_source_by_name(const std::string &);
+
+		void remove_invalid_paths();
+		void add_new_sources(const std::string &);
+		void append_source_info_to_list(const std::string &, const std::string &);
+		int get_file_name_number(const std::string &, const std::string &);
+		
+		void add_source_to_source_list(const std::string &, const std::string &, const std::string &);
+		void show_message(const std::string &, const std::string &);
+
   public:
 		Glib::Dispatcher update_text;
 		std::string header_string;

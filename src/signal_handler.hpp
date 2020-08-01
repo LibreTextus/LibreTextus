@@ -6,6 +6,7 @@
 #include <thread>
 #include <algorithm>
 #include <glibmm/i18n.h>
+#include "dialog_window.hpp"
 #include "settings.hpp"
 #include "path.hpp"
 #include "widgets.hpp"
@@ -18,6 +19,20 @@ private:
 	Settings settings;
 	std::string mark_argument;
 	std::string header_argument;
+
+	std::string get_mark_color();
+	void set_startup_file_if_empty();
+
+	void disable_widgets();
+	void set_replace_id(Gtk::ComboBoxText *);
+	void change_source_at_replace_id();
+	void sync_combo_boxes();
+	void sync_checkbuttons();
+	void add_new_search_engine();
+	void connect_signals_of_new_buttons();
+	int get_id_close_button_and_erase(Gtk::Button * b);
+	void remove_tab_index(const int &);
+	void move_add_button(const int &);
 
 public:
 	SignalHandler() {}
@@ -60,6 +75,7 @@ public:
 	void toggle_note(std::string position);
 	void export_notes();
 	void trigger_search(const std::string & text);
+	void trigger_search_with_history(const std::string & text);
 };
 
 #endif

@@ -1,4 +1,5 @@
 #include "window.hpp"
+#include "gtkmm/enums.h"
 
 // LIBRE::MAINWINDOW::CREATE ---------------------------------------------------
 // THIS FUNCTION CREATES THE MAIN WINDOW
@@ -309,6 +310,7 @@ bool Libre::PreferencesWindow::create(Libre::Widgets * w, SignalHandler * s) {
 	w->preferences.window = new Gtk::Window;
 	w->preferences.window->set_default_size(500, 400);
 	w->preferences.window->set_title(_("Preferences"));
+	w->preferences.window->set_resizable(false);
 	w->preferences.window->set_position(Gtk::WIN_POS_CENTER);
 	w->preferences.window->set_icon_from_file(DATA("icon.svg"));
 
@@ -590,7 +592,7 @@ bool Libre::PreferencesWindow::create(Libre::Widgets * w, SignalHandler * s) {
 bool Libre::SplashScreen::create(Libre::Widgets::SplashScreen * sp, SignalHandler * s) {
 	LOG("-- Init SplashScreen");
 
-	sp->window = new Gtk::Window;
+	sp->window = new Gtk::Window(Gtk::WINDOW_POPUP);
 	sp->window->set_default_size(640, 315);
 	sp->window->set_icon_from_file(DATA("icon.svg"));
 	sp->window->set_type_hint(Gdk::WINDOW_TYPE_HINT_SPLASHSCREEN);

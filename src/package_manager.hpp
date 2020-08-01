@@ -41,7 +41,6 @@ namespace Libre {
 		int get_file_name_number(const std::string &, const std::string &);
 		
 		void add_source_to_source_list(const std::string &, const std::string &, const std::string &);
-		void show_message(const std::string &, const std::string &);
 
   public:
 		Glib::Dispatcher update_text;
@@ -63,6 +62,7 @@ namespace Libre {
 		void update();
 		void refresh_lists();
 		void refresh_db(const std::string &);
+		void show_message(const std::string &, const std::string &);
 
 		std::vector<std::string> & get_packages() {
 			return this->packages;

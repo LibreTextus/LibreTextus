@@ -1,3 +1,6 @@
+#ifndef DIALOG_WINDOW_HPP
+#define DIALOG_WINDOW_HPP
+
 #include "gtkmm/comboboxtext.h"
 #include <gtkmm.h>
 #include <glibmm/i18n.h>
@@ -40,3 +43,5 @@ namespace Libre {
 			Gtk::Entry * get_entry();
 	};
 }
+
+#endif

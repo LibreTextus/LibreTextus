@@ -1,5 +1,4 @@
 #include "window.hpp"
-#include "gtkmm/enums.h"
 
 // LIBRE::MAINWINDOW::CREATE ---------------------------------------------------
 // THIS FUNCTION CREATES THE MAIN WINDOW
@@ -399,38 +398,20 @@ bool Libre::PreferencesWindow::create(Libre::Widgets * w, SignalHandler * s) {
 			w->settings.set("locale", "locale", w->preferences.lang_combo->get_active_text());
 		}
 
-		w->dialog.window = new Gtk::Window;
-		w->dialog.window->set_title(_("Info"));
-		w->dialog.window->set_border_width(10);
-		w->dialog.window->set_keep_above(true);
-		w->dialog.window->set_resizable(false);
-		w->dialog.window->set_position(Gtk::WIN_POS_CENTER);
+		Libre::DialogWindow * dialog = new Libre::DialogWindow(_("Restart"), _("This change only takes affect after a restart"));
+		
+		dialog->show_all();
 
-		Gtk::Label * text = new Gtk::Label(_("This change only takes effect after a restart"));
-		Gtk::Button * restart_button = new Gtk::Button(_("Restart"));
-		Gtk::Button * cancel_button = new Gtk::Button(_("Cancel"));
-
-		Gtk::HBox * hbox = new Gtk::HBox;
-		Gtk::VBox * vbox = new Gtk::VBox;
-
-		hbox->pack_end(*cancel_button, Gtk::PACK_SHRINK, 10);
-		hbox->pack_end(*restart_button, Gtk::PACK_SHRINK, 10);
-
-		vbox->pack_start(*text, Gtk::PACK_SHRINK, 10);
-		vbox->pack_end(*hbox, Gtk::PACK_SHRINK, 10);
-
-		w->dialog.window->add(*vbox);
-
-		w->dialog.window->show_all();
-
-		restart_button->signal_clicked().connect([w, s]() {
-			w->dialog.window->hide();
+		dialog->get_ok_button()->signal_clicked().connect([dialog, w, s]() {
+			dialog->hide();
 			w->processing.restart_application = true;
 			s->quit();
+			delete dialog;
 		});
 
-		cancel_button->signal_clicked().connect([w]() {
-			w->dialog.window->hide();
+		dialog->get_cancel_button()->signal_clicked().connect([dialog]() {
+			dialog->hide();
+			delete dialog;
 		});
 	});
 
@@ -578,42 +559,11 @@ bool Libre::PreferencesWindow::create(Libre::Widgets * w, SignalHandler * s) {
 		false
 	);
 
-
-
 	// ------------------------------------------
 	// ADD NOTEBOOK TO THE PREFERENCES WINDOW
 	// ------------------------------------------
 
 	w->preferences.window->add(*note_book);
-
-	return true;
-}
-
-bool Libre::SplashScreen::create(Libre::Widgets::SplashScreen * sp, SignalHandler * s) {
-	LOG("-- Init SplashScreen");
-
-	sp->window = new Gtk::Window(Gtk::WINDOW_POPUP);
-	sp->window->set_default_size(640, 315);
-	sp->window->set_icon_from_file(DATA("icon.svg"));
-	sp->window->set_type_hint(Gdk::WINDOW_TYPE_HINT_SPLASHSCREEN);
-	sp->window->set_name("splash_screen");
-
-	Gtk::VBox * box = new Gtk::VBox;
-	box->set_border_width(10);
-
-	Gtk::Label * title = new Gtk::Label;
-	title->set_markup("<span font='42'>LibreTextus</span>");
-	sp->header_label = new Gtk::Label;
-	sp->info_label = new Gtk::Label;
-	sp->spinner = new Gtk::Spinner;
-	sp->spinner->set_size_request(70, 70);
-
-	box->pack_start(*title, Gtk::PACK_EXPAND_WIDGET, 0);
-	box->pack_start(*sp->header_label, Gtk::PACK_SHRINK, 5);
-	box->pack_start(*sp->info_label, Gtk::PACK_SHRINK, 0);
-	box->pack_start(*sp->spinner, Gtk::PACK_SHRINK, 10);
-
-	sp->window->add(*box);
 
 	return true;
 }

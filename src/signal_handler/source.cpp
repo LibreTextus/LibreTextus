@@ -40,13 +40,14 @@ void SignalHandler::remove_source_dir() {
 	dialog->show_all();
 
 	dialog->get_ok_button()->signal_clicked().connect([dialog, this]() {
-		this->widgets->dialog.window->close();
-		delete this->widgets->dialog.window;
+		dialog->close();
 
 		Glib::Thread::create([dialog, this]() {
 			this->widgets->package_manager.remove(dialog->get_combo()->get_active_text());
 			this->widgets->processing.sync_sources_dispatcher.emit();
 		});
+
+		delete dialog;
 	});
 
 	dialog->get_cancel_button()->signal_clicked().connect([dialog]() {

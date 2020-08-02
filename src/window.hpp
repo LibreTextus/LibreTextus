@@ -6,6 +6,7 @@
 #include <fstream>
 #include <experimental/filesystem>
 #include <glibmm/i18n.h>
+#include "dialog_window.hpp"
 #include "text_view.hpp"
 #include "notebook.hpp"
 #include "widgets.hpp"
@@ -21,10 +22,6 @@ namespace Libre {
 
 	namespace PreferencesWindow {
 		bool create(Libre::Widgets *, SignalHandler *);
-	}
-
-	namespace SplashScreen {
-		bool create(Libre::Widgets::SplashScreen *, SignalHandler *);
 	}
 }
 

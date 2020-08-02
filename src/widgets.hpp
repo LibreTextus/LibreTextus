@@ -8,7 +8,7 @@
 #include <mutex>
 #include <tsl/ordered_map.h>
 
-#include "gtkmm/comboboxtext.h"
+#include "splash_screen.hpp"
 #include "text_view.hpp"
 #include "notebook.hpp"
 #include "history_button.hpp"
@@ -47,16 +47,7 @@ namespace Libre {
 			bool is_note_book_open;
 		} main;
 
-		struct SplashScreen {
-			Gtk::Window * window;
-			Gtk::Spinner * spinner;
-			Gtk::Label * header_label;
-			Gtk::Label * info_label;
-			Glib::Dispatcher text_dispatcher;
-			std::mutex mutex;
-			std::string header_string;
-			std::string info_string;
-		} splash_screen;
+		Libre::SplashScreen * splash_screen;
 
 		struct Preferences {
 			Gtk::Window * window;
@@ -79,11 +70,7 @@ namespace Libre {
 			Glib::RefPtr<Gtk::UIManager> manager;
 			Glib::RefPtr<Gtk::ActionGroup> action_group;
 		} ui;
-
-		struct Dialog {
-			Gtk::Window * window;
-		} dialog;
-
+		
 		// -------------------------------------------------------------------------
 		// DECLINE VARIABLES USED BY THE PROCESS THREAD
 		// -------------------------------------------------------------------------
@@ -108,12 +95,6 @@ namespace Libre {
 		~Widgets() {
 			delete this->main.window;
 			delete this->preferences.window;
-			delete this->dialog.window;
-
-			delete this->splash_screen.window;
-			delete this->splash_screen.spinner;
-			delete this->splash_screen.header_label;
-			delete this->splash_screen.info_label;
 
 			delete this->main.search_entry;
 			delete this->main.number_results;
@@ -134,6 +115,8 @@ namespace Libre {
 			delete this->preferences.theme_combo;
 			delete this->preferences.book_manager_box;
 			delete this->preferences.default_source_combo;
+
+			delete this->splash_screen;
 		}
 
 		// LIBRE::WIDGETS::APPENDS_SOURCES -----------------------------------------

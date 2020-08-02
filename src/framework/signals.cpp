@@ -3,11 +3,11 @@
 void Framework::connect_app_startup_signal() {
 	this->widgets.app->signal_startup().connect([this]() {
 
-		this->widgets.app->add_window(*this->widgets.splash_screen.window);
+		this->widgets.app->add_window(*this->widgets.splash_screen);
 
-		this->widgets.splash_screen.window->set_position(Gtk::WIN_POS_CENTER);
-		this->widgets.splash_screen.spinner->start();
-		this->widgets.splash_screen.window->show_all();
+		this->widgets.splash_screen->set_position(Gtk::WIN_POS_CENTER);
+		this->widgets.splash_screen->get_spinner()->start();
+		this->widgets.splash_screen->show_all();
 
 		LOG("--> \"startup\" emmited");
 		this->init_session();
@@ -33,16 +33,14 @@ void Framework::connect_session_init_success_signal() {
 
 		Libre::PreferencesWindow::create(&this->widgets, &this->signal_handler);
 
-		this->widgets.dialog.window = nullptr;
-
 		LOG("--> \"start_session\" emmited");
 		
 		this->widgets.app->add_window(*this->widgets.main.window);
-		this->widgets.app->remove_window(*this->widgets.splash_screen.window);
+		this->widgets.app->remove_window(*this->widgets.splash_screen);
 		this->widgets.main.window->show_all();
 
-		this->widgets.splash_screen.window->hide();
-		this->widgets.splash_screen.spinner->stop();
+		this->widgets.splash_screen->hide();
+		this->widgets.splash_screen->get_spinner()->stop();
 
 		this->widgets.main.text_view->show_information();
 		this->signal_handler.sync_enabled_sources();

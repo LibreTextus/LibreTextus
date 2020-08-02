@@ -15,8 +15,7 @@ int Framework::init(std::string a) {
 	LOG("-- Create Application");
 
 	this->widgets.app = Gtk::Application::create();
-	
-	Libre::SplashScreen::create(&this->widgets.splash_screen, &this->signal_handler);
+	this->widgets.splash_screen = new Libre::SplashScreen();
 	
 	this->load_css_file();
 	this->set_font_size_from_settings();
@@ -25,8 +24,8 @@ int Framework::init(std::string a) {
 	LOG("-- Connect Signals");
 
 	this->widgets.package_manager.connect_dispatcher_signal(
-		this->widgets.splash_screen.header_label,
-		this->widgets.splash_screen.info_label
+		this->widgets.splash_screen->get_header(),
+		this->widgets.splash_screen->get_info()
 	);
 
 	this->connect_app_startup_signal();

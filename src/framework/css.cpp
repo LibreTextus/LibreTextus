@@ -22,7 +22,7 @@ void Framework::set_font_size_from_settings() {
 
 void Framework::apply_css_context_to_screen() {
 	Glib::RefPtr<Gdk::Screen> screen = Gdk::Screen::get_default();
-	this->widgets.style.style = this->widgets.splash_screen.window->get_style_context();
+	this->widgets.style.style = this->widgets.splash_screen->get_style_context();
 
 	this->widgets.style.style->add_provider_for_screen(
 			screen, this->widgets.style.css, GTK_STYLE_PROVIDER_PRIORITY_APPLICATION

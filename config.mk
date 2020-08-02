@@ -15,8 +15,7 @@ BOOSTLIBS=-lboost_regex -lboost_program_options
 
 X11LIBS=-lX11
 
-LIBRE_TEXTUS:=$(wildcard src/*.cpp)
-LIBRE_TEXTUS+=$(wildcard src/*/*.cpp)
+LIBRE_TEXTUS:=$(shell find src -name *.cpp)
 
 OBJ=$(LIBRE_TEXTUS:src/%.cpp=$(ODIR)/%.o)
 DEPS:=$(LIBRE_TEXTUS:src/%.cpp=$(ODIR)/%.d)

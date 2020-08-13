@@ -15,13 +15,13 @@
 #include <rapidxml/rapidxml_utils.hpp>
 #include <rapidxml/rapidxml_print.hpp>
 
-#include <settings.hpp>
+#include <settings/settings.hpp>
 #include <path/path.hpp>
 
 namespace Libre {
   class PackageManager {
   private:
-    Settings settings;
+		Libre::Settings settings;
 		rapidxml::xml_document<> sources_doc;
 		std::string dummy_path;
 		std::vector<std::string> packages;

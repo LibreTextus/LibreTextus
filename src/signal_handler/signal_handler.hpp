@@ -8,7 +8,7 @@
 #include <glibmm/i18n.h>
 
 #include <window/dialog/dialog.hpp>
-#include <settings.hpp>
+#include <settings/settings.hpp>
 #include <path/path.hpp>
 #include <widgets.hpp>
 #include <log/log.hpp>
@@ -17,7 +17,7 @@
 class SignalHandler {
 private:
 	Libre::Widgets * widgets;
-	Settings settings;
+	Libre::Settings settings;
 	std::string mark_argument;
 	std::string header_argument;
 

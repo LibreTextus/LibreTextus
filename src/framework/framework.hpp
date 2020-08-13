@@ -10,7 +10,7 @@
 
 #include <signal_handler/signal_handler.hpp>
 #include <widgets.hpp>
-#include <settings.hpp>
+#include <settings/settings.hpp>
 #include <window/window.hpp>
 #include <path/path.hpp>
 #include <log/log.hpp>

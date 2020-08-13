@@ -15,7 +15,7 @@
 #include <history_button/history_button.hpp>
 #include <package_manager/package_manager.hpp>
 #include <search_engine/search_engine.hpp>
-#include <settings.hpp>
+#include <settings/settings.hpp>
 
 namespace Libre {
 	struct Widgets {
@@ -26,7 +26,7 @@ namespace Libre {
 		// DECLINE VARIABLES USED BY THE GUI THREAD
 		// -------------------------------------------------------------------------
 
-		Settings settings;
+		Libre::Settings settings;
 		std::vector<SearchEngine> search_engine;
 
 		Glib::RefPtr<Gtk::Application> app;

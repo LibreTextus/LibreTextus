@@ -9,7 +9,7 @@
 #include <glibmm/i18n.h>
 #include <vector>
 #include <package_manager/package_manager.hpp>
-#include <settings.hpp>
+#include <settings/settings.hpp>
 #include <source_handler.hpp>
 #include <search_engine/search_engine.hpp>
 #include <path/path.hpp>
@@ -22,7 +22,7 @@ namespace Libre {
 			void set_startup_file_if_not_already();
 		public:
 		Libre::PackageManager package_manager;
-		Settings settings;
+		Libre::Settings settings;
 
 		RapidTextus();
 

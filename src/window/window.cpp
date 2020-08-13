@@ -225,7 +225,7 @@ bool Libre::MainWindow::create(Libre::Widgets * w, SignalHandler * s) {
 														"To get specific verses or chapters use the standart notation like: <i>GEN 1,1-10</i>\n"
 														"<i>WORD@GEN 1</i> will give all <i>WORD</i> in <i>GEN 1</i>\n");
 
-	Settings settings;
+	Libre::Settings settings;
 	w->main.text_view = new Libre::TextView(splash_text, w->package_manager.get_source_path(settings.get_attribute("startupfile", "file")));
 	w->main.text_view->signal_toggle_note().connect(sigc::mem_fun(s, &SignalHandler::toggle_note));
 	w->main.text_view->signal_right_click_search().connect(sigc::mem_fun(s, &SignalHandler::trigger_search));

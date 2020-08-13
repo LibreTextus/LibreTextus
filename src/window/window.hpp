@@ -12,7 +12,7 @@
 #include <notebook/notebook.hpp>
 #include <widgets.hpp>
 #include <signal_handler/signal_handler.hpp>
-#include <settings.hpp>
+#include <settings/settings.hpp>
 #include <path/path.hpp>
 #include <log/log.hpp>
 

@@ -6,7 +6,7 @@
 #include <experimental/filesystem>
 #include <vector>
 #include "panes.hpp"
-#include <settings.hpp>
+#include <settings/settings.hpp>
 #include <path/path.hpp>
 #include <window/dialog/dialog.hpp>
 #include <package_manager/package_manager.hpp>
@@ -22,7 +22,7 @@ namespace Libre {
 
 			Glib::RefPtr<Gtk::CssProvider> theme_css_provider;
 			Glib::RefPtr<Gtk::CssProvider> font_size_css_provider;
-			Settings settings;
+			Libre::Settings settings;
 
 			sigc::signal<void> _restart_application;
 			sigc::signal<void> _sync_all_source_combo_main_window;

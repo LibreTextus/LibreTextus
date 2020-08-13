@@ -51,23 +51,6 @@ namespace Libre {
 		Libre::SplashScreen * splash_screen;
 		Libre::PreferencesWindow * preferences_window;
 
-		// struct Preferences {
-			// Gtk::Window * window;
-			// Gtk::SpinButton * font_size_spinbutton;
-			// Gtk::ComboBoxText * theme_combo;
-			// Gtk::ComboBoxText * lang_combo;
-			// Gtk::ComboBoxText * default_source_combo;
-			// Gtk::VBox * book_manager_box;
-			// tsl::ordered_map<std::string, Gtk::CheckButton *> sources_check;
-		// } preferences;
-
-		struct Style {
-			Glib::RefPtr<Gtk::StyleContext> style;
-			Glib::RefPtr<Gtk::CssProvider> css;
-			Glib::RefPtr<Gtk::CssProvider> font_size_css;
-			int font_size;
-		} style;
-
 		struct UI {
 			Glib::RefPtr<Gtk::UIManager> manager;
 			Glib::RefPtr<Gtk::ActionGroup> action_group;

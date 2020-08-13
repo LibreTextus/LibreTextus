@@ -23,23 +23,23 @@ void SignalHandler::toggle_preferences() {
 }
 
 void SignalHandler::zoom_in() {
-	LOG("--> \"zoom_in\" emmited");
-	this->widgets->style.font_size += 2;
-	this->widgets->style.font_size_css->load_from_data("* { font-size: " + std::to_string(this->widgets->style.font_size) + "px; }");
+	// LOG("--> \"zoom_in\" emmited");
+	// this->widgets->style.font_size += 2;
+	// this->widgets->style.font_size_css->load_from_data("* { font-size: " + std::to_string(this->widgets->style.font_size) + "px; }");
 }
 
 void SignalHandler::zoom_out() {
-	LOG("--> \"zoom_out\" emmited");
-	this->widgets->style.font_size -= 2;
-	if (this->widgets->style.font_size < 1) {
-		this->widgets->style.font_size = 1;
-	}
-	this->widgets->style.font_size_css->load_from_data("* { font-size: " + std::to_string(this->widgets->style.font_size) + "px; }");
+	// LOG("--> \"zoom_out\" emmited");
+	// this->widgets->style.font_size -= 2;
+	// if (this->widgets->style.font_size < 1) {
+		// this->widgets->style.font_size = 1;
+	// }
+	// this->widgets->style.font_size_css->load_from_data("* { font-size: " + std::to_string(this->widgets->style.font_size) + "px; }");
 }
 
 void SignalHandler::zoom_reset() {
-	LOG("--> \"zoom_reset\" emmited");
-	this->widgets->style.font_size = std::stoi(this->settings.get_attribute("font", "size"));
-	this->widgets->style.font_size_css->load_from_data("* { font-size: " + std::to_string(this->widgets->style.font_size) + "px; }");
+	// LOG("--> \"zoom_reset\" emmited");
+	// this->widgets->style.font_size = std::stoi(this->settings.get_attribute("font", "size"));
+	// this->widgets->style.font_size_css->load_from_data("* { font-size: " + std::to_string(this->widgets->style.font_size) + "px; }");
 }
 

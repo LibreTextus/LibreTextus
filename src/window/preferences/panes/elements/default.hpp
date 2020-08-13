@@ -11,10 +11,12 @@ namespace Libre {
 			Gtk::Label label;
 			T element;
 		public:
-			PreferencesElement(const std::string & text) : label(text, Gtk::ALIGN_START, Gtk::ALIGN_CENTER) {
-				this->pack_start(label);
-				this->pack_end(element);
-				this->set_homogeneous(true);
+			PreferencesElement(const std::string & text) : Gtk::HBox(), label(text, Gtk::ALIGN_START, Gtk::ALIGN_CENTER) {
+				this->element.set_size_request(350, -1),
+				this->pack_start(this->label, Gtk::PACK_SHRINK);
+				this->pack_end(this->element, Gtk::PACK_SHRINK);
+				this->set_homogeneous(false);
+				this->set_name("preferences_element");
 			}
 
 			Gtk::Label * get_label() {

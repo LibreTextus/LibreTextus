@@ -276,3 +276,13 @@ checkbutton check {
 spinbutton entry {
 	border-radius: 5px;
 }
+
+#preferences_element, #preferences_book_list {
+	padding: 5px;
+	margin: 5px;
+}
+
+#preferences_book_list {
+	border-top: 1px solid @theme_text_background_color;
+	border-bottom: 1px solid @theme_text_background_color;
+}

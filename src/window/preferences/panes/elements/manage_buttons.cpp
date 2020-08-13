@@ -5,6 +5,7 @@ Libre::BookManagerElements::ManageButtons::ManageButtons() : Gtk::HBox() {
 	this->remove.set_name("remove_button");
 	this->pack_end(this->add, Gtk::PACK_SHRINK, 0);
 	this->pack_end(this->remove, Gtk::PACK_SHRINK, 0);
+	this->set_name("preferences_manage_buttons");
 }
 
 Gtk::Button * Libre::BookManagerElements::ManageButtons::get_add() {

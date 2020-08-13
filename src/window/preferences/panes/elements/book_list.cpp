@@ -2,6 +2,7 @@
 
 Libre::BookManagerElements::BookList::BookList() : Gtk::ScrolledWindow() {
 	this->add(this->container);
+	this->set_name("preferences_book_list");
 }
 
 void Libre::BookManagerElements::BookList::append(const std::string & name) {

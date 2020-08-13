@@ -3,9 +3,10 @@
 #include <iostream>
 #include <string>
 #include <boost/program_options.hpp>
+
 #include <framework/framework.hpp>
 #include <path/path.hpp>
-#include <quick_search.hpp>
+#include <rapid_textus/rapid_textus.hpp>
 
 int main(int argc, char *argv[]) {
 	try {
@@ -27,10 +28,12 @@ int main(int argc, char *argv[]) {
 			std::cout << desc << '\n';
 
 		} else if (vm.count("print")) {
-			Libre::quick_search(vm["search"].as<std::string>(), vm["output"].as<std::string>(), vm["source"].as<std::string>(),!vm.count("no-marks"), vm.count("show-amount"));
+			Libre::RapidTextus rt;
+			rt.rapid_search(vm["search"].as<std::string>(), vm["output"].as<std::string>(), vm["source"].as<std::string>(),!vm.count("no-marks"), vm.count("show-amount"));
 
 		} else if (vm.count("list-sources")) {
-			Libre::list_sources();
+			Libre::RapidTextus rt;
+			rt.list_sources();
 		} else {
 			XInitThreads();
 

@@ -1,4 +1,5 @@
 #include "preferences.hpp"
+#include "gtkmm/enums.h"
 
 Libre::PreferencesWindow::PreferencesWindow() : Gtk::Window() {
 
@@ -34,5 +35,9 @@ Libre::PreferencesWindow::PreferencesWindow() : Gtk::Window() {
 			sigc::mem_fun(this, &Libre::PreferencesWindow::sync_sources));
 
 	this->add(this->note_book);
-}
 
+	this->set_default_size(500, 400);
+	this->set_keep_above(true);
+	this->set_resizable(false);
+	this->set_position(Gtk::WIN_POS_CENTER);
+}

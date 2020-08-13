@@ -17,3 +17,7 @@
 #close_button {
 	background-image: url('res/light/close.svg');
 }
+
+#remove_button {
+	background-image: url('res/light/remove.svg');
+}

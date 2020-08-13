@@ -1,4 +1,4 @@
-#include "../dialog_window.hpp"
+#include "../dialog.hpp"
 
 Libre::DialogWindow::DialogWindow(const std::string & title, const std::string & info) : Window(), info_label(info), ok_button(_("OK")), cancel_button(_("Cancel")) {
 

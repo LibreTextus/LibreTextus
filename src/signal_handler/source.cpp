@@ -60,12 +60,9 @@ void SignalHandler::sync_enabled_sources() {
 	LOG("--> \"sync_enabled_sources\" emmited");
 
 	this->sync_combo_boxes();
-	this->sync_checkbuttons();
 }
 
 void SignalHandler::sync_combo_boxes() {
-	this->widgets->preferences.default_source_combo->remove_all();
-	this->widgets->append_sources(this->widgets->preferences.default_source_combo);
 
 	for (int i = 0; i < this->widgets->main.combo_boxes.size(); i++) {
 		Gtk::HBox * parent = this->widgets->main.headers[i];
@@ -89,40 +86,5 @@ void SignalHandler::sync_combo_boxes() {
 			this->widgets->main.combo_boxes[i]),
 			false
 		);
-	}
-}
-
-
-void SignalHandler::sync_checkbuttons() {
-	for (std::vector<std::string>::iterator i = this->widgets->package_manager.get_sources().begin(); i != this->widgets->package_manager.get_sources().end(); i++) {
-		delete this->widgets->preferences.sources_check[*i];
-	}
-
-	this->widgets->preferences.sources_check.clear();
-
-	std::vector<Gtk::Widget *> v = this->widgets->preferences.book_manager_box->get_children();
-
-	for (std::vector<Gtk::Widget *>::iterator i = v.begin(); i != v.end(); i++) {
-		this->widgets->preferences.book_manager_box->remove(*(*i));
-	}
-
-	for (std::vector<std::string>::iterator i = this->widgets->package_manager.get_sources().begin(); i != this->widgets->package_manager.get_sources().end(); i++) {
-		Gtk::HBox * book_container = new Gtk::HBox;
-		Gtk::Label * book_title = new Gtk::Label(*i, Gtk::ALIGN_START);
-		this->widgets->preferences.sources_check[*i] = new Gtk::CheckButton;
-
-		this->widgets->preferences.sources_check[*i]->set_active(this->widgets->package_manager.is_enabled(*i));
-
-		book_container->pack_start(*book_title, Gtk::PACK_SHRINK, 0);
-		book_container->pack_end(*this->widgets->preferences.sources_check[*i], Gtk::PACK_SHRINK, 0);
-		this->widgets->preferences.book_manager_box->pack_start(*book_container, Gtk::PACK_SHRINK, 0);
-
-		this->widgets->preferences.book_manager_box->show_all();
-
-		this->widgets->preferences.sources_check[*i]->signal_clicked().connect([this, i]() {
-			(this->widgets->preferences.sources_check[*i]->get_active() ?
-				this->widgets->package_manager.enable(*i) : this->widgets->package_manager.disable(*i));
-				this->sync_enabled_sources();
-		});
 	}
 }

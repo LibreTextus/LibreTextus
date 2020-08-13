@@ -14,17 +14,12 @@ namespace Libre {
 			Libre::PreferencesElement<Gtk::SpinButton> font_size;
 
 		public:
-			UserInterfacePane() : Gtk::VBox(), theme(_("Theme")), locale(_("Language")), font_size(_("Font size")) {
-				this->pack_start(this->theme, Gtk::PACK_SHRINK, 0);
-				this->pack_start(this->locale, Gtk::PACK_SHRINK, 0);
-				this->pack_start(this->font_size, Gtk::PACK_SHRINK, 0);
-			}
-
+			UserInterfacePane();
 			~UserInterfacePane() = default;
 
-			Libre::PreferencesElement<Gtk::ComboBoxText> * get_theme() { return &this->theme; };
-			Libre::PreferencesElement<Gtk::ComboBoxText> * get_locale() { return &this->locale; };
-			Libre::PreferencesElement<Gtk::SpinButton> * get_font_size() { return &this->font_size; };
+			Libre::PreferencesElement<Gtk::ComboBoxText> * get_theme();
+			Libre::PreferencesElement<Gtk::ComboBoxText> * get_locale();
+			Libre::PreferencesElement<Gtk::SpinButton> * get_font_size();
 	};
 }
 

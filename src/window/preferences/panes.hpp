@@ -3,5 +3,6 @@
 
 #include "panes/book_manager_pane.hpp"
 #include "panes/user_inferface_pane.hpp"
+#include "panes/keybindings_pane.hpp"
 
 #endif 

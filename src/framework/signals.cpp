@@ -31,7 +31,14 @@ void Framework::connect_session_init_success_signal() {
 
 		LOG("-- Create Properties Window");
 
-		Libre::PreferencesWindow::create(&this->widgets, &this->signal_handler);
+		this->widgets.preferences_window->restart_application().connect(
+				sigc::mem_fun(this, &Framework::restart));
+
+		this->widgets.preferences_window->sync_source_combo().connect(
+				sigc::mem_fun(&this->signal_handler, &SignalHandler::sync_enabled_sources));
+
+		this->widgets.preferences_window->set_package_manager(
+				&this->widgets.package_manager);
 
 		LOG("--> \"start_session\" emmited");
 		
@@ -65,4 +72,9 @@ void Framework::connect_processing_signals() {
 
 	this->widgets.processing.sync_sources_dispatcher.connect(
 			sigc::mem_fun(this->signal_handler, &SignalHandler::sync_enabled_sources));
+}
+
+void Framework::restart() {
+	this->widgets.processing.restart_application = true;
+	this->widgets.app->quit();
 }

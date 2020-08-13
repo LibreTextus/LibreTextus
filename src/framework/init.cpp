@@ -16,10 +16,7 @@ int Framework::init(std::string a) {
 
 	this->widgets.app = Gtk::Application::create();
 	this->widgets.splash_screen = new Libre::SplashScreen();
-	
-	this->load_css_file();
-	this->set_font_size_from_settings();
-	this->apply_css_context_to_screen();
+	this->widgets.preferences_window = new Libre::PreferencesWindow();
 
 	LOG("-- Connect Signals");
 

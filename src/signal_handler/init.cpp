@@ -29,7 +29,7 @@ void SignalHandler::init(Libre::Widgets * w) {
 
 std::string SignalHandler::get_mark_color() {
 	Gdk::RGBA rgba;
-	this->widgets->style.style->lookup_color("theme_highlight_color", rgba);
+	this->widgets->preferences_window->get_style_context()->lookup_color("theme_highlight_color", rgba);
 
 	std::string r, g, b;
 

@@ -18,8 +18,8 @@ void SignalHandler::toggle_iconify() {
 
 void SignalHandler::toggle_preferences() {
 	LOG("--> \"toggle_preferences\" emmited");
-	this->widgets->preferences.window->show_all();
-	this->widgets->preferences.window->raise();
+	this->widgets->preferences_window->show_all();
+	this->widgets->preferences_window->raise();
 }
 
 void SignalHandler::zoom_in() {

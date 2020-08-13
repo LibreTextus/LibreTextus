@@ -9,6 +9,7 @@
 #include <tsl/ordered_map.h>
 
 #include "splash_screen.hpp"
+#include "window/preferences.hpp"
 #include "text_view.hpp"
 #include "notebook.hpp"
 #include "history_button.hpp"
@@ -48,16 +49,17 @@ namespace Libre {
 		} main;
 
 		Libre::SplashScreen * splash_screen;
+		Libre::PreferencesWindow * preferences_window;
 
-		struct Preferences {
-			Gtk::Window * window;
-			Gtk::SpinButton * font_size_spinbutton;
-			Gtk::ComboBoxText * theme_combo;
-			Gtk::ComboBoxText * lang_combo;
-			Gtk::ComboBoxText * default_source_combo;
-			Gtk::VBox * book_manager_box;
-			tsl::ordered_map<std::string, Gtk::CheckButton *> sources_check;
-		} preferences;
+		// struct Preferences {
+			// Gtk::Window * window;
+			// Gtk::SpinButton * font_size_spinbutton;
+			// Gtk::ComboBoxText * theme_combo;
+			// Gtk::ComboBoxText * lang_combo;
+			// Gtk::ComboBoxText * default_source_combo;
+			// Gtk::VBox * book_manager_box;
+			// tsl::ordered_map<std::string, Gtk::CheckButton *> sources_check;
+		// } preferences;
 
 		struct Style {
 			Glib::RefPtr<Gtk::StyleContext> style;
@@ -94,7 +96,7 @@ namespace Libre {
 
 		~Widgets() {
 			delete this->main.window;
-			delete this->preferences.window;
+			delete this->preferences_window;
 
 			delete this->main.search_entry;
 			delete this->main.number_results;
@@ -110,11 +112,6 @@ namespace Libre {
 			delete this->main.note_book;
 			delete this->main.text_view;
 			delete this->main.note_paned;
-
-			delete this->preferences.font_size_spinbutton;
-			delete this->preferences.theme_combo;
-			delete this->preferences.book_manager_box;
-			delete this->preferences.default_source_combo;
 
 			delete this->splash_screen;
 		}

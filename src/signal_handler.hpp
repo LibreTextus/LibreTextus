@@ -6,7 +6,7 @@
 #include <thread>
 #include <algorithm>
 #include <glibmm/i18n.h>
-#include "dialog_window.hpp"
+#include "window/dialog.hpp"
 #include "settings.hpp"
 #include "path.hpp"
 #include "widgets.hpp"
@@ -27,7 +27,6 @@ private:
 	void set_replace_id(Gtk::ComboBoxText *);
 	void change_source_at_replace_id();
 	void sync_combo_boxes();
-	void sync_checkbuttons();
 	void add_new_search_engine();
 	void connect_signals_of_new_buttons();
 	int get_id_close_button_and_erase(Gtk::Button * b);
@@ -68,9 +67,6 @@ public:
 	void remove_source_dir();
 
 	void sync_enabled_sources();
-
-	void theme_changed();
-	void default_font_size_changed();
 
 	void toggle_note(std::string position);
 	void export_notes();

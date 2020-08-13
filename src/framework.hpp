@@ -40,6 +40,8 @@ private:
 	void emit_startup_signal();
 	void end_log_if_not_restarting();
 
+	void restart();
+
 public:
 	Framework() {}
 	virtual ~Framework() {}

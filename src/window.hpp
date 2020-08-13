@@ -6,7 +6,7 @@
 #include <fstream>
 #include <experimental/filesystem>
 #include <glibmm/i18n.h>
-#include "dialog_window.hpp"
+#include "window/dialog.hpp"
 #include "text_view.hpp"
 #include "notebook.hpp"
 #include "widgets.hpp"
@@ -17,10 +17,6 @@
 
 namespace Libre {
 	namespace MainWindow {
-		bool create(Libre::Widgets *, SignalHandler *);
-	}
-
-	namespace PreferencesWindow {
 		bool create(Libre::Widgets *, SignalHandler *);
 	}
 }

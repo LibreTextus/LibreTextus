@@ -8,7 +8,7 @@
 #include <mutex>
 #include <tsl/ordered_map.h>
 
-#include <splash_screen/splash_screen.hpp>
+#include <window/splash_screen/splash_screen.hpp>
 #include <window/preferences/preferences.hpp>
 #include <text_view.hpp>
 #include <notebook/notebook.hpp>

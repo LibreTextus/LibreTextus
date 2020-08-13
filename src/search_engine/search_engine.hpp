@@ -9,7 +9,7 @@
 #include <algorithm>
 #include <locale>
 
-#include "source_handler.hpp"
+#include <source_handler.hpp>
 #include <tsl/ordered_map.h>
 
 class SearchEngine {

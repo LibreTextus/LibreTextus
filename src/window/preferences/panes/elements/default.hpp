@@ -1,7 +1,6 @@
 #ifndef ELEMENT_HPP
 #define ELEMENT_HPP
 
-#include "gtkmm/enums.h"
 #include <gtkmm.h>
 #include <string>
 

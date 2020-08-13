@@ -1,4 +1,4 @@
-#include "../notebook.hpp"
+#include "notebook.hpp"
 
 void Libre::NoteBook::on_content_change() {
 	this->write_changes_to_node();

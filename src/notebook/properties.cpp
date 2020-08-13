@@ -1,4 +1,4 @@
-#include "../notebook.hpp"
+#include "notebook.hpp"
 
 void Libre::NoteBook::set_text_view_properties() {
 	this->set_name("text_view");

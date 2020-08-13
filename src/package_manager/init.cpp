@@ -1,4 +1,4 @@
-#include "../package_manager.hpp"
+#include "package_manager.hpp"
 
 void Libre::PackageManager::init(bool without_update) {
 	bool source_file_not_exists = !std::experimental::filesystem::exists(HOME("sources.xml"));

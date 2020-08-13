@@ -8,13 +8,13 @@
 #include <locale.h>
 #include <string>
 
-#include "signal_handler.hpp"
-#include "widgets.hpp"
-#include "settings.hpp"
-#include "window.hpp"
-#include "path.hpp"
-#include "log.hpp"
-#include "source_handler.hpp"
+#include <signal_handler/signal_handler.hpp>
+#include <widgets.hpp>
+#include <settings.hpp>
+#include <window/window.hpp>
+#include <path/path.hpp>
+#include <log/log.hpp>
+#include <source_handler.hpp>
 
 class Framework {
 private:

@@ -1,4 +1,4 @@
-#include "../history_button.hpp"
+#include "history_button.hpp"
 
 void Libre::HistoryButton::right_click() {
 	if (!this->search_history.empty()) {

@@ -1,4 +1,4 @@
-#include "../../preferences.hpp"
+#include "../preferences.hpp"
 
 void Libre::PreferencesWindow::enable_changed(Gtk::CheckButton * i) {
 	if (i->get_active())

@@ -1,4 +1,4 @@
-#include "../search_engine.hpp"
+#include "search_engine.hpp"
 
 void SearchEngine::mark_result(std::string * text) {
 	boost::regex e;

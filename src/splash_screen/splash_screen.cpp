@@ -1,4 +1,4 @@
-#include "../splash_screen.hpp"
+#include "splash_screen.hpp"
 #include <iostream>
 
 Libre::SplashScreen::SplashScreen() : Window() {

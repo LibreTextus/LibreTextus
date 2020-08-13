@@ -12,8 +12,8 @@
 #include <markdown/markdown.hpp>
 #include <glibmm/i18n.h>
 
-#include "path.hpp"
-#include "exporter.hpp"
+#include <path/path.hpp>
+#include <exporter/exporter.hpp>
 
 
 namespace Libre {

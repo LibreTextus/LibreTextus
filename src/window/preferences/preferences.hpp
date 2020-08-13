@@ -5,11 +5,11 @@
 #include <iostream>
 #include <experimental/filesystem>
 #include <vector>
-#include "preferences/panes.hpp"
-#include "../settings.hpp"
-#include "../path.hpp"
-#include "dialog.hpp"
-#include "../package_manager.hpp"
+#include "panes.hpp"
+#include <settings.hpp>
+#include <path/path.hpp>
+#include <window/dialog/dialog.hpp>
+#include <package_manager/package_manager.hpp>
 
 namespace Libre {
 

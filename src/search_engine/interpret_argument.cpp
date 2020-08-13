@@ -1,4 +1,4 @@
-#include "../search_engine.hpp"
+#include "search_engine.hpp"
 
 void SearchEngine::interpret_argument(std::string * arg) {
 	this->remove_unneeded_spaces(arg);

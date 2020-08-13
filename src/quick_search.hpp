@@ -8,11 +8,11 @@
 #include <experimental/filesystem>
 #include <glibmm/i18n.h>
 #include <vector>
-#include "package_manager.hpp"
-#include "settings.hpp"
-#include "source_handler.hpp"
-#include "search_engine.hpp"
-#include "path.hpp"
+#include <package_manager/package_manager.hpp>
+#include <settings.hpp>
+#include <source_handler.hpp>
+#include <search_engine/search_engine.hpp>
+#include <path/path.hpp>
 
 namespace Libre {
 	void quick_init(Libre::PackageManager & package_manager, Settings & settings) {

@@ -1,4 +1,4 @@
-#include "../signal_handler.hpp"
+#include "signal_handler.hpp"
 
 void SignalHandler::export_notes() {
 	Libre::EntryDialogWindow * pos_dialog = new Libre::EntryDialogWindow(_("Export"), _("Passage"), _("eg. Gen, 1,1"));

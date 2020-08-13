@@ -1,4 +1,4 @@
-#include "../search_engine.hpp"
+#include "search_engine.hpp"
 
 std::string * SearchEngine::get_verse(std::string p) {
 	bool is_not_end_of_file = this->file->find(p) != this->file->end();

@@ -1,4 +1,4 @@
-#include "../framework.hpp"
+#include "framework.hpp"
 
 void Framework::connect_app_startup_signal() {
 	this->widgets.app->signal_startup().connect([this]() {

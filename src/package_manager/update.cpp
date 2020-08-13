@@ -1,4 +1,4 @@
-#include "../package_manager.hpp"
+#include "package_manager.hpp"
 
 void Libre::PackageManager::update() {
 

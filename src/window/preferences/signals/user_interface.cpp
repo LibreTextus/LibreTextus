@@ -1,4 +1,4 @@
-#include "../../preferences.hpp"
+#include "../preferences.hpp"
 
 void Libre::PreferencesWindow::theme_changed() {
 	std::string theme_name = this->ui_pane.get_theme()->get_element()->get_active_text();

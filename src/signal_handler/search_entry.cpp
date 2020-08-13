@@ -1,4 +1,4 @@
-#include "../signal_handler.hpp"
+#include "signal_handler.hpp"
 
 gboolean SignalHandler::search_request(GdkEventKey * event) {
 	LOG("--> \"search_request\" emmited");

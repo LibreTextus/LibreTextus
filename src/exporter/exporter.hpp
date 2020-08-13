@@ -5,7 +5,7 @@
 #include <rapidxml/rapidxml_utils.hpp>
 #include <fstream>
 #include <iostream>
-#include "search_engine.hpp"
+#include <search_engine/search_engine.hpp>
 
 namespace Libre {
 	class Exporter {

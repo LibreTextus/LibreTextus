@@ -4,7 +4,6 @@
 #include <gtkmm.h>
 #include <glibmm/i18n.h>
 #include "elements/default.hpp"
-#include "gtkmm/spinbutton.h"
 
 namespace Libre {
 	class UserInterfacePane : public Gtk::VBox {

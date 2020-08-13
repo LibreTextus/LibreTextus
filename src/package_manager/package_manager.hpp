@@ -14,8 +14,9 @@
 #include <rapidxml/rapidxml.hpp>
 #include <rapidxml/rapidxml_utils.hpp>
 #include <rapidxml/rapidxml_print.hpp>
-#include "settings.hpp"
-#include "path.hpp"
+
+#include <settings.hpp>
+#include <path/path.hpp>
 
 namespace Libre {
   class PackageManager {

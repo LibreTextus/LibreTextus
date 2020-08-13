@@ -1,4 +1,4 @@
-#include "../package_manager.hpp"
+#include "package_manager.hpp"
 
 void Libre::PackageManager::write_to_file() {
 	std::ofstream fout(HOME("sources.xml"));

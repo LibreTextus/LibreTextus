@@ -6,12 +6,13 @@
 #include <thread>
 #include <algorithm>
 #include <glibmm/i18n.h>
-#include "window/dialog.hpp"
-#include "settings.hpp"
-#include "path.hpp"
-#include "widgets.hpp"
-#include "log.hpp"
-#include "source_handler.hpp"
+
+#include <window/dialog/dialog.hpp>
+#include <settings.hpp>
+#include <path/path.hpp>
+#include <widgets.hpp>
+#include <log/log.hpp>
+#include <source_handler.hpp>
 
 class SignalHandler {
 private:

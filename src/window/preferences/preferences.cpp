@@ -1,4 +1,4 @@
-#include "../preferences.hpp"
+#include "preferences.hpp"
 
 Libre::PreferencesWindow::PreferencesWindow() : Gtk::Window() {
 

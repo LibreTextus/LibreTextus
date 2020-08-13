@@ -3,9 +3,9 @@
 #include <iostream>
 #include <string>
 #include <boost/program_options.hpp>
-#include "framework.hpp"
-#include "path.hpp"
-#include "quick_search.hpp"
+#include <framework/framework.hpp>
+#include <path/path.hpp>
+#include <quick_search.hpp>
 
 int main(int argc, char *argv[]) {
 	try {

@@ -1,4 +1,4 @@
-#include "../framework.hpp"
+#include "framework.hpp"
 
 void Framework::create_home_directory_if_missing() {
 	bool home_directory_not_existing = !std::experimental::filesystem::exists(HOME());

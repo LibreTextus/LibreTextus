@@ -1,4 +1,4 @@
-#include "../framework.hpp"
+#include "framework.hpp"
 
 void Framework::init_locales() {
 	bool locale_is_set = this->widgets.settings.get_attribute("locale", "locale").empty();

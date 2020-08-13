@@ -1,4 +1,4 @@
-#include "../signal_handler.hpp"
+#include "signal_handler.hpp"
 
 void SignalHandler::source_changed(Gtk::ComboBoxText * b) {
 

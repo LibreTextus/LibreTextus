@@ -1,4 +1,4 @@
-#include "../package_manager.hpp"
+#include "package_manager.hpp"
 
 void Libre::PackageManager::connect_dispatcher_signal(Gtk::Label * header, Gtk::Label * info) {
 	this->update_text.connect([this, header, info]() {

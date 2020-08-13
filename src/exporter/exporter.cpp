@@ -1,4 +1,4 @@
-#include "../exporter.hpp"
+#include "exporter.hpp"
 
 Libre::Exporter::Exporter(rapidxml::xml_document<> * doc, std::string & p, std::string & s, std::string & pos) : search_engine(s) {
 	

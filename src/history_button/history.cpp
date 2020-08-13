@@ -1,4 +1,4 @@
-#include "../history_button.hpp"
+#include "history_button.hpp"
 
 void Libre::HistoryButton::add_to_history(std::string arg) {
 	this->active_search++;

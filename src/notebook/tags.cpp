@@ -1,4 +1,4 @@
-#include "../notebook.hpp"
+#include "notebook.hpp"
 
 void Libre::NoteBook::create_markdown_tags() {
 	this->tag_bold = this->content_buffer->create_tag("bold");

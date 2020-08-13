@@ -1,4 +1,4 @@
-#include "../notebook.hpp"
+#include "notebook.hpp"
 #include <rapidxml/rapidxml.hpp>
 
 Libre::NoteBook::NoteBook() {

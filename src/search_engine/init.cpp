@@ -1,4 +1,4 @@
-#include "../search_engine.hpp"
+#include "search_engine.hpp"
 
 SearchEngine::SearchEngine(const std::string & f) {
 	this->file_path = f;

@@ -4,7 +4,7 @@
 #include <iostream>
 #include <gtkmm.h>
 #include <vector>
-#include "path.hpp"
+#include <path/path.hpp>
 
 namespace Libre {
 	class HistoryButton : public Gtk::HBox {

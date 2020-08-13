@@ -20,7 +20,7 @@ LIBRE_TEXTUS:=$(shell find src -name *.cpp)
 OBJ=$(LIBRE_TEXTUS:src/%.cpp=$(ODIR)/%.o)
 DEPS:=$(LIBRE_TEXTUS:src/%.cpp=$(ODIR)/%.d)
 
-CPPFLAGS=-DGETTEXT_PACKAGE=\"libretextus\" -DVERSION=\"$(VERSION)\" $(GTKMMFLAGS) -Iinclude/
+CPPFLAGS=-DGETTEXT_PACKAGE=\"libretextus\" -DVERSION=\"$(VERSION)\" $(GTKMMFLAGS) -Iinclude/ -Isrc/
 
 LDFLAGS=$(GTKMMLIB) $(BOOSTLIBS) $(X11LIBS) -lstdc++ -lstdc++fs
 

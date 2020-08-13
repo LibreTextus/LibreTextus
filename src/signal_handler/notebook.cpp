@@ -1,4 +1,4 @@
-#include "../signal_handler.hpp"
+#include "signal_handler.hpp"
 
 void SignalHandler::toggle_note(std::string position) {
 	LOG("--> \"toggle_note\" emmited");

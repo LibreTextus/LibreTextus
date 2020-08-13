@@ -1,4 +1,4 @@
-#include "../notebook.hpp"
+#include "notebook.hpp"
 
 void Libre::NoteBook::open_note(const std::string & position) {
 	this->text_view.set_sensitive(true);

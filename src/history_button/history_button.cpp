@@ -1,4 +1,4 @@
-#include "../history_button.hpp"
+#include "history_button.hpp"
 
 Libre::HistoryButton::HistoryButton() {
 	this->set_name("history_button");

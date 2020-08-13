@@ -8,14 +8,14 @@
 #include <mutex>
 #include <tsl/ordered_map.h>
 
-#include "splash_screen.hpp"
-#include "window/preferences.hpp"
-#include "text_view.hpp"
-#include "notebook.hpp"
-#include "history_button.hpp"
-#include "package_manager.hpp"
-#include "search_engine.hpp"
-#include "settings.hpp"
+#include <splash_screen/splash_screen.hpp>
+#include <window/preferences/preferences.hpp>
+#include <text_view.hpp>
+#include <notebook/notebook.hpp>
+#include <history_button/history_button.hpp>
+#include <package_manager/package_manager.hpp>
+#include <search_engine/search_engine.hpp>
+#include <settings.hpp>
 
 namespace Libre {
 	struct Widgets {

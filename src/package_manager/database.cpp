@@ -1,4 +1,4 @@
-#include "../package_manager.hpp"
+#include "package_manager.hpp"
 
 void Libre::PackageManager::refresh_db(const std::string & p_name) {
 	this->remove_invalid_paths();

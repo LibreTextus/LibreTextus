@@ -1,4 +1,4 @@
-#include "../search_engine.hpp"
+#include "search_engine.hpp"
 
 void SearchEngine::set_search_argument(std::string arg) {
 	this->search_argument = arg;

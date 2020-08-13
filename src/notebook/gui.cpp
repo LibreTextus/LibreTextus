@@ -1,4 +1,4 @@
-#include "../notebook.hpp"
+#include "notebook.hpp"
 
 void Libre::NoteBook::pack_children() {
 	this->scrolled_window.add(this->text_view);

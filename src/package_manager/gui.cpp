@@ -1,4 +1,4 @@
-#include "../package_manager.hpp"
+#include "package_manager.hpp"
 
 void Libre::PackageManager::show_message(const std::string & h, const std::string & info) {
 	this->mtx.lock();

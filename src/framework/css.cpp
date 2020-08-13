@@ -1,4 +1,4 @@
-#include "../framework.hpp"
+#include "framework.hpp"
 
 void Framework::load_css_file() {
 	LOG("-- Load Css");

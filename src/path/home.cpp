@@ -1,4 +1,4 @@
-#include "../path.hpp"
+#include "path.hpp"
 
 #if defined(__linux__) || defined(__APPLE__)
 std::string HOME(const std::string & object) {

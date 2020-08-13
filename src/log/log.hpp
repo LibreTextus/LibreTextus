@@ -2,7 +2,7 @@
 #define LOGGER_HPP
 
 #include <fstream>
-#include "path.hpp"
+#include <path/path.hpp>
 
 void LOG(const std::string & text);
 void LOG_RESET();

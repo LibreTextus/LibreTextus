@@ -1,4 +1,4 @@
-#include "../framework.hpp"
+#include "framework.hpp"
 bool Framework::run() {
 	LOG("-- Run Application");
 	this->emit_startup_signal();

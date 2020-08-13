@@ -1,7 +1,7 @@
 #ifndef SPLASH_SCREEN_HPP
 #define SPLASH_SCREEN_HPP
 #include <gtkmm.h>
-#include "path.hpp"
+#include <path/path.hpp>
 
 namespace Libre {
 	class SplashScreen : public Gtk::Window {

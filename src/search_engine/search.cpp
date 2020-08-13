@@ -1,4 +1,4 @@
-#include "../search_engine.hpp"
+#include "search_engine.hpp"
 
 bool SearchEngine::search(std::string * text) {
 

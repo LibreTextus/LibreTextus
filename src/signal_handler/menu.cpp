@@ -1,4 +1,4 @@
-#include "../signal_handler.hpp"
+#include "signal_handler.hpp"
 
 void SignalHandler::toggle_fullscreen() {
 	LOG("--> \"toggle_fullscreen\" emmited");

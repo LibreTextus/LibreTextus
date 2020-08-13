@@ -8,7 +8,7 @@
 #include <fstream>
 #include <vector>
 
-#include "path.hpp"
+#include <path/path.hpp>
 
 // -----------------------------------------------------------------------------
 // THIS CLASS IS FOR READ AND WRITE THE SETTINGS STORED IN THE YAML FILE

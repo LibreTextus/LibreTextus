@@ -1,4 +1,4 @@
-#include "../preferences.hpp"
+#include "preferences.hpp"
 
 void Libre::PreferencesWindow::add_themes_to_themes_combo() {
 

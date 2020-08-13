@@ -1,4 +1,4 @@
-#include "../signal_handler.hpp"
+#include "signal_handler.hpp"
 
 void SignalHandler::disable_widgets() {
 	for (int i = 0; i < this->widgets->main.combo_boxes.size(); i++) {

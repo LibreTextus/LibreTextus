@@ -6,14 +6,15 @@
 #include <fstream>
 #include <experimental/filesystem>
 #include <glibmm/i18n.h>
-#include "window/dialog.hpp"
-#include "text_view.hpp"
-#include "notebook.hpp"
-#include "widgets.hpp"
-#include "signal_handler.hpp"
-#include "settings.hpp"
-#include "path.hpp"
-#include "log.hpp"
+
+#include "dialog/dialog.hpp"
+#include <text_view.hpp>
+#include <notebook/notebook.hpp>
+#include <widgets.hpp>
+#include <signal_handler/signal_handler.hpp>
+#include <settings.hpp>
+#include <path/path.hpp>
+#include <log/log.hpp>
 
 namespace Libre {
 	namespace MainWindow {

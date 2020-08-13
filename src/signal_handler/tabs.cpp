@@ -1,4 +1,4 @@
-#include "../signal_handler.hpp"
+#include "signal_handler.hpp"
 
 void SignalHandler::add_source() {
 	LOG("--> \"add_source\" emmited");

@@ -1,4 +1,4 @@
-#include "../framework.hpp"
+#include "framework.hpp"
 
 int Framework::init(std::string a) {
 	LOG_RESET();

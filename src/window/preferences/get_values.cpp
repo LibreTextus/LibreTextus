@@ -1,4 +1,4 @@
-#include "../preferences.hpp"
+#include "preferences.hpp"
 
 Gtk::Notebook * Libre::PreferencesWindow::get_note_book() {
 	return &this->note_book;

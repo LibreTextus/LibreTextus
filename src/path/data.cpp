@@ -1,4 +1,4 @@
-#include "../path.hpp"
+#include "path.hpp"
 
 #ifdef __linux__
 std::string DATA(const std::string & object) {

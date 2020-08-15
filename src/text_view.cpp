@@ -1,6 +1,4 @@
 #include "text_view.hpp"
-#include "source_handler.hpp"
-#include <iterator>
 
 // LIBRE::TEXTVIEW::TEXTVIEW ---------------------------------------------------
 // CONSTRUCTOR OF THE TEXTVIEW SETS THE DEFAULT SETTINGS OF THE CHILDREN

@@ -5,12 +5,6 @@ tsl::ordered_map<std::string, Libre::StrongMap> SourceHandler::strongs;
 Libre::NameMap SourceHandler::names;
 std::string SourceHandler::names_path;
 
-// SOURCEHANDLER::GET_SOURCE ---------------------------------------------------
-// THIS FUNCTION RETURNS THE SOURCE. THE SOURCE MAP HAS THE FOLLOWING CONTENTS:
-// 		* "BOOK CHAPTER, VERSE" -> VERSE CONTENT
-// -----------------------------------------------------------------------------
-
-
 Libre::BookMap * SourceHandler::get_source(const std::string & s) {
 
 	if (this->sources.find(s) == this->sources.end()) {
@@ -23,10 +17,6 @@ Libre::BookMap * SourceHandler::get_source(const std::string & s) {
 
 	return &this->sources[s];
 }
-
-// SOURCEHANDLER::TO_MAP -------------------------------------------------------
-// THIS FUNCTION TURNS A SOURCE NODE INTO A LIBRE::BOOKMAP
-// -----------------------------------------------------------------------------
 
 Libre::BookMap SourceHandler::to_map(rapidxml::xml_document<> * doc, const std::string & s) {
 	Libre::BookMap output;
@@ -61,17 +51,9 @@ Libre::BookMap SourceHandler::to_map(rapidxml::xml_document<> * doc, const std::
 	return output;
 }
 
-// SOURCEHANDLER::GET_NAMES ----------------------------------------------------
-// THIS FUNCTION RETURNS THE DEMANDED NAMES FILE
-// -----------------------------------------------------------------------------
-
 Libre::NameMap * SourceHandler::get_names() {
 	return &this->names;
 }
-
-// SOURCEHANDLER::TO_NAMES -----------------------------------------------------
-// THIS FUNCTION TURNS A NAMES NODE TO A LIBRE::NAMEMAP
-// -----------------------------------------------------------------------------
 
 inline Libre::NameMap SourceHandler::to_names(rapidxml::xml_document<> * doc) {
 	Libre::NameMap output;
@@ -95,10 +77,6 @@ void SourceHandler::set_names_path(const std::string & s) {
 	doc.parse<0>(file.data());
 	this->names = this->to_names(&doc);
 }
-
-// SOURCEHANDLER::GET_STRONGS -------------------------------------------------
-// THIS FUNCTION RETURNS THE STRONGS OF A DEMANDED FILE
-// ----------------------------------------------------------------------------
 
 Libre::StrongMap * SourceHandler::get_strongs(const std::string & s) {
 	return &this->strongs[s];

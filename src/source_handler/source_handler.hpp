@@ -9,11 +9,6 @@
 #include <rapidxml/rapidxml_print.hpp>
 #include <boost/regex.hpp>
 
-// -----------------------------------------------------------------------------
-// THE SOURCEHANDLER CLASS IS FOR MAKE IT MORE EFFICIENT. IT LOADS A FILE IF IT
-// HAS NOT ALREADY LOADED IT ELSE IT TAKES THE FILE FROM THE MEMORY
-// -----------------------------------------------------------------------------
-
 namespace Libre {
 	typedef tsl::ordered_map<std::string, std::string> BookMap;
 	typedef tsl::ordered_map<std::string, std::vector<std::string>> NameMap;

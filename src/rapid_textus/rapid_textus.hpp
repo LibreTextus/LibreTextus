@@ -10,7 +10,7 @@
 #include <vector>
 #include <package_manager/package_manager.hpp>
 #include <settings/settings.hpp>
-#include <source_handler.hpp>
+#include <source_handler/source_handler.hpp>
 #include <search_engine/search_engine.hpp>
 #include <path/path.hpp>
 

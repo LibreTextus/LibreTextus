@@ -12,7 +12,7 @@
 #include <path/path.hpp>
 #include <widgets.hpp>
 #include <log/log.hpp>
-#include <source_handler.hpp>
+#include <source_handler/source_handler.hpp>
 
 class SignalHandler {
 private:

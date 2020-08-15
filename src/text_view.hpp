@@ -11,7 +11,7 @@
 #include <rapidxml/rapidxml_print.hpp>
 #include <glibmm/i18n.h>
 
-#include <source_handler.hpp>
+#include <source_handler/source_handler.hpp>
 
 namespace Libre {
 	class TextView : public Gtk::ScrolledWindow {

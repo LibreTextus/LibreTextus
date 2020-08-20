@@ -1,5 +1,4 @@
 #include "preferences.hpp"
-#include "gtkmm/enums.h"
 
 Libre::PreferencesWindow::PreferencesWindow() : Gtk::Window() {
 
@@ -12,6 +11,8 @@ Libre::PreferencesWindow::PreferencesWindow() : Gtk::Window() {
 	this->add_themes_to_themes_combo();
 	this->add_locales_to_locales_combo();
 	this->set_font_size_adjustment();
+
+	this->font_size = std::stoi(this->settings.get_attribute("font", "size"));
 
 	this->ui_pane.get_theme()->get_element()->signal_changed().connect(
 			sigc::mem_fun(this, &Libre::PreferencesWindow::theme_changed));

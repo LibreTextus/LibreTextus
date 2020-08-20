@@ -8,10 +8,8 @@
 #include <locale.h>
 #include <string>
 
-#include <signal_handler/signal_handler.hpp>
 #include <widgets.hpp>
 #include <settings/settings.hpp>
-#include <window/window.hpp>
 #include <path/path.hpp>
 #include <log/log.hpp>
 #include <source_handler/source_handler.hpp>
@@ -19,7 +17,6 @@
 class Framework {
 private:
 	std::string arg;
-	SignalHandler signal_handler;
 	Libre::Widgets widgets;
 
 	void init_session();
@@ -31,7 +28,6 @@ private:
 
 	void connect_app_startup_signal();
 	void connect_session_init_success_signal();
-	void connect_processing_signals();
 
 	void emit_startup_signal();
 	void end_log_if_not_restarting();

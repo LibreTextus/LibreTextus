@@ -20,6 +20,7 @@ namespace Libre {
 			Libre::KeybindingsPane keybindings_pane;
 			Libre::BookManagerPane book_manager_pane;
 
+			int font_size;
 			Glib::RefPtr<Gtk::CssProvider> theme_css_provider;
 			Glib::RefPtr<Gtk::CssProvider> font_size_css_provider;
 			Libre::Settings settings;
@@ -59,6 +60,8 @@ namespace Libre {
 			Libre::BookManagerPane * get_book_manager_pane();
 			sigc::signal<void> restart_application();
 			sigc::signal<void> sync_source_combo();
+			void increase_font_size(const int &);
+			void reset_font_size();
 	};
 }
 

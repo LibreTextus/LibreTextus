@@ -48,7 +48,7 @@ namespace Libre {
 		}
 
 	public:
-		TextView(const std::string &, const std::string &);
+		TextView(const std::string &);
 		virtual ~TextView() = default;
 
 		void clear();
@@ -63,6 +63,7 @@ namespace Libre {
 		void remove_tab(const int & id);
 		void append_tab(const std::string & path);
 		void label_populate_popup(Gtk::Menu * menu, int tab, int version);
+		void set_info_text(const std::string &);
 		void set_note_book(rapidxml::xml_node<> * root) {
 			this->note_book_file = root;
 		}

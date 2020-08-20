@@ -4,7 +4,7 @@
 // CONSTRUCTOR OF THE TEXTVIEW SETS THE DEFAULT SETTINGS OF THE CHILDREN
 // -----------------------------------------------------------------------------
 
-Libre::TextView::TextView(const std::string & info, const std::string & path) {
+Libre::TextView::TextView(const std::string & info) {
 
 	// ------------------------------------------
 	// SET PROPERTIES OF THIS WIDGET AND OF ITS
@@ -64,11 +64,7 @@ Libre::TextView::TextView(const std::string & info, const std::string & path) {
 	this->scroll_status = 0;
 	this->scroll_sensitivity = 0.5;
 
-	this->append_tab(path);
-
-	this->verses[0].get_children()[0]->set_name("active_verse");
 }
-
 
 // LIBRE::TEXTVIEW::SHOW_INFORMATION -------------------------------------------
 // THIS FUNCTION DISPLAYES THE INFORMATION TEXT WICH WAS SET IN THE CONSTRUCTOR
@@ -87,6 +83,7 @@ void Libre::TextView::show_information() {
 // -----------------------------------------------------------------------------
 
 void Libre::TextView::show_content() {
+	this->verses[0].get_children()[0]->set_name("active_verse");
 	this->overlay.set_halign(Gtk::ALIGN_FILL);
 	this->overlay.set_valign(Gtk::ALIGN_FILL);
 	this->overlay.remove();
@@ -154,37 +151,30 @@ void Libre::TextView::replace_verse(const std::string & caption, const int & ver
 
 void Libre::TextView::_display(int begin) {
 
-	// ------------------------------------------
-	// IF THERE ARE NO VERSES DISPLAY : HIDE
-	// ------------------------------------------
-
 	if (this->captions.size() != 0) {
 		this->show_all();
-	} else {
-		this->main.hide();
-	}
+		// ------------------------------------------
+		// JUST DISPLAY THOSE VERSES WHICH CONATAIN
+		// SOMETHING
+		// ------------------------------------------
 
-	// ------------------------------------------
-	// JUST DISPLAY THOSE VERSES WHICH CONATAIN
-	// SOMETHING
-	// ------------------------------------------
-
-	for (int i = begin; i < this->max_verses; i++) {
-		for (int x = 0; x < this->tabs; x++) {
-			if (i < this->captions.size() - this->scroll_status) {
-				this->c_labels[x][i].set_text(this->captions[i + this->scroll_status]);
-				this->v_labels[x][i].set_markup(this->content[i + this->scroll_status][x]);
-				this->verse_status[x][i].set_active((this->note_exists(this->captions[i + this->scroll_status]) ? true : false));
-				this->verse_status[x][i].signal_released().connect([this, i]() {
-					this->m_signal_toggle_note.emit(this->captions[i + this->scroll_status]);
-					for (int x = 0; x < this->tabs; x++) {
-						this->verse_status[x][i].set_active(true);
-					}
-				});
-			} else {
-				this->c_labels[x][i].hide();
-				this->v_labels[x][i].hide();
-				this->verse_status[x][i].hide();
+		for (int i = begin; i < this->max_verses; i++) {
+			for (int x = 0; x < this->tabs; x++) {
+				if (i < this->captions.size() - this->scroll_status) {
+					this->c_labels[x][i].set_text(this->captions[i + this->scroll_status]);
+					this->v_labels[x][i].set_markup(this->content[i + this->scroll_status][x]);
+					this->verse_status[x][i].set_active((this->note_exists(this->captions[i + this->scroll_status]) ? true : false));
+					this->verse_status[x][i].signal_released().connect([this, i]() {
+							this->m_signal_toggle_note.emit(this->captions[i + this->scroll_status]);
+							for (int x = 0; x < this->tabs; x++) {
+							this->verse_status[x][i].set_active(true);
+							}
+							});
+				} else {
+					this->c_labels[x][i].hide();
+					this->v_labels[x][i].hide();
+					this->verse_status[x][i].hide();
+				}
 			}
 		}
 	}

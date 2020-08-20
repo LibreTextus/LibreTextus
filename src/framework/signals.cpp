@@ -25,9 +25,6 @@ void Framework::connect_session_init_success_signal() {
 		// CREATING THE WINDOWS
 		// ------------------------------------------
 
-		LOG("-- Create Main Window");
-
-		Libre::MainWindow::create(&this->widgets, &this->signal_handler);
 
 		LOG("-- Create Properties Window");
 
@@ -35,43 +32,32 @@ void Framework::connect_session_init_success_signal() {
 				sigc::mem_fun(this, &Framework::restart));
 
 		this->widgets.preferences_window->sync_source_combo().connect(
-				sigc::mem_fun(&this->signal_handler, &SignalHandler::sync_enabled_sources));
+				sigc::mem_fun(this->widgets.main_window->get_sync_sources_dispatcher(), &Glib::Dispatcher::emit));
 
 		this->widgets.preferences_window->set_package_manager(
 				&this->widgets.package_manager);
 
 		LOG("--> \"start_session\" emmited");
 		
-		this->widgets.app->add_window(*this->widgets.main.window);
+		this->widgets.app->add_window(*this->widgets.main_window);
 		this->widgets.app->remove_window(*this->widgets.splash_screen);
-		this->widgets.main.window->show_all();
+		this->widgets.main_window->show_all();
 
 		this->widgets.splash_screen->hide();
 		this->widgets.splash_screen->get_spinner()->stop();
 
-		this->widgets.main.text_view->show_information();
-		this->signal_handler.sync_enabled_sources();
-		this->widgets.main.search_entry->grab_focus();
+		// this->widgets_maintext_view->show_information();
+		// this->signal_handler.sync_enabled_sources();
+		// this->widgets.main.search_entry->grab_focus();
 
 		// ------------------------------------------
 		// IF A SEARCH ARGUMENT IS GIVEN
 		// ------------------------------------------
 		
 		if (!this->arg.empty()) {
-			this->signal_handler.trigger_search(arg);
+			this->widgets.main_window->trigger_search_with_history(arg);
 		}
 	});
-}
-
-void Framework::connect_processing_signals() {
-	this->widgets.processing.set_text_dispatcher.connect(
-			sigc::mem_fun(this->signal_handler, &SignalHandler::set_text));
-	
-	this->widgets.processing.delete_thread_dispatcher.connect(
-			sigc::mem_fun(this->signal_handler, &SignalHandler::delete_thread));
-
-	this->widgets.processing.sync_sources_dispatcher.connect(
-			sigc::mem_fun(this->signal_handler, &SignalHandler::sync_enabled_sources));
 }
 
 void Framework::restart() {

@@ -19,7 +19,6 @@ void Libre::PreferencesWindow::default_source_changed() {
 }
 
 void Libre::PreferencesWindow::sync_default_source_combo() {
-	this->_sync_all_source_combo_main_window.emit();
 
 	std::vector<std::string>::iterator b = this->package_manager->get_sources().begin();
 	std::vector<std::string>::iterator e = this->package_manager->get_sources().end();
@@ -40,6 +39,8 @@ void Libre::PreferencesWindow::sync_default_source_combo() {
 		this->book_manager_pane.get_default_source()->get_element()->set_active_text(
 				this->settings.get_attribute("startupfile", "file"));
 	}
+
+	this->_sync_all_source_combo_main_window.emit();
 }
 
 void Libre::PreferencesWindow::sync_sources() {

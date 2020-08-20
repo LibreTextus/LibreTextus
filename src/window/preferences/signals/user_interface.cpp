@@ -35,9 +35,32 @@ void Libre::PreferencesWindow::locales_changed() {
 
 void Libre::PreferencesWindow::font_size_changed() {
 	this->settings.set("font", "size", std::to_string(this->ui_pane.get_font_size()->get_element()->get_value()));
+	this->font_size = this->ui_pane.get_font_size()->get_element()->get_value();
 
 	this->font_size_css_provider->load_from_data(
 			"#text_view { font-size: " + 
-			std::to_string(this->ui_pane.get_font_size()->get_element()->get_value()) + "px;}"
+			std::to_string(this->font_size) + "px;}"
+	);
+}
+
+void Libre::PreferencesWindow::increase_font_size(const int & i) {
+	this->font_size += i;
+
+	if (this->font_size < 1) {
+		this->font_size = 1;
+	}
+
+	this->font_size_css_provider->load_from_data(
+			"#text_view { font-size: " + 
+			std::to_string(this->font_size) + "px;}"
+	);
+}
+
+void Libre::PreferencesWindow::reset_font_size() {
+	this->font_size = std::stoi(this->settings.get_attribute("font", "size"));
+
+	this->font_size_css_provider->load_from_data(
+			"#text_view { font-size: " + 
+			std::to_string(this->font_size) + "px;}"
 	);
 }

@@ -8,16 +8,37 @@
 #include <locale.h>
 #include <string>
 
-#include <widgets.hpp>
-#include <settings/settings.hpp>
 #include <path/path.hpp>
 #include <log/log.hpp>
 #include <source_handler/source_handler.hpp>
+#include <window/splash_screen/splash_screen.hpp>
+#include <window/preferences/preferences.hpp>
+#include <window/main/main.hpp>
+#include <text_view/text_view.hpp>
+#include <notebook/notebook.hpp>
+#include <history_button/history_button.hpp>
+#include <package_manager/package_manager.hpp>
+#include <search_engine/search_engine.hpp>
+#include <settings/settings.hpp>
 
 class Framework {
 private:
 	std::string arg;
-	Libre::Widgets widgets;
+
+	Libre::PackageManager package_manager;
+
+	Libre::Settings settings;
+	std::vector<SearchEngine> search_engine;
+
+	Glib::RefPtr<Gtk::Application> app;
+
+	Libre::MainWindow * main_window;
+	Libre::SplashScreen * splash_screen;
+	Libre::PreferencesWindow * preferences_window;
+
+	Glib::Thread * update_thread;
+	Glib::Dispatcher start_session;
+	bool restart_application;
 
 	void init_session();
 
@@ -36,7 +57,11 @@ private:
 
 public:
 	Framework() {}
-	virtual ~Framework() {}
+	~Framework() {
+		delete this->main_window;
+		delete this->preferences_window;
+		delete this->splash_screen;
+	}
 
 	int init(std::string) ;
 	bool run();

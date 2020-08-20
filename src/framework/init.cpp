@@ -6,7 +6,7 @@ int Framework::init(std::string a) {
 
 	this->arg = a;
 
-	this->widgets.processing.restart_application = false;
+	this->restart_application = false;
 
 	this->create_home_directory_if_missing();
 	this->create_settings_file_if_missing();
@@ -14,9 +14,9 @@ int Framework::init(std::string a) {
 
 	LOG("-- Create Application");
 
-	this->widgets.app = Gtk::Application::create();
-	this->widgets.splash_screen = new Libre::SplashScreen();
-	this->widgets.preferences_window = new Libre::PreferencesWindow();
+	this->app = Gtk::Application::create();
+	this->splash_screen = new Libre::SplashScreen();
+	this->preferences_window = new Libre::PreferencesWindow();
 
 	std::string info_string = _("<big>Welcome to LibreTextus!</big>\n"
 			"Here are some search syntax hints:\n"
@@ -25,13 +25,13 @@ int Framework::init(std::string a) {
 			"To get specific verses or chapters use the standart notation like: <i>GEN 1,1-10</i>\n"
 			"<i>WORD@GEN 1</i> will give all <i>WORD</i> in <i>GEN 1</i>\n");
 
-	this->widgets.main_window = new Libre::MainWindow(info_string);
+	this->main_window = new Libre::MainWindow(info_string);
 
 	LOG("-- Connect Signals");
 
-	this->widgets.package_manager.connect_dispatcher_signal(
-		this->widgets.splash_screen->get_header(),
-		this->widgets.splash_screen->get_info()
+	this->package_manager.connect_dispatcher_signal(
+		this->splash_screen->get_header(),
+		this->splash_screen->get_info()
 	);
 
 	this->connect_app_startup_signal();
@@ -42,14 +42,14 @@ int Framework::init(std::string a) {
 }
 
 void Framework::init_session() {
-	this->widgets.processing.update_thread = Glib::Thread::create([this]() {
-		this->widgets.package_manager.init();
+	this->update_thread = Glib::Thread::create([this]() {
+		this->package_manager.init();
 
-		this->widgets.main_window->set_package_manager(&this->widgets.package_manager);
-		this->widgets.main_window->set_preferences_window(this->widgets.preferences_window);
-		this->widgets.main_window->set_application(this->widgets.app);
-		this->widgets.main_window->init();
+		this->main_window->set_package_manager(&this->package_manager);
+		this->main_window->set_preferences_window(this->preferences_window);
+		this->main_window->set_application(this->app);
+		this->main_window->init();
 
-		this->widgets.processing.start_session.emit();
+		this->start_session.emit();
 	});
 }

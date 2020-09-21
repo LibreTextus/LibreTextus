@@ -17,6 +17,11 @@ data: $(ODIR)
 	@printf "Copy directory $(green)$@$(sgr0) to $(green)$(ODIR)$(sgr0)\n"
 	@cp -r $@ $(ODIR)
 
+theme: $(ODIR)
+	@printf "Copy $(green)$@$(sgr0) to $(green)$(ODIR)/data$(sgr0)\n"
+	@rm -rf $(ODIR)/data
+	@cp -r data $(ODIR)/
+
 locales: $(ODIR)
 	@if [ ! -d "$(ODIR)/locale/" ]; then \
 		printf "Create directory $(green)$(ODIR)/locale$(sgr0)\n"; \

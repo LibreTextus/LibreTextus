@@ -40,7 +40,7 @@ namespace Libre {
 		Glib::RefPtr<Gtk::TextBuffer::Tag> tag_h6;
 		Glib::RefPtr<Gtk::TextBuffer::Tag> tag_blockquotes;
 		MD::String markdown_text;
-		typedef sigc::signal<void, int> type_signal_refresh;
+		typedef sigc::signal<void> type_signal_refresh;
 		type_signal_refresh m_signal_refresh;
 		
 		bool note_exists(const std::string & pos);

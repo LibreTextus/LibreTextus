@@ -15,7 +15,7 @@ void Libre::MainWindow::connect_signals() {
 			return false;
 	});
 
-	this->view_pane.get_notebook()->signal_refresh().connect(sigc::mem_fun(this->view_pane.get_text_view(), &Libre::TextView::_display));
+	this->view_pane.get_notebook()->signal_refresh().connect(sigc::mem_fun(this->view_pane.get_text_view(), &Libre::TextView::display_all));
 	this->set_text_dispatcher.connect(sigc::mem_fun(this, &Libre::MainWindow::set_text));
 	this->join_thread_dispatcher.connect(sigc::mem_fun(this, &Libre::MainWindow::join_thread));
 	this->sync_sources_dispatcher.connect(sigc::mem_fun(this, &Libre::MainWindow::sync_combo_boxes));

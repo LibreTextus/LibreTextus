@@ -54,7 +54,7 @@ bool Libre::NoteBook::note_exists(const std::string & pos) {
 
 void Libre::NoteBook::save_note() {
 	this->remove_empty_notes();
-	this->m_signal_refresh.emit(0);
+	this->m_signal_refresh.emit();
 	this->write_to_file();
 }
 

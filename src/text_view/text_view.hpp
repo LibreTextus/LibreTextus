@@ -13,6 +13,10 @@
 
 #include <source_handler/source_handler.hpp>
 
+#include "tab/tab.hpp"
+
+#define VERSES_SHOWN 30
+
 namespace Libre {
 	class TextView : public Gtk::ScrolledWindow {
 	private:
@@ -20,32 +24,13 @@ namespace Libre {
 		Gtk::Overlay overlay;
 		Gtk::Label information_text;
 		Gtk::Label no_result_label;
-		std::vector<Gtk::VBox> verses;
-		std::vector<std::vector<Gtk::Label>> v_labels;
-		std::vector<std::vector<Gtk::Label>> c_labels;
-		std::vector<std::vector<Gtk::CheckButton>> verse_status;
-		std::vector<std::string> captions;
-		std::vector<std::string> source_paths;
-		std::vector<std::vector<std::string>> content;
-		int scroll_status;
-		int padding_x;
-		int padding_y;
-		int max_verses;
-		int tabs;
+		std::vector<Libre::TextViewTab<VERSES_SHOWN> *> tabs;
+		bool has_results;
 		float scroll_sensitivity;
 		rapidxml::xml_node<> * note_book_file;
 		sigc::signal<void, std::string> m_signal_toggle_note;
 		sigc::signal<void, std::string> m_signal_right_click_search;
-
-		bool note_exists(const std::string & pos) {
-			for (rapidxml::xml_node<> * note = this->note_book_file->first_node("note"); note; note = note->next_sibling()) {
-				if (note->first_attribute("name")->value() == pos) {
-					return true;
-				}
-			}
-
-			return false;
-		}
+		bool note_exists(const std::string &);
 
 	public:
 		TextView(const std::string &);
@@ -54,7 +39,8 @@ namespace Libre {
 		void clear();
 		void add_verse(const std::string & caption, const std::vector<std::string *> & verses_content);
 		void replace_verse(const std::string & caption, const int & version, const std::string * content);
-		void _display(int begin);
+		void display(const int & i);
+		void display_all();
 		bool on_scroll_event(GdkEventScroll * scroll_event);
 		bool on_key_press_event(GdkEventKey * key);
 		void show_information();
@@ -68,22 +54,16 @@ namespace Libre {
 			this->note_book_file = root;
 		}
 
-		sigc::signal<void, std::string> signal_toggle_note() {
-			return this->m_signal_toggle_note;
-		}
+		sigc::signal<void, std::string> signal_toggle_note();
 
-		sigc::signal<void, std::string> signal_right_click_search() {
-			return this->m_signal_right_click_search;
-		}
+		sigc::signal<void, std::string> signal_right_click_search();
 
 		bool on_button_release_event(GdkEventButton * button_event) {
 				this->grab_focus();
 				return false;
 		}
 
-		void change_source(const int & id, const std::string & path) {
-			this->source_paths[id] = path;
-		}
+		void change_source(const int & id, const std::string & path);
 
 	};
 }

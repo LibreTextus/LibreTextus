@@ -64,8 +64,6 @@ void Libre::TextView::clear() {
 	}
 
 	this->has_results = false;
-
-	this->display_all();
 }
 
 void Libre::TextView::add_verse(const std::string & caption, const std::vector<std::string *> & verses_content) {
@@ -82,14 +80,12 @@ void Libre::TextView::display_all() {
 	for (Libre::TextViewTab<VERSES_SHOWN> * i : this->tabs) {
 		i->display_all();
 	}
-	this->show_all();
 }
 
 void Libre::TextView::display(const int & i) {
 	for (Libre::TextViewTab<VERSES_SHOWN> * j : this->tabs) {
 		j->display(i);
 	}
-	this->show_all();
 }
 
 bool Libre::TextView::on_scroll_event(GdkEventScroll * scroll_event) {

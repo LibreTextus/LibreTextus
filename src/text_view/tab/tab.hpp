@@ -67,11 +67,11 @@ void Libre::TextViewTab<N>::clear() {
 template <int N>
 void Libre::TextViewTab<N>::display(const int & i) {
 	if (i - this->scroll < N && i - this->scroll >= 0) {
+		this->text_view_verses[i - this->scroll]->clear();
 		if (i < this->verse.size()) {
 			tsl::ordered_map<std::string, std::string>::iterator i_v = this->verse.begin();
 			i_v += i;
 
-			this->text_view_verses[i - this->scroll]->clear();
 
 			if (this->strong_map->find(i_v->first) != this->strong_map->end()) {
 				this->text_view_verses[i - this->scroll]->set_strongs(&(*this->strong_map)[i_v->first]);
@@ -84,7 +84,7 @@ void Libre::TextViewTab<N>::display(const int & i) {
 			this->text_view_verses[i - this->scroll]->show_if_not_empty();
 		} else {
 			this->text_view_verses[i - this->scroll]->clear();
-			this->text_view_verses[i - this->scroll]->hide();
+			this->text_view_verses[i - this->scroll]->show_if_not_empty();
 		}
 	}
 }

@@ -110,7 +110,7 @@ void Libre::TextViewVerse::clear() {
 }
 
 void Libre::TextViewVerse::show_if_not_empty() {
-	if (this->verse.get_text().empty()) {
+	if (this->caption.get_text().empty()) {
 		this->button.hide();
 		this->caption.hide();
 		this->verse.hide();

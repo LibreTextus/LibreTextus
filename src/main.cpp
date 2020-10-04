@@ -1,5 +1,4 @@
 #include <gtkmm.h>
-#include <X11/Xlib.h>
 #include <iostream>
 #include <string>
 #include <boost/program_options.hpp>
@@ -35,7 +34,6 @@ int main(int argc, char *argv[]) {
 			Libre::RapidTextus rt;
 			rt.list_sources();
 		} else {
-			XInitThreads();
 
 			bool restart = false;
 

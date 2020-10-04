@@ -11,11 +11,12 @@ std::string * SearchEngine::get_verse(std::string p) {
 }
 
 float SearchEngine::get_progress() {
-	bool file_is_not_empty = this->file->size() > 0;
-	if (file_is_not_empty) {
-		return static_cast<float>(std::distance(this->file->begin(), this->active_verse)) / this->file->size();
+	float progress = 0;
+
+	for (float & i : this->thread_progress) {
+		progress += i;
 	}
 
-	return 0;
+	return progress / this->num_threads;
 }
 

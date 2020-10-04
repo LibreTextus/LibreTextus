@@ -8,6 +8,8 @@
 #include <vector>
 #include <algorithm>
 #include <locale>
+#include <thread>
+#include <mutex>
 
 #include <source_handler/source_handler.hpp>
 #include <tsl/ordered_map.h>
@@ -17,19 +19,29 @@ private:
 	Libre::BookMap * file;
 	std::string file_path;
 	Libre::NameMap * names;
-	Libre::BookMap::iterator active_verse;
-	int active_verse_index;
 	SourceHandler source_handler;
 	std::vector<std::string> last_search_results;
 	std::string search_argument;
 	std::vector<std::string> search_argument_vector;
 	std::string raw_search_argument;
 	std::string mark_argument;
+	std::vector<float> thread_progress;
+	std::vector<bool> thread_finished;
+	std::vector<size_t> thread_found;
+	std::vector<std::mutex> * search_mutex;
+	std::vector<std::thread *> search_thread;
+	std::vector<std::vector<std::string>> thread_search_results;
 	std::vector<std::array<Libre::BookMap::iterator, 2>> positions;
+
+	size_t num_threads;
 
 	void interpret_string();
 	void interpret_argument(std::string * text);
-	void mark_result(std::string * text);
+	void mark_result(const std::string &, std::string * text);
+
+	void start_search_threads();
+	void thread_search(std::vector<std::array<Libre::BookMap::iterator, 2>>, int);
+	void join_search_threads();
 
 	void remove_unneeded_spaces(std::string *);
 	void cancel_out_regex_characters(std::string *);
@@ -45,11 +57,7 @@ private:
 	void replace_book_names(std::string *);
 	void remove_spaces_from_argument(std::string *);
 	void get_position_from_string(std::string *, std::vector<std::array<std::string, 2>> *);
-	bool validate_positions(std::vector<std::array<std::string, 2>> *);
-	void create_search_vector_from_string();
-
-	void jump_to_next_range_if_end();
-	bool does_verse_contain_match();
+	bool validate_positions(std::vector<std::array<std::string, 2>> *); void create_search_vector_from_string();
 
 public:
 	SearchEngine (const std::string & path);

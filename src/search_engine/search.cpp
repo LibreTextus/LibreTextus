@@ -1,65 +1,38 @@
 #include "search_engine.hpp"
 
 bool SearchEngine::search(std::string * text) {
+	
+	for (int i = 0; i < this->num_threads; ++i) {
+		if (this->thread_finished[i] < 1 || this->thread_found[i] > 0) {
+
+			while (this->thread_found[i] == 0 && this->thread_finished[i] < 1) { std::this_thread::yield(); }
+
+			if (this->thread_finished[i] == 1 && this->thread_found[i] == 0) {
+				continue;
+			}
+			
+			std::lock_guard<std::mutex> lock((*this->search_mutex)[i]);
 
 
-	while (this->active_verse != this->positions.back()[1]) {
-		this->jump_to_next_range_if_end();
+			std::string fpos = this->thread_search_results[i].front();
+			this->thread_search_results[i].erase(this->thread_search_results[i].begin());
 
-		bool found = this->does_verse_contain_match();
-		bool only_want_range = this->search_argument == "";
 
-		if (found || only_want_range) {
+			*text = (*this->file)[fpos];
 
-			*text = this->active_verse.value();
-
-			if (this->search_argument != "") {
-				this->mark_result(text);
+			if (!this->search_argument.empty()) {
+				this->mark_result(fpos, text);
 			}
 
-			this->last_search_results.push_back(this->active_verse->first);
+			this->last_search_results.push_back(fpos);
 
-			this->active_verse++;
+			this->thread_found[i] -= 1;
 
 			return true;
 		}
-		this->active_verse++;
 	}
+
+	this->join_search_threads();
 
 	return false;
-}
-
-
-void SearchEngine::jump_to_next_range_if_end() {
-	if (this->active_verse == this->positions[this->active_verse_index][1]) {
-			this->active_verse_index++;
-			this->active_verse = this->positions[this->active_verse_index][0];
-		}
-}
-
-bool SearchEngine::does_verse_contain_match() {
-	boost::regex e("", boost::regex::icase);
-	bool found = true;
-
-	for(int i = 0; i < this->search_argument_vector.size(); i++) {
-		if (this->search_argument_vector[i].front() == '[' && this->search_argument_vector[i].back() == ']') {
-			Libre::StrongMap * s_m = this->source_handler.get_strongs(this->file_path);
-			bool found_str = false;
-
-			for (tsl::ordered_map<std::string, std::string>::iterator it = (*s_m)[this->active_verse.key()].begin(); it != (*s_m)[this->active_verse.key()].end(); it++) {
-				if(this->search_argument_vector[i].substr(1, this->search_argument_vector[i].size() - 2) == it->second) {
-					found_str = true;
-					break;
-				}
-			}
-
-			found &= found_str;
-
-		} else {
-			e = boost::regex(this->search_argument_vector[i], boost::regex::icase);
-			found &= boost::regex_search(this->active_verse.value(), e);
-		}
-	}
-
-	return found;
 }

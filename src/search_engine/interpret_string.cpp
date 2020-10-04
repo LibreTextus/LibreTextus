@@ -40,6 +40,8 @@ void SearchEngine::interpret_string() {
 
 	std::cout << "(" << this->search_argument_vector.size() << ")" << '\n';
 #endif
+
+	this->start_search_threads();
 }
 
 void SearchEngine::split_position_and_argument(std::string * search, std::string * arg) {

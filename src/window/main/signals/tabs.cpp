@@ -21,8 +21,7 @@ void Libre::MainWindow::add_source() {
 
 void Libre::MainWindow::add_new_search_engine() {
 	this->search_engine.push_back(
-		SearchEngine(
-			this->package_manager->get_source_path(this->settings.get_attribute("startupfile", "file")))
+			this->package_manager->get_source_path(this->settings.get_attribute("startupfile", "file"))
 	);
 
 	this->search_engine.back().set_mark_argument(this->mark_argument);

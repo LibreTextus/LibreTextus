@@ -46,15 +46,18 @@ void Libre::TextView::show_content() {
 	this->overlay.remove();
 	this->overlay.add(this->main);
 	this->show_all();
+	this->display_all();
 }
 
 void Libre::TextView::show_if_results() {
-	if (this->has_results) {
+	if (!this->has_results) {
 		this->overlay.set_halign(Gtk::ALIGN_CENTER);
 		this->overlay.set_valign(Gtk::ALIGN_CENTER);
 		this->overlay.remove();
 		this->overlay.add(this->no_result_label);
 		this->show_all();
+	} else {
+		this->show_content();
 	}
 }
 
@@ -67,6 +70,7 @@ void Libre::TextView::clear() {
 }
 
 void Libre::TextView::add_verse(const std::string & caption, const std::vector<std::string *> & verses_content) {
+	this->has_results = true;
 	for (int i = 0; i < this->tabs.size(); i++) {
 		this->tabs[i]->add_verse(caption, (verses_content[i] == nullptr ? "~~~" : *verses_content[i]));
 	}

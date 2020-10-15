@@ -66,6 +66,8 @@ void Libre::TextView::clear() {
 		i->clear();
 	}
 
+	this->tabs.front()->reset_scroll();
+
 	this->has_results = false;
 }
 

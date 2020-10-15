@@ -29,6 +29,7 @@ namespace Libre {
 			void display(const int & i = 0);
 			void display_all();
 			void scroll_steps(const int &);
+			void reset_scroll();
 			void change_verse(const std::string &, const std::string &);
 			std::string get_active_verse_position();
 			void set_source_path(const std::string &);
@@ -115,6 +116,11 @@ void Libre::TextViewTab<N>::scroll_steps(const int & i) {
 		this->scroll = 0;
 	else if (this->scroll > this->verse.size() - 1)
 		this->scroll = this->verse.size() - 1;
+}
+
+template <int N>
+void Libre::TextViewTab<N>::reset_scroll() {
+	this->scroll = 0;
 }
 
 template <int N>

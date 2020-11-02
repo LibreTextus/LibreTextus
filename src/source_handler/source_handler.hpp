@@ -2,6 +2,7 @@
 #define SOURCE_HANDLER
 
 #include <iostream>
+#include <future>
 #include <tsl/ordered_map.h>
 #include <map>
 #include <rapidxml/rapidxml.hpp>
@@ -22,7 +23,7 @@ private:
 	static Libre::NameMap names;
 	static std::string names_path;
 
-	Libre::BookMap to_map(rapidxml::xml_document<> *, const std::string &);
+	Libre::BookMap to_map(rapidxml::xml_node<> *, rapidxml::xml_node<> *, const std::string &);
 	inline Libre::NameMap to_names(rapidxml::xml_document<> *);
 
 public:

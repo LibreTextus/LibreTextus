@@ -17,5 +17,6 @@ void SearchEngine::set_mark_argument(std::string arg) {
 void SearchEngine::set_source(std::string path) {
 	this->file = this->source_handler.get_source(path);
 	this->file_path = path;
+	this->matrix = this->source_handler.get_matrix(path);
 }
 

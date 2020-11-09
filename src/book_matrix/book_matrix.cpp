@@ -1,6 +1,10 @@
 #include "book_matrix.hpp"
 
 Libre::BookMatrix::BookMatrix(const std::string & path) {
+	this->load_file(path);
+}
+
+void Libre::BookMatrix::load_file(const std::string & path) {
 	std::ifstream f(path);
 	std::string wordlist;
 	std::string wmatrix;

@@ -6,6 +6,8 @@
 #include <vector>
 #include <map>
 #include <fstream>
+#include <algorithm>
+#include <iostream>
 
 namespace Libre {
 	class XMLConverter {

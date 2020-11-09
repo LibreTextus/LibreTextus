@@ -18,6 +18,7 @@
 class SearchEngine {
 private:
 	Libre::BookMap * file;
+	Libre::BookMatrix * matrix;
 	std::string file_path;
 	Libre::NameMap * names;
 	SourceHandler source_handler;

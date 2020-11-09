@@ -1,7 +1,10 @@
 #include "source_handler.hpp"
+#include "book_matrix/book_matrix.hpp"
+#include "book_matrix/xml_converter.hpp"
 
 tsl::ordered_map<std::string, Libre::BookMap> SourceHandler::sources;
 tsl::ordered_map<std::string, Libre::StrongMap> SourceHandler::strongs;
+tsl::ordered_map<std::string, Libre::BookMatrix> SourceHandler::matrices;
 Libre::NameMap SourceHandler::names;
 std::string SourceHandler::names_path;
 
@@ -115,4 +118,17 @@ void SourceHandler::set_names_path(const std::string & s) {
 
 Libre::StrongMap * SourceHandler::get_strongs(const std::string & s) {
 	return &this->strongs[s];
+}
+
+Libre::BookMatrix * SourceHandler::get_matrix(const std::string & s) {
+	std::string filename = s.substr(0, s.find_last_of(".")) + ".bkmx";
+
+	if (!std::experimental::filesystem::exists(filename)) {
+		Libre::XMLConverter conv(s);
+		conv.save_to_file(filename);
+	}
+
+	this->matrices[filename] = Libre::BookMatrix(filename);
+
+	return &this->matrices[filename];
 }

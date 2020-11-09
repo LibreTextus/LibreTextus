@@ -50,7 +50,7 @@ void SearchEngine::start_search_threads() {
 		this->thread_finished.push_back(false);
 		this->thread_progress.push_back(0.0f);
 		this->thread_found.push_back(0);
-		this->search_thread.push_back(new std::thread(&SearchEngine::thread_search, this, parts[i], i));
+		this->search_thread.push_back(std::async(std::launch::async, &SearchEngine::thread_search, this, parts[i], i));
 	}
 
 }
@@ -74,14 +74,17 @@ void SearchEngine::thread_search(std::vector<std::array<Libre::BookMap::iterator
 		for(int j = 0; j < this->search_argument_vector.size(); j++) {
 			if (this->search_argument_vector[j].front() == '[' && this->search_argument_vector[j].back() == ']') {
 				Libre::StrongMap * s_m = this->source_handler.get_strongs(this->file_path);
-				bool found_str = false;
 
-				for (tsl::ordered_map<std::string, std::string>::iterator it = (*s_m)[a_v.key()].begin(); it != (*s_m)[a_v.key()].end(); it++) {
-					if(this->search_argument_vector[j].substr(1, this->search_argument_vector[j].size() - 2) == it->second) {
-						found_str = true;
-						break;
-					}
-				}
+				bool found_str = !(*s_m)[a_v.key()][this->search_argument_vector[j].substr(1, this->search_argument_vector[j].size() - 2)].empty();
+
+				std::cout << a_v.key() << '\n';
+
+				// for (tsl::ordered_map<std::string, std::string>::const_iterator it = (*s_m)[a_v.key()].begin(); it != (*s_m)[a_v.key()].end(); it++) {
+					// if(this->search_argument_vector[j].substr(1, this->search_argument_vector[j].size() - 2) == it->second) {
+						// found_str = true;
+						// break;
+					// }
+				// }
 
 				found &= found_str;
 
@@ -120,12 +123,5 @@ void SearchEngine::thread_search(std::vector<std::array<Libre::BookMap::iterator
 }
 
 void SearchEngine::join_search_threads() {
-	for (std::thread * t : this->search_thread) {
-		if (t->joinable()) {
-			t->join();
-			delete t;
-		}
-	}
-
 	this->search_thread.clear();
 }

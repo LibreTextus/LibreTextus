@@ -8,6 +8,7 @@
 #include <vector>
 #include <algorithm>
 #include <locale>
+#include <future>
 #include <thread>
 #include <mutex>
 
@@ -29,7 +30,7 @@ private:
 	std::vector<bool> thread_finished;
 	std::vector<size_t> thread_found;
 	std::vector<std::mutex> * search_mutex;
-	std::vector<std::thread *> search_thread;
+	std::vector<std::shared_future<void>> search_thread;
 	std::vector<std::vector<std::string>> thread_search_results;
 	std::vector<std::array<Libre::BookMap::iterator, 2>> positions;
 

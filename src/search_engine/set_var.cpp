@@ -1,6 +1,7 @@
 #include "search_engine.hpp"
 
 void SearchEngine::set_search_argument(std::string arg) {
+	std::cout << "set search argument\n";
 	this->search_argument = arg;
 	this->raw_search_argument = arg;
 

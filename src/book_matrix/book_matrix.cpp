@@ -10,48 +10,49 @@ void Libre::BookMatrix::load_file(const std::string & path) {
 	std::string wmatrix;
 	std::string l;
 
+	std::cout << "Get Wordlist\n";
+
 	getline(f, wordlist);
 
-	while (getline(f, l)) {
-		wmatrix += l;
-	}
+	std::cout << "Parse Wordlist\n";
+	std::string::iterator b = wordlist.begin(), e = wordlist.begin();
 
-	std::string::iterator b = wordlist.begin();
-	std::string::iterator e = wordlist.begin();
+	bool running = true;
 
-	while (true) {
-		for (;*e != ' ' && e != wordlist.end(); ++e) {}
-		this->words.push_back(std::string(b, e));
+	while (running) {
+		for (; e != wordlist.end() && *e != ' '; ++e) {}
+		this->words[std::string(b, e)] = this->words.size();
 
 		if (e == wordlist.end()) {
-			break;
+			running = false;
 		}
 
 		b = ++e;
 	}
 
-	size_t num_lines = matrix.size() * 8 / this->words.size();
+	std::cout << "Get Matrix\n";
 
-	for (int i = 0; i < this->words.size(); ++i) {
-		this->matrix[this->words[i]] = std::vector<bool>(num_lines, false);
+	while(getline(f, l)) {
+		wmatrix += l;
 	}
 
-	size_t pos = 0;
+	std::cout << "Parse Matrix\n";
 
-	for (int i = 0; i < num_lines; ++i) {
-		for (int j = 0; j < this->words.size(); ++j) {
-			this->matrix[this->words[j]][i] = wmatrix[pos / 8] & (1 << (pos % 8));
-			pos++;
-		}
+	size_t num_lines = wmatrix.size() * 8 / this->words.size();
+
+	for (int i = 0; i < num_lines; i += wmatrix.size()) {
+		this->matrix.push_back(wmatrix.substr(i / 8, words.size()));
 	}
+
+	std::cout << "BookMatrix Finished\n";
 
 	f.close();
 }
 
-const std::vector<std::string> & Libre::BookMatrix::get_words() {
+const std::map<std::string, unsigned> & Libre::BookMatrix::get_words() {
 	return this->words;
 }
 
 bool Libre::BookMatrix::get_cell(const std::string & w, const size_t & l) {
-	return this->matrix[w][l];
+	return this->matrix[l][this->words[w] / 8 + (this->words[w] % 8)];
 }

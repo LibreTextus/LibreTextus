@@ -128,7 +128,7 @@ Libre::BookMatrix * SourceHandler::get_matrix(const std::string & s) {
 		conv.save_to_file(filename);
 	}
 
-	this->matrices[filename] = Libre::BookMatrix(filename);
+	this->matrices[filename].load_file(filename);
 
 	return &this->matrices[filename];
 }

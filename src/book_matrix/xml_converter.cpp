@@ -101,7 +101,6 @@ void Libre::XMLConverter::save_to_file(const std::string & path) {
 				++j;
 			}
 
-			std::cout << "Progress: " << i << " / " << this->num_verses << '\r';
 			f << c;
 		}
 	}

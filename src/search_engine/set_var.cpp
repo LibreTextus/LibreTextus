@@ -19,6 +19,6 @@ void SearchEngine::set_source(std::string path) {
 	this->file = this->source_handler.get_source(path);
 	this->file_path = path;
 	this->matrix = this->source_handler.get_matrix(path);
-	std::cout << "Contains 'IM': " << std::boolalpha << this->matrix->get_cell("IM", 0) << '\n';
+	std::cout << "Contains 'IM': " << std::boolalpha << this->matrix->get_cell("i", 0) << '\n';
 }
 

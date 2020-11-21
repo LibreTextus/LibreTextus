@@ -10,14 +10,14 @@
 namespace Libre {
 	class BookMatrix {
 		private:
-			std::vector<std::string> words;
-			std::map<std::string, std::vector<bool>> matrix;
+			std::map<std::string, unsigned> words;
+			std::vector<std::string> matrix;
 		public:
 			BookMatrix(const std::string &);
 			BookMatrix() = default;
 			~BookMatrix() = default;
 			void load_file(const std::string &);
-			const std::vector<std::string> & get_words();
+			const std::map<std::string, unsigned> & get_words();
 			bool get_cell(const std::string &, const size_t &);
 	};
 }

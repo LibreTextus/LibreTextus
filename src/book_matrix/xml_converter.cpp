@@ -9,8 +9,6 @@ Libre::XMLConverter::XMLConverter(const std::string & path) : num_verses(0) {
 
 	this->root = this->doc.first_node("XMLBIBLE")->first_node("BIBLEBOOK");
 
-	std::vector<std::string> verse_words;
-	std::wstring verse;
 
 	std::cout << "Count num verses\n";
 
@@ -24,7 +22,8 @@ Libre::XMLConverter::XMLConverter(const std::string & path) : num_verses(0) {
 
 	std::cout << "Parse File\n";
 
-	size_t i = 0;
+	std::vector<std::string> verse_words;
+	std::wstring verse;
 
 	for (rapidxml::xml_node<> * book = this->root; book; book = book->next_sibling()) {
 		for (rapidxml::xml_node<> * ch = book->first_node("CHAPTER"); ch; ch = ch->next_sibling()) {
@@ -35,43 +34,43 @@ Libre::XMLConverter::XMLConverter(const std::string & path) : num_verses(0) {
 				std::transform(verse.begin(), verse.end(), verse.begin(), [](wchar_t c) { return std::tolower(c); });
 				this->split_string(verse, &verse_words);
 
+				this->verses.push_back(verse_words);
+
 				for (std::string & w : verse_words) {
-					if (this->matrix[w].empty()) {
-						this->matrix[w] = std::vector<bool>(this->num_verses, false);
-					}
-
-					this->matrix[w][i] = true;
+					this->word_idx[w] = 1;
 				}
-
-				++i;
 			}
 		}
+	}
+
+	Libre::Primes primes;
+	primes.generate(word_idx.size());
+
+	size_t n = 0;
+
+	for (std::map<std::string, unsigned long>::iterator i = this->word_idx.begin(); i != this->word_idx.end(); ++i) {
+		i->second = primes.get_prime(n);
+		++n;
 	}
 
 	std::cout << "End Parsing\n";
 }
 
 void Libre::XMLConverter::split_string(const std::wstring & line, std::vector<std::string> * v) {
-	size_t snippet_size = 3;
+	std::wstring::const_iterator b = line.begin();
+	std::wstring::const_iterator e = line.begin();
 
-	for (int s = 1; s <= snippet_size; ++s) {
-		std::wstring::const_iterator e = line.begin() + s;
-		while (e != line.end()) {
-			bool cont = false;
-			for (int i = s; i > 0; --i) {
-				cont |= !this->is_word(*(e - i));
-			}
+	while (true) {
+		for (; this->is_word(*e) && e != line.end(); ++e) {}
 
-			if (cont) {
-				++e;
-				continue;
-			}
+		v->push_back(std::string(b, e));
 
-			v->push_back(std::string(e - s, e));
-			std::cout << std::string(e - s, e) << '\n';
+		while (!this->is_word(*e) && e != line.end()) { ++e; }
 
-			++e;
-		}
+		if (e == line.end())
+			break;
+
+		b = e;
 	}
 }
 
@@ -81,7 +80,7 @@ void Libre::XMLConverter::save_to_file(const std::string & path) {
 
 	std::cout << "Write wordlist\n";
 
-	for (const std::pair<std::string, std::vector<bool>> & i : this->matrix) {
+	for (const std::pair<std::string, unsigned long> & i : this->word_idx) {
 		f << i.first << ' ';
 	}
 
@@ -89,20 +88,16 @@ void Libre::XMLConverter::save_to_file(const std::string & path) {
 
 	std::cout << "Write Matrix\n";
 	std::cout << "Number Verses " << this->num_verses << '\n';
-	std::cout << "Number Words " << matrix.size() << '\n';
+	std::cout << "Number Words " << word_idx.size() << '\n';
 
-	for (int i = 0; i < this->num_verses; ++i) {
-		std::map<std::string, std::vector<bool>>::iterator j = matrix.begin();
-		while (j != matrix.end()) {
-			char c = 0;
-			
-			for (int n = 0; j != matrix.end() && n < 8; ++n) {
-				c += j->second[i] << n;
-				++j;
-			}
+	for (const std::vector<std::string> & i : this->verses) {
+		uint512_t word_id = 1;
 
-			f << c;
+		for (const std::string & s : i) {
+			word_id *= this->word_idx[s];
 		}
+
+		f << word_id << '\n';
 	}
 
 	f.close();

@@ -37,20 +37,28 @@ Libre::XMLConverter::XMLConverter(const std::string & path) : num_verses(0) {
 				this->verses.push_back(verse_words);
 
 				for (std::string & w : verse_words) {
-					this->word_idx[w] = 1;
+					this->word_idx[w] += 1;
 				}
 			}
 		}
 	}
 
-	Libre::Primes primes;
-	primes.generate(word_idx.size());
+
+	this->primes.generate(word_idx.size());
+
+	std::map<unsigned long, std::vector<std::string>> inv_word_idx;
+
+	for (const std::pair<std::string, unsigned long> & i : this->word_idx) {
+		inv_word_idx[i.second].push_back(i.first);
+	}
 
 	size_t n = 0;
-
-	for (std::map<std::string, unsigned long>::iterator i = this->word_idx.begin(); i != this->word_idx.end(); ++i) {
-		i->second = primes.get_prime(n);
-		++n;
+	for (auto i = inv_word_idx.rbegin(); i != inv_word_idx.rend(); ++i) {
+		for (const std::string & j : i->second) {
+			this->sorted_words.push_back(j);
+			this->word_idx[j] = this->primes.get_prime(n);
+			++n;
+		}
 	}
 
 	std::cout << "End Parsing\n";
@@ -80,8 +88,8 @@ void Libre::XMLConverter::save_to_file(const std::string & path) {
 
 	std::cout << "Write wordlist\n";
 
-	for (const std::pair<std::string, unsigned long> & i : this->word_idx) {
-		f << i.first << ' ';
+	for (const std::string & i : this->sorted_words) {
+		f << i << ' ';
 	}
 
 	f << '\n';
@@ -91,10 +99,12 @@ void Libre::XMLConverter::save_to_file(const std::string & path) {
 	std::cout << "Number Words " << word_idx.size() << '\n';
 
 	for (const std::vector<std::string> & i : this->verses) {
-		uint512_t word_id = 1;
+		uint1024_t word_id = 1;
 
 		for (const std::string & s : i) {
-			word_id *= this->word_idx[s];
+				if (word_id > word_id * uint1024_t(this->word_idx[s]))
+					std::cerr << "Generating Index: Overflow\n";
+				word_id *= this->word_idx[s];
 		}
 
 		f << word_id << '\n';

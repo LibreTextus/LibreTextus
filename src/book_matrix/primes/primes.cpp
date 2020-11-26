@@ -1,21 +1,20 @@
 #include "primes.hpp"
 
-std::vector<unsigned long> Libre::Primes::primes;
+std::vector<unsigned long> Libre::Primes::primes{};
 
 unsigned long Libre::Primes::get_prime(size_t i) {
-	return primes[i];
+	return this->primes[i];
 }
 
 void Libre::Primes::generate(size_t n) {
-	if (n <= primes.size())
+	if (n <= this->primes.size())
 		return;
 
-	primes.clear();
+	this->primes.clear();
 
-	size_t s = 0;
-	for (; n > (s / log(s)); s += 1000) {}
+	size_t s = n * log(n) * 2;
 
-	bool * pt = new bool[s];
+	bool * pt = new bool[s]{false};
 
 	std::cout << "GEN PRIMES\n";
 

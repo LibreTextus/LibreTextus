@@ -24,8 +24,10 @@ namespace Libre {
 			rapidxml::xml_document<> doc;
 			rapidxml::xml_node<> * root;
 			std::map<std::string, unsigned long> word_idx;
+			std::vector<std::string> sorted_words;
 			std::vector<std::vector<std::string>> verses;
 			size_t num_verses;
+			Libre::Primes primes;
 
 			void split_string(const std::wstring &, std::vector<std::string> *);
 			bool is_word(const wchar_t);

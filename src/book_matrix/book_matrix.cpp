@@ -19,40 +19,47 @@ void Libre::BookMatrix::load_file(const std::string & path) {
 
 	bool running = true;
 
+	size_t n_words = 1;
+	for (const char & i: wordlist) {
+		if (i == ' ')
+			++n_words;
+	}
+
+	this->primes.generate(n_words);
+
+	size_t n = 0;
 	while (running) {
 		for (; e != wordlist.end() && *e != ' '; ++e) {}
-		this->words[std::string(b, e)] = this->words.size();
+		this->words[std::string(b, e)] = this->primes.get_prime(n);
 
 		if (e == wordlist.end()) {
 			running = false;
 		}
 
 		b = ++e;
+		++n;
 	}
 
 	std::cout << "Get Matrix\n";
 
-	while(getline(f, l)) {
-		wmatrix += l;
+	while (getline(f, l)) {
+		this->matrix.push_back(uint1024_t(l));
 	}
 
 	std::cout << "Parse Matrix\n";
 
-	size_t num_lines = wmatrix.size() * 8 / this->words.size();
-
-	for (int i = 0; i < num_lines; i += wmatrix.size()) {
-		this->matrix.push_back(wmatrix.substr(i / 8, words.size()));
-	}
-
 	std::cout << "BookMatrix Finished\n";
+
+	std::cout << "-- " << this->words["im"] << '\n';
+	std::cout << "-- " << this->matrix[0] << '\n';
 
 	f.close();
 }
 
-const std::map<std::string, unsigned> & Libre::BookMatrix::get_words() {
+const std::map<std::string, unsigned long> & Libre::BookMatrix::get_words() {
 	return this->words;
 }
 
-bool Libre::BookMatrix::get_cell(const std::string & w, const size_t & l) {
-	return this->matrix[l][this->words[w] / 8 + (this->words[w] % 8)];
+bool Libre::BookMatrix::verse_has_word(const std::string & w, const size_t & l) {
+	return this->matrix[l] % this->words[w] == 0;
 }

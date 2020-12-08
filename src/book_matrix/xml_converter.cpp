@@ -13,7 +13,6 @@ Libre::XMLConverter::XMLConverter(const Libre::BookMap & book_map) : num_verses(
 
 		if (i->first.substr(0, 3) != b) {
 			b = i->first.substr(0, 3);
-			std::cout << b << '\n';
 		}
 
 		std::transform(verse.begin(), verse.end(), verse.begin(), [](char c) { return std::tolower(c); });
@@ -26,12 +25,7 @@ Libre::XMLConverter::XMLConverter(const Libre::BookMap & book_map) : num_verses(
 		}
 	}
 
-	std::cout << "Loop end" << '\n';
-	std::cout << "NUM WORDS: " << word_idx.size() << '\n';
-
 	this->primes.generate(word_idx.size());
-
-	std::cout << "P end" << '\n';
 
 	std::map<unsigned long, std::vector<std::string>> inv_word_idx;
 
@@ -48,7 +42,6 @@ Libre::XMLConverter::XMLConverter(const Libre::BookMap & book_map) : num_verses(
 		}
 	}
 
-	std::cout << "End Parsing\n";
 }
 
 void Libre::XMLConverter::split_string(const std::string & line, std::vector<std::string> * v) {
@@ -70,20 +63,13 @@ void Libre::XMLConverter::split_string(const std::string & line, std::vector<std
 }
 
 void Libre::XMLConverter::save_to_file(const std::string & path) {
-	std::cout << "Save to file: " << path << '\n';
 	std::ofstream f(path);
-
-	std::cout << "Write wordlist\n";
 
 	for (const std::string & i : this->sorted_words) {
 		f << i << ' ';
 	}
 
 	f << '\n';
-
-	std::cout << "Write Matrix\n";
-	std::cout << "Number Verses " << this->num_verses << '\n';
-	std::cout << "Number Words " << word_idx.size() << '\n';
 
 	for (const std::vector<std::string> & i : this->verses) {
 		uint2048_t word_id = 1;
@@ -99,7 +85,6 @@ void Libre::XMLConverter::save_to_file(const std::string & path) {
 
 	f.close();
 
-	std::cout << "End Writing\n";
 }
 
 bool Libre::XMLConverter::is_word(const wchar_t c) {

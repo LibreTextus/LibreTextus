@@ -23,9 +23,6 @@ void SearchEngine::interpret_argument(std::string arg) {
 	this->remove_quotes(&arg);
 
 	this->search_argument.set_regex_string(arg);
-
-	std::cout << "REGEX STRING: " << this->search_argument.get_regex_string() << '\n';
-	std::cout << "SEARCH INDEX: " << this->search_argument.get_idx() << '\n';
 }
 
 void SearchEngine::pop_strong_expressions(std::string * arg) {
@@ -130,8 +127,6 @@ void SearchEngine::create_search_index(const std::string & arg) {
 	std::string rarg(boost::regex_replace(arg, e, ""));
 	uint2048_t idx = 1;
 
-	std::cout << "ARG: " << rarg << '\n';
-	
 	std::string temp;
 
 	for (char c : rarg) {
@@ -145,8 +140,6 @@ void SearchEngine::create_search_index(const std::string & arg) {
 
 	if (!temp.empty())
 		this->search_argument.append_word(temp);
-
-	std::cout << '\n';
 
 	for (const std::string & w : this->search_argument.get_words()) {
 		std::string word = w;

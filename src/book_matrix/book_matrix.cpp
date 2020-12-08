@@ -10,11 +10,8 @@ void Libre::BookMatrix::load_file(const std::string & path) {
 	std::string wmatrix;
 	std::string l;
 
-	std::cout << "Get Wordlist\n";
-
 	getline(f, wordlist);
 
-	std::cout << "Parse Wordlist\n";
 	std::string::iterator b = wordlist.begin(), e = wordlist.begin();
 
 	bool running = true;
@@ -40,18 +37,9 @@ void Libre::BookMatrix::load_file(const std::string & path) {
 		++n;
 	}
 
-	std::cout << "Get Matrix\n";
-
 	while (getline(f, l)) {
 		this->matrix.push_back(uint2048_t(l));
 	}
-
-	std::cout << "Parse Matrix\n";
-
-	std::cout << "BookMatrix Finished\n";
-
-	std::cout << "-- " << this->words["im"] << '\n';
-	std::cout << "-- " << this->matrix[0] << '\n';
 
 	f.close();
 }

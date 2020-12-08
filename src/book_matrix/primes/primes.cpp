@@ -16,8 +16,6 @@ void Libre::Primes::generate(size_t n) {
 
 	bool * pt = new bool[s]{false};
 
-	std::cout << "GEN PRIMES\n";
-
 	for (unsigned long i = 2; i < s;) {
 		primes.push_back(i);
 
@@ -26,10 +24,6 @@ void Libre::Primes::generate(size_t n) {
 
 		for (++i; pt[i]; ++i) {}
 	}
-
-	std::cout << "PRECALC: " << s << '\n';
-	std::cout << "SIZE: " << primes.size() << '\n';
-	std::cout << "DEMANDED: " << n << '\n';
 
 	delete [] pt;
 }

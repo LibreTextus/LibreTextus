@@ -1,38 +1,78 @@
 #include "search_engine.hpp"
+#include <thread>
 
 bool SearchEngine::search(std::string * text) {
+	boost::regex e;
+	boost::smatch m;
+
+	const std::vector<std::array<Libre::BookMap::iterator, 2>> & pos = this->search_argument.get_position();
 	
-	for (int i = 0; i < this->num_threads; ++i) {
-		if (this->thread_finished[i] < 1 || this->thread_found[i] > 0) {
+	while (this->search_iterator != pos.back().back()) {
 
-			while (this->thread_found[i] == 0 && this->thread_finished[i] < 1) { std::this_thread::yield(); }
+		bool is_search_for = false;
+		if (this->search_argument.get_idx() != 0) {
+			is_search_for = this->matrix->verse_has_mod_index(this->search_argument.get_idx(), this->search_verse_number);
+		}
 
-			if (this->thread_finished[i] == 1 && this->thread_found[i] == 0) {
-				continue;
+		if (!this->search_argument.get_snippets().empty()) {
+			for (const std::string regex : this->search_argument.get_snippets()) {
+				e = regex;
+				is_search_for &= boost::regex_search(regex, m, e);
 			}
-			
-			std::lock_guard<std::mutex> lock((*this->search_mutex)[i]);
+		}
 
+		if (is_search_for) {
 
-			std::string fpos = this->thread_search_results[i].front();
-			this->thread_search_results[i].erase(this->thread_search_results[i].begin());
+			bool strong_check = true;
 
+			for (const std::string & strong : this->search_argument.get_strongs()) {
+				bool has_strong = false;
+				for (const std::pair<std::string, std::string> & p : (*this->strongs)[this->search_iterator.key()]) {
+					if (p.second == strong) {
+						has_strong = true;
+						break;
+					}
+				}
 
-			*text = (*this->file)[fpos];
-
-			if (!this->search_argument.empty()) {
-				this->mark_result(fpos, text);
+				if (!has_strong) {
+					strong_check = false;
+					break;
+				}
 			}
 
-			this->last_search_results.push_back(fpos);
+			if (strong_check) {
+				e = this->search_argument.get_regex_string();
+				bool regex_check = boost::regex_search(this->search_iterator.value(), m, e);
 
-			this->thread_found[i] -= 1;
+				if (regex_check) {
+					this->last_search_results.push_back(this->search_iterator.key());
+					*text = this->search_iterator.value();
+					this->mark_result(this->search_iterator.key(), text);
 
-			return true;
+					++this->search_verse_number;
+					++this->search_iterator;
+					if (this->search_iterator != pos.back().back()) {
+						if (this->search_iterator == pos[this->search_position_index][1]) {
+							++search_position_index;
+							this->search_iterator = pos[this->search_position_index][0];
+						}
+					}
+
+					return true;
+				}
+			}
+		}
+
+		++this->search_progress;
+		++this->search_verse_number;
+		++this->search_iterator;
+		if (this->search_iterator != pos.back().back()) {
+			if (this->search_iterator == pos[this->search_position_index][1]) {
+				++search_position_index;
+				this->search_iterator = pos[this->search_position_index][0];
+			}
 		}
 	}
-
-	this->join_search_threads();
 
 	return false;
 }

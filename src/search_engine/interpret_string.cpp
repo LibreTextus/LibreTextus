@@ -1,8 +1,8 @@
 #include "search_engine.hpp"
 
-void SearchEngine::interpret_string() {
+void SearchEngine::interpret_string(const std::string & argument) {
 
-	std::string arg = this->search_argument;
+	std::string arg = argument;
 	std::string search = "";
 
 	std::vector<std::array<std::string, 2>> pos;
@@ -12,36 +12,30 @@ void SearchEngine::interpret_string() {
 	this->remove_spaces_from_argument(&arg);
 
 	this->get_position_from_string(&arg, &pos);
-	
-	
-	this->positions.clear();
+
+	this->search_argument.clear();
 
 	bool is_valid_position = this->validate_positions(&pos);
 	if (is_valid_position) {
 		for (int i = 0; i < pos.size(); i++) {
-			this->positions.push_back({this->file->find(pos[i][0]), this->file->find(pos[i][1]) + 1});
+			this->search_argument.add_positions({this->file->find(pos[i][0]), this->file->find(pos[i][1]) + 1});
 		}
-		this->search_argument = search;
 
+		this->interpret_argument(search);
 	} else {
-		this->positions.push_back({this->file->begin(), this->file->end()});
+		this->search_argument.add_positions({this->file->begin(), this->file->end()});
+		this->interpret_argument(argument);
 	}
 
-	this->interpret_argument(&this->search_argument);
+	this->search_iterator = this->search_argument.get_position().front().front();
+	this->search_position_index = 0;
+	this->search_verse_number = 0;
+	this->search_progress = 0;
+	this->search_distance = 0;
 
-	this->create_search_vector_from_string();
-	
-#ifdef SEARCH_DEBUG
-	std::cout << "REGEX ARGS: ";
-
-	for (int i = 0; i < this->search_argument_vector.size(); i++) {
-		std::cout << this->search_argument_vector[i] << " AND ";
+	for (const std::array<Libre::BookMap::iterator, 2> & p : this->search_argument.get_position()) {
+		this->search_distance += std::distance(p[0], p[1]);
 	}
-
-	std::cout << "(" << this->search_argument_vector.size() << ")" << '\n';
-#endif
-
-	this->start_search_threads();
 }
 
 void SearchEngine::split_position_and_argument(std::string * search, std::string * arg) {
@@ -225,18 +219,4 @@ bool SearchEngine::validate_positions(std::vector<std::array<std::string, 2>> * 
 	}
 
 	return valid_position;
-}
-
-void SearchEngine::create_search_vector_from_string() {
-	this->search_argument_vector.clear();
-	boost::regex e = boost::regex("(?<!\\\\)&", boost::regex::icase);
-	boost::smatch m;
-	std::string arg = this->search_argument;
-
-	while(boost::regex_search(arg, m, e)) {
-		this->search_argument_vector.push_back(m.prefix().str());
-		arg = m.suffix();
-	}
-
-	this->search_argument_vector.push_back(arg);
 }

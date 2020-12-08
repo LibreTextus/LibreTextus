@@ -8,40 +8,34 @@
 #include <vector>
 #include <algorithm>
 #include <locale>
-#include <thread>
-#include <mutex>
 
 #include <source_handler/source_handler.hpp>
 #include <tsl/ordered_map.h>
 
+#include "search_argument/search_argument.hpp"
+#include "source_handler/book_map.hpp"
+
 class SearchEngine {
 private:
 	Libre::BookMap * file;
+	Libre::BookMatrix * matrix;
+	Libre::StrongMap * strongs;
 	std::string file_path;
 	Libre::NameMap * names;
 	SourceHandler source_handler;
 	std::vector<std::string> last_search_results;
-	std::string search_argument;
-	std::vector<std::string> search_argument_vector;
+	Libre::SearchArgument search_argument;
 	std::string raw_search_argument;
 	std::string mark_argument;
-	std::vector<float> thread_progress;
-	std::vector<bool> thread_finished;
-	std::vector<size_t> thread_found;
-	std::vector<std::mutex> * search_mutex;
-	std::vector<std::thread *> search_thread;
-	std::vector<std::vector<std::string>> thread_search_results;
-	std::vector<std::array<Libre::BookMap::iterator, 2>> positions;
+	Libre::BookMap::iterator search_iterator;
+	size_t search_position_index;
+	size_t search_verse_number;
+	size_t search_distance;
+	size_t search_progress;
 
-	size_t num_threads;
-
-	void interpret_string();
-	void interpret_argument(std::string * text);
+	void interpret_string(const std::string &);
+	void interpret_argument(std::string);
 	void mark_result(const std::string &, std::string * text);
-
-	void start_search_threads();
-	void thread_search(std::vector<std::array<Libre::BookMap::iterator, 2>>, int);
-	void join_search_threads();
 
 	void remove_unneeded_spaces(std::string *);
 	void cancel_out_regex_characters(std::string *);
@@ -50,14 +44,15 @@ private:
 	void replace_any_character_expression(std::string *);
 	void replace_and_expression(std::string *);
 	void replace_placeholders_with_argument(std::string *, std::vector<std::string> *);
-	void shorten_strong_expression(std::string *);
 	void remove_quotes(std::string *);
+	void pop_strong_expressions(std::string *);
+	void create_search_index(const std::string &);
 
 	void split_position_and_argument(std::string *, std::string *);
 	void replace_book_names(std::string *);
 	void remove_spaces_from_argument(std::string *);
 	void get_position_from_string(std::string *, std::vector<std::array<std::string, 2>> *);
-	bool validate_positions(std::vector<std::array<std::string, 2>> *); void create_search_vector_from_string();
+	bool validate_positions(std::vector<std::array<std::string, 2>> *);
 
 public:
 	SearchEngine (const std::string & path);

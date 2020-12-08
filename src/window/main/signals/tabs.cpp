@@ -57,6 +57,7 @@ void Libre::MainWindow::remove_source_by_reference(Libre::HeaderElement * e) {
 		std::vector<std::string> last_search_results = *this->search_engine[0].get_last_search_results();
 		
 		this->header.remove_element(i);
+		this->search_engine.erase(this->search_engine.begin());
 
 		this->search_engine[0].set_last_search_result(last_search_results);
 		this->view_pane.get_text_view()->remove_tab(i);

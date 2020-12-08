@@ -49,6 +49,7 @@ bool SearchEngine::search(std::string * text) {
 					*text = this->search_iterator.value();
 					this->mark_result(this->search_iterator.key(), text);
 
+					++this->search_progress;
 					++this->search_verse_number;
 					++this->search_iterator;
 					if (this->search_iterator != pos.back().back()) {

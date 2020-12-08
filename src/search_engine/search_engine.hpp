@@ -8,6 +8,7 @@
 #include <vector>
 #include <algorithm>
 #include <locale>
+#include <codecvt>
 
 #include <source_handler/source_handler.hpp>
 #include <tsl/ordered_map.h>

@@ -12,6 +12,8 @@
 #include <fstream>
 #include <iostream>
 
+#include <tolowermap/tolowermap.hpp>
+
 #include <source_handler/book_map.hpp>
 
 #include "primes/primes.hpp"
@@ -33,7 +35,7 @@ namespace Libre {
 			size_t num_verses;
 			Libre::Primes primes;
 
-			void split_string(const std::string &, std::vector<std::string> *);
+			void split_string(const std::wstring &, std::vector<std::string> *);
 			bool is_word(const wchar_t);
 
 		public:

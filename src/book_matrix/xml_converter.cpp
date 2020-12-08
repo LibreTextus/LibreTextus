@@ -3,19 +3,26 @@
 Libre::XMLConverter::XMLConverter(const Libre::BookMap & book_map) : num_verses(0) {
 
 	std::vector<std::string> verse_words;
-	std::string verse;
+	std::wstring verse;
 
 	std::string b;
 
 	for (Libre::BookMap::const_iterator i = book_map.begin(); i != book_map.end(); ++i) {
-		verse = i->second;
+		verse = this->converter.from_bytes(i->second);
 		verse_words.clear();
 
 		if (i->first.substr(0, 3) != b) {
 			b = i->first.substr(0, 3);
 		}
 
-		std::transform(verse.begin(), verse.end(), verse.begin(), [](char c) { return std::tolower(c); });
+		std::transform(verse.begin(), verse.end(), verse.begin(), [](wchar_t c) {
+				if (to_lower.find(c) != to_lower.end()) {
+					return to_lower[c];
+				} else {
+					return c;
+				}
+		});
+
 		this->split_string(verse, &verse_words);
 
 		this->verses.push_back(verse_words);
@@ -44,14 +51,14 @@ Libre::XMLConverter::XMLConverter(const Libre::BookMap & book_map) : num_verses(
 
 }
 
-void Libre::XMLConverter::split_string(const std::string & line, std::vector<std::string> * v) {
-	std::string::const_iterator b = line.begin();
-	std::string::const_iterator e = line.begin();
+void Libre::XMLConverter::split_string(const std::wstring & line, std::vector<std::string> * v) {
+	std::wstring::const_iterator b = line.begin();
+	std::wstring::const_iterator e = line.begin();
 
 	while (true) {
 		for (; this->is_word(*e) && e != line.end(); ++e) {}
 
-		v->push_back(std::string(b, e));
+		v->push_back(this->converter.to_bytes(std::wstring(b, e)));
 
 		while (!this->is_word(*e) && e != line.end()) { ++e; }
 
@@ -84,7 +91,6 @@ void Libre::XMLConverter::save_to_file(const std::string & path) {
 	}
 
 	f.close();
-
 }
 
 bool Libre::XMLConverter::is_word(const wchar_t c) {

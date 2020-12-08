@@ -141,9 +141,21 @@ void SearchEngine::create_search_index(const std::string & arg) {
 	if (!temp.empty())
 		this->search_argument.append_word(temp);
 
+std::wstring_convert<std::codecvt_utf8_utf16<wchar_t>> converter;
+
 	for (const std::string & w : this->search_argument.get_words()) {
-		std::string word = w;
-		std::transform(word.begin(), word.end(), word.begin(), [](char c) { return std::tolower(c);});
+		std::wstring wword = converter.from_bytes(w);
+
+		std::transform(wword.begin(), wword.end(), wword.begin(), [](wchar_t c) {
+				if (to_lower.find(c) != to_lower.end()) {
+					return to_lower[c];
+				} else {
+					return c;
+				}
+		});
+
+		std::string word = converter.to_bytes(wword);
+
 		if (this->matrix->get_words().find(word) != this->matrix->get_words().end()) {
 			if (idx % this->matrix->get_words().at(word) != 0) {
 				idx *= this->matrix->get_words().at(word);

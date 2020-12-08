@@ -14,6 +14,13 @@ bool SearchEngine::search(std::string * text) {
 			is_search_for = this->matrix->verse_has_mod_index(this->search_argument.get_idx(), this->search_verse_number);
 		}
 
+		if (!this->search_argument.get_snippets().empty()) {
+			for (const std::string regex : this->search_argument.get_snippets()) {
+				e = regex;
+				is_search_for &= boost::regex_search(regex, m, e);
+			}
+		}
+
 		if (is_search_for) {
 
 			bool strong_check = true;
@@ -56,9 +63,6 @@ bool SearchEngine::search(std::string * text) {
 			}
 		}
 
-		// TODO: Check for order
-		// TODO: Check strongs
-	
 		++this->search_progress;
 		++this->search_verse_number;
 		++this->search_iterator;

@@ -126,6 +126,7 @@ void SearchEngine::remove_quotes(std::string * arg) {
 
 void SearchEngine::create_search_index(const std::string & arg) {
 	boost::regex e("\"");
+	boost::smatch m;
 	std::string rarg(boost::regex_replace(arg, e, ""));
 	uint2048_t idx = 1;
 
@@ -150,10 +151,19 @@ void SearchEngine::create_search_index(const std::string & arg) {
 	for (const std::string & w : this->search_argument.get_words()) {
 		std::string word = w;
 		std::transform(word.begin(), word.end(), word.begin(), [](char c) { return std::tolower(c);});
-		if (this->matrix->get_words().find(word) != this->matrix->get_words().end())
-			idx *= this->matrix->get_words().at(word);
-		else {
-			idx = 0;
+		if (this->matrix->get_words().find(word) != this->matrix->get_words().end()) {
+			if (idx % this->matrix->get_words().at(word) != 0) {
+				idx *= this->matrix->get_words().at(word);
+			}
+		} else {
+			e = "\\*";
+			
+			if (boost::regex_search(w, m, e)) {
+				this->search_argument.append_snippet(boost::regex_replace(w, e, "([\\w\u00C0-\uffff]|\\\\\\*)*"));
+			} else {
+				idx = 0;
+			}
+
 			break;
 		}
 	}

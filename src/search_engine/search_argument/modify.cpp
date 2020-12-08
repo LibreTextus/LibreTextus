@@ -14,6 +14,7 @@ void Libre::SearchArgument::clear() {
 	this->words.clear();
 	this->positions.clear();
 	this->regex_string.clear();
+	this->snippets.clear();
 }
 
 void Libre::SearchArgument::add_positions(const std::array<Libre::BookMap::iterator, 2> & p) {
@@ -26,4 +27,8 @@ void Libre::SearchArgument::append_word(const std::string & w) {
 
 void Libre::SearchArgument::append_strong(const std::string & s) {
 	this->strongs.push_back(s);
+}
+
+void Libre::SearchArgument::append_snippet(const std::string & s) {
+	this->snippets.push_back(s);
 }

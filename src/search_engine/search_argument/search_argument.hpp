@@ -18,6 +18,7 @@ namespace Libre {
 			std::vector<std::array<Libre::BookMap::iterator, 2>> positions;
 			std::vector<std::string> words;
 			std::vector<std::string> strongs;
+			std::vector<std::string> snippets;
 		public:
 			SearchArgument() = default;
 			~SearchArgument() = default;
@@ -31,6 +32,8 @@ namespace Libre {
 			const std::vector<std::string> & get_words();
 			void append_strong(const std::string &);
 			const std::vector<std::string> & get_strongs();
+			void append_snippet(const std::string &);
+			const std::vector<std::string> & get_snippets();
 			void clear();
 	};
 }

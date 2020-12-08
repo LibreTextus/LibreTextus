@@ -20,3 +20,7 @@ const std::vector<std::string> & Libre::SearchArgument::get_words() {
 const std::vector<std::string> & Libre::SearchArgument::get_strongs() {
 	return this->strongs;
 }
+
+const std::vector<std::string> & Libre::SearchArgument::get_snippets() {
+	return this->snippets;
+}

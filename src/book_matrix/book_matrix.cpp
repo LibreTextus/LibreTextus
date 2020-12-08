@@ -43,7 +43,7 @@ void Libre::BookMatrix::load_file(const std::string & path) {
 	std::cout << "Get Matrix\n";
 
 	while (getline(f, l)) {
-		this->matrix.push_back(uint1024_t(l));
+		this->matrix.push_back(uint2048_t(l));
 	}
 
 	std::cout << "Parse Matrix\n";
@@ -62,4 +62,8 @@ const std::map<std::string, unsigned long> & Libre::BookMatrix::get_words() {
 
 bool Libre::BookMatrix::verse_has_word(const std::string & w, const size_t & l) {
 	return this->matrix[l] % this->words[w] == 0;
+}
+
+bool Libre::BookMatrix::verse_has_mod_index(const uint2048_t & idx, const size_t & verse) {
+	return this->matrix[verse] % idx == 0;
 }

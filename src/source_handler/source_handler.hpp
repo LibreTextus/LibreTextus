@@ -11,14 +11,10 @@
 #include <boost/regex.hpp>
 #include <experimental/filesystem>
 
-#include "../book_matrix/book_matrix.hpp"
-#include "../book_matrix/xml_converter.hpp"
+#include <book_matrix/book_matrix.hpp>
+#include <book_matrix/xml_converter.hpp>
 
-namespace Libre {
-	typedef tsl::ordered_map<std::string, std::string> BookMap;
-	typedef tsl::ordered_map<std::string, std::vector<std::string>> NameMap;
-	typedef tsl::ordered_map<std::string, tsl::ordered_map<std::string, std::string>> StrongMap;
-}
+#include "book_map.hpp"
 
 class SourceHandler {
 private:
@@ -28,7 +24,7 @@ private:
 	static Libre::NameMap names;
 	static std::string names_path;
 
-	Libre::BookMap to_map(rapidxml::xml_node<> *, rapidxml::xml_node<> *, const std::string &);
+	Libre::BookMap to_map(rapidxml::xml_document<> *, const std::string &);
 	inline Libre::NameMap to_names(rapidxml::xml_document<> *);
 
 public:

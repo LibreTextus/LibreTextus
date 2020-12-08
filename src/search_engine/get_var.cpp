@@ -11,12 +11,6 @@ std::string * SearchEngine::get_verse(std::string p) {
 }
 
 float SearchEngine::get_progress() {
-	float progress = 0;
-
-	for (float & i : this->thread_progress) {
-		progress += i;
-	}
-
-	return progress / this->num_threads;
+	return static_cast<float>(this->search_progress) / this->search_distance;
 }
 

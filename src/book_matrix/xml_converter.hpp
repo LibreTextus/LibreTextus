@@ -12,9 +12,13 @@
 #include <fstream>
 #include <iostream>
 
+#include <source_handler/book_map.hpp>
+
 #include "primes/primes.hpp"
 
 using namespace boost::multiprecision;
+
+typedef number<cpp_int_backend<2048, 2048, unsigned_magnitude, unchecked, void>> uint2048_t;
 
 namespace Libre {
 	class XMLConverter {
@@ -29,11 +33,11 @@ namespace Libre {
 			size_t num_verses;
 			Libre::Primes primes;
 
-			void split_string(const std::wstring &, std::vector<std::string> *);
+			void split_string(const std::string &, std::vector<std::string> *);
 			bool is_word(const wchar_t);
 
 		public:
-			XMLConverter(const std::string &);
+			XMLConverter(const Libre::BookMap &);
 			~XMLConverter() = default;
 
 			void save_to_file(const std::string &);

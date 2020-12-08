@@ -12,7 +12,7 @@ void Libre::Primes::generate(size_t n) {
 
 	this->primes.clear();
 
-	size_t s = n * log(n) * 2;
+	unsigned long long s = n * log(n) * 2;
 
 	bool * pt = new bool[s]{false};
 
@@ -27,6 +27,7 @@ void Libre::Primes::generate(size_t n) {
 		for (++i; pt[i]; ++i) {}
 	}
 
+	std::cout << "PRECALC: " << s << '\n';
 	std::cout << "SIZE: " << primes.size() << '\n';
 	std::cout << "DEMANDED: " << n << '\n';
 

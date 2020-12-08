@@ -2,56 +2,73 @@
 #include <thread>
 
 bool SearchEngine::search(std::string * text) {
+	boost::regex e;
+	boost::smatch m;
+
+	const std::vector<std::array<Libre::BookMap::iterator, 2>> & pos = this->search_argument.get_position();
 	
-	for (int i = 0; i < this->num_threads; ++i) {
-		if (this->thread_finished[i] < 1 || this->thread_found[i] > 0) {
+	while (this->search_iterator != pos.back().back()) {
 
-			std::cout << 0 << '\n';
+		bool is_search_for = false;
+		if (this->search_argument.get_idx() != 0) {
+			is_search_for = this->matrix->verse_has_mod_index(this->search_argument.get_idx(), this->search_verse_number);
+		}
 
-			while (this->thread_found[i] == 0 && this->thread_finished[i] == false) { std::this_thread::yield(); }
+		if (is_search_for) {
 
-			std::cout << 1 << '\n';
+			bool strong_check = true;
 
-			bool cont = false;
+			for (const std::string & strong : this->search_argument.get_strongs()) {
+				bool has_strong = false;
+				for (const std::pair<std::string, std::string> & p : (*this->strongs)[this->search_iterator.key()]) {
+					if (p.second == strong) {
+						has_strong = true;
+						break;
+					}
+				}
 
-			while (!(*this->search_mutex)[i].try_lock()) {
-				if (this->thread_finished[i] == true && this->thread_found[i] == 0) {
-					cont = true;
+				if (!has_strong) {
+					strong_check = false;
 					break;
 				}
 			}
 
-			if (cont)
-				continue;
+			if (strong_check) {
+				e = this->search_argument.get_regex_string();
+				bool regex_check = boost::regex_search(this->search_iterator.value(), m, e);
 
-			std::cout << 2 << '\n';
+				if (regex_check) {
+					this->last_search_results.push_back(this->search_iterator.key());
+					*text = this->search_iterator.value();
+					this->mark_result(this->search_iterator.key(), text);
 
-			std::string fpos = this->thread_search_results[i].front();
-			this->thread_search_results[i].erase(this->thread_search_results[i].begin());
+					++this->search_verse_number;
+					++this->search_iterator;
+					if (this->search_iterator != pos.back().back()) {
+						if (this->search_iterator == pos[this->search_position_index][1]) {
+							++search_position_index;
+							this->search_iterator = pos[this->search_position_index][0];
+						}
+					}
 
-			std::cout << 3 << '\n';
-
-			*text = (*this->file)[fpos];
-
-			if (!this->search_argument.empty()) {
-				this->mark_result(fpos, text);
+					return true;
+				}
 			}
+		}
 
-			this->last_search_results.push_back(fpos);
-
-			this->thread_found[i] -= 1;
-
-			std::cout << 4 << '\n';
-
-			(*this->search_mutex)[i].unlock();
-
-			std::cout << 5 << '\n';
-
-			return true;
+		// TODO: Check for order
+		// TODO: Check strongs
+	
+		++this->search_progress;
+		++this->search_verse_number;
+		++this->search_iterator;
+		if (this->search_iterator != pos.back().back()) {
+			if (this->search_iterator == pos[this->search_position_index][1]) {
+				++search_position_index;
+				this->search_iterator = pos[this->search_position_index][0];
+			}
 		}
 	}
-
-	this->join_search_threads();
 
 	return false;
 }

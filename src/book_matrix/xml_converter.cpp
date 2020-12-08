@@ -1,50 +1,37 @@
 #include "xml_converter.hpp"
 
-Libre::XMLConverter::XMLConverter(const std::string & path) : num_verses(0) {
-	std::cout << "Load XML FILE\n";
-	rapidxml::file<> xml_file(path.c_str());
-	
-	char * content = this->doc.allocate_string(xml_file.data());
-	this->doc.parse<rapidxml::parse_no_data_nodes>(content);
-
-	this->root = this->doc.first_node("XMLBIBLE")->first_node("BIBLEBOOK");
-
-
-	std::cout << "Count num verses\n";
-
-	for (rapidxml::xml_node<> * b = this->root; b; b = b->next_sibling()) {
-		for (rapidxml::xml_node<> * c = b->first_node("CHAPTER"); c; c = c->next_sibling()) {
-			for (rapidxml::xml_node<> * v = c->first_node("VERS"); v; v = v->next_sibling()) {
-				this->num_verses++;
-			}
-		}
-	}
-
-	std::cout << "Parse File\n";
+Libre::XMLConverter::XMLConverter(const Libre::BookMap & book_map) : num_verses(0) {
 
 	std::vector<std::string> verse_words;
-	std::wstring verse;
+	std::string verse;
 
-	for (rapidxml::xml_node<> * book = this->root; book; book = book->next_sibling()) {
-		for (rapidxml::xml_node<> * ch = book->first_node("CHAPTER"); ch; ch = ch->next_sibling()) {
-			for (rapidxml::xml_node<> * v = ch->first_node("VERS"); v; v = v->next_sibling()) {
-				verse = converter.from_bytes(v->value());
-				verse_words.clear();
+	std::string b;
 
-				std::transform(verse.begin(), verse.end(), verse.begin(), [](wchar_t c) { return std::tolower(c); });
-				this->split_string(verse, &verse_words);
+	for (Libre::BookMap::const_iterator i = book_map.begin(); i != book_map.end(); ++i) {
+		verse = i->second;
+		verse_words.clear();
 
-				this->verses.push_back(verse_words);
+		if (i->first.substr(0, 3) != b) {
+			b = i->first.substr(0, 3);
+			std::cout << b << '\n';
+		}
 
-				for (std::string & w : verse_words) {
-					this->word_idx[w] += 1;
-				}
-			}
+		std::transform(verse.begin(), verse.end(), verse.begin(), [](char c) { return std::tolower(c); });
+		this->split_string(verse, &verse_words);
+
+		this->verses.push_back(verse_words);
+
+		for (std::string & w : verse_words) {
+			this->word_idx[w] += 1;
 		}
 	}
 
+	std::cout << "Loop end" << '\n';
+	std::cout << "NUM WORDS: " << word_idx.size() << '\n';
 
 	this->primes.generate(word_idx.size());
+
+	std::cout << "P end" << '\n';
 
 	std::map<unsigned long, std::vector<std::string>> inv_word_idx;
 
@@ -64,9 +51,9 @@ Libre::XMLConverter::XMLConverter(const std::string & path) : num_verses(0) {
 	std::cout << "End Parsing\n";
 }
 
-void Libre::XMLConverter::split_string(const std::wstring & line, std::vector<std::string> * v) {
-	std::wstring::const_iterator b = line.begin();
-	std::wstring::const_iterator e = line.begin();
+void Libre::XMLConverter::split_string(const std::string & line, std::vector<std::string> * v) {
+	std::string::const_iterator b = line.begin();
+	std::string::const_iterator e = line.begin();
 
 	while (true) {
 		for (; this->is_word(*e) && e != line.end(); ++e) {}
@@ -99,10 +86,10 @@ void Libre::XMLConverter::save_to_file(const std::string & path) {
 	std::cout << "Number Words " << word_idx.size() << '\n';
 
 	for (const std::vector<std::string> & i : this->verses) {
-		uint1024_t word_id = 1;
+		uint2048_t word_id = 1;
 
 		for (const std::string & s : i) {
-				if (word_id > word_id * uint1024_t(this->word_idx[s]))
+				if (word_id > word_id * uint2048_t(this->word_idx[s]))
 					std::cerr << "Generating Index: Overflow\n";
 				word_id *= this->word_idx[s];
 		}

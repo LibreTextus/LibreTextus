@@ -27,6 +27,5 @@ void Libre::MainWindow::create_menu_items() {
 
 	menu.add_menu_item(_("Help"));
 	menu.add_sub_menu_item(_("Help"), _("Help"), "F1", sigc::mem_fun(this, &MainWindow::zoom_in));
-	menu.add_sub_menu_item(_("About"), _("Help"), "", sigc::mem_fun(this, &MainWindow::zoom_in));
-
+	menu.add_sub_menu_item(_("About"), _("Help"), "", sigc::mem_fun(this, &MainWindow::show_about_window));
 }

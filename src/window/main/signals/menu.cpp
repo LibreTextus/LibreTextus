@@ -10,6 +10,11 @@ void Libre::MainWindow::toggle_fullscreen() {
 	this->is_fullscreen = !this->is_fullscreen;
 }
 
+void Libre::MainWindow::show_about_window() {
+	this->about_window->show_all();
+	this->about_window->raise();
+}
+
 void Libre::MainWindow::toggle_iconify() {
 	LOG("--> \"toggle_iconify\" emmited");
 	this->iconify();

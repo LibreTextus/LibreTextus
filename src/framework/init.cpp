@@ -17,6 +17,7 @@ int Framework::init(std::string a) {
 	this->app = Gtk::Application::create();
 	this->splash_screen = new Libre::SplashScreen();
 	this->preferences_window = new Libre::PreferencesWindow();
+	this->about_window = new Libre::AboutWindow();
 
 	std::string info_string = _("<big>Welcome to LibreTextus!</big>\n"
 			"Here are some search syntax hints:\n"
@@ -47,6 +48,7 @@ void Framework::init_session() {
 
 		this->main_window->set_package_manager(&this->package_manager);
 		this->main_window->set_preferences_window(this->preferences_window);
+		this->main_window->set_about_window(this->about_window);
 		this->main_window->set_application(this->app);
 		this->main_window->init();
 

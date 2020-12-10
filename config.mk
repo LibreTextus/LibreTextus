@@ -1,4 +1,5 @@
 VERSION = 0.1
+GIT_COMMIT_ID = $(shell git show --abbrev-commit --numstat --no-color --no-decorate | head -n 1)
 
 DESTDIR=/usr/local
 MANPREFIX=$(DESTDIR)/share/man/man1
@@ -20,7 +21,7 @@ LIBRE_TEXTUS:=$(shell find src -name *.cpp)
 OBJ=$(LIBRE_TEXTUS:src/%.cpp=$(ODIR)/%.o)
 DEPS:=$(LIBRE_TEXTUS:src/%.cpp=$(ODIR)/%.d)
 
-CPPFLAGS=-DGETTEXT_PACKAGE=\"libretextus\" -DVERSION=\"$(VERSION)\" $(GTKMMFLAGS) -Iinclude/ -Isrc/
+CPPFLAGS=-DGETTEXT_PACKAGE=\"libretextus\" -DVERSION=\"$(VERSION)\" -DGIT_COMMIT_ID="\"$(GIT_COMMIT_ID)\"" $(GTKMMFLAGS) -Iinclude/ -Isrc/
 
 LDFLAGS=$(GTKMMLIB) $(BOOSTLIBS) $(X11LIBS) -lstdc++ -lstdc++fs
 

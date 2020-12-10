@@ -11,6 +11,7 @@
 #include <search_engine/search_engine.hpp>
 #include <window/dialog/dialog.hpp>
 #include <window/preferences/preferences.hpp>
+#include <window/about/about.hpp>
 #include <settings/settings.hpp>
 #include <log/log.hpp>
 
@@ -48,6 +49,7 @@ namespace Libre {
 
 			Libre::PackageManager * package_manager;
 			Libre::PreferencesWindow * preferences_window;
+			Libre::AboutWindow * about_window;
 			Libre::Settings settings;
 			Glib::RefPtr<Gtk::Application> app;
 
@@ -83,6 +85,7 @@ namespace Libre {
 			void join_thread();
 			std::string get_mark_color();
 			void set_startup_file_if_empty();
+			void show_about_window();
 
 		public:
 			MainWindow(const std::string &);
@@ -91,6 +94,7 @@ namespace Libre {
 			void set_package_manager(Libre::PackageManager *);
 			void set_application(Glib::RefPtr<Gtk::Application>);
 			void set_preferences_window(Libre::PreferencesWindow *);
+			void set_about_window(Libre::AboutWindow *);
 			void sync_combo_boxes();
 			void init();
 			void trigger_search_with_history(const std::string &);

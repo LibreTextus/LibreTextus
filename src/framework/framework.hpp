@@ -35,6 +35,7 @@ private:
 	Libre::MainWindow * main_window;
 	Libre::SplashScreen * splash_screen;
 	Libre::PreferencesWindow * preferences_window;
+	Libre::AboutWindow * about_window;
 
 	Glib::Thread * update_thread;
 	Glib::Dispatcher start_session;

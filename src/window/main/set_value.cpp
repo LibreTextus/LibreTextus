@@ -9,6 +9,10 @@ void Libre::MainWindow::set_preferences_window(Libre::PreferencesWindow * p) {
 	this->preferences_window = p;
 }
 
+void Libre::MainWindow::set_about_window(Libre::AboutWindow * w) {
+	this->about_window = w;
+}
+
 void Libre::MainWindow::set_application(Glib::RefPtr<Gtk::Application> p) {
 	this->app = p;
 }

@@ -8,7 +8,8 @@ namespace Libre {
 	class AboutWindow : public Gtk::Window {
 		private:
 			Gtk::VBox box;
-			Gtk::Label info;
+			Gtk::Label version;
+			Gtk::Label date;
 			Gtk::Image logo;
 
 		public:

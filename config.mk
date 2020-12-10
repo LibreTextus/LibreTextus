@@ -1,5 +1,5 @@
 VERSION = 0.1
-GIT_COMMIT_ID = $(shell git show --abbrev-commit --numstat --no-color --no-decorate | head -n 1)
+GIT_COMMIT_ID = $(shell git log -1 --format=%cd)
 
 DESTDIR=/usr/local
 MANPREFIX=$(DESTDIR)/share/man/man1

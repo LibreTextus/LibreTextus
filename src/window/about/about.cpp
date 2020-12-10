@@ -3,10 +3,12 @@
 
 Libre::AboutWindow::AboutWindow()
 	:	logo(Gdk::Pixbuf::create_from_file(DATA("icon.svg"), 100, 100, true)),
-		info("Version: " + std::string(VERSION) + ", " + std::string(GIT_COMMIT_ID)) {
+		version("Version: " + std::string(VERSION)),
+		date("Date: " + std::string(GIT_COMMIT_ID)) {
 
 		this->box.pack_start(this->logo, Gtk::PACK_SHRINK, 5);
-		this->box.pack_start(this->info, Gtk::PACK_SHRINK, 5);
+		this->box.pack_start(this->version, Gtk::PACK_SHRINK, 5);
+		this->box.pack_start(this->date, Gtk::PACK_SHRINK, 5);
 		this->add(this->box);
 
 		this->set_title("About");

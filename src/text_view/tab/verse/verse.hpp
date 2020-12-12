@@ -4,6 +4,7 @@
 #include <gtkmm.h>
 #include <glibmm/i18n.h>
 #include <tsl/ordered_map.h>
+#include <vector>
 
 namespace Libre {
 	class TextViewVerse : public Gtk::VBox {
@@ -13,6 +14,7 @@ namespace Libre {
 			Gtk::Label caption;
 			Gtk::Label verse;
 			tsl::ordered_map<std::string, std::string> * strongs;
+			tsl::ordered_map<std::string, std::vector<std::string> *> * grammar;
 			sigc::signal<void, std::string> * trigger_search;
 			sigc::signal<void, std::string> * toggle_note;
 			sigc::signal<bool, const std::string &> * note_exists;
@@ -26,6 +28,7 @@ namespace Libre {
 			void set_caption(const std::string &);
 			void set_verse(const std::string &);
 			void set_strongs(tsl::ordered_map<std::string, std::string> *);
+			void set_grammar(tsl::ordered_map<std::string, std::vector<std::string> *> *);
 			void set_trigger_search(sigc::signal<void, std::string> *);
 			void set_note_exits(sigc::signal<bool, const std::string &> *);
 			void set_toggle_note(sigc::signal<void, std::string> *);

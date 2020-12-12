@@ -1,13 +1,16 @@
 #include "source_handler.hpp"
 #include "book_matrix/book_matrix.hpp"
 #include "book_matrix/xml_converter.hpp"
+#include "source_handler/book_map.hpp"
 #include <rapidxml/rapidxml.hpp>
 
 tsl::ordered_map<std::string, Libre::BookMap> SourceHandler::sources;
 tsl::ordered_map<std::string, Libre::StrongMap> SourceHandler::strongs;
 tsl::ordered_map<std::string, Libre::BookMatrix> SourceHandler::matrices;
+tsl::ordered_map<std::string, Libre::GrammarMap> SourceHandler::grammar_maps;
 Libre::NameMap SourceHandler::names;
 std::string SourceHandler::names_path;
+Libre::Grammar SourceHandler::grammar;
 
 Libre::BookMap * SourceHandler::get_source(const std::string & s) {
 	
@@ -25,6 +28,7 @@ Libre::BookMap * SourceHandler::get_source(const std::string & s) {
 Libre::BookMap SourceHandler::to_map(rapidxml::xml_document<> * doc, const std::string & s) {
 	Libre::BookMap output;
 	Libre::StrongMap str_num;
+	Libre::GrammarMap gr_map;
 
 	boost::regex e("\\s");
 
@@ -43,6 +47,12 @@ Libre::BookMap SourceHandler::to_map(rapidxml::xml_document<> * doc, const std::
 
 						if (std::string(v_part->name()) == "gr") {
 							str_num[v_pos].insert({boost::regex_replace(std::string(v_part->value()), e, ""), std::string("g") + v_part->first_attribute("str")->value()});
+
+							if (v_part->first_attribute("rmac")) {
+								if (!(*this->grammar.get_grammar_map())[v_part->first_attribute("rmac")->value()].empty()) {
+									gr_map[v_pos].insert({boost::regex_replace(std::string(v_part->value()), e, ""), &(*this->grammar.get_grammar_map())[v_part->first_attribute("rmac")->value()]});
+								}
+							}
 						} 
 					}
 				}
@@ -51,6 +61,7 @@ Libre::BookMap SourceHandler::to_map(rapidxml::xml_document<> * doc, const std::
 	}
 
 	this->strongs[s] = str_num;
+	this->grammar_maps[s] = gr_map;
 
 	return output;
 }
@@ -84,6 +95,10 @@ void SourceHandler::set_names_path(const std::string & s) {
 
 Libre::StrongMap * SourceHandler::get_strongs(const std::string & s) {
 	return &this->strongs[s];
+}
+
+Libre::GrammarMap * SourceHandler::get_grammar_map(const std::string & s) {
+	return &this->grammar_maps[s];
 }
 
 Libre::BookMatrix * SourceHandler::get_matrix(const std::string & s) {

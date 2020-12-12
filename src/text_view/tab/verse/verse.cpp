@@ -44,6 +44,10 @@ void Libre::TextViewVerse::set_strongs(tsl::ordered_map<std::string, std::string
 	this->strongs = v;
 }
 
+void Libre::TextViewVerse::set_grammar(tsl::ordered_map<std::string, std::vector<std::string> *> * v) {
+	this->grammar = v;
+}
+
 
 Gtk::Label * Libre::TextViewVerse::get_caption_label() {
 	return &this->caption;
@@ -94,6 +98,28 @@ void Libre::TextViewVerse::label_populate_popup(Gtk::Menu * menu) {
 
 		Gtk::MenuItem * search_item = new Gtk::MenuItem(std::string(_("Search")) + " \"" + selection + "\"");
 		menu->prepend(*search_item);
+
+
+		if (this->grammar != nullptr) {
+			if ((*this->grammar)[selection] != nullptr) {
+
+				Gtk::Menu * grammar_submenu = new Gtk::Menu;
+				Gtk::MenuItem * grammar_section = new Gtk::MenuItem("Grammar");
+				grammar_section->set_submenu(*grammar_submenu);
+
+				menu->prepend(*(new Gtk::SeparatorMenuItem));
+
+				for (auto i = (*this->grammar)[selection]->rbegin(); i != (*this->grammar)[selection]->rend(); ++i) {
+					Gtk::MenuItem * grammar_item = new Gtk::MenuItem(*i);
+					grammar_item->set_sensitive(false);
+
+					grammar_submenu->prepend(*grammar_item);
+				}
+
+				menu->prepend(*grammar_section);
+			} 
+		}
+
 		
 		search_item->signal_button_release_event().connect([this, selection](GdkEventButton *) {
 				this->trigger_search->emit(selection);

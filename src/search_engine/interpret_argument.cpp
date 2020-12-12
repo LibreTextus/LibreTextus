@@ -50,7 +50,7 @@ void SearchEngine::remove_unneeded_spaces(std::string * arg) {
 
 void SearchEngine::cancel_out_regex_characters(std::string * arg) {
 	boost::regex e("[\\+\\*\\?\\^\\$\\.\\(\\)\\[\\]\\{\\}&\\|\\\\]");
-	*arg = boost::regex_replace(*arg, e, "\\\\$&");
+	*arg = boost::regex_replace(*arg, e, "[\\\\$&]");
 }
 
 void SearchEngine::create_placeholders(std::string * arg, std::vector<std::string> * static_expressions) {

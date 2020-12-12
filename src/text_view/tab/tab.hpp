@@ -8,6 +8,7 @@
 #include <algorithm>
 #include <tsl/ordered_map.h>
 
+#include <source_handler/book_map.hpp>
 #include "verse/verse.hpp"
 
 namespace Libre {
@@ -19,6 +20,7 @@ namespace Libre {
 			std::array<Libre::TextViewVerse *, N> text_view_verses;
 			tsl::ordered_map<std::string, std::string> verse;
 			Libre::StrongMap * strong_map;
+			Libre::GrammarMap * grammar_map;
 			sigc::signal<bool, const std::string &> note_exists;
 			static int scroll;
 		public:
@@ -80,6 +82,12 @@ void Libre::TextViewTab<N>::display(const int & i) {
 				this->text_view_verses[i - this->scroll]->set_strongs(nullptr);
 			}
 
+			if (this->grammar_map->find(i_v->first) != this->grammar_map->end()) {
+				this->text_view_verses[i - this->scroll]->set_grammar(&(*this->grammar_map)[i_v->first]);
+			} else {
+				this->text_view_verses[i - this->scroll]->set_grammar(nullptr);
+			}
+
 			this->text_view_verses[i - this->scroll]->set_caption(i_v->first);
 			this->text_view_verses[i - this->scroll]->set_verse(i_v.value());
 			this->text_view_verses[i - this->scroll]->show_if_not_empty();
@@ -139,6 +147,7 @@ template <int N>
 void Libre::TextViewTab<N>::set_source_path(const std::string & path) {
 	this->source_path = path;
 	this->strong_map = this->source_handler.get_strongs(path);
+	this->grammar_map = this->source_handler.get_grammar_map(path);
 }
 
 #endif

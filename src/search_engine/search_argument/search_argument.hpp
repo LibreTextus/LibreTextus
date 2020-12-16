@@ -24,7 +24,7 @@ namespace Libre {
 			~SearchArgument() = default;
 			const std::vector<std::array<Libre::BookMap::iterator, 2>> & get_position();
 			void add_positions(const std::array<Libre::BookMap::iterator, 2> &);
-			void set_idx(uint2048_t);
+			void set_idx(const uint2048_t &);
 			uint2048_t get_idx();
 			void set_regex_string(const std::string &);
 			const std::string & get_regex_string();

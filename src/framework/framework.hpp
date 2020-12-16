@@ -62,6 +62,7 @@ public:
 		delete this->main_window;
 		delete this->preferences_window;
 		delete this->splash_screen;
+		delete this->about_window;
 	}
 
 	int init(std::string) ;

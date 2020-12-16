@@ -1,6 +1,6 @@
 #include "search_argument.hpp"
 
-void Libre::SearchArgument::set_idx(uint2048_t i) {
+void Libre::SearchArgument::set_idx(const uint2048_t & i) {
 	this->search_idx = i;
 }
 

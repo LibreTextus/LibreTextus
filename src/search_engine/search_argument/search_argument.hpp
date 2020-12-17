@@ -2,6 +2,7 @@
 #define LIBRE_SEARCH_ENGINE_ARGUMENT
 
 #include <vector>
+#include <map>
 #include <array>
 #include <string>
 #include <boost/multiprecision/cpp_int.hpp>
@@ -19,6 +20,7 @@ namespace Libre {
 			std::vector<std::string> words;
 			std::vector<std::string> strongs;
 			std::vector<std::string> snippets;
+			std::map<std::string, std::vector<uint2048_t>> possible_idx;
 		public:
 			SearchArgument() = default;
 			~SearchArgument() = default;
@@ -34,6 +36,8 @@ namespace Libre {
 			const std::vector<std::string> & get_strongs();
 			void append_snippet(const std::string &);
 			const std::vector<std::string> & get_snippets();
+			void append_possible_idx(const std::string &, const uint2048_t &);
+			const std::map<std::string, std::vector<uint2048_t>> & get_possible_idx();
 			void clear();
 	};
 }

@@ -24,3 +24,7 @@ const std::vector<std::string> & Libre::SearchArgument::get_strongs() {
 const std::vector<std::string> & Libre::SearchArgument::get_snippets() {
 	return this->snippets;
 }
+
+const std::map<std::string, std::vector<uint2048_t>> & Libre::SearchArgument::get_possible_idx() {
+	return this->possible_idx;
+}

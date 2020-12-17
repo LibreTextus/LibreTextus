@@ -14,10 +14,20 @@ bool SearchEngine::search(std::string * text) {
 			is_search_for = this->matrix->verse_has_mod_index(this->search_argument.get_idx(), this->search_verse_number);
 		}
 
-		if (!this->search_argument.get_snippets().empty()) {
-			for (const std::string regex : this->search_argument.get_snippets()) {
-				e = regex;
-				is_search_for &= boost::regex_search(regex, m, e);
+		if (!this->search_argument.get_possible_idx().empty() && is_search_for) {
+			for (const std::pair<std::string, std::vector<uint2048_t>> & pidx : this->search_argument.get_possible_idx()) {
+				bool has_one_of_possibles = false;
+				for (const uint2048_t & idx : pidx.second) {
+					if (this->search_argument.get_idx() % idx == 0) {
+						has_one_of_possibles = true;
+						break;
+					}
+				}
+
+				if (!has_one_of_possibles) {
+					is_search_for = false;
+					break;
+				}
 			}
 		}
 

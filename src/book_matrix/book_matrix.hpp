@@ -16,7 +16,7 @@ typedef number<cpp_int_backend<2048, 2048, unsigned_magnitude, unchecked, void>>
 namespace Libre {
 	class BookMatrix {
 		private:
-			std::map<std::string, unsigned long> words;
+			std::map<std::string, uint2048_t> words;
 			std::vector<uint2048_t> matrix;
 			Libre::Primes primes;
 		public:
@@ -24,7 +24,7 @@ namespace Libre {
 			BookMatrix() = default;
 			~BookMatrix() = default;
 			void load_file(const std::string &);
-			const std::map<std::string, unsigned long> & get_words();
+			const std::map<std::string, uint2048_t> & get_words();
 			bool verse_has_word(const std::string &, const size_t &);
 			bool verse_has_mod_index(const uint2048_t &, const size_t &);
 	};

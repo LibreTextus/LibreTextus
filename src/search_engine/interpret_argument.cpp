@@ -50,7 +50,7 @@ void SearchEngine::remove_unneeded_spaces(std::string * arg) {
 
 void SearchEngine::cancel_out_regex_characters(std::string * arg) {
 	boost::regex e("[\\+\\*\\?\\^\\$\\.\\(\\)\\[\\]\\{\\}&\\|\\\\]");
-	*arg = boost::regex_replace(*arg, e, "[\\\\$&]");
+	*arg = boost::regex_replace(*arg, e, "\\\\$&");
 }
 
 void SearchEngine::create_placeholders(std::string * arg, std::vector<std::string> * static_expressions) {
@@ -164,7 +164,14 @@ std::wstring_convert<std::codecvt_utf8_utf16<wchar_t>> converter;
 			e = "\\*";
 			
 			if (boost::regex_search(w, m, e)) {
-				this->search_argument.append_snippet(boost::regex_replace(w, e, "([\\w\u00C0-\uffff]|\\\\\\*)*"));
+				std::string regex_s = boost::regex_replace(w, e, "[\\w\u00C0-\uffff]*");
+				this->search_argument.append_snippet(regex_s);
+
+				for (const std::pair<std::string, uint2048_t> & mw : this->matrix->get_words()) {
+					if (boost::regex_search(mw.first, m, e)) {
+						this->search_argument.append_possible_idx(w, mw.second);
+					}
+				}
 			} else {
 				idx = 0;
 			}

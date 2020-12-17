@@ -44,7 +44,7 @@ void Libre::BookMatrix::load_file(const std::string & path) {
 	f.close();
 }
 
-const std::map<std::string, unsigned long> & Libre::BookMatrix::get_words() {
+const std::map<std::string, uint2048_t> & Libre::BookMatrix::get_words() {
 	return this->words;
 }
 

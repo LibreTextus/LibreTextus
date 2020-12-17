@@ -15,6 +15,7 @@ void Libre::SearchArgument::clear() {
 	this->positions.clear();
 	this->regex_string.clear();
 	this->snippets.clear();
+	this->possible_idx.clear();
 }
 
 void Libre::SearchArgument::add_positions(const std::array<Libre::BookMap::iterator, 2> & p) {
@@ -31,4 +32,8 @@ void Libre::SearchArgument::append_strong(const std::string & s) {
 
 void Libre::SearchArgument::append_snippet(const std::string & s) {
 	this->snippets.push_back(s);
+}
+
+void Libre::SearchArgument::append_possible_idx(const std::string & w, const uint2048_t & i) {
+	this->possible_idx[w].push_back(i);
 }

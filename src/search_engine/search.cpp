@@ -18,7 +18,7 @@ bool SearchEngine::search(std::string * text) {
 			for (const std::pair<std::string, std::vector<uint2048_t>> & pidx : this->search_argument.get_possible_idx()) {
 				bool has_one_of_possibles = false;
 				for (const uint2048_t & idx : pidx.second) {
-					if (this->search_argument.get_idx() % idx == 0) {
+					if (this->matrix->verse_has_mod_index(idx, this->search_verse_number)) {
 						has_one_of_possibles = true;
 						break;
 					}
@@ -51,26 +51,21 @@ bool SearchEngine::search(std::string * text) {
 			}
 
 			if (strong_check) {
-				e = this->search_argument.get_regex_string();
-				bool regex_check = boost::regex_search(this->search_iterator.value(), m, e);
+				this->last_search_results.push_back(this->search_iterator.key());
+				*text = this->search_iterator.value();
+				this->mark_result(this->search_iterator.key(), text);
 
-				if (regex_check) {
-					this->last_search_results.push_back(this->search_iterator.key());
-					*text = this->search_iterator.value();
-					this->mark_result(this->search_iterator.key(), text);
-
-					++this->search_progress;
-					++this->search_verse_number;
-					++this->search_iterator;
-					if (this->search_iterator != pos.back().back()) {
-						if (this->search_iterator == pos[this->search_position_index][1]) {
-							++search_position_index;
-							this->search_iterator = pos[this->search_position_index][0];
-						}
+				++this->search_progress;
+				++this->search_verse_number;
+				++this->search_iterator;
+				if (this->search_iterator != pos.back().back()) {
+					if (this->search_iterator == pos[this->search_position_index][1]) {
+						++search_position_index;
+						this->search_iterator = pos[this->search_position_index][0];
 					}
-
-					return true;
 				}
+
+				return true;
 			}
 		}
 

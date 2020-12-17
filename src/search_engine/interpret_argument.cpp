@@ -164,10 +164,11 @@ std::wstring_convert<std::codecvt_utf8_utf16<wchar_t>> converter;
 			e = "\\*";
 			
 			if (boost::regex_search(w, m, e)) {
-				std::string regex_s = boost::regex_replace(w, e, "[\\w\u00C0-\uffff]*");
+				std::string regex_s = "\\A" + boost::regex_replace(w, e, ".*") + "$";
 				this->search_argument.append_snippet(regex_s);
 
 				for (const std::pair<std::string, uint2048_t> & mw : this->matrix->get_words()) {
+					e = boost::regex(regex_s, boost::regex::icase);
 					if (boost::regex_search(mw.first, m, e)) {
 						this->search_argument.append_possible_idx(w, mw.second);
 					}

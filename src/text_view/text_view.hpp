@@ -50,6 +50,7 @@ namespace Libre {
 		void append_tab(const std::string & path);
 		void label_populate_popup(Gtk::Menu * menu, int tab, int version);
 		void set_info_text(const std::string &);
+		void scroll_to(const size_t &);
 		void set_note_book(rapidxml::xml_node<> * root) {
 			this->note_book_file = root;
 		}

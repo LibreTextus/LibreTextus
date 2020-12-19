@@ -19,6 +19,7 @@ Libre::TextViewVerse::TextViewVerse() : Gtk::VBox() {
 	this->verse.set_line_wrap(true);
 	this->verse.set_line_wrap_mode(Pango::WRAP_WORD);
 	this->verse.signal_populate_popup().connect(sigc::mem_fun(this, &Libre::TextViewVerse::label_populate_popup));
+	this->caption.signal_populate_popup().connect(sigc::mem_fun(this, &Libre::TextViewVerse::label_populate_popup));
 
 	this->header_box.set_name("text_view");
 	this->header_box.pack_start(this->caption, Gtk::PACK_SHRINK, 0);
@@ -74,6 +75,14 @@ void Libre::TextViewVerse::label_populate_popup(Gtk::Menu * menu) {
 	int end;
 	std::string selection;
 
+	menu->prepend(*(new Gtk::SeparatorMenuItem));
+	Gtk::MenuItem * show_context = new Gtk::MenuItem(_("Show Context"));
+	show_context->signal_button_release_event().connect([this] (GdkEventButton *) {
+			this->trigger_search->emit(this->caption.get_text() + "+");
+			return false;
+	});
+	menu->prepend(*show_context);
+
 	this->verse.get_selection_bounds(begin, end);
 	selection = this->verse.get_text().substr(begin, end - begin);
 
@@ -126,8 +135,8 @@ void Libre::TextViewVerse::label_populate_popup(Gtk::Menu * menu) {
 				return false;
 		});
 
-		menu->show_all();
 	}
+	menu->show_all();
 }
 
 void Libre::TextViewVerse::clear() {

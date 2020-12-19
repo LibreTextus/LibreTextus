@@ -147,7 +147,7 @@ void SearchEngine::create_search_index(const std::string & arg) {
 	if (!temp.empty())
 		this->search_argument.append_word(temp);
 
-std::wstring_convert<std::codecvt_utf8_utf16<wchar_t>> converter;
+	std::wstring_convert<std::codecvt_utf8_utf16<wchar_t>> converter;
 
 	for (const std::string & w : this->search_argument.get_words()) {
 		std::wstring wword = converter.from_bytes(w);

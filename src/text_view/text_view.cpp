@@ -126,6 +126,11 @@ bool Libre::TextView::on_key_press_event(GdkEventKey * key) {
 	return true;
 }
 
+void Libre::TextView::scroll_to(const size_t & steps) {
+	this->tabs.front()->scroll_steps(steps);
+	this->display_all();
+}
+
 void Libre::TextView::remove_tab(const int & id) {
 	this->main.remove(*this->tabs[id]);
 	this->tabs.erase(this->tabs.begin() + id);

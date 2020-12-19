@@ -37,6 +37,7 @@ private:
 	mutable std::mutex * mutex;
 	std::vector<std::thread *> threads;
 	std::map<size_t, std::string> thread_results;
+	size_t scroll_overflow;
 
 	void interpret_string(const std::string &);
 	void interpret_argument(std::string);
@@ -69,6 +70,7 @@ public:
 	void set_mark_argument(std::string arg);
 	void set_source(std::string path);
 	float get_progress();
+	size_t get_scroll_overflow();
 	std::string * get_verse(std::string p);
 
 	std::vector<std::string> * get_last_search_results() {

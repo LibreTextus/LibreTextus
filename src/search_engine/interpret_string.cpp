@@ -1,25 +1,41 @@
 #include "search_engine.hpp"
-#include <future>
-#include <queue>
 
 void SearchEngine::interpret_string(const std::string & argument) {
 
 	this->search_progress = 0;
 	this->mutex = new std::mutex;
 	this->thread_results.clear();
+	this->search_argument.clear();
+	this->scroll_overflow = 0;
 
 	std::string arg = argument;
 	std::string search = "";
 
 	std::vector<std::array<std::string, 2>> pos;
+
+	this->replace_book_names(&arg);
+
+	if (arg.back() == '+') {
+		std::string position = arg.substr(0, arg.size() - 1);
+		this->get_position_from_string(&position, &pos);
+
+		bool is_valid_position = this->validate_positions(&pos);
+		if (is_valid_position) {
+			this->search_argument.add_positions({this->file->begin(), this->file->end()});
+			arg.clear();
+			this->interpret_argument(arg);
+
+			this->scroll_overflow = std::distance(this->file->begin(), this->file->find(pos[0][0]));
+			return;
+		} 
+
+		pos.clear();
+	}
 	
 	this->split_position_and_argument(&search, &arg);
-	this->replace_book_names(&arg);
 	this->remove_spaces_from_argument(&arg);
 
 	this->get_position_from_string(&arg, &pos);
-
-	this->search_argument.clear();
 
 	bool is_valid_position = this->validate_positions(&pos);
 	if (is_valid_position) {
@@ -57,7 +73,7 @@ void SearchEngine::replace_book_names(std::string * arg) {
 
 	for (Libre::NameMap::iterator i = this->names->begin(); i != this->names->end(); i++) {
 		for (std::vector<std::string>::iterator x = i.value().begin(); x != i.value().end(); x++) {
-			e = boost::regex(*x + "(\\s|$)");
+			e = boost::regex(*x + "(\\s|$|-)");
 			*arg = boost::regex_replace(*arg, e, i->first);
 		}
 	}

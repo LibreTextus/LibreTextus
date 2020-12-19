@@ -14,3 +14,6 @@ float SearchEngine::get_progress() {
 	return static_cast<float>(this->search_progress) / this->search_distance;
 }
 
+size_t SearchEngine::get_scroll_overflow() {
+	return this->scroll_overflow;
+}

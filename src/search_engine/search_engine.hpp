@@ -6,9 +6,13 @@
 #include <boost/regex.hpp>
 #include <boost/regex/icu.hpp>
 #include <vector>
+#include <queue>
 #include <algorithm>
 #include <locale>
 #include <codecvt>
+#include <mutex>
+#include <shared_mutex>
+#include <thread>
 
 #include <source_handler/source_handler.hpp>
 #include <tsl/ordered_map.h>
@@ -28,11 +32,11 @@ private:
 	Libre::SearchArgument search_argument;
 	std::string raw_search_argument;
 	std::string mark_argument;
-	Libre::BookMap::iterator search_iterator;
-	size_t search_position_index;
-	size_t search_verse_number;
 	size_t search_distance;
 	size_t search_progress;
+	mutable std::mutex * mutex;
+	std::vector<std::thread *> threads;
+	std::map<size_t, std::string> thread_results;
 
 	void interpret_string(const std::string &);
 	void interpret_argument(std::string);
@@ -54,6 +58,7 @@ private:
 	void remove_spaces_from_argument(std::string *);
 	void get_position_from_string(std::string *, std::vector<std::array<std::string, 2>> *);
 	bool validate_positions(std::vector<std::array<std::string, 2>> *);
+	void thread_search(size_t i);
 
 public:
 	SearchEngine (const std::string & path);

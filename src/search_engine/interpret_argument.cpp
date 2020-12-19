@@ -7,6 +7,12 @@ void SearchEngine::interpret_argument(std::string arg) {
 
 	this->create_search_index(arg);
 
+	for (int i = 0; i < std::thread::hardware_concurrency(); ++i) {
+		this->threads.push_back(
+				new std::thread(&SearchEngine::thread_search, this, i)
+		);
+	}
+
 	this->cancel_out_regex_characters(&arg);
 
 	std::vector<std::string> static_expressions;
@@ -167,7 +173,6 @@ std::wstring_convert<std::codecvt_utf8_utf16<wchar_t>> converter;
 				std::string regex_s = boost::regex_replace(w, e, "\\\\$&");
 				e = "\\*";
 				regex_s = "\\A" + boost::regex_replace(regex_s, e, ".*") + "$";
-				std::cout << "REGEX: " << regex_s << '\n';
 				this->search_argument.append_snippet(regex_s);
 
 				bool has_word = false;

@@ -1,6 +1,12 @@
 #include "search_engine.hpp"
+#include <future>
+#include <queue>
 
 void SearchEngine::interpret_string(const std::string & argument) {
+
+	this->search_progress = 0;
+	this->mutex = new std::mutex;
+	this->thread_results.clear();
 
 	std::string arg = argument;
 	std::string search = "";
@@ -27,15 +33,13 @@ void SearchEngine::interpret_string(const std::string & argument) {
 		this->interpret_argument(argument);
 	}
 
-	this->search_iterator = this->search_argument.get_position().front().front();
-	this->search_position_index = 0;
-	this->search_verse_number = 0;
-	this->search_progress = 0;
 	this->search_distance = 0;
 
 	for (const std::array<Libre::BookMap::iterator, 2> & p : this->search_argument.get_position()) {
 		this->search_distance += std::distance(p[0], p[1]);
 	}
+
+
 }
 
 void SearchEngine::split_position_and_argument(std::string * search, std::string * arg) {

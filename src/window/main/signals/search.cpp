@@ -4,7 +4,6 @@ void Libre::MainWindow::do_search() {
 
 	this->search_engine[0].set_search_argument(this->search_section.get_search_entry()->get_text());
 
-	this->found_verses.clear();
 	this->found_verses.push_back(new std::string(""));
 
 	while (this->search_engine[0].search(this->found_verses[0])) {
@@ -29,11 +28,20 @@ void Libre::MainWindow::do_search() {
 
 		this->search_section.get_search_entry()->set_progress_fraction(this->search_engine[0].get_progress());
 
+		for (int i = 0; i < this->found_verses.size(); ++i) {
+			delete this->found_verses[i];
+		}
 		this->found_verses.clear();
 		this->found_verses.push_back(new std::string(""));
 
 		this->mutex.unlock();
 	}
+
+	for (int i = 0; i < this->found_verses.size(); ++i) {
+		delete this->found_verses[i];
+	}
+	this->found_verses.clear();
+
 
 	this->join_thread_dispatcher.emit();
 }

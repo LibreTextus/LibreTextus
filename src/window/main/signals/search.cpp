@@ -4,6 +4,8 @@ void Libre::MainWindow::do_search() {
 
 	this->search_engine[0].set_search_argument(this->search_section.get_search_entry()->get_text());
 
+	this->view_pane.get_text_view()->scroll_to(this->search_engine.front().get_scroll_overflow());
+
 	this->found_verses.push_back(new std::string(""));
 
 	while (this->search_engine[0].search(this->found_verses[0])) {

@@ -12,7 +12,6 @@ void Libre::MainWindow::join_thread() {
 			std::to_string(this->search_engine[0].get_last_search_results()->size()) + " " + _("Results"));
 
 	this->view_pane.get_text_view()->show_if_results();
-	this->view_pane.get_text_view()->scroll_to(this->search_engine.front().get_scroll_overflow());
 
 	this->set_sensitive(true);
 

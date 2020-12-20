@@ -38,7 +38,7 @@ void SearchEngine::thread_search(size_t id) {
 
 	Libre::BookMap::iterator search_iterator = pos.front().front();
 
-	size_t search_verse_number = 0;
+	size_t search_verse_number = std::distance(this->file->begin(), search_iterator);
 	size_t search_position_index = 0;
 
 	for (int i = 0; i < id; ++i) {

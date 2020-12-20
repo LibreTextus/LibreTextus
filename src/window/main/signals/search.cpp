@@ -33,7 +33,9 @@ void Libre::MainWindow::do_search() {
 		for (int i = 0; i < this->found_verses.size(); ++i) {
 			delete this->found_verses[i];
 		}
+
 		this->found_verses.clear();
+
 		this->found_verses.push_back(new std::string(""));
 
 		this->mutex.unlock();
@@ -62,9 +64,7 @@ void Libre::MainWindow::trigger_search(const std::string & text) {
 
 	this->replace_id = -1;
 
-	this->process_thread = Glib::Thread::create(
-		sigc::mem_fun(*this, &Libre::MainWindow::do_search), true
-	);
+	this->process_thread = new std::thread(&Libre::MainWindow::do_search, this);
 	LOG("--> \"do_search\" emmited");
 }
 

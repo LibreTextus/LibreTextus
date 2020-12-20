@@ -113,3 +113,12 @@ Libre::BookMatrix * SourceHandler::get_matrix(const std::string & s) {
 
 	return &this->matrices[filename];
 }
+
+void SourceHandler::regenerate_matrices() {
+	for (const std::pair<std::string, Libre::BookMatrix> & p : this->matrices) {
+		Libre::XMLConverter conv(this->sources[p.first.substr(0, p.first.find_last_of(".")) + ".xml"]);
+		conv.save_to_file(p.first);
+
+		this->matrices[p.first].load_file(p.first);
+	}
+}

@@ -26,6 +26,7 @@ void SearchEngine::interpret_string(const std::string & argument) {
 			this->interpret_argument(arg);
 
 			this->scroll_overflow = std::distance(this->file->begin(), this->file->find(pos[0][0]));
+			this->calc_distance();
 			return;
 		} 
 
@@ -49,13 +50,15 @@ void SearchEngine::interpret_string(const std::string & argument) {
 		this->interpret_argument(argument);
 	}
 
+	this->calc_distance();
+}
+
+void SearchEngine::calc_distance() {
 	this->search_distance = 0;
 
 	for (const std::array<Libre::BookMap::iterator, 2> & p : this->search_argument.get_position()) {
 		this->search_distance += std::distance(p[0], p[1]);
 	}
-
-
 }
 
 void SearchEngine::split_position_and_argument(std::string * search, std::string * arg) {

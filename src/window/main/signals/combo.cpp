@@ -14,7 +14,7 @@ void Libre::MainWindow::source_changed(Libre::HeaderElement * e) {
 
 	this->set_replace_id(e);
 
-	this->process_thread = Glib::Thread::create(sigc::mem_fun(*this, &Libre::MainWindow::do_replacement), true);
+	this->process_thread = new std::thread(&Libre::MainWindow::do_replacement, this);
 	LOG("--> \"do_replacement\" emmited");
 }
 

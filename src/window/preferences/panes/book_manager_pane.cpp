@@ -1,7 +1,14 @@
 #include "book_manager_pane.hpp"
 
-Libre::BookManagerPane::BookManagerPane() : Gtk::VBox(), default_source(_("Default")) {
+Libre::BookManagerPane::BookManagerPane() : Gtk::VBox(), default_source(_("Default")), regenerate_matrices("") {
+	this->regenerate_matrices.get_element()->set_label(_("Regenerate Matrices"));
+	this->regenerate_matrices.get_element()->signal_clicked().connect([]() {
+		SourceHandler source_handler;
+		source_handler.regenerate_matrices();
+	});
+
 	this->pack_start(this->default_source, Gtk::PACK_SHRINK, 0);
+	this->pack_start(this->regenerate_matrices, Gtk::PACK_SHRINK, 0);
 	this->pack_start(this->book_list, Gtk::PACK_EXPAND_WIDGET, 0);
 	this->pack_start(this->manage_buttons, Gtk::PACK_SHRINK, 0);
 }

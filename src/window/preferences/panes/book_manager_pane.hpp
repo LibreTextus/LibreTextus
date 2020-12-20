@@ -6,11 +6,13 @@
 #include "elements/default.hpp"
 #include "elements/book_list.hpp"
 #include "elements/manage_buttons.hpp"
+#include <source_handler/source_handler.hpp>
 
 namespace Libre {
 	class BookManagerPane : public Gtk::VBox {
 		private:
 			Libre::PreferencesElement<Gtk::ComboBoxText> default_source;
+			Libre::PreferencesElement<Gtk::Button> regenerate_matrices;
 			Libre::BookManagerElements::BookList book_list;
 			Libre::BookManagerElements::ManageButtons manage_buttons;
 

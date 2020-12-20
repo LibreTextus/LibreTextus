@@ -60,6 +60,7 @@ private:
 	void get_position_from_string(std::string *, std::vector<std::array<std::string, 2>> *);
 	bool validate_positions(std::vector<std::array<std::string, 2>> *);
 	void thread_search(size_t i);
+	void calc_distance();
 
 public:
 	SearchEngine (const std::string & path);

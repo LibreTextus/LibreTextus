@@ -85,6 +85,10 @@ box, .combo, menu, menubar, entry, spinbutton, button {
 	-gtk-icon-shadow: none;
 }
 
+button:active {
+	background-color: @theme_accent_color;
+}
+
 menuitem:hover {
 	background-color: @theme_highlight_color;
 	color: @theme_text_color;

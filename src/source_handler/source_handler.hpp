@@ -41,6 +41,7 @@ public:
 	Libre::BookMatrix * get_matrix(const std::string &);
 	Libre::GrammarMap * get_grammar_map(const std::string &);
 	void set_names_path(const std::string &);
+	void regenerate_matrices();
 };
 
 #endif

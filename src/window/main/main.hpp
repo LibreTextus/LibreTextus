@@ -3,6 +3,7 @@
 
 #include <mutex>
 #include <thread>
+#include <atomic>
 #include <vector>
 #include <string>
 #include <gtkmm.h>
@@ -27,13 +28,13 @@ namespace Libre {
 		private:
 			bool is_fullscreen;
 			int replace_id;
-			Glib::Thread * process_thread;
+			std::thread * process_thread;
 			std::mutex mutex;
 			std::string found_position;
 			std::vector<std::string *> found_verses;
 			std::string mark_argument;
 			std::string header_argument;
-			bool process_finished;
+			std::atomic_bool process_finished;
 
 			Glib::Dispatcher set_text_dispatcher;
 			Glib::Dispatcher join_thread_dispatcher;

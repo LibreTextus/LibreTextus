@@ -4,6 +4,7 @@
 #include <map>
 #include <vector>
 #include <string>
+#include <glibmm/i18n.h>
 
 namespace Libre {
 	class Grammar {

@@ -113,13 +113,13 @@ void Libre::TextViewVerse::label_populate_popup(Gtk::Menu * menu) {
 			if ((*this->grammar)[selection] != nullptr) {
 
 				Gtk::Menu * grammar_submenu = new Gtk::Menu;
-				Gtk::MenuItem * grammar_section = new Gtk::MenuItem("Grammar");
+				Gtk::MenuItem * grammar_section = new Gtk::MenuItem(_("Grammar"));
 				grammar_section->set_submenu(*grammar_submenu);
 
 				menu->prepend(*(new Gtk::SeparatorMenuItem));
 
 				for (auto i = (*this->grammar)[selection]->rbegin(); i != (*this->grammar)[selection]->rend(); ++i) {
-					Gtk::MenuItem * grammar_item = new Gtk::MenuItem(*i);
+					Gtk::MenuItem * grammar_item = new Gtk::MenuItem(_(i->c_str()));
 					grammar_item->set_sensitive(false);
 
 					grammar_submenu->prepend(*grammar_item);

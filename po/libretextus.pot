@@ -1,22 +1,21 @@
-# German translations for 0.1 package
-# German translation for 0.1.
-# Copyright (C) 2020 THE 0.1'S COPYRIGHT HOLDER
-# This file is distributed under the same license as the 0.1 package.
-# Nathan Reiner <nathan.p.reiner@gmail.com>, 2020.
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
+#, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: 0.1\n"
+"Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2020-12-21 09:41+0100\n"
-"PO-Revision-Date: 2020-06-07 14:55+0200\n"
-"Last-Translator: Nathan Reiner <nathan.p.reiner@gmail.com>\n"
-"Language-Team: German\n"
-"Language: de_CH\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 #: ../src/framework/init.cpp:22
 msgid ""
@@ -29,304 +28,295 @@ msgid ""
 "1,1-10</i>\n"
 "<i>WORD@GEN 1</i> will give all <i>WORD</i> in <i>GEN 1</i>\n"
 msgstr ""
-"<big>Willkommen bei LibreTextus!</big>\n"
-"Hier sind ein paar Syntax-Hinweise:\n"
-"<i>Wort Wort2</i> wird ihnen alle Ergebnisse mit <i>Wort</i> und <i>Wort2</"
-"i> ohne spezifischer Reihenfolge anzeigen.\n"
-"<i>\"Wort noch ein anderes Wort\"</i> damit wird nur genau das gesucht, was "
-"in den Anführungszeichen steht\n"
-"Um eine Textstelle anzuzeigen, braucht man die Standartnotation: <i>GEN 1, "
-"1-10</i>\n"
-"<i>Wort@GEN 1</i> zeigt alle <i>Wort</i> in <i>GEN 1</i>\n"
 
 #: ../src/notebook/file.cpp:9
 msgid "Note"
-msgstr "Notiz"
+msgstr ""
 
 #: ../src/package_manager/database.cpp:58
 msgid "Found"
-msgstr "Gefunden"
+msgstr ""
 
 #: ../src/package_manager/install.cpp:9
 msgid "Install"
-msgstr "Installiere"
+msgstr ""
 
 #: ../src/package_manager/install.cpp:10
 msgid "This could take a while..."
-msgstr "Das könnte ein Weile dauern..."
+msgstr ""
 
 #: ../src/package_manager/install.cpp:16
 msgid "Looking for sources..."
-msgstr "Suche nach Quellen..."
+msgstr ""
 
 #: ../src/package_manager/install.cpp:20
 msgid "Update sources list"
-msgstr "Aktualisiere Quellen"
+msgstr ""
 
 #: ../src/package_manager/remove.cpp:5
 msgid "Removing directory..."
-msgstr "Entferne Verzeichnis..."
+msgstr ""
 
 #: ../src/package_manager/remove.cpp:9 ../src/package_manager/remove.cpp:17
 msgid "Update sources.xml"
-msgstr "Aktualisiere sources.xml"
+msgstr ""
 
 #: ../src/package_manager/remove.cpp:17
 msgid "Removing"
-msgstr "Entferne"
+msgstr ""
 
 #: ../src/package_manager/update.cpp:5 ../src/package_manager/update.cpp:11
 msgid "Update Packages"
-msgstr "Aktualisiere Pakete"
+msgstr ""
 
 #: ../src/package_manager/update.cpp:12
 msgid "Updating"
-msgstr "Aktualisiere"
+msgstr ""
 
 #: ../src/rapid_textus/search.cpp:45 ../src/rapid_textus/search.cpp:47
 #: ../src/window/main/signals/thread.cpp:13
 msgid "Results"
-msgstr "Ergebnisse"
+msgstr ""
 
 #: ../src/rapid_textus/sources.cpp:7
 msgid "default"
-msgstr "Standard"
+msgstr ""
 
 #: ../src/text_view/tab/verse/verse.cpp:79
 msgid "Show Context"
-msgstr "Zeige Kontext"
+msgstr ""
 
 #: ../src/text_view/tab/verse/verse.cpp:96
 msgid "Search Strong"
-msgstr "Suche Strong"
+msgstr ""
 
 #: ../src/text_view/tab/verse/verse.cpp:108
 #: ../src/window/main/create_menu.cpp:10
 #: ../src/window/main/search_section/init.cpp:4
 msgid "Search"
-msgstr "Suche"
+msgstr ""
 
 #: ../src/text_view/tab/verse/verse.cpp:116
 msgid "Grammar"
-msgstr "Grammatik"
+msgstr ""
 
 #: ../src/text_view/text_view.cpp:19
 msgid "No Results"
-msgstr "Keine Ergebnisse"
+msgstr ""
 
 #: ../src/window/dialog/dialog.cpp:3
 msgid "OK"
-msgstr "OK"
+msgstr ""
 
 #: ../src/window/dialog/dialog.cpp:3 ../src/window/main/signals/exporter.cpp:12
 msgid "Cancel"
-msgstr "Abbrechen"
+msgstr ""
 
 #: ../src/window/main/create_menu.cpp:4 ../src/window/main/create_menu.cpp:5
 #: ../src/window/main/create_menu.cpp:6 ../src/window/main/create_menu.cpp:7
 msgid "File"
-msgstr "Datei"
+msgstr ""
 
 #: ../src/window/main/create_menu.cpp:5
 msgid "Export Notes"
-msgstr "Notizen exportieren"
+msgstr ""
 
 #: ../src/window/main/create_menu.cpp:7
 msgid "Quit"
-msgstr "Beenden"
+msgstr ""
 
 #: ../src/window/main/create_menu.cpp:9 ../src/window/main/create_menu.cpp:10
 #: ../src/window/main/create_menu.cpp:11
 msgid "Edit"
-msgstr "Bearbeiten"
+msgstr ""
 
 #: ../src/window/main/create_menu.cpp:11
 msgid "Preferences"
-msgstr "Einstellungen"
+msgstr ""
 
 #: ../src/window/main/create_menu.cpp:13 ../src/window/main/create_menu.cpp:14
 #: ../src/window/main/create_menu.cpp:15 ../src/window/main/create_menu.cpp:16
 #: ../src/window/main/create_menu.cpp:17 ../src/window/main/create_menu.cpp:18
 #: ../src/window/main/create_menu.cpp:19 ../src/window/main/create_menu.cpp:20
 msgid "View"
-msgstr "Ansicht"
+msgstr ""
 
 #: ../src/window/main/create_menu.cpp:14
 msgid "Add Source"
-msgstr "Quelle hinzufügen"
+msgstr ""
 
 #: ../src/window/main/create_menu.cpp:15
 msgid "Remove Source"
-msgstr "Quelle entfernen"
+msgstr ""
 
 #: ../src/window/main/create_menu.cpp:16
 msgid "Zoom in"
-msgstr "Ansicht vergrössern"
+msgstr ""
 
 #: ../src/window/main/create_menu.cpp:17
 msgid "Zoom out"
-msgstr "Ansicht verkleinern"
+msgstr ""
 
 #: ../src/window/main/create_menu.cpp:18
 msgid "Zoom reset"
-msgstr "Ansichtsgrösse zurücksetzen"
+msgstr ""
 
 #: ../src/window/main/create_menu.cpp:19
 msgid "Minimize"
-msgstr "Minimieren"
+msgstr ""
 
 #: ../src/window/main/create_menu.cpp:20
 msgid "Fullscreen"
-msgstr "Vollbild"
+msgstr ""
 
 #: ../src/window/main/create_menu.cpp:22 ../src/window/main/create_menu.cpp:23
 #: ../src/window/main/create_menu.cpp:25
 msgid "History"
-msgstr "Chronik"
+msgstr ""
 
 #: ../src/window/main/create_menu.cpp:23
 msgid "Go back"
-msgstr "Zurück"
+msgstr ""
 
 #: ../src/window/main/create_menu.cpp:25
 msgid "Go forward"
-msgstr "Vorwärts"
+msgstr ""
 
 #: ../src/window/main/create_menu.cpp:28 ../src/window/main/create_menu.cpp:29
 #: ../src/window/main/create_menu.cpp:30
 msgid "Help"
-msgstr "Hilfe"
+msgstr ""
 
 #: ../src/window/main/create_menu.cpp:30
 msgid "About"
-msgstr "Über"
+msgstr ""
 
 #: ../src/window/main/init.cpp:27 ../src/window/main/init.cpp:34
 msgid "Init Searchengine"
-msgstr "Initialisiere SearchEngine"
+msgstr ""
 
 #: ../src/window/main/init.cpp:27
 msgid "Fetch style"
-msgstr "Lade Stil"
+msgstr ""
 
 #: ../src/window/main/init.cpp:34
 msgid "Load File"
-msgstr "Lade Datei"
+msgstr ""
 
 #: ../src/window/main/init.cpp:38
 msgid "Init user interface"
-msgstr "Initialisiere Benutzeroberfläche"
+msgstr ""
 
 #: ../src/window/main/init.cpp:38
 msgid "Create tab"
-msgstr "Erstelle Tab"
+msgstr ""
 
 #: ../src/window/main/init.cpp:46
 msgid "Init Notebook"
-msgstr "Initialisiere Notizbuch"
+msgstr ""
 
 #: ../src/window/main/init.cpp:46
 msgid "Load notes"
-msgstr "Lade Notizen"
+msgstr ""
 
 #: ../src/window/main/signals/exporter.cpp:4
 msgid "Export"
-msgstr "Exportieren"
+msgstr ""
 
 #: ../src/window/main/signals/exporter.cpp:4
 msgid "Passage"
-msgstr "Passage"
+msgstr ""
 
 #: ../src/window/main/signals/exporter.cpp:4
 msgid "eg. Gen, 1,1"
-msgstr "z.B. Gen 1,1"
+msgstr ""
 
 #: ../src/window/main/signals/exporter.cpp:10
 msgid "Choose Directory"
-msgstr "Verzeichnis Auswählen"
+msgstr ""
 
 #: ../src/window/main/signals/exporter.cpp:11
 msgid "Select"
-msgstr "Auswählen"
+msgstr ""
 
 #: ../src/window/main/signals/exporter.cpp:13
 msgid "Type"
-msgstr "Typ"
+msgstr ""
 
 #: ../src/window/main/signals/search.cpp:57
 msgid "Searching"
-msgstr "Suche"
+msgstr ""
 
 #: ../src/window/main/signals/source.cpp:7
 #: ../src/window/preferences/signals/book_manager.cpp:75
 msgid "Add source directory"
-msgstr "Quellenverzeichnis hinzufügen"
+msgstr ""
 
 #: ../src/window/main/signals/source.cpp:7
 #: ../src/window/preferences/signals/book_manager.cpp:76
 msgid "Enter the url of your git source repository:"
-msgstr "Geben Sie die Url von ihrem Quellen-Git-Repository ein:"
+msgstr ""
 
 #: ../src/window/main/signals/source.cpp:7
 #: ../src/window/preferences/signals/book_manager.cpp:77
 msgid "url: example.org/your/source.git"
-msgstr "Url: beispiel.org/ihre/quelle.git"
+msgstr ""
 
 #: ../src/window/main/signals/source.cpp:39
 #: ../src/window/preferences/signals/book_manager.cpp:109
 msgid "Remove source directory"
-msgstr "Quellenverzeichnis entfernen"
+msgstr ""
 
 #: ../src/window/main/signals/source.cpp:39
 #: ../src/window/preferences/signals/book_manager.cpp:109
 msgid "Chose the repository you want to be removed:"
-msgstr "Wählen sie das Repository aus, welches entfernt werden soll:"
+msgstr ""
 
 #: ../src/window/preferences/init_chilren.cpp:17
 #: ../src/window/preferences/init_chilren.cpp:25
 #: ../src/window/preferences/signals/user_interface.cpp:14
 msgid "System default"
-msgstr "Systemvorgabe"
+msgstr ""
 
 #: ../src/window/preferences/panes/book_manager_pane.cpp:3
 msgid "Default"
-msgstr "Standard"
+msgstr ""
 
 #: ../src/window/preferences/panes/book_manager_pane.cpp:4
 msgid "Regenerate Matrices"
-msgstr "Matrizen regenerieren"
+msgstr ""
 
 #: ../src/window/preferences/panes/user_inferface_pane.cpp:5
 msgid "Theme"
-msgstr "Thema"
+msgstr ""
 
 #: ../src/window/preferences/panes/user_inferface_pane.cpp:5
 msgid "Language"
-msgstr "Sprache"
+msgstr ""
 
 #: ../src/window/preferences/panes/user_inferface_pane.cpp:5
 msgid "Font size"
-msgstr "Schriftgrösse"
+msgstr ""
 
 #: ../src/window/preferences/preferences.cpp:7
 msgid "Appearance"
-msgstr "Aussehen"
+msgstr ""
 
 #: ../src/window/preferences/preferences.cpp:8
 msgid "Keybindings"
-msgstr "Tastenbelegungen"
+msgstr ""
 
 #: ../src/window/preferences/preferences.cpp:9
 msgid "Book Manager"
-msgstr "Bücherverwaltung"
+msgstr ""
 
 #: ../src/window/preferences/signals/user_interface.cpp:20
 msgid "Restart"
-msgstr "Neustarten"
+msgstr ""
 
 #: ../src/window/preferences/signals/user_interface.cpp:20
 msgid "This change only takes affect after a restart"
-msgstr "Diese Änderung wird erst in Kraft treten nach einem Neustart"
+msgstr ""
 
 #: ../src/grammar/grammar.cpp:5 ../src/grammar/grammar.cpp:11
 #: ../src/grammar/grammar.cpp:18 ../src/grammar/grammar.cpp:24
@@ -357,7 +347,7 @@ msgstr "Diese Änderung wird erst in Kraft treten nach einem Neustart"
 #: ../src/grammar/grammar.cpp:363 ../src/grammar/grammar.cpp:369
 #: ../src/grammar/grammar.cpp:375
 msgid "Part of Speech: Adjective"
-msgstr "Wortart: Adjektiv"
+msgstr ""
 
 #: ../src/grammar/grammar.cpp:6 ../src/grammar/grammar.cpp:12
 #: ../src/grammar/grammar.cpp:19 ../src/grammar/grammar.cpp:25
@@ -449,7 +439,7 @@ msgstr "Wortart: Adjektiv"
 #: ../src/grammar/grammar.cpp:8317 ../src/grammar/grammar.cpp:8323
 #: ../src/grammar/grammar.cpp:8329 ../src/grammar/grammar.cpp:8335
 msgid "Case: Accusative"
-msgstr "Fall: Akkusativ"
+msgstr ""
 
 #: ../src/grammar/grammar.cpp:7 ../src/grammar/grammar.cpp:13
 #: ../src/grammar/grammar.cpp:20 ../src/grammar/grammar.cpp:26
@@ -698,7 +688,7 @@ msgstr "Fall: Akkusativ"
 #: ../src/grammar/grammar.cpp:8402 ../src/grammar/grammar.cpp:8408
 #: ../src/grammar/grammar.cpp:8414
 msgid "Number: Plural"
-msgstr "Zahl: Plural"
+msgstr ""
 
 #: ../src/grammar/grammar.cpp:8 ../src/grammar/grammar.cpp:14
 #: ../src/grammar/grammar.cpp:47 ../src/grammar/grammar.cpp:53
@@ -789,7 +779,7 @@ msgstr "Zahl: Plural"
 #: ../src/grammar/grammar.cpp:8385 ../src/grammar/grammar.cpp:8403
 #: ../src/grammar/grammar.cpp:8421
 msgid "Gender: Feminine"
-msgstr "Geschlecht: Feminin"
+msgstr ""
 
 #: ../src/grammar/grammar.cpp:15 ../src/grammar/grammar.cpp:28
 #: ../src/grammar/grammar.cpp:41 ../src/grammar/grammar.cpp:54
@@ -802,7 +792,7 @@ msgstr "Geschlecht: Feminin"
 #: ../src/grammar/grammar.cpp:296 ../src/grammar/grammar.cpp:316
 #: ../src/grammar/grammar.cpp:336 ../src/grammar/grammar.cpp:349
 msgid "Degree: Comparative"
-msgstr "Steigerungsform: Komparativ"
+msgstr ""
 
 #: ../src/grammar/grammar.cpp:21 ../src/grammar/grammar.cpp:27
 #: ../src/grammar/grammar.cpp:67 ../src/grammar/grammar.cpp:73
@@ -938,7 +928,7 @@ msgstr "Steigerungsform: Komparativ"
 #: ../src/grammar/grammar.cpp:8391 ../src/grammar/grammar.cpp:8409
 #: ../src/grammar/grammar.cpp:8427
 msgid "Gender: Masculine"
-msgstr "Geschlecht: Maskulin"
+msgstr ""
 
 #: ../src/grammar/grammar.cpp:34 ../src/grammar/grammar.cpp:40
 #: ../src/grammar/grammar.cpp:80 ../src/grammar/grammar.cpp:86
@@ -1036,7 +1026,7 @@ msgstr "Geschlecht: Maskulin"
 #: ../src/grammar/grammar.cpp:8397 ../src/grammar/grammar.cpp:8415
 #: ../src/grammar/grammar.cpp:8433
 msgid "Gender: Neuter"
-msgstr "Geschlecht: Neutrum"
+msgstr ""
 
 #: ../src/grammar/grammar.cpp:46 ../src/grammar/grammar.cpp:52
 #: ../src/grammar/grammar.cpp:59 ../src/grammar/grammar.cpp:66
@@ -1319,14 +1309,14 @@ msgstr "Geschlecht: Neutrum"
 #: ../src/grammar/grammar.cpp:8420 ../src/grammar/grammar.cpp:8426
 #: ../src/grammar/grammar.cpp:8432
 msgid "Number: Singular"
-msgstr "Zahl: Singular"
+msgstr ""
 
 #: ../src/grammar/grammar.cpp:61 ../src/grammar/grammar.cpp:132
 #: ../src/grammar/grammar.cpp:152 ../src/grammar/grammar.cpp:180
 #: ../src/grammar/grammar.cpp:186 ../src/grammar/grammar.cpp:257
 #: ../src/grammar/grammar.cpp:303
 msgid "Degree: Superlative"
-msgstr "Steigerungsform: Superlativ"
+msgstr ""
 
 #: ../src/grammar/grammar.cpp:91 ../src/grammar/grammar.cpp:97
 #: ../src/grammar/grammar.cpp:103 ../src/grammar/grammar.cpp:110
@@ -1392,16 +1382,16 @@ msgstr "Steigerungsform: Superlativ"
 #: ../src/grammar/grammar.cpp:8341 ../src/grammar/grammar.cpp:8347
 #: ../src/grammar/grammar.cpp:8353 ../src/grammar/grammar.cpp:8359
 msgid "Case: Dative"
-msgstr "Fall: Dativ"
+msgstr ""
 
 #: ../src/grammar/grammar.cpp:168
 msgid "Adverb or adverb and particle combined"
-msgstr "Adverb oder Adverb und Partikel kombiniert"
+msgstr ""
 
 #: ../src/grammar/grammar.cpp:171 ../src/grammar/grammar.cpp:175
 #: ../src/grammar/grammar.cpp:179
 msgid "Part of Speech: Adverb"
-msgstr "Wortart: Adverb"
+msgstr ""
 
 #: ../src/grammar/grammar.cpp:172 ../src/grammar/grammar.cpp:439
 #: ../src/grammar/grammar.cpp:464 ../src/grammar/grammar.cpp:489
@@ -1415,11 +1405,11 @@ msgstr "Wortart: Adverb"
 #: ../src/grammar/grammar.cpp:6424 ../src/grammar/grammar.cpp:7664
 #: ../src/grammar/grammar.cpp:7784
 msgid "Contracted form"
-msgstr "Kurzform"
+msgstr ""
 
 #: ../src/grammar/grammar.cpp:176 ../src/grammar/grammar.cpp:1443
 msgid "Interrogative"
-msgstr "Kurzform"
+msgstr ""
 
 #: ../src/grammar/grammar.cpp:184 ../src/grammar/grammar.cpp:190
 #: ../src/grammar/grammar.cpp:196 ../src/grammar/grammar.cpp:202
@@ -1496,7 +1486,7 @@ msgstr "Kurzform"
 #: ../src/grammar/grammar.cpp:8383 ../src/grammar/grammar.cpp:8389
 #: ../src/grammar/grammar.cpp:8395
 msgid "Case: Genitive"
-msgstr "Fall: Genitiv"
+msgstr ""
 
 #: ../src/grammar/grammar.cpp:261 ../src/grammar/grammar.cpp:267
 #: ../src/grammar/grammar.cpp:274 ../src/grammar/grammar.cpp:280
@@ -1594,23 +1584,23 @@ msgstr "Fall: Genitiv"
 #: ../src/grammar/grammar.cpp:8419 ../src/grammar/grammar.cpp:8425
 #: ../src/grammar/grammar.cpp:8431
 msgid "Case: Nominative"
-msgstr "Fall: Nominativ"
+msgstr ""
 
 #: ../src/grammar/grammar.cpp:329 ../src/grammar/grammar.cpp:1635
 msgid "attic Greek form"
-msgstr "Attisch-Griechische Form"
+msgstr ""
 
 #: ../src/grammar/grammar.cpp:352
 msgid "Indeclinable Numeral"
-msgstr "Undeklinierbares Numerale"
+msgstr ""
 
 #: ../src/grammar/grammar.cpp:357
 msgid "abbreviated form"
-msgstr "Verkürzte Form"
+msgstr ""
 
 #: ../src/grammar/grammar.cpp:360
 msgid "aramaic transliterated word"
-msgstr "Aramäisch transkribiertes Wort"
+msgstr ""
 
 #: ../src/grammar/grammar.cpp:364 ../src/grammar/grammar.cpp:370
 #: ../src/grammar/grammar.cpp:376 ../src/grammar/grammar.cpp:1146
@@ -1618,25 +1608,25 @@ msgstr "Aramäisch transkribiertes Wort"
 #: ../src/grammar/grammar.cpp:1164 ../src/grammar/grammar.cpp:1170
 #: ../src/grammar/grammar.cpp:1176 ../src/grammar/grammar.cpp:8283
 msgid "Case: Vocative"
-msgstr "Fall: Vokativ"
+msgstr ""
 
 #: ../src/grammar/grammar.cpp:381 ../src/grammar/grammar.cpp:387
 #: ../src/grammar/grammar.cpp:393 ../src/grammar/grammar.cpp:399
 #: ../src/grammar/grammar.cpp:405
 msgid "Part of Speech: Reciprocal pronoun"
-msgstr "Wortart: Reziprokes Pronomen"
+msgstr ""
 
 #: ../src/grammar/grammar.cpp:411
 msgid "conditional particle or conjunction"
-msgstr "Bedingter Partikel oder Konjunktion"
+msgstr ""
 
 #: ../src/grammar/grammar.cpp:414 ../src/grammar/grammar.cpp:417
 msgid "Part of Speech: Contracted form"
-msgstr "Wortart: Verkürzte Form"
+msgstr ""
 
 #: ../src/grammar/grammar.cpp:420
 msgid "conjunction or conjunctive particle"
-msgstr "Konjunktion oder konjunktionaler Partikel"
+msgstr ""
 
 #: ../src/grammar/grammar.cpp:423 ../src/grammar/grammar.cpp:429
 #: ../src/grammar/grammar.cpp:435 ../src/grammar/grammar.cpp:442
@@ -1654,7 +1644,7 @@ msgstr "Konjunktion oder konjunktionaler Partikel"
 #: ../src/grammar/grammar.cpp:584 ../src/grammar/grammar.cpp:590
 #: ../src/grammar/grammar.cpp:596 ../src/grammar/grammar.cpp:603
 msgid "Part of Speech: Demonstrative pronoun"
-msgstr "Wortart: Demonstrativpronomen"
+msgstr ""
 
 #: ../src/grammar/grammar.cpp:609 ../src/grammar/grammar.cpp:616
 #: ../src/grammar/grammar.cpp:623 ../src/grammar/grammar.cpp:630
@@ -1668,7 +1658,7 @@ msgstr "Wortart: Demonstrativpronomen"
 #: ../src/grammar/grammar.cpp:736 ../src/grammar/grammar.cpp:743
 #: ../src/grammar/grammar.cpp:750
 msgid "Part of Speech: Reflexive pronoun"
-msgstr "Wortart: Reflexivpronomen"
+msgstr ""
 
 #: ../src/grammar/grammar.cpp:610 ../src/grammar/grammar.cpp:617
 #: ../src/grammar/grammar.cpp:624 ../src/grammar/grammar.cpp:1182
@@ -1740,7 +1730,7 @@ msgstr "Wortart: Reflexivpronomen"
 #: ../src/grammar/grammar.cpp:7920 ../src/grammar/grammar.cpp:7928
 #: ../src/grammar/grammar.cpp:7995 ../src/grammar/grammar.cpp:8003
 msgid "Person: First"
-msgstr "Person: Erste"
+msgstr ""
 
 #: ../src/grammar/grammar.cpp:631 ../src/grammar/grammar.cpp:638
 #: ../src/grammar/grammar.cpp:646 ../src/grammar/grammar.cpp:653
@@ -1825,7 +1815,7 @@ msgstr "Person: Erste"
 #: ../src/grammar/grammar.cpp:8051 ../src/grammar/grammar.cpp:8292
 #: ../src/grammar/grammar.cpp:8300
 msgid "Person: Second"
-msgstr "Person: Zweite"
+msgstr ""
 
 #: ../src/grammar/grammar.cpp:660 ../src/grammar/grammar.cpp:667
 #: ../src/grammar/grammar.cpp:674 ../src/grammar/grammar.cpp:681
@@ -1918,11 +1908,11 @@ msgstr "Person: Zweite"
 #: ../src/grammar/grammar.cpp:7885 ../src/grammar/grammar.cpp:7936
 #: ../src/grammar/grammar.cpp:8027 ../src/grammar/grammar.cpp:8035
 msgid "Person: Third"
-msgstr "Person: Dritte"
+msgstr ""
 
 #: ../src/grammar/grammar.cpp:756
 msgid "hebrew transliterated word"
-msgstr "Hebräisches transkribiertes Wort"
+msgstr ""
 
 #: ../src/grammar/grammar.cpp:759 ../src/grammar/grammar.cpp:765
 #: ../src/grammar/grammar.cpp:771 ../src/grammar/grammar.cpp:777
@@ -1935,11 +1925,11 @@ msgstr "Hebräisches transkribiertes Wort"
 #: ../src/grammar/grammar.cpp:858 ../src/grammar/grammar.cpp:864
 #: ../src/grammar/grammar.cpp:870
 msgid "Part of Speech: Interrogative pronoun"
-msgstr "Wortart: Interrogativpronomen"
+msgstr ""
 
 #: ../src/grammar/grammar.cpp:843
 msgid "Interjection"
-msgstr "Interjektion"
+msgstr ""
 
 #: ../src/grammar/grammar.cpp:876 ../src/grammar/grammar.cpp:882
 #: ../src/grammar/grammar.cpp:888 ../src/grammar/grammar.cpp:894
@@ -1949,7 +1939,7 @@ msgstr "Interjektion"
 #: ../src/grammar/grammar.cpp:936 ../src/grammar/grammar.cpp:942
 #: ../src/grammar/grammar.cpp:948
 msgid "Part of Speech: Correlative pronoun"
-msgstr "Wortart: Korrelativpronomen"
+msgstr ""
 
 #: ../src/grammar/grammar.cpp:954 ../src/grammar/grammar.cpp:960
 #: ../src/grammar/grammar.cpp:967 ../src/grammar/grammar.cpp:973
@@ -1970,23 +1960,23 @@ msgstr "Wortart: Korrelativpronomen"
 #: ../src/grammar/grammar.cpp:1157 ../src/grammar/grammar.cpp:1163
 #: ../src/grammar/grammar.cpp:1169 ../src/grammar/grammar.cpp:1175
 msgid "Part of Speech: Noun"
-msgstr "Wortart: Nomen"
+msgstr ""
 
 #: ../src/grammar/grammar.cpp:1050 ../src/grammar/grammar.cpp:1550
 msgid "Particle attached"
-msgstr "Anhängender Partikel"
+msgstr ""
 
 #: ../src/grammar/grammar.cpp:1089
 msgid "Indeclinable Letter"
-msgstr "Undeklinierbarer Buchstabe"
+msgstr ""
 
 #: ../src/grammar/grammar.cpp:1139
 msgid "Indeclinable Noun of Other type"
-msgstr "Undeklinierbares Nomen anderer Art"
+msgstr ""
 
 #: ../src/grammar/grammar.cpp:1142
 msgid "Indeclinable Proper Noun"
-msgstr "Undeklinierbarer Eigennamen"
+msgstr ""
 
 #: ../src/grammar/grammar.cpp:1181 ../src/grammar/grammar.cpp:1187
 #: ../src/grammar/grammar.cpp:1193 ../src/grammar/grammar.cpp:1200
@@ -2010,23 +2000,23 @@ msgstr "Undeklinierbarer Eigennamen"
 #: ../src/grammar/grammar.cpp:1412 ../src/grammar/grammar.cpp:1418
 #: ../src/grammar/grammar.cpp:1424 ../src/grammar/grammar.cpp:1430
 msgid "Part of Speech: Personal pronoun"
-msgstr "Wortart: Personalpronomen"
+msgstr ""
 
 #: ../src/grammar/grammar.cpp:1436
 msgid "preposition"
-msgstr "Präposition"
+msgstr ""
 
 #: ../src/grammar/grammar.cpp:1439
 msgid "Particle, disjunctive particle"
-msgstr "Partikel, Trennungspartikel"
+msgstr ""
 
 #: ../src/grammar/grammar.cpp:1442 ../src/grammar/grammar.cpp:1446
 msgid "Part of Speech: Particle"
-msgstr "Wortart: Partikel"
+msgstr ""
 
 #: ../src/grammar/grammar.cpp:1447
 msgid "Negative"
-msgstr "Negativ"
+msgstr ""
 
 #: ../src/grammar/grammar.cpp:1450 ../src/grammar/grammar.cpp:1456
 #: ../src/grammar/grammar.cpp:1462 ../src/grammar/grammar.cpp:1468
@@ -2035,7 +2025,7 @@ msgstr "Negativ"
 #: ../src/grammar/grammar.cpp:1498 ../src/grammar/grammar.cpp:1504
 #: ../src/grammar/grammar.cpp:1510
 msgid "Part of Speech: Correlative or Interrogative pronoun"
-msgstr "Wortart: Korrelativ- oder Interrogativpronomen"
+msgstr ""
 
 #: ../src/grammar/grammar.cpp:1516 ../src/grammar/grammar.cpp:1522
 #: ../src/grammar/grammar.cpp:1528 ../src/grammar/grammar.cpp:1534
@@ -2051,7 +2041,7 @@ msgstr "Wortart: Korrelativ- oder Interrogativpronomen"
 #: ../src/grammar/grammar.cpp:1650 ../src/grammar/grammar.cpp:1656
 #: ../src/grammar/grammar.cpp:1662 ../src/grammar/grammar.cpp:1668
 msgid "Part of Speech: Relative pronoun"
-msgstr "Wortart: Relativpronomen"
+msgstr ""
 
 #: ../src/grammar/grammar.cpp:1674 ../src/grammar/grammar.cpp:1681
 #: ../src/grammar/grammar.cpp:1688 ../src/grammar/grammar.cpp:1695
@@ -2073,7 +2063,7 @@ msgstr "Wortart: Relativpronomen"
 #: ../src/grammar/grammar.cpp:1912 ../src/grammar/grammar.cpp:1919
 #: ../src/grammar/grammar.cpp:1926
 msgid "Part of Speech: Posessive pronoun"
-msgstr "Wortart: Possessivpronomen"
+msgstr ""
 
 #: ../src/grammar/grammar.cpp:1933 ../src/grammar/grammar.cpp:1939
 #: ../src/grammar/grammar.cpp:1945 ../src/grammar/grammar.cpp:1951
@@ -2088,7 +2078,7 @@ msgstr "Wortart: Possessivpronomen"
 #: ../src/grammar/grammar.cpp:2053 ../src/grammar/grammar.cpp:2059
 #: ../src/grammar/grammar.cpp:2065 ../src/grammar/grammar.cpp:2071
 msgid "Part of Speech: Definite article"
-msgstr "Wortart: Definiter Artikel"
+msgstr ""
 
 #: ../src/grammar/grammar.cpp:2077 ../src/grammar/grammar.cpp:2085
 #: ../src/grammar/grammar.cpp:2093 ../src/grammar/grammar.cpp:2101
@@ -2461,7 +2451,7 @@ msgstr "Wortart: Definiter Artikel"
 #: ../src/grammar/grammar.cpp:8269 ../src/grammar/grammar.cpp:8279
 #: ../src/grammar/grammar.cpp:8288 ../src/grammar/grammar.cpp:8296
 msgid "Part of Speech: Verb"
-msgstr "Wortart: Verb"
+msgstr ""
 
 #: ../src/grammar/grammar.cpp:2078 ../src/grammar/grammar.cpp:2086
 #: ../src/grammar/grammar.cpp:2094 ../src/grammar/grammar.cpp:2102
@@ -2526,7 +2516,7 @@ msgstr "Wortart: Verb"
 #: ../src/grammar/grammar.cpp:3077 ../src/grammar/grammar.cpp:3085
 #: ../src/grammar/grammar.cpp:3093 ../src/grammar/grammar.cpp:3102
 msgid "Tense: Second Aorist"
-msgstr "Zeitform: Zweiter Aorist"
+msgstr ""
 
 #: ../src/grammar/grammar.cpp:2079 ../src/grammar/grammar.cpp:2087
 #: ../src/grammar/grammar.cpp:2095 ../src/grammar/grammar.cpp:2103
@@ -2639,7 +2629,7 @@ msgstr "Zeitform: Zweiter Aorist"
 #: ../src/grammar/grammar.cpp:7843 ../src/grammar/grammar.cpp:7851
 #: ../src/grammar/grammar.cpp:7859
 msgid "Voice: Active"
-msgstr "Diathese: Aktiv"
+msgstr ""
 
 #: ../src/grammar/grammar.cpp:2080 ../src/grammar/grammar.cpp:2088
 #: ../src/grammar/grammar.cpp:2096 ../src/grammar/grammar.cpp:2104
@@ -2763,7 +2753,7 @@ msgstr "Diathese: Aktiv"
 #: ../src/grammar/grammar.cpp:8010 ../src/grammar/grammar.cpp:8018
 #: ../src/grammar/grammar.cpp:8026 ../src/grammar/grammar.cpp:8034
 msgid "Mood: Indicative"
-msgstr "Modus: Indikitiv"
+msgstr ""
 
 #: ../src/grammar/grammar.cpp:2123 ../src/grammar/grammar.cpp:2165
 #: ../src/grammar/grammar.cpp:3227 ../src/grammar/grammar.cpp:3252
@@ -2785,7 +2775,7 @@ msgstr "Modus: Indikitiv"
 #: ../src/grammar/grammar.cpp:7774 ../src/grammar/grammar.cpp:7821
 #: ../src/grammar/grammar.cpp:8122 ../src/grammar/grammar.cpp:8276
 msgid "attic form"
-msgstr "Attische Form"
+msgstr ""
 
 #: ../src/grammar/grammar.cpp:2137 ../src/grammar/grammar.cpp:2145
 #: ../src/grammar/grammar.cpp:2153 ../src/grammar/grammar.cpp:2162
@@ -2818,11 +2808,11 @@ msgstr "Attische Form"
 #: ../src/grammar/grammar.cpp:8050 ../src/grammar/grammar.cpp:8291
 #: ../src/grammar/grammar.cpp:8299
 msgid "Mood: Imperative"
-msgstr "Modus: Imperativ"
+msgstr ""
 
 #: ../src/grammar/grammar.cpp:2156
 msgid "Apocopated form"
-msgstr "Apokopierte Form"
+msgstr ""
 
 #: ../src/grammar/grammar.cpp:2187 ../src/grammar/grammar.cpp:2492
 #: ../src/grammar/grammar.cpp:2762 ../src/grammar/grammar.cpp:2883
@@ -2839,7 +2829,7 @@ msgstr "Apokopierte Form"
 #: ../src/grammar/grammar.cpp:7617 ../src/grammar/grammar.cpp:7943
 #: ../src/grammar/grammar.cpp:8058
 msgid "Mood: Infinitive"
-msgstr "Modus: Infinitiv"
+msgstr ""
 
 #: ../src/grammar/grammar.cpp:2193 ../src/grammar/grammar.cpp:2201
 #: ../src/grammar/grammar.cpp:2498 ../src/grammar/grammar.cpp:2506
@@ -2851,7 +2841,7 @@ msgstr "Modus: Infinitiv"
 #: ../src/grammar/grammar.cpp:6500 ../src/grammar/grammar.cpp:6508
 #: ../src/grammar/grammar.cpp:7248 ../src/grammar/grammar.cpp:7256
 msgid "Mood: Optative"
-msgstr "Modus: Optativ"
+msgstr ""
 
 #: ../src/grammar/grammar.cpp:2209 ../src/grammar/grammar.cpp:2218
 #: ../src/grammar/grammar.cpp:2227 ../src/grammar/grammar.cpp:2236
@@ -3008,7 +2998,7 @@ msgstr "Modus: Optativ"
 #: ../src/grammar/grammar.cpp:8254 ../src/grammar/grammar.cpp:8263
 #: ../src/grammar/grammar.cpp:8272 ../src/grammar/grammar.cpp:8282
 msgid "Mood: Participle"
-msgstr "Modus: Partizip"
+msgstr ""
 
 #: ../src/grammar/grammar.cpp:2380 ../src/grammar/grammar.cpp:2388
 #: ../src/grammar/grammar.cpp:2396 ../src/grammar/grammar.cpp:2404
@@ -3054,7 +3044,7 @@ msgstr "Modus: Partizip"
 #: ../src/grammar/grammar.cpp:7836 ../src/grammar/grammar.cpp:7844
 #: ../src/grammar/grammar.cpp:7852 ../src/grammar/grammar.cpp:7860
 msgid "Mood: Subjunctive"
-msgstr "Modus: Subjunktiv"
+msgstr ""
 
 #: ../src/grammar/grammar.cpp:2427 ../src/grammar/grammar.cpp:2435
 #: ../src/grammar/grammar.cpp:2443 ../src/grammar/grammar.cpp:2451
@@ -3131,7 +3121,7 @@ msgstr "Modus: Subjunktiv"
 #: ../src/grammar/grammar.cpp:7966 ../src/grammar/grammar.cpp:7975
 #: ../src/grammar/grammar.cpp:7984
 msgid "Voice: Middle deponent"
-msgstr "Den"
+msgstr ""
 
 #: ../src/grammar/grammar.cpp:2697 ../src/grammar/grammar.cpp:2705
 #: ../src/grammar/grammar.cpp:2713 ../src/grammar/grammar.cpp:2721
@@ -3178,7 +3168,7 @@ msgstr "Den"
 #: ../src/grammar/grammar.cpp:7891 ../src/grammar/grammar.cpp:7900
 #: ../src/grammar/grammar.cpp:7909
 msgid "Voice: Middle"
-msgstr "Diathese: Mittel"
+msgstr ""
 
 #: ../src/grammar/grammar.cpp:2834 ../src/grammar/grammar.cpp:2842
 #: ../src/grammar/grammar.cpp:2850 ../src/grammar/grammar.cpp:2858
@@ -3205,7 +3195,7 @@ msgstr "Diathese: Mittel"
 #: ../src/grammar/grammar.cpp:5050 ../src/grammar/grammar.cpp:5058
 #: ../src/grammar/grammar.cpp:6779
 msgid "Voice: Passive deponent"
-msgstr "Diathese: Passives Deponens"
+msgstr ""
 
 #: ../src/grammar/grammar.cpp:2896 ../src/grammar/grammar.cpp:2904
 #: ../src/grammar/grammar.cpp:2912 ../src/grammar/grammar.cpp:2920
@@ -3287,7 +3277,7 @@ msgstr "Diathese: Passives Deponens"
 #: ../src/grammar/grammar.cpp:8253 ../src/grammar/grammar.cpp:8262
 #: ../src/grammar/grammar.cpp:8271 ../src/grammar/grammar.cpp:8281
 msgid "Voice: Passive"
-msgstr "Diathese: Passiv"
+msgstr ""
 
 #: ../src/grammar/grammar.cpp:3086 ../src/grammar/grammar.cpp:3094
 #: ../src/grammar/grammar.cpp:3103 ../src/grammar/grammar.cpp:5131
@@ -3320,7 +3310,7 @@ msgstr "Diathese: Passiv"
 #: ../src/grammar/grammar.cpp:7492 ../src/grammar/grammar.cpp:8290
 #: ../src/grammar/grammar.cpp:8298
 msgid "Voice: no voice stated"
-msgstr "Diathese: keine angegeben"
+msgstr ""
 
 #: ../src/grammar/grammar.cpp:3110 ../src/grammar/grammar.cpp:3118
 #: ../src/grammar/grammar.cpp:3126 ../src/grammar/grammar.cpp:3134
@@ -3329,11 +3319,11 @@ msgstr "Diathese: keine angegeben"
 #: ../src/grammar/grammar.cpp:3174 ../src/grammar/grammar.cpp:3182
 #: ../src/grammar/grammar.cpp:3190 ../src/grammar/grammar.cpp:3198
 msgid "Tense: Second Future"
-msgstr "Zeitform: Zweite Zukunftsform"
+msgstr ""
 
 #: ../src/grammar/grammar.cpp:3206
 msgid "Tense: Second Pluperfect"
-msgstr "Zeitform: Zweites Plusquamperfekt"
+msgstr ""
 
 #: ../src/grammar/grammar.cpp:3214 ../src/grammar/grammar.cpp:3222
 #: ../src/grammar/grammar.cpp:3231 ../src/grammar/grammar.cpp:3239
@@ -3348,7 +3338,7 @@ msgstr "Zeitform: Zweites Plusquamperfekt"
 #: ../src/grammar/grammar.cpp:3386 ../src/grammar/grammar.cpp:3395
 #: ../src/grammar/grammar.cpp:3404 ../src/grammar/grammar.cpp:3413
 msgid "Tense: Second Perfect"
-msgstr "Zeitform: Zweites Perfekt"
+msgstr ""
 
 #: ../src/grammar/grammar.cpp:3422 ../src/grammar/grammar.cpp:3430
 #: ../src/grammar/grammar.cpp:3438 ../src/grammar/grammar.cpp:3446
@@ -3432,15 +3422,15 @@ msgstr "Zeitform: Zweites Perfekt"
 #: ../src/grammar/grammar.cpp:4745 ../src/grammar/grammar.cpp:4753
 #: ../src/grammar/grammar.cpp:4761 ../src/grammar/grammar.cpp:4769
 msgid "Tense: Aorist"
-msgstr "Zeitform: Aorist"
+msgstr ""
 
 #: ../src/grammar/grammar.cpp:3521
 msgid "Aeolic"
-msgstr "Äolisch"
+msgstr ""
 
 #: ../src/grammar/grammar.cpp:4491 ../src/grammar/grammar.cpp:4716
 msgid "Middle significance"
-msgstr "Mittlere Signifikanz"
+msgstr ""
 
 #: ../src/grammar/grammar.cpp:4777 ../src/grammar/grammar.cpp:4785
 #: ../src/grammar/grammar.cpp:4793 ../src/grammar/grammar.cpp:4802
@@ -3469,7 +3459,7 @@ msgstr "Mittlere Signifikanz"
 #: ../src/grammar/grammar.cpp:5170 ../src/grammar/grammar.cpp:5178
 #: ../src/grammar/grammar.cpp:5184 ../src/grammar/grammar.cpp:5193
 msgid "Tense: Future"
-msgstr "Zeitform: Zukunft"
+msgstr ""
 
 #: ../src/grammar/grammar.cpp:5202 ../src/grammar/grammar.cpp:5210
 #: ../src/grammar/grammar.cpp:5218 ../src/grammar/grammar.cpp:5226
@@ -3490,7 +3480,7 @@ msgstr "Zeitform: Zukunft"
 #: ../src/grammar/grammar.cpp:5463 ../src/grammar/grammar.cpp:5471
 #: ../src/grammar/grammar.cpp:5479
 msgid "Tense: Imperfect"
-msgstr "Zeitform: Imperfekt"
+msgstr ""
 
 #: ../src/grammar/grammar.cpp:5277 ../src/grammar/grammar.cpp:5980
 #: ../src/grammar/grammar.cpp:5988 ../src/grammar/grammar.cpp:5996
@@ -3502,13 +3492,13 @@ msgstr "Zeitform: Imperfekt"
 #: ../src/grammar/grammar.cpp:6087 ../src/grammar/grammar.cpp:6096
 #: ../src/grammar/grammar.cpp:6105
 msgid "Voice: Either middle or Passive"
-msgstr "Diathese: Mittel oder passiv"
+msgstr ""
 
 #: ../src/grammar/grammar.cpp:5432 ../src/grammar/grammar.cpp:7129
 #: ../src/grammar/grammar.cpp:7137 ../src/grammar/grammar.cpp:7143
 #: ../src/grammar/grammar.cpp:7152 ../src/grammar/grammar.cpp:7161
 msgid "Voice: Impersonal active"
-msgstr "Diathese: Unpersönliches aktiv"
+msgstr ""
 
 #: ../src/grammar/grammar.cpp:5487 ../src/grammar/grammar.cpp:5495
 #: ../src/grammar/grammar.cpp:5503 ../src/grammar/grammar.cpp:5511
@@ -3516,7 +3506,7 @@ msgstr "Diathese: Unpersönliches aktiv"
 #: ../src/grammar/grammar.cpp:5536 ../src/grammar/grammar.cpp:5545
 #: ../src/grammar/grammar.cpp:5553 ../src/grammar/grammar.cpp:5561
 msgid "Tense: Pluperfect"
-msgstr "Zeitform: Plusquamperfekt"
+msgstr ""
 
 #: ../src/grammar/grammar.cpp:5569 ../src/grammar/grammar.cpp:5577
 #: ../src/grammar/grammar.cpp:5585 ../src/grammar/grammar.cpp:5594
@@ -3633,15 +3623,15 @@ msgstr "Zeitform: Plusquamperfekt"
 #: ../src/grammar/grammar.cpp:7475 ../src/grammar/grammar.cpp:7483
 #: ../src/grammar/grammar.cpp:7491
 msgid "Tense: Present"
-msgstr "Zeitform: Präsens"
+msgstr ""
 
 #: ../src/grammar/grammar.cpp:5615 ../src/grammar/grammar.cpp:6824
 msgid "irregular or inpure form"
-msgstr "Irreguläre oder unechte Form"
+msgstr ""
 
 #: ../src/grammar/grammar.cpp:6279
 msgid "Transitive"
-msgstr "Transitiv"
+msgstr ""
 
 #: ../src/grammar/grammar.cpp:7499 ../src/grammar/grammar.cpp:7507
 #: ../src/grammar/grammar.cpp:7516 ../src/grammar/grammar.cpp:7524
@@ -3690,11 +3680,11 @@ msgstr "Transitiv"
 #: ../src/grammar/grammar.cpp:8261 ../src/grammar/grammar.cpp:8270
 #: ../src/grammar/grammar.cpp:8280
 msgid "Tense: Perfect"
-msgstr "Zeitform: Perfekt"
+msgstr ""
 
 #: ../src/grammar/grammar.cpp:8289 ../src/grammar/grammar.cpp:8297
 msgid "Tense: no tense stated"
-msgstr "Zeitform: nicht angegeben"
+msgstr ""
 
 #: ../src/grammar/grammar.cpp:8304 ../src/grammar/grammar.cpp:8310
 #: ../src/grammar/grammar.cpp:8316 ../src/grammar/grammar.cpp:8322
@@ -3708,4 +3698,4 @@ msgstr "Zeitform: nicht angegeben"
 #: ../src/grammar/grammar.cpp:8412 ../src/grammar/grammar.cpp:8418
 #: ../src/grammar/grammar.cpp:8424 ../src/grammar/grammar.cpp:8430
 msgid "Part of Speech: Indefinite pronoun"
-msgstr "Wortart: Indefinitpronomen"
+msgstr ""

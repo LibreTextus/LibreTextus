@@ -119,11 +119,12 @@ bool Libre::TextView::on_key_press_event(GdkEventKey * key) {
 		default: break;
 	}
 
-	this->tabs.front()->scroll_steps(s);
+	if (s != 0) {
+		this->tabs.front()->scroll_steps(s);
+		this->display_all();
+	}
 
-	this->display_all();
-
-	return true;
+	return false;
 }
 
 void Libre::TextView::scroll_to(const size_t & steps) {

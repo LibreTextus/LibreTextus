@@ -36,7 +36,8 @@ private:
 	size_t search_progress;
 	mutable std::mutex * mutex;
 	std::vector<std::thread *> threads;
-	std::map<size_t, std::string> thread_results;
+	typedef std::priority_queue<std::pair<size_t, std::string>, std::vector<std::pair<size_t, std::string>>, std::greater<std::pair<size_t, std::string>>> result_queue;
+	result_queue thread_results;
 	size_t scroll_overflow;
 
 	void interpret_string(const std::string &);

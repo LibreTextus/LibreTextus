@@ -4,7 +4,7 @@ void SearchEngine::interpret_string(const std::string & argument) {
 
 	this->search_progress = 0;
 	this->mutex = new std::mutex;
-	this->thread_results.clear();
+	this->thread_results = result_queue();
 	this->search_argument.clear();
 	this->scroll_overflow = 0;
 

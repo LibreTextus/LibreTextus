@@ -14,8 +14,8 @@ bool SearchEngine::search(std::string * text) {
 	this->search_distance = this->thread_results.size();
 
 	if (!this->thread_results.empty()) {
-		std::string verse = this->thread_results.begin()->second;
-		this->thread_results.erase(this->thread_results.begin());
+		std::string verse = this->thread_results.top().second;
+		this->thread_results.pop();
 
 		this->last_search_results.push_back(verse);
 		*text = this->file->at(verse);
@@ -103,7 +103,7 @@ void SearchEngine::thread_search(size_t id) {
 			if (strong_check) {
 				{
 					std::lock_guard<std::mutex> lock(*this->mutex);
-					this->thread_results[search_verse_number] = search_iterator.key();
+					this->thread_results.emplace(search_verse_number, search_iterator.key());
 				}
 			}
 		}

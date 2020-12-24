@@ -5,6 +5,7 @@
 @define-color theme_background_color #dedede;
 @define-color theme_highlight_color #457fb5;
 @define-color theme_accent_color #b0adad;
+@define-color theme_mark_color #dedede;
 
 #history_button button {
 	background-image: url('res/light/arrow_down.svg');

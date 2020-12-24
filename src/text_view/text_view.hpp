@@ -30,6 +30,8 @@ namespace Libre {
 		rapidxml::xml_node<> * note_book_file;
 		sigc::signal<void, std::string> m_signal_toggle_note;
 		sigc::signal<void, std::string> m_signal_right_click_search;
+		sigc::signal<void, std::string> m_signal_append_grammar;
+		sigc::signal<void> m_signal_clear_grammar;
 		bool note_exists(const std::string &);
 
 	public:
@@ -56,8 +58,10 @@ namespace Libre {
 		}
 
 		sigc::signal<void, std::string> signal_toggle_note();
-
 		sigc::signal<void, std::string> signal_right_click_search();
+		sigc::signal<void, std::string> signal_append_grammar();
+		sigc::signal<void> signal_clear_grammar();
+
 
 		bool on_button_release_event(GdkEventButton * button_event) {
 				this->grab_focus();

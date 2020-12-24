@@ -141,7 +141,7 @@ void Libre::TextView::append_tab(const std::string & path) {
 	sigc::signal<bool, const std::string &> s;
 	s.connect(sigc::mem_fun(this, &Libre::TextView::note_exists));
 
-	this->tabs.push_back(new Libre::TextViewTab<VERSES_SHOWN>(path, &this->m_signal_right_click_search, &this->m_signal_toggle_note, s));
+	this->tabs.push_back(new Libre::TextViewTab<VERSES_SHOWN>(path, &this->m_signal_right_click_search, &this->m_signal_toggle_note, s, &this->m_signal_append_grammar, &this->m_signal_clear_grammar));
 	this->tabs.back()->set_source_path(path);
 	this->main.pack_start(*this->tabs.back());
 }

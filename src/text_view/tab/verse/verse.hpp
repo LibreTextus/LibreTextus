@@ -18,6 +18,11 @@ namespace Libre {
 			sigc::signal<void, std::string> * trigger_search;
 			sigc::signal<void, std::string> * toggle_note;
 			sigc::signal<bool, const std::string &> * note_exists;
+			sigc::signal<void, std::string> * append_grammar;
+			sigc::signal<void> * clear_grammar;
+			Glib::ustring verse_content;
+			std::string mark_color;
+			int last_mark_index;
 
 		public:
 			TextViewVerse();
@@ -32,7 +37,13 @@ namespace Libre {
 			void set_trigger_search(sigc::signal<void, std::string> *);
 			void set_note_exits(sigc::signal<bool, const std::string &> *);
 			void set_toggle_note(sigc::signal<void, std::string> *);
+			void set_append_grammar(sigc::signal<void, std::string> *);
+			void set_clear_grammar(sigc::signal<void> *);
 			void label_populate_popup(Gtk::Menu *);
+			bool label_mouse_motion(GdkEventMotion *);
+			bool is_non_word(const char & c);
+			std::string get_mark_color();
+
 
 			Gtk::Label * get_caption_label();
 			Gtk::Label * get_verse_label();

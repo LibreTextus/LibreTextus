@@ -142,6 +142,13 @@ text, #text_view, #verse_box {
 	background-color: @theme_background_color;
 }
 
+#grammar_view {
+	padding: 10px 10px 10px 10px;
+	border-top-width: 1px;
+	border-top-style: solid;
+	border-top-color: @theme_accent_color;
+}
+
 selection {
 	background-color: @theme_highlight_color;
 }

@@ -24,7 +24,7 @@ namespace Libre {
 			sigc::signal<bool, const std::string &> note_exists;
 			static int scroll;
 		public:
-			TextViewTab(const std::string &, sigc::signal<void, std::string> *, sigc::signal<void, std::string> *, sigc::signal<bool, const std::string &>);
+			TextViewTab(const std::string &, sigc::signal<void, std::string> *, sigc::signal<void, std::string> *, sigc::signal<bool, const std::string &>, sigc::signal<void, std::string> *, sigc::signal<void> *);
 			std::array<Libre::TextViewVerse *, N> * get_verses();
 			void clear();
 			void add_verse(const std::string &, const std::string &);
@@ -43,7 +43,7 @@ template <int N>
 int Libre::TextViewTab<N>::scroll = 0;
 
 template <int N>
-Libre::TextViewTab<N>::TextViewTab(const std::string & path, sigc::signal<void, std::string> * trigger_search, sigc::signal<void, std::string> * toggle_note, sigc::signal<bool, const std::string &> s) : 
+Libre::TextViewTab<N>::TextViewTab(const std::string & path, sigc::signal<void, std::string> * trigger_search, sigc::signal<void, std::string> * toggle_note, sigc::signal<bool, const std::string &> s, sigc::signal<void, std::string> * append_grammar, sigc::signal<void> * clear_grammar) : 
 	Gtk::VBox(false), source_path(path) {
 		this->set_name("text_view");
 		this->note_exists = s;
@@ -53,6 +53,8 @@ Libre::TextViewTab<N>::TextViewTab(const std::string & path, sigc::signal<void, 
 			i->set_toggle_note(toggle_note);
 			i->set_trigger_search(trigger_search);
 			i->set_note_exits(&this->note_exists);
+			i->set_append_grammar(append_grammar);
+			i->set_clear_grammar(clear_grammar);
 			this->pack_start(*i, Gtk::PACK_SHRINK, 0);
 		}
 

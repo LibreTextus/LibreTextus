@@ -87,4 +87,4 @@ uninstall:
 	@printf "Remove manpage $(green)$(MANPREFIX)/LibreTextus.1$(sgr0)\n"
 	@rm $(MANPREFIX)/LibreTextus.1
 
-.PHONY: options libretextus LibreTextus locales clean install all
+.PHONY: options libretextus LibreTextus locales clean install all data

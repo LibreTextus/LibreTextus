@@ -149,6 +149,11 @@ text, #text_view, #verse_box {
 	border-top-color: @theme_accent_color;
 }
 
+#grammar_view label {
+	margin-top: 2px;
+	margin-bottom: 2px;
+}
+
 selection {
 	background-color: @theme_highlight_color;
 }

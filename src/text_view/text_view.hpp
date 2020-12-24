@@ -33,6 +33,7 @@ namespace Libre {
 		sigc::signal<void, std::string> m_signal_append_grammar;
 		sigc::signal<void> m_signal_clear_grammar;
 		bool note_exists(const std::string &);
+		void show_other_strongs(const size_t &, const size_t &, const std::string &);
 
 	public:
 		TextView(const std::string &);

@@ -138,14 +138,24 @@ void Libre::TextView::remove_tab(const int & id) {
 }
 
 void Libre::TextView::append_tab(const std::string & path) {
-	sigc::signal<bool, const std::string &> s;
-	s.connect(sigc::mem_fun(this, &Libre::TextView::note_exists));
+	sigc::signal<bool, const std::string &> n_exists;
+	n_exists.connect(sigc::mem_fun(this, &Libre::TextView::note_exists));
 
-	this->tabs.push_back(new Libre::TextViewTab<VERSES_SHOWN>(path, &this->m_signal_right_click_search, &this->m_signal_toggle_note, s, &this->m_signal_append_grammar, &this->m_signal_clear_grammar));
+	sigc::signal<void, const size_t &, const size_t &, const std::string &> so_strongs;
+	so_strongs.connect(sigc::mem_fun(this, &Libre::TextView::show_other_strongs));
+
+
+	this->tabs.push_back(new Libre::TextViewTab<VERSES_SHOWN>(path, &this->m_signal_right_click_search, &this->m_signal_toggle_note, n_exists, &this->m_signal_append_grammar, &this->m_signal_clear_grammar, so_strongs));
 	this->tabs.back()->set_source_path(path);
 	this->main.pack_start(*this->tabs.back());
 }
 
 void Libre::TextView::change_source(const int & id, const std::string & path) {
 	this->tabs[id]->set_source_path(path);
+}
+
+void Libre::TextView::show_other_strongs(const size_t & id, const size_t & n, const std::string & str) {
+	for (Libre::TextViewTab<VERSES_SHOWN> * tab : this->tabs) {
+		tab->show_other_strong_at_id(id, n, str);
+	}
 }

@@ -1,7 +1,8 @@
 #include "verse.hpp"
 #include <iostream>
 
-Libre::TextViewVerse::TextViewVerse() : Gtk::VBox() {
+Libre::TextViewVerse::TextViewVerse(const size_t & id) : Gtk::VBox() {
+	this->view_index = id;
 	this->mark_color = this->get_mark_color();
 
 	this->button.set_name("note_toggle");
@@ -24,7 +25,10 @@ Libre::TextViewVerse::TextViewVerse() : Gtk::VBox() {
 	this->verse.signal_motion_notify_event().connect(sigc::mem_fun(this, &Libre::TextViewVerse::label_mouse_motion));
 
 	this->verse.signal_leave_notify_event().connect([this](GdkEventCrossing *) -> bool {
-			this->verse.set_markup(this->verse_content); this->last_mark_index = -1; return false; });
+			this->m_show_strong_in_other->emit(this->view_index, 0, "");
+			this->last_mark_index = -1;
+			return false;
+			});
 
 	this->caption.signal_populate_popup().connect(sigc::mem_fun(this, &Libre::TextViewVerse::label_populate_popup));
 
@@ -84,6 +88,10 @@ void Libre::TextViewVerse::set_append_grammar(sigc::signal<void, std::string> * 
 
 void Libre::TextViewVerse::set_clear_grammar(sigc::signal<void> * s) {
 	this->clear_grammar = s;
+}
+
+void Libre::TextViewVerse::set_show_similar_strong(sigc::signal<void, const size_t &, const size_t &, const std::string &> * s) {
+	this->m_show_strong_in_other = s;
 }
 
 void Libre::TextViewVerse::label_populate_popup(Gtk::Menu * menu) {
@@ -179,7 +187,16 @@ bool Libre::TextViewVerse::label_mouse_motion(GdkEventMotion * event) {
 
 		if (this->strongs != nullptr) {
 			if (!(*this->strongs)[word].empty()) {
-				this->append_grammar->emit(_("Strong: ") +  (*this->strongs)[word]);
+				std::string str = (*this->strongs)[word];
+				this->append_grammar->emit(_("Strong: ") + str);
+				
+				int count = -1;
+				for (int last = 0; last != std::string::npos;) {
+					last = this->verse.get_text().substr(0, begin).find(word, last + 1);
+					++count;
+				}
+
+				this->m_show_strong_in_other->emit(this->view_index, count, str);
 			}
 		}
 
@@ -215,6 +232,33 @@ bool Libre::TextViewVerse::label_mouse_motion(GdkEventMotion * event) {
 	}
 
 	return false;
+}
+
+void Libre::TextViewVerse::mark_similar_strong(const size_t & id, const std::string & s) {
+	Glib::ustring v = this->verse_content;
+	if (this->strongs != nullptr && !s.empty()) {
+		auto it = std::find_if(this->strongs->begin(), this->strongs->end(),
+				[s](const std::pair<std::string, std::string> & p) -> bool {
+					return p.second == s;
+				});
+
+		if (it != this->strongs->end()) {
+			Glib::ustring str = it.key();
+
+			size_t last = v.find(str);
+
+			for (int i = 0; i < id; ++i) {
+				last = v.find(str, last + 1);
+				if (last == std::string::npos)
+					break;
+			}
+
+			if (last != std::string::npos)
+				v.replace(last, str.size(), "<span background='#" + this->mark_color + "'>" + str + "</span>");
+		}
+	}
+	
+	this->verse.set_markup(v);
 }
 
 bool Libre::TextViewVerse::is_non_word(const char & c) {

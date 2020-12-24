@@ -22,9 +22,10 @@ namespace Libre {
 			Libre::StrongMap * strong_map;
 			Libre::GrammarMap * grammar_map;
 			sigc::signal<bool, const std::string &> note_exists;
+			sigc::signal<void, const size_t &, const size_t &, const std::string &> show_other_strongs;
 			static int scroll;
 		public:
-			TextViewTab(const std::string &, sigc::signal<void, std::string> *, sigc::signal<void, std::string> *, sigc::signal<bool, const std::string &>, sigc::signal<void, std::string> *, sigc::signal<void> *);
+			TextViewTab(const std::string &, sigc::signal<void, std::string> *, sigc::signal<void, std::string> *, sigc::signal<bool, const std::string &>, sigc::signal<void, std::string> *, sigc::signal<void> *, sigc::signal<void, const size_t &, const size_t &, const std::string &>);
 			std::array<Libre::TextViewVerse *, N> * get_verses();
 			void clear();
 			void add_verse(const std::string &, const std::string &);
@@ -35,6 +36,7 @@ namespace Libre {
 			void change_verse(const std::string &, const std::string &);
 			std::string get_active_verse_position();
 			void set_source_path(const std::string &);
+			void show_other_strong_at_id(const size_t &, const size_t &, const std::string &);
 			size_t get_verses_amount() { return this->verse.size(); }
 	};
 }
@@ -43,19 +45,24 @@ template <int N>
 int Libre::TextViewTab<N>::scroll = 0;
 
 template <int N>
-Libre::TextViewTab<N>::TextViewTab(const std::string & path, sigc::signal<void, std::string> * trigger_search, sigc::signal<void, std::string> * toggle_note, sigc::signal<bool, const std::string &> s, sigc::signal<void, std::string> * append_grammar, sigc::signal<void> * clear_grammar) : 
+Libre::TextViewTab<N>::TextViewTab(const std::string & path, sigc::signal<void, std::string> * trigger_search, sigc::signal<void, std::string> * toggle_note, sigc::signal<bool, const std::string &> s, sigc::signal<void, std::string> * append_grammar, sigc::signal<void> * clear_grammar, sigc::signal<void, const size_t &, const size_t &, const std::string &> show_other_strongs) : 
 	Gtk::VBox(false), source_path(path) {
 		this->set_name("text_view");
 		this->note_exists = s;
+		this->show_other_strongs = show_other_strongs;
+
+		size_t id = 0;
 
 		for (Libre::TextViewVerse *& i : this->text_view_verses) {
-			i = new Libre::TextViewVerse;
+			i = new Libre::TextViewVerse(id);
 			i->set_toggle_note(toggle_note);
 			i->set_trigger_search(trigger_search);
 			i->set_note_exits(&this->note_exists);
 			i->set_append_grammar(append_grammar);
 			i->set_clear_grammar(clear_grammar);
+			i->set_show_similar_strong(&this->show_other_strongs);
 			this->pack_start(*i, Gtk::PACK_SHRINK, 0);
+			++id;
 		}
 
 		this->text_view_verses[0]->set_name("active_verse");
@@ -150,6 +157,11 @@ void Libre::TextViewTab<N>::set_source_path(const std::string & path) {
 	this->source_path = path;
 	this->strong_map = this->source_handler.get_strongs(path);
 	this->grammar_map = this->source_handler.get_grammar_map(path);
+}
+
+template <int N>
+void Libre::TextViewTab<N>::show_other_strong_at_id(const size_t & id, const size_t & n, const std::string & str) {
+	this->text_view_verses[id]->mark_similar_strong(n, str);
 }
 
 #endif

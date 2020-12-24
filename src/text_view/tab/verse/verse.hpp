@@ -20,12 +20,14 @@ namespace Libre {
 			sigc::signal<bool, const std::string &> * note_exists;
 			sigc::signal<void, std::string> * append_grammar;
 			sigc::signal<void> * clear_grammar;
+			sigc::signal<void, const size_t &, const size_t &, const std::string &> * m_show_strong_in_other;
 			Glib::ustring verse_content;
 			std::string mark_color;
 			int last_mark_index;
+			size_t view_index;
 
 		public:
-			TextViewVerse();
+			TextViewVerse(const size_t &);
 			~TextViewVerse() = default;
 
 			void clear();
@@ -39,10 +41,12 @@ namespace Libre {
 			void set_toggle_note(sigc::signal<void, std::string> *);
 			void set_append_grammar(sigc::signal<void, std::string> *);
 			void set_clear_grammar(sigc::signal<void> *);
+			void set_show_similar_strong(sigc::signal<void, const size_t &, const size_t &, const std::string &> *);
 			void label_populate_popup(Gtk::Menu *);
 			bool label_mouse_motion(GdkEventMotion *);
 			bool is_non_word(const char & c);
 			std::string get_mark_color();
+			void mark_similar_strong(const size_t &, const std::string &);
 
 
 			Gtk::Label * get_caption_label();

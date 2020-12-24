@@ -199,6 +199,12 @@ bool Libre::TextViewVerse::label_mouse_motion(GdkEventMotion * event) {
 		Glib::ustring word = this->verse.get_text().substr(begin, end - begin);
 		this->clear_grammar->emit();
 
+		if (this->strongs != nullptr) {
+			if (!(*this->strongs)[word].empty()) {
+				this->append_grammar->emit(_("Strong: ") +  (*this->strongs)[word]);
+			}
+		}
+
 		if (this->grammar != nullptr) {
 			if ((*this->grammar)[word] != nullptr) {
 				for (auto i = (*this->grammar)[word]->rbegin(); i != (*this->grammar)[word]->rend(); ++i) {

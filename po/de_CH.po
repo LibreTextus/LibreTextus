@@ -1419,7 +1419,7 @@ msgstr "Kurzform"
 
 #: ../src/grammar/grammar.cpp:176 ../src/grammar/grammar.cpp:1443
 msgid "Interrogative"
-msgstr "Kurzform"
+msgstr "Interrogativ"
 
 #: ../src/grammar/grammar.cpp:184 ../src/grammar/grammar.cpp:190
 #: ../src/grammar/grammar.cpp:196 ../src/grammar/grammar.cpp:202
@@ -3054,7 +3054,8 @@ msgstr "Modus: Partizip"
 #: ../src/grammar/grammar.cpp:7836 ../src/grammar/grammar.cpp:7844
 #: ../src/grammar/grammar.cpp:7852 ../src/grammar/grammar.cpp:7860
 msgid "Mood: Subjunctive"
-msgstr "Modus: Subjunktiv"
+msgstr "Modus: Konjunktiv"
+
 
 #: ../src/grammar/grammar.cpp:2427 ../src/grammar/grammar.cpp:2435
 #: ../src/grammar/grammar.cpp:2443 ../src/grammar/grammar.cpp:2451
@@ -3131,7 +3132,7 @@ msgstr "Modus: Subjunktiv"
 #: ../src/grammar/grammar.cpp:7966 ../src/grammar/grammar.cpp:7975
 #: ../src/grammar/grammar.cpp:7984
 msgid "Voice: Middle deponent"
-msgstr "Den"
+msgstr "Diathese: Mittler Deponens"
 
 #: ../src/grammar/grammar.cpp:2697 ../src/grammar/grammar.cpp:2705
 #: ../src/grammar/grammar.cpp:2713 ../src/grammar/grammar.cpp:2721

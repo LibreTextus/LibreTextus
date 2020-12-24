@@ -70,6 +70,7 @@ namespace Libre {
 		}
 
 		void change_source(const int & id, const std::string & path);
+		void refresh_theme();
 
 	};
 }

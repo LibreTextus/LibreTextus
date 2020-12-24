@@ -313,3 +313,7 @@ std::string Libre::TextViewVerse::get_mark_color() {
 
 	return r + g + b;
 }
+
+void Libre::TextViewVerse::refresh_theme() {
+	this->mark_color = this->get_mark_color();
+}

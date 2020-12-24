@@ -22,3 +22,14 @@ void Libre::MainWindow::connect_signals() {
 	this->join_thread_dispatcher.connect(sigc::mem_fun(this, &Libre::MainWindow::join_thread));
 	this->sync_sources_dispatcher.connect(sigc::mem_fun(this, &Libre::MainWindow::sync_combo_boxes));
 }
+
+void Libre::MainWindow::refresh_theme() {
+	this->get_view_pane()->get_text_view()->refresh_theme();
+
+	std::string mark_color = this->get_mark_color();
+	this->mark_argument = "<span font_weight=\"bold\" underline=\"single\" underline_color=\"#" + mark_color + "\">$&</span>";
+
+	for (SearchEngine & se : this->search_engine) {
+		se.set_mark_argument(this->mark_argument);
+	}
+}

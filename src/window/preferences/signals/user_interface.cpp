@@ -8,6 +8,8 @@ void Libre::PreferencesWindow::theme_changed() {
 	if (css_load_error) {
 		std::cerr << "Failed to load css file\n";
 	}
+
+	this->_refresh_theme.emit();
 }
 
 void Libre::PreferencesWindow::locales_changed() {

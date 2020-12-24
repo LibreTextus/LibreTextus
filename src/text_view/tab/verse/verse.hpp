@@ -47,6 +47,7 @@ namespace Libre {
 			bool is_non_word(const char & c);
 			std::string get_mark_color();
 			void mark_similar_strong(const size_t &, const std::string &);
+			void refresh_theme();
 
 
 			Gtk::Label * get_caption_label();

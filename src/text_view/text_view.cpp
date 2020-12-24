@@ -159,3 +159,9 @@ void Libre::TextView::show_other_strongs(const size_t & id, const size_t & n, co
 		tab->show_other_strong_at_id(id, n, str);
 	}
 }
+
+void Libre::TextView::refresh_theme() {
+	for (Libre::TextViewTab<VERSES_SHOWN> * tab : this->tabs) {
+		tab->refresh_theme();
+	}
+}

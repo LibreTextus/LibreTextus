@@ -99,6 +99,7 @@ namespace Libre {
 			void sync_combo_boxes();
 			void init();
 			void trigger_search_with_history(const std::string &);
+			void refresh_theme();
 
 			Libre::Menu * get_menu();
 			Libre::SearchSection * get_search_section();

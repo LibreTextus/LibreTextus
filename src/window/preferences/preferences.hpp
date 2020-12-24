@@ -27,6 +27,7 @@ namespace Libre {
 
 			sigc::signal<void> _restart_application;
 			sigc::signal<void> _sync_all_source_combo_main_window;
+			sigc::signal<void> _refresh_theme;
 
 			Glib::Dispatcher sync_sources_dispatcher;
 
@@ -60,6 +61,7 @@ namespace Libre {
 			Libre::BookManagerPane * get_book_manager_pane();
 			sigc::signal<void> restart_application();
 			sigc::signal<void> sync_source_combo();
+			sigc::signal<void> refresh_theme();
 			void increase_font_size(const int &);
 			void reset_font_size();
 	};

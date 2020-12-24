@@ -23,3 +23,7 @@ sigc::signal<void> Libre::PreferencesWindow::restart_application() {
 sigc::signal<void> Libre::PreferencesWindow::sync_source_combo() {
 	return this->_sync_all_source_combo_main_window;
 }
+
+sigc::signal<void> Libre::PreferencesWindow::refresh_theme() {
+	return this->_refresh_theme;
+}

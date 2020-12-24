@@ -38,6 +38,7 @@ namespace Libre {
 			void set_source_path(const std::string &);
 			void show_other_strong_at_id(const size_t &, const size_t &, const std::string &);
 			size_t get_verses_amount() { return this->verse.size(); }
+			void refresh_theme();
 	};
 }
 
@@ -162,6 +163,13 @@ void Libre::TextViewTab<N>::set_source_path(const std::string & path) {
 template <int N>
 void Libre::TextViewTab<N>::show_other_strong_at_id(const size_t & id, const size_t & n, const std::string & str) {
 	this->text_view_verses[id]->mark_similar_strong(n, str);
+}
+
+template <int N>
+void Libre::TextViewTab<N>::refresh_theme() {
+	for (int i = 0; i < N; ++i) {
+		this->text_view_verses[i]->refresh_theme();
+	}
 }
 
 #endif

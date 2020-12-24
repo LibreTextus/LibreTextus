@@ -143,10 +143,19 @@ text, #text_view, #verse_box {
 }
 
 #grammar_view {
-	padding: 10px 10px 10px 10px;
+	margin: 0;
+	padding: 0;
 	border-top-width: 1px;
 	border-top-style: solid;
 	border-top-color: @theme_accent_color;
+}
+
+#grammar_sub_view {
+	padding: 0px 10px 0px 10px;
+	margin: 10px 0px 10px 0px;
+	border-right-width: 1px;
+	border-right-style: solid;
+	border-right-color: @theme_accent_color;
 }
 
 #grammar_view label {

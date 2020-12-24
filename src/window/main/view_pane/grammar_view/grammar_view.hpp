@@ -5,8 +5,9 @@
 #include <vector>
 
 namespace Libre {
-	class GrammarView : public Gtk::VBox {
+	class GrammarView : public Gtk::HBox {
 		private:
+			std::vector<Gtk::VBox> boxes;
 			std::vector<Gtk::Label> labels;
 		public:
 			GrammarView();

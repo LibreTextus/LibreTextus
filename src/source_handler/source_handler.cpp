@@ -46,7 +46,7 @@ Libre::BookMap SourceHandler::to_map(rapidxml::xml_document<> * doc, const std::
 						output[v_pos] += v_part->value();
 
 						if (std::string(v_part->name()) == "gr") {
-							str_num[v_pos].insert({boost::regex_replace(std::string(v_part->value()), e, ""), std::string("g") + v_part->first_attribute("str")->value()});
+							str_num[v_pos].insert({boost::regex_replace(std::string(v_part->value()), e, ""), std::string(v_part->first_attribute("str")->value())});
 
 							if (v_part->first_attribute("rmac")) {
 								if (!(*this->grammar.get_grammar_map())[v_part->first_attribute("rmac")->value()].empty()) {

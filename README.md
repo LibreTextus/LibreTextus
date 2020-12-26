@@ -14,8 +14,25 @@ sudo apt install libgtkmm-3.0-dev build-essential libboost-regex-dev libboost-pr
 
 ```bash
 make -j$(nproc)
+```
+
+## Run it
+
+The LibreTextus binary is saved under ```build/LibreTextus``` you can run it with:
+
+```bash
 ./build/LibreTextus
 ```
+
+## Install
+
+To install LibreTextus just run:
+
+```
+sudo make install
+```
+
+This will install LibreTextus under ```/usr/local/```.
 
 ## Get Involved
 If you want to make some pull requests or write issues just do it, we appreciate every help!

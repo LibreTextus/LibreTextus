@@ -189,14 +189,35 @@ bool Libre::TextViewVerse::label_mouse_motion(GdkEventMotion * event) {
 			if (!(*this->strongs)[word].empty()) {
 				std::string str = (*this->strongs)[word];
 				this->append_grammar->emit(_("Strong: ") + str);
+
+				std::string raw_text = this->verse.get_text().substr(0, begin).raw();
+				int count = 0;
+				std::string word;
 				
-				int count = -1;
-				for (int last = 0; last != std::string::npos;) {
-					last = this->verse.get_text().substr(0, begin).find(word, last + 1);
-					++count;
+				for (const char & c : raw_text) {
+					if (this->is_non_word(c)) {
+						try {
+							if (this->strongs->at(word) == str) {
+								++count;
+							}
+						}	catch (const std::out_of_range &) {}
+						word.clear();
+					} else {
+						word += c;
+					}
+				}
+
+				if (!word.empty()) {
+					try {
+						if (this->strongs->at(word) == str) {
+							++count;
+						}
+					}	catch (const std::out_of_range &) {}
 				}
 
 				this->m_show_strong_in_other->emit(this->view_index, count, str);
+			} else {
+				this->m_show_strong_in_other->emit(this->view_index, 0, "");
 			}
 		}
 
@@ -235,26 +256,63 @@ bool Libre::TextViewVerse::label_mouse_motion(GdkEventMotion * event) {
 }
 
 void Libre::TextViewVerse::mark_similar_strong(const size_t & id, const std::string & s) {
+
 	Glib::ustring v = this->verse_content;
 	if (this->strongs != nullptr && !s.empty()) {
-		auto it = std::find_if(this->strongs->begin(), this->strongs->end(),
-				[s](const std::pair<std::string, std::string> & p) -> bool {
-					return p.second == s;
-				});
+		size_t last = 0;
+		int count = -1;
+		Glib::ustring word;
+		Glib::ustring str;
 
-		if (it != this->strongs->end()) {
-			Glib::ustring str = it.key();
+		std::string raw_text = this->verse.get_text().raw();
 
-			size_t last = v.find(str);
+		for (const char & c : raw_text) {
+			if (this->is_non_word(c)) {
+				try {
+					if (this->strongs->at(word) == s) {
+						++count;
+						str = word;
+						if (count == id) {
+							word.clear();
+							break;
+						}
+					}
+				}	catch (const std::out_of_range &) {}
+				word.clear();
+			} else {
+				word += c;
+			}
+			++last;
+		}
 
-			for (int i = 0; i < id; ++i) {
-				last = v.find(str, last + 1);
-				if (last == std::string::npos)
-					break;
+		if (!word.empty()) {
+			try {
+				if (this->strongs->at(word) == s) {
+					++count;
+					str = word;
+				}
+			}	catch (const std::out_of_range &) {}
+		}
+
+		last = Glib::ustring(this->verse.get_text().raw().substr(0, last)).size();
+		last -= str.size();
+
+		if (last <= this->verse.get_text().size() && count == id) {
+			bool is_pango = this->verse_content[0] == '<';
+
+			for (int i = 0; i < last || is_pango; ++i) {
+				if (is_pango) {
+					++last;
+				}
+
+				if (this->verse_content[i + 1] == '<') {
+					is_pango = true;
+				} else if (this->verse_content[i] == '>') {
+					is_pango = false;
+				}
 			}
 
-			if (last != std::string::npos)
-				v.replace(last, str.size(), "<span background='#" + this->mark_color + "'>" + str + "</span>");
+			v.replace(last, str.size(), "<span background='#" + this->mark_color + "'>" + str + "</span>");
 		}
 	}
 	

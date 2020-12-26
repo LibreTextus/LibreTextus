@@ -26,6 +26,9 @@ void Libre::MainWindow::create_menu_items() {
 			sigc::bind<bool>(sigc::mem_fun(this->search_section.get_history_button(), &Libre::HistoryButton::button_pressed), true));
 
 	menu.add_menu_item(_("Help"));
-	menu.add_sub_menu_item(_("Help"), _("Help"), "F1", sigc::mem_fun(this, &MainWindow::zoom_in));
+	menu.add_sub_menu_item(_("Help"), _("Help"), "F1", [this]() {
+			GError * error;
+			gtk_show_uri_on_window(this->gobj(), "https://github.com/LibreTextus/LibreTextus/wiki", GDK_CURRENT_TIME, &error);
+	});
 	menu.add_sub_menu_item(_("About"), _("Help"), "", sigc::mem_fun(this, &MainWindow::show_about_window));
 }

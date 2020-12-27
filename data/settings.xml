@@ -9,4 +9,8 @@
 	</themes>
 	<font size="15"/>
 	<locale locale=""/>
+	<scdown key="j"/>
+	<scup key="k"/>
+	<scbottom key="G"/>
+	<sctop key="g"/>
 </settings>

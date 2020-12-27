@@ -30,6 +30,8 @@ Libre::TextView::TextView(const std::string & info) : Gtk::ScrolledWindow() {
 
 	this->scroll_sensitivity = 0.5;
 	this->has_results = false;
+
+	this->refresh_shortcuts();
 }
 
 void Libre::TextView::show_information() {
@@ -108,16 +110,20 @@ bool Libre::TextView::on_key_press_event(GdkEventKey * key) {
 
 	short int s = 0;
 
-	switch (key->keyval) {
-		case GDK_KEY_k: s = -1; break;
-		case GDK_KEY_j: s = 1; break;
-		case GDK_KEY_Up: s = -1; break;
-		case GDK_KEY_Down: s = 1; break;
-		case GDK_KEY_Return: this->m_signal_toggle_note.emit(this->tabs.front()->get_active_verse_position()); break;
-		case GDK_KEY_G: s = this->tabs.front()->get_verses_amount(); break;
-		case GDK_KEY_g: s = -this->tabs.front()->get_verses_amount(); break;
-		default: break;
-	}
+	if (key->keyval == keymap["scup"])
+		s = -1;
+	else if (key->keyval == keymap["scdown"])
+		s = 1;
+	else if (key->keyval == GDK_KEY_Up)
+		s = -1;
+	else if (key->keyval == GDK_KEY_Down)
+		s = 1;
+	else if (key->keyval == keymap["sctop"])
+		s = -this->tabs.front()->get_verses_amount();
+	else if (key->keyval == keymap["scbottom"])
+		s = this->tabs.front()->get_verses_amount();
+	else if (key->keyval == GDK_KEY_Return)
+		this->m_signal_toggle_note.emit(this->tabs.front()->get_active_verse_position());
 
 	if (s != 0) {
 		this->tabs.front()->scroll_steps(s);
@@ -163,5 +169,32 @@ void Libre::TextView::show_other_strongs(const size_t & id, const size_t & n, co
 void Libre::TextView::refresh_theme() {
 	for (Libre::TextViewTab<VERSES_SHOWN> * tab : this->tabs) {
 		tab->refresh_theme();
+	}
+}
+
+void Libre::TextView::refresh_shortcuts() {
+	this->keymap["scup"] = this->settings.get_attribute("scup", "key")[0];
+	this->keymap["scdown"] = this->settings.get_attribute("scdown", "key")[0];
+	this->keymap["sctop"] = this->settings.get_attribute("sctop", "key")[0];
+	this->keymap["scbottom"] = this->settings.get_attribute("scbottom", "key")[0];
+
+	if (this->keymap["scup"] == 0) {
+		this->keymap["scup"] = 'k';
+		this->settings.set("scup", "key", "k");
+	}
+
+	if (this->keymap["scdown"] == 0) {
+		this->keymap["scdown"] = 'j';
+		this->settings.set("scdown", "key", "j");
+	}
+
+	if (this->keymap["sctop"] == 0) {
+		this->keymap["sctop"] = 'g';
+		this->settings.set("sctop", "key", "g");
+	}
+	
+	if (this->keymap["scbottom"] == 0) {
+		this->keymap["scbottom"] = 'G';
+		this->settings.set("scbottom", "key", "G");
 	}
 }

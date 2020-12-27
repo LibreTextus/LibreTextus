@@ -16,7 +16,6 @@ int Framework::init(std::string a) {
 
 	this->app = Gtk::Application::create();
 	this->splash_screen = new Libre::SplashScreen();
-	this->preferences_window = new Libre::PreferencesWindow();
 	this->about_window = new Libre::AboutWindow();
 
 	std::string info_string = _("<big>Welcome to LibreTextus!</big>\n"
@@ -27,6 +26,7 @@ int Framework::init(std::string a) {
 			"<i>WORD@GEN 1</i> will give all <i>WORD</i> in <i>GEN 1</i>\n");
 
 	this->main_window = new Libre::MainWindow(info_string);
+	this->preferences_window = new Libre::PreferencesWindow();
 
 	LOG("-- Connect Signals");
 

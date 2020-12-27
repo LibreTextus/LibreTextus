@@ -12,6 +12,7 @@
 #include <glibmm/i18n.h>
 
 #include <source_handler/source_handler.hpp>
+#include <settings/settings.hpp>
 
 #include "tab/tab.hpp"
 
@@ -34,11 +35,14 @@ namespace Libre {
 		sigc::signal<void> m_signal_clear_grammar;
 		bool note_exists(const std::string &);
 		void show_other_strongs(const size_t &, const size_t &, const std::string &);
+		std::map<std::string, char> keymap;
+		Settings settings;
 
 	public:
 		TextView(const std::string &);
 		virtual ~TextView() = default;
 
+		void refresh_shortcuts();
 		void clear();
 		void add_verse(const std::string & caption, const std::vector<std::string *> & verses_content);
 		void replace_verse(const std::string & caption, const int & version, const std::string * content);

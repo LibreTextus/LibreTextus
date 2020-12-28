@@ -1,4 +1,5 @@
 #include "framework.hpp"
+#include "notebook/notebook.hpp"
 #include "window/main/main.hpp"
 
 void Framework::connect_app_startup_signal() {
@@ -49,6 +50,9 @@ void Framework::connect_session_init_success_signal() {
 
 		this->preferences_window->get_keybindings_pane()->get_bottom()->get_element()->refresh_shortcuts().connect(
 				sigc::mem_fun(this->main_window->get_view_pane()->get_text_view(), &Libre::TextView::refresh_shortcuts));
+
+		this->preferences_window->get_keybindings_pane()->signal_refresh_mode().connect(
+				sigc::mem_fun(this->main_window->get_view_pane()->get_notebook(), &Libre::NoteBook::refresh_mode));
 
 		this->preferences_window->set_package_manager(
 				&this->package_manager);

@@ -14,6 +14,10 @@
 
 #include <path/path.hpp>
 #include <exporter/exporter.hpp>
+#include <settings/settings.hpp>
+
+#include "nav_modes/mode.hpp"
+#include "nav_modes/vi.hpp"
 
 
 namespace Libre {
@@ -22,6 +26,7 @@ namespace Libre {
 		Glib::RefPtr<Gtk::TextBuffer> content_buffer;
 		Gtk::ScrolledWindow scrolled_window;
 		Gtk::TextView text_view;
+		Gtk::Label status_label;
 		rapidxml::xml_document<> notes_file;
 		std::string path;
 		rapidxml::xml_node<> * active_position;
@@ -42,6 +47,10 @@ namespace Libre {
 		MD::String markdown_text;
 		typedef sigc::signal<void> type_signal_refresh;
 		type_signal_refresh m_signal_refresh;
+		sigc::signal<void> close_notebook;
+		Settings settings;
+		std::map<std::string, NavMode::NavMode *> modes;
+		std::string active_mode;
 		
 		bool note_exists(const std::string & pos);
 		void set_active_position_and_get_content(const std::string &);
@@ -61,6 +70,8 @@ namespace Libre {
 		void create_new_note_book_node();
 
 		void write_changes_to_node();
+
+		bool nav_modes(GdkEventKey *);
 		
 	public:
 		NoteBook();
@@ -69,6 +80,7 @@ namespace Libre {
 		void open_note(const std::string & verse);
 		void save_note();
 		void export_note(std::string &, std::string &, std::string &);
+		void refresh_mode();
 
 		void change_style_of_selection();
 		void on_content_change();
@@ -86,6 +98,10 @@ namespace Libre {
 
 		type_signal_refresh signal_refresh() {
 			return this->m_signal_refresh;
+		}
+
+		sigc::signal<void> signal_close_notebook() {
+			return this->close_notebook;
 		}
 
 		void on_grab_focus() {

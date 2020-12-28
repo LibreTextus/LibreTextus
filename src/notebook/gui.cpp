@@ -1,3 +1,4 @@
+#include "gtkmm/box.h"
 #include "notebook.hpp"
 
 void Libre::NoteBook::pack_children() {
@@ -6,4 +7,5 @@ void Libre::NoteBook::pack_children() {
 	this->header.pack_start(this->title, Gtk::PACK_SHRINK, 0);
 	this->pack_start(this->header, Gtk::PACK_SHRINK, 0);
 	this->pack_start(this->scrolled_window, Gtk::PACK_EXPAND_WIDGET, 0);
+	this->pack_start(this->status_label, Gtk::PACK_SHRINK, 0);
 }

@@ -122,6 +122,19 @@ text, #text_view, #verse_box {
 	border-color: @theme_highlight_color;
 }
 
+#notebook {
+	background-color: @theme_text_background_color;
+}
+
+#notebook #text_view {
+	font-family: monospace;
+}
+
+#notebook #status {
+	background-color: @theme_background_color;
+	padding: 10px 10px 10px 10px;
+}
+
 #add_button, #close_button, #remove_button {
 	background-color: @theme_background_color;
 	background-position: center;

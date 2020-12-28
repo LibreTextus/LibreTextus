@@ -65,3 +65,13 @@ void Libre::NoteBook::write_changes_to_node() {
 	char * content = this->notes_file.allocate_string(this->content_buffer->get_text().c_str());
 	this->active_position->value(content);
 }
+
+bool Libre::NoteBook::nav_modes(GdkEventKey * event) {
+	bool interrupt = this->modes[this->active_mode]->process_navigation(event, this->text_view.get_buffer());
+	this->status_label.set_text(this->modes[this->active_mode]->get_status());
+	if (this->modes[this->active_mode]->close()) {
+		this->close_notebook.emit();
+		this->on_content_change();
+	}
+	return interrupt;
+}

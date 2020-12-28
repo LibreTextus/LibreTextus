@@ -9,6 +9,9 @@ void Libre::NoteBook::open_note(const std::string & position) {
 	this->title.set_text(std::string(_("Note")) + " - " + position);
 
 	this->on_content_change();
+
+	this->modes[this->active_mode]->make_ready(this->text_view.get_buffer());
+	this->status_label.set_text(this->modes[this->active_mode]->get_status());
 }
 
 void Libre::NoteBook::set_active_position_and_get_content(const std::string & position) {

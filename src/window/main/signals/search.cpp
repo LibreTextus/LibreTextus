@@ -29,8 +29,6 @@ void Libre::MainWindow::do_search() {
 
 		this->mutex.lock();
 
-		this->search_section.get_search_entry()->set_progress_fraction(this->search_engine[0].get_progress());
-
 		delete this->found_verses[0];
 		this->found_verses.clear();
 

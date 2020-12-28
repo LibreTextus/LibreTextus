@@ -2,8 +2,6 @@
 
 void Libre::MainWindow::join_thread() {
 
-	this->process_thread->join();
-	delete this->process_thread;
 
 	if (this->search_section.get_search_entry()->get_progress_fraction() != 0) {
 		this->search_section.get_search_entry()->set_progress_fraction(0);
@@ -21,6 +19,10 @@ void Libre::MainWindow::join_thread() {
 	} else {
 		this->view_pane.get_text_view()->grab_focus();
 	}
+
+	this->process_thread->join();
+	delete this->process_thread;
+
 }
 
 

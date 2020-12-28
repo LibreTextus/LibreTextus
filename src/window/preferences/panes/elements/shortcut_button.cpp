@@ -8,6 +8,7 @@ Libre::ShortcutButton::ShortcutButton() : Gtk::Button() {
 	this->popover.set_position(Gtk::POS_BOTTOM);
 
 	this->entry.signal_changed().connect(sigc::mem_fun(this, &Libre::ShortcutButton::entry_changed), false);
+	this->popover.signal_closed().connect([this] () { this->set_label(this->settings.get_attribute(this->settings_name, "key")); });
 }
 
 void Libre::ShortcutButton::set_shortcut(const std::string & settings_string) {
@@ -24,12 +25,11 @@ void Libre::ShortcutButton::on_clicked() {
 
 void Libre::ShortcutButton::entry_changed() {
 	if (!this->entry.get_text().empty()) {
-		this->set_label(this->entry.get_text());
 		this->settings.set(this->settings_name, "key", this->entry.get_text());
 		this->entry.set_text("");
 		this->popover.popdown();
 		this->m_refresh_short_cuts();
-	}
+	} 
 }
 
 sigc::signal<void> Libre::ShortcutButton::refresh_shortcuts() {

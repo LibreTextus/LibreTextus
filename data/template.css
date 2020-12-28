@@ -73,7 +73,7 @@ image:focus {
 	margin-right: -8em;
 }
 
-box, .combo, menu, menubar, entry, spinbutton, button {
+box, .combo, menu, menubar, entry, spinbutton, button, popover {
 	background-color: @theme_background_color;
 	color: @theme_text_color;
 	border-color: @theme_accent_color;

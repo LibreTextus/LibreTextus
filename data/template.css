@@ -261,6 +261,11 @@ paned separator {
 	opacity: 1;
 }
 
+treeview, list, row {
+	background-color: @theme_background_color;
+	color: @theme_text_color;
+}
+
 /* SETTINGS */
 
 tabs, tab, header {

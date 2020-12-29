@@ -1,0 +1,6 @@
+[Desktop Entry]
+Name=LibreTextus
+Icon=/usr/local/share/LibreTextus/data/icon.svg
+Type=Application
+Exec=LibreTextus
+Terminal=false

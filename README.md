@@ -34,5 +34,11 @@ sudo make install
 
 This will install LibreTextus under ```/usr/local/```.
 
+If you want an icon for your desktopmanager it's possible to install a desktopfile under ```/usr/share/applications/``` with:
+
+```
+sudo make desktopicon
+```
+
 ## Get Involved
 If you want to make some pull requests or write issues just do it, we appreciate every help!

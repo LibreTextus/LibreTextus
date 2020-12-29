@@ -214,6 +214,18 @@ paned separator {
 	-gtk-icon-shadow: none;
 }
 
+#note_toggle:active check {
+	box-shadow: none;
+ 	background-image: none;
+ 	border-radius: 10px;
+	background-color: @theme_background_color;
+	border: none;
+}
+
+#note_toggle:active {
+	border: none;
+}
+
 #note_header {
 	padding: 10px 10px 10px 10px;
 }

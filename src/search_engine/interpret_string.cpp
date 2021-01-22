@@ -76,7 +76,7 @@ void SearchEngine::replace_book_names(std::string * arg) {
 
 	for (Libre::NameMap::iterator i = this->names->begin(); i != this->names->end(); i++) {
 		for (std::vector<std::string>::iterator x = i.value().begin(); x != i.value().end(); x++) {
-			e = boost::regex(*x + "(\\s|$|-)");
+			e = boost::regex(*x + "(\\s|$|(?=[^\\w\u00C0-\uffff]))");
 			*arg = boost::regex_replace(*arg, e, i->first);
 		}
 	}
@@ -107,7 +107,8 @@ void SearchEngine::get_position_from_string(std::string * arg, std::vector<std::
 			pos->back()[0] = (*pos)[pos->size() - 2][0].substr(0, (*pos)[pos->size() - 2][0].find(",") + 1);
 
 			e = boost::regex("\\d+", boost::regex::icase);
-			boost::regex_search(*arg, m, e);
+			if (boost::regex_search(*arg, m, e))
+				break;
 			pos->back()[0] += m.str();
 			*arg = m.suffix().str();
 
@@ -116,7 +117,8 @@ void SearchEngine::get_position_from_string(std::string * arg, std::vector<std::
 			if (arg->substr(0, 1) == "-") {
 				arg->erase(0, 1);
 				pos->back()[1].erase(pos->back()[0].find(",") + 1, std::string::npos);
-				boost::regex_search(*arg, m, e);
+				if (boost::regex_search(*arg, m, e))
+					break;
 				pos->back()[1] += m.str();
 				*arg = m.suffix().str();
 			}
@@ -145,13 +147,15 @@ void SearchEngine::get_position_from_string(std::string * arg, std::vector<std::
 				arg->erase(0, 3);
 
 				if (!arg->empty()) {
-					boost::regex_search(*arg, m, e);
-					pos->back()[1] += m.str() + ",";
-					*arg = m.suffix().str();
+					if (boost::regex_search(*arg, m, e)) {
+						pos->back()[1] += m.str() + ",";
+						*arg = m.suffix().str();
 
-					pos->back()[0] += "1";
-					pos->back()[1] += "1";
-
+						pos->back()[0] += "1";
+						pos->back()[1] += "1";
+					} else {
+						break;
+					}
 				} else {
 					pos->back()[0] += "1,1";
 					pos->back()[1] += " 1,1";
@@ -167,7 +171,8 @@ void SearchEngine::get_position_from_string(std::string * arg, std::vector<std::
 
 				pos->back()[0] += "1";
 
-				boost::regex_search(*arg, m, e);
+				if (!boost::regex_search(*arg, m, e))
+					break;
 				pos->back()[1] = pos->back()[0].substr(0, 4) + m.str() + ",";
 				*arg = m.suffix();
 
@@ -183,7 +188,8 @@ void SearchEngine::get_position_from_string(std::string * arg, std::vector<std::
 		} else if (arg->substr(0, 1) == ",") {
 			arg->erase(0, 1);
 
-			boost::regex_search(*arg, m, e);
+			if (!boost::regex_search(*arg, m, e))
+				break;
 			pos->back()[0] += m.str();
 			*arg = m.suffix().str();
 
@@ -192,7 +198,8 @@ void SearchEngine::get_position_from_string(std::string * arg, std::vector<std::
 			if (arg->substr(0, 1) == "-") {
 				arg->erase(0, 1);
 				pos->back()[1].erase(pos->back()[0].find(",") + 1, std::string::npos);
-				boost::regex_search(*arg, m, e);
+				if (!boost::regex_search(*arg, m, e))
+					break;
 				pos->back()[1] += m.str();
 				*arg = m.suffix().str();
 			}

@@ -4,8 +4,12 @@
 std::string HOME(const std::string & object) {
 	std::string output;
 
-	output = (getenv("SNAP_USER_COMMON") == NULL ? getenv("HOME") : getenv("SNAP_USER_COMMON"));
-	output += "/.libre_textus/" + object;
+	if (getenv("LIBRETEXTUS_DATA"))
+		output = std::string(getenv("LIBRETEXTUS_DATA")) + "/" + object;
+	else {
+		output = (getenv("SNAP_USER_COMMON") == NULL ? getenv("HOME") : getenv("SNAP_USER_COMMON"));
+		output += "/.libre_textus/" + object;
+	}
 
 	return output;
 }

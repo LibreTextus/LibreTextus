@@ -91,4 +91,7 @@ desktopicon:
 	@printf "Copy $(green)libretextus_raw.desktop$(sgr0) to $(green)/usr/share/applications/libretextus.desktop$(sgr0)\n"
 	@cp libretextus_raw.desktop /usr/share/applications/libretextus.desktop
 
+run: all
+	build/LibreTextus
+
 .PHONY: options libretextus LibreTextus locales clean install all data

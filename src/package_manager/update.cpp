@@ -17,4 +17,3 @@ void Libre::PackageManager::update() {
 
 	this->refresh_lists();
 }
-

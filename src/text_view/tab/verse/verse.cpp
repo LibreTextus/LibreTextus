@@ -137,6 +137,19 @@ void Libre::TextViewVerse::label_populate_popup(Gtk::Menu * menu) {
 				return false;
 		});
 
+	} else {
+		if (!this->hover_word.empty()) {
+			Gtk::MenuItem * strong_search_item = new Gtk::MenuItem(
+					std::string(_("Search Strong")) + " \"" + this->hover_word + "\""
+					);
+
+			menu->prepend(*strong_search_item);
+
+			strong_search_item->signal_button_release_event().connect([this](GdkEventButton *) {
+					this->trigger_search->emit("[str " + this->hover_word + "]");
+					return false;
+					});
+		}
 	}
 	menu->show_all();
 }
@@ -184,6 +197,7 @@ bool Libre::TextViewVerse::label_mouse_motion(GdkEventMotion * event) {
 
 		Glib::ustring word = this->verse.get_text().substr(begin, end - begin);
 		this->clear_grammar->emit();
+		this->hover_word = (*this->strongs)[word];
 
 		if (this->strongs != nullptr) {
 			if (!(*this->strongs)[word].empty()) {

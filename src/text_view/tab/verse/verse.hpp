@@ -25,6 +25,7 @@ namespace Libre {
 			std::string mark_color;
 			int last_mark_index;
 			size_t view_index;
+			std::string hover_word;
 
 		public:
 			TextViewVerse(const size_t &);
